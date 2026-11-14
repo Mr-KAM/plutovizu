@@ -8,6 +8,13 @@ import numpy as np
 from typing import Optional, Union, List, Tuple, Dict, Any
 import seaborn as sns
 
+from .themes import set_theme
+
+
+def _opts(**kwargs) -> Dict[str, Any]:
+    """Garde seulement les options fournies : les autres suivent le thème actif (rcParams)."""
+    return {k: v for k, v in kwargs.items() if v is not None}
+
 
 def get_fonts(pattern: str = None, sort: bool = True) -> List[str]:
     """
@@ -89,7 +96,8 @@ class Chart:
             FR: Palette de couleurs actuellement active.
     """
 
-    def __init__(self, data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6)):
+    def __init__(self, data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6),
+                 theme: Optional[str] = None):
         """
         EN: Initialise a Chart from a pandas DataFrame.
         FR: Initialise un Chart à partir d'un DataFrame pandas.
@@ -101,14 +109,21 @@ class Chart:
             figsize (Tuple[int, int]):
                 EN: Figure width and height in inches. Default (10, 6).
                 FR: Largeur et hauteur de la figure en pouces. Défaut (10, 6).
+            theme (str, optional):
+                EN: Theme name (see list_themes()). Shortcut for set_theme(theme):
+                    like seaborn.set_theme, it also applies to the following charts.
+                FR: Nom d'un thème (voir list_themes()). Raccourci de set_theme(theme) :
+                    comme seaborn.set_theme, il s'applique aussi aux graphiques suivants.
 
         Returns / Retourne:
             Chart: EN: The Chart instance (for chaining). / FR: L'instance Chart (pour le chaînage).
 
         Example / Exemple:
             chart = Chart(df)
-            chart = Chart(df, figsize=(14, 8))
+            chart = Chart(df, figsize=(14, 8), theme='pluto')
         """
+        if theme is not None:
+            set_theme(theme)
         self.data = data
         self.fig, self.ax = plt.subplots(figsize=figsize)
         self.chart_type = None
@@ -117,28 +132,32 @@ class Chart:
 
     # ──────────────────────────────────────── Appearance / Apparence
 
-    def title(self, title: str, fontsize: int = 14, fontweight: str = 'bold',
-              color: str = 'black', pad: float = 20) -> 'Chart':
+    def title(self, title: str, fontsize: Optional[int] = None, fontweight: Optional[str] = None,
+              color: Optional[str] = None, pad: Optional[float] = None,
+              loc: Optional[str] = None) -> 'Chart':
         """
-        EN: Set the chart title.
-        FR: Définit le titre du graphique.
+        EN: Set the chart title. Options left to None follow the active theme.
+        FR: Définit le titre du graphique. Les options laissées à None suivent le thème actif.
 
         Args / Paramètres:
             title (str):
                 EN: Title text.
                 FR: Texte du titre.
-            fontsize (int):
-                EN: Font size. Default 14.
-                FR: Taille de la police. Défaut 14.
-            fontweight (str):
-                EN: Font weight ('normal', 'bold', 'light'…). Default 'bold'.
-                FR: Graisse de la police. Défaut 'bold'.
-            color (str):
-                EN: Title color. Default 'black'.
-                FR: Couleur du titre. Défaut 'black'.
-            pad (float):
-                EN: Padding above the axes in points. Default 20.
-                FR: Espace au-dessus des axes en points. Défaut 20.
+            fontsize (int, optional):
+                EN: Font size. Default: theme.
+                FR: Taille de la police. Défaut : thème.
+            fontweight (str, optional):
+                EN: Font weight ('normal', 'bold', 'light'…). Default: theme.
+                FR: Graisse de la police. Défaut : thème.
+            color (str, optional):
+                EN: Title color. Default: theme.
+                FR: Couleur du titre. Défaut : thème.
+            pad (float, optional):
+                EN: Padding above the axes in points. Default: theme.
+                FR: Espace au-dessus des axes en points. Défaut : thème.
+            loc (str, optional):
+                EN: Alignment: 'left', 'center' or 'right'. Default: theme.
+                FR: Alignement : 'left', 'center' ou 'right'. Défaut : thème.
 
         Returns / Retourne:
             Chart: self
@@ -146,12 +165,12 @@ class Chart:
         Example / Exemple:
             chart.title('Ventes annuelles', fontsize=18, color='steelblue')
         """
-        self.ax.set_title(title, fontsize=fontsize, fontweight=fontweight,
-                          color=color, pad=pad)
+        self.ax.set_title(title, **_opts(fontsize=fontsize, fontweight=fontweight,
+                                         color=color, pad=pad, loc=loc))
         return self
 
     def labels(self, xlabel: str = None, ylabel: str = None,
-               fontsize: int = 12, color: str = 'black') -> 'Chart':
+               fontsize: Optional[int] = None, color: Optional[str] = None) -> 'Chart':
         """
         EN: Set the x-axis and/or y-axis labels.
         FR: Définit les étiquettes des axes x et/ou y.
@@ -163,12 +182,12 @@ class Chart:
             ylabel (str, optional):
                 EN: Label for the y-axis.
                 FR: Étiquette de l'axe y.
-            fontsize (int):
-                EN: Font size for both labels. Default 12.
-                FR: Taille de la police pour les deux étiquettes. Défaut 12.
-            color (str):
-                EN: Text color. Default 'black'.
-                FR: Couleur du texte. Défaut 'black'.
+            fontsize (int, optional):
+                EN: Font size for both labels. Default: theme.
+                FR: Taille de la police pour les deux étiquettes. Défaut : thème.
+            color (str, optional):
+                EN: Text color. Default: theme.
+                FR: Couleur du texte. Défaut : thème.
 
         Returns / Retourne:
             Chart: self
@@ -176,14 +195,15 @@ class Chart:
         Example / Exemple:
             chart.labels(xlabel='Date', ylabel='Ventes (€)', fontsize=13)
         """
+        opts = _opts(fontsize=fontsize, color=color)
         if xlabel:
-            self.ax.set_xlabel(xlabel, fontsize=fontsize, color=color)
+            self.ax.set_xlabel(xlabel, **opts)
         if ylabel:
-            self.ax.set_ylabel(ylabel, fontsize=fontsize, color=color)
+            self.ax.set_ylabel(ylabel, **opts)
         return self
 
-    def grid(self, show: bool = True, alpha: float = 0.3,
-             linestyle: str = '-', linewidth: float = 0.5) -> 'Chart':
+    def grid(self, show: bool = True, alpha: Optional[float] = None,
+             linestyle: Optional[str] = None, linewidth: Optional[float] = None) -> 'Chart':
         """
         EN: Toggle and style the axes grid.
         FR: Active/désactive et stylise la grille des axes.
@@ -192,15 +212,15 @@ class Chart:
             show (bool):
                 EN: Display the grid. Default True.
                 FR: Afficher la grille. Défaut True.
-            alpha (float):
-                EN: Grid opacity, 0–1. Default 0.3.
-                FR: Opacité de la grille, 0–1. Défaut 0.3.
-            linestyle (str):
-                EN: Line style ('-', '--', ':', '-.'). Default '-'.
-                FR: Style des traits ('-', '--', ':', '-.'). Défaut '-'.
-            linewidth (float):
-                EN: Line width in points. Default 0.5.
-                FR: Épaisseur du trait en points. Défaut 0.5.
+            alpha (float, optional):
+                EN: Grid opacity, 0–1. Default: theme.
+                FR: Opacité de la grille, 0–1. Défaut : thème.
+            linestyle (str, optional):
+                EN: Line style ('-', '--', ':', '-.'). Default: theme.
+                FR: Style des traits ('-', '--', ':', '-.'). Défaut : thème.
+            linewidth (float, optional):
+                EN: Line width in points. Default: theme.
+                FR: Épaisseur du trait en points. Défaut : thème.
 
         Returns / Retourne:
             Chart: self
@@ -208,11 +228,16 @@ class Chart:
         Example / Exemple:
             chart.grid(alpha=0.4, linestyle='--')
         """
-        self.ax.grid(show, alpha=alpha, linestyle=linestyle, linewidth=linewidth)
+        opts = _opts(alpha=alpha, linestyle=linestyle, linewidth=linewidth)
+        if show:
+            # axis du thème : 'editorial' n'affiche que la grille horizontale
+            self.ax.grid(True, axis=plt.rcParams['axes.grid.axis'], **opts)
+        else:
+            self.ax.grid(False)
         return self
 
     def set_legend(self, show: bool = True, location: str = 'best',
-                   fontsize: int = 10, frameon: bool = True) -> 'Chart':
+                   fontsize: Optional[int] = None, frameon: Optional[bool] = None) -> 'Chart':
         """
         EN: Show or hide the chart legend.
         FR: Affiche ou masque la légende du graphique.
@@ -224,12 +249,12 @@ class Chart:
             location (str):
                 EN: Legend position ('best', 'upper right', 'lower left'…).
                 FR: Position de la légende ('best', 'upper right', 'lower left'…).
-            fontsize (int):
-                EN: Legend text size. Default 10.
-                FR: Taille du texte de la légende. Défaut 10.
-            frameon (bool):
-                EN: Draw a box around the legend. Default True.
-                FR: Dessiner un cadre autour de la légende. Défaut True.
+            fontsize (int, optional):
+                EN: Legend text size. Default: theme.
+                FR: Taille du texte de la légende. Défaut : thème.
+            frameon (bool, optional):
+                EN: Draw a box around the legend. Default: theme.
+                FR: Dessiner un cadre autour de la légende. Défaut : thème.
 
         Returns / Retourne:
             Chart: self
@@ -826,7 +851,7 @@ class Chart:
 
     def histogram(self, column: str, bins: Union[int, str] = 30,
                   alpha: float = 0.7, color: str = None,
-                  density: bool = False, edgecolor: str = 'black') -> 'Chart':
+                  density: bool = False, edgecolor: Optional[str] = None) -> 'Chart':
         """
         EN: Draw a histogram of the distribution of a single column.
         FR: Trace un histogramme de la distribution d'une seule colonne.
@@ -848,8 +873,8 @@ class Chart:
                 EN: Normalize so the area sums to 1. Default False.
                 FR: Normalise pour que l'aire totale vaille 1. Défaut False.
             edgecolor (str):
-                EN: Bar border color. Default 'black'.
-                FR: Couleur des bordures de barres. Défaut 'black'.
+                EN: Bar border color. Default: theme.
+                FR: Couleur des bordures de barres. Défaut : thème.
 
         Returns / Retourne:
             Chart: self
@@ -1334,7 +1359,7 @@ class Chart:
             colors.append(positive_color if v >= 0 else negative_color)
             running += v
         self.ax.bar(self.data[x].tolist(), heights, bottom=bottoms, color=colors)
-        self.ax.axhline(0, color='black', linewidth=0.8)
+        self.ax.axhline(0, color=plt.rcParams['axes.labelcolor'], linewidth=0.8)
         return self
 
     def bump(self, x: str, y: str, group: str,
@@ -1798,7 +1823,7 @@ class Chart:
     # ──────────────────────────────────────── Utilities / Utilitaires
 
     def add_annotation(self, x: float, y: float, text: str,
-                       fontsize: int = 10, color: str = 'black',
+                       fontsize: int = 10, color: Optional[str] = None,
                        arrow: bool = False, arrowprops: Optional[dict] = None) -> 'Chart':
         """
         EN: Add a text annotation (optionally with an arrow) at coordinates (x, y).
@@ -1833,6 +1858,7 @@ class Chart:
         Example / Exemple:
             chart.add_annotation(2020, 500, 'Pic COVID', arrow=True, color='red')
         """
+        color = color or plt.rcParams['text.color']
         if arrow and arrowprops is None:
             arrowprops = dict(arrowstyle='->', color=color)
         self.ax.annotate(text, xy=(x, y), fontsize=fontsize, color=color,

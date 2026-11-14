@@ -62,6 +62,7 @@ df = pd.DataFrame({'mois': list(range(1, 13)),
 | **Volumétrique** | `hexbin` |
 | **Planification & flux** | `gantt`, `calendar_heatmap`, `sankey` |
 | **Climatologie** | `ombrothermic` |
+| **Thèmes** | `set_theme`, `theme_context`, `list_themes`, `get_theme` — `pluto`, `editorial`, `paper`, `arctic`, `neon`, `blueprint` |
 | **Apparence** | `title`, `labels`, `grid`, `font`, `set_legend`, `set_limits`, `rotate_labels`, `set_style` |
 | **Couleurs** | `set_colors`, `create_custom_palette`, `generate_gradient_palette`, `preview_palette` |
 | **Export** | `save`, `show`, `get_figure`, `tight_layout` |

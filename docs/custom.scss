@@ -114,9 +114,7 @@ div.sourceCode {
     max-width: 100%;
     height: auto;
     border: 1px solid $line;
-    border-radius: $border-radius;
-    background: #fff;          // les PNG matplotlib ont un fond blanc
-    padding: .5rem;
+    border-radius: $border-radius;  // le fond vient du graphique (thème clair ou sombre)
   }
   figcaption, .figure-caption { color: $muted; font-size: .825rem; text-align: center; }
 }
@@ -219,7 +217,6 @@ hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
   div.sourceCode pre.sourceCode { padding: .8rem .9rem; font-size: .78rem; }
 
   #quarto-document-content h2 { margin-top: 2.25rem; }
-  .cell-output-display img { padding: .25rem; }
 
   .home #title-block-header {
     padding: 2rem 0 .5rem;

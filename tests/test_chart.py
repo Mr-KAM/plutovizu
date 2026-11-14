@@ -8,12 +8,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pytest
 
-from plutovizu import Chart, get_fonts
+from plutovizu import Chart, get_fonts, list_themes, set_theme, theme_context
 
 
 @pytest.fixture(autouse=True)
 def close_figures():
-    yield
+    with matplotlib.rc_context():  # aucun thème ne fuit d'un test à l'autre
+        yield
     plt.close('all')
 
 
@@ -230,3 +231,37 @@ def test_get_figure(df):
     fig, ax = c.get_figure()
     assert fig is c.fig
     assert ax is c.ax
+
+
+# ── thèmes ───────────────────────────────────────────────────────────────────
+
+@pytest.mark.parametrize('name', list_themes())
+def test_every_theme_renders(df, name):
+    set_theme(name)
+    c = (Chart(df).line('x', ['a', 'b']).title('t').labels('x', 'y')
+         .grid().set_legend())
+    c.fig.canvas.draw()  # valide police, cmap, etc. au rendu
+    assert matplotlib.colors.same_color(c.fig.get_facecolor(),
+                                        plt.rcParams['figure.facecolor'])
+
+def test_theme_applies_to_title_and_background(df):
+    c = Chart(df, theme='pluto').line('x', 'a').title('Titre')
+    assert matplotlib.colors.to_hex(c.fig.get_facecolor()) == '#0b0d0e'
+    assert matplotlib.colors.to_hex(c.ax.title.get_color()) == '#f4f4f5'
+
+def test_switching_theme_resets_previous_settings():
+    set_theme('editorial')             # grille horizontale seule
+    set_theme('pluto')
+    assert plt.rcParams['axes.grid.axis'] == 'both'
+    set_theme(None)
+    assert plt.rcParams['axes.facecolor'] == 'white'
+
+def test_theme_context_is_scoped():
+    before = plt.rcParams['axes.facecolor']
+    with theme_context('neon'):
+        assert plt.rcParams['axes.facecolor'] == '#0f0a1e'
+    assert plt.rcParams['axes.facecolor'] == before
+
+def test_unknown_theme_raises():
+    with pytest.raises(ValueError, match='Disponibles'):
+        set_theme('inexistant')

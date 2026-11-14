@@ -46,6 +46,21 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `violin(columns)` | Violon |
 | `ombrothermic(month, temp, precip)` | Diagramme ombrothermique (p=2T) |
 
+## Thèmes
+
+Six thèmes prédéfinis pour sortir du style matplotlib classique :
+`pluto`, `editorial`, `paper`, `arctic`, `neon`, `blueprint`.
+
+```python
+from plutovizu import Chart, set_theme, theme_context
+
+set_theme('pluto')                     # pour toute la session
+Chart(df, theme='neon')                # raccourci (s'applique aussi aux suivants)
+with theme_context('paper'):           # seulement dans ce bloc
+    Chart(df).line('x', 'y').show()
+set_theme(None)                        # retour au style matplotlib
+```
+
 ## API — méthodes de personnalisation
 
 ```python

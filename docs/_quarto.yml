@@ -33,6 +33,7 @@ website:
       - section: "Créer des graphiques"
         contents:
           - gallery.qmd
+          - themes.qmd
           - customization.qmd
       - section: "Référence"
         contents:
