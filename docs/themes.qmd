@@ -1,6 +1,6 @@
 ---
 title: "Thèmes"
-subtitle: "Quatorze thèmes maison, et seize de plus avec morethemes : de quoi sortir du style matplotlib par défaut."
+subtitle: "35 thèmes : 14 maison, 5 styles seaborn et 16 morethemes, plus 4 contextes pour adapter la taille au support."
 ---
 
 ```{python}
@@ -38,6 +38,7 @@ from plutovizu import Chart, set_theme, theme_context, list_themes
 
 list_themes()               # tous les thèmes disponibles
 list_themes('plutovizu')    # les 14 thèmes maison
+list_themes('seaborn')      # les 5 styles seaborn
 list_themes('morethemes')   # les 16 thèmes morethemes (si installé)
 
 # 1. Pour toute la session (comme seaborn.set_theme)
@@ -49,6 +50,9 @@ Chart(df, theme='neon').line('x', 'y').show()
 # 3. Seulement dans un bloc
 with theme_context('paper'):
     Chart(df).line('x', 'y').show()
+
+# Adapter la taille du texte et des traits au support
+set_theme('editorial', context='talk')   # 'paper', 'notebook', 'talk', 'poster'
 
 # Revenir au style matplotlib d'origine
 set_theme(None)
@@ -68,6 +72,42 @@ pas de graduations, légende sans boîte.
 #| echo: false
 #| output: asis
 galerie('plutovizu')
+```
+
+## Styles seaborn
+
+Les cinq styles de [seaborn](https://seaborn.pydata.org/tutorial/aesthetics.html), avec
+sa palette `deep`, sont disponibles sous les noms `seaborn-darkgrid`, `seaborn-whitegrid`,
+`seaborn-dark`, `seaborn-white` et `seaborn-ticks`.
+
+```{python}
+#| echo: false
+#| output: asis
+galerie('seaborn')
+```
+
+## Contextes : adapter la taille au support
+
+Le paramètre `context` (repris de seaborn) met à l'échelle le texte et les traits de
+**n'importe quel thème** : `'paper'` (article), `'notebook'` (défaut), `'talk'`
+(présentation) ou `'poster'`.
+
+```python
+set_theme('pluto', context='talk')
+with theme_context('paper', context='poster'):
+    Chart(df).line('x', 'y').show()
+```
+
+```{python}
+#| echo: false
+for ctx in ['paper', 'talk']:
+    with theme_context('editorial', context=ctx):
+        (Chart(ventes, figsize=(9, 3.8))
+            .line('mois', ['ventes', 'coûts', 'profit'])
+            .title(f"Thème editorial, contexte « {ctx} »")
+            .set_legend()
+            .tight_layout()
+            .show())
 ```
 
 ## Thèmes morethemes

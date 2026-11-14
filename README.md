@@ -51,16 +51,26 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `qqplot(column)` | Diagramme quantile-quantile (normalité) |
 | `pca_biplot(columns, group)` | Biplot d'ACP |
 | `dendrogram(labels)` | Classification hiérarchique |
-| `ternary(a, b, c)` | Diagramme ternaire (texture du sol) |
+| `ternary(a, b, c)` | Diagramme ternaire |
+| `soil_texture(sand, silt, clay)` | Triangle des textures USDA (12 classes) |
+| `clustermap(labels)` | Carte de chaleur + dendrogrammes |
+| `circle_packing(values, labels, group)` | Cercles imbriqués (circlify) |
+| `seaborn(name, **kwargs)` | N'importe quel graphique seaborn (`violinplot`, `relplot`…) |
+| `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot`, `pairplot`, `jointplot` | Graphiques seaborn usuels |
 
-Liste complète des 30 types dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
+`mean_bar(..., letters=True)` ajoute les lettres du test de Tukey HSD ;
+`texture_class(sable, limon, argile)` donne la classe USDA d'un sol.
+
+Liste complète des 43 types dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
 
 ## Thèmes
 
-Quatorze thèmes prédéfinis pour sortir du style matplotlib classique :
+Quatorze thèmes maison pour sortir du style matplotlib classique :
 `pluto`, `editorial`, `paper`, `arctic`, `neon`, `blueprint`, `sunset`, `forest`,
 `ocean`, `terminal`, `ink`, `pastel`, `sahel`, `accessible`.
-`list_themes()` les liste, `DESCRIPTIONS` les décrit.
+`list_themes()` les liste, `DESCRIPTIONS` les décrit. Les cinq styles seaborn sont aussi
+disponibles (`seaborn-darkgrid`, `seaborn-whitegrid`…), et `context='paper' | 'talk' | 'poster'`
+adapte la taille du texte : `set_theme('pluto', context='talk')`.
 
 Seize thèmes supplémentaires (`wsj`, `economist`, `ft`, `nord`, `retro`, `vscode-dark`…)
 viennent du projet [morethemes](https://github.com/y-sunflower/morethemes) (MIT) :

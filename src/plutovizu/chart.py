@@ -16,6 +16,37 @@ def _opts(**kwargs) -> Dict[str, Any]:
     return {k: v for k, v in kwargs.items() if v is not None}
 
 
+def _tukey_letters(samples: List[pd.Series], alpha: float = 0.05) -> List[str]:
+    """Lettres de comparaison d'un test de Tukey HSD (compact letter display).
+
+    Algorithme « insérer puis absorber » (Piepho, 2004) : deux groupes partagent une
+    lettre s'ils ne diffèrent pas significativement. 'a' = plus forte moyenne.
+    """
+    from scipy.stats import tukey_hsd
+    n = len(samples)
+    if n < 2:
+        return ['a'] * n
+    if any(len(s) < 2 for s in samples):
+        raise ValueError("Le test de Tukey demande au moins 2 observations par groupe")
+    p = tukey_hsd(*samples).pvalue
+    cols = [set(range(n))]
+    for i in range(n):
+        for j in range(i + 1, n):
+            if p[i, j] >= alpha:
+                continue
+            split = []
+            for col in cols:  # insérer : on sépare i et j dans chaque colonne qui les réunit
+                split += [col - {i}, col - {j}] if {i, j} <= col else [col]
+            cols = []
+            for col in split:  # absorber : on retire les colonnes incluses dans une autre
+                if not any(col <= kept for kept in cols):
+                    cols = [kept for kept in cols if not kept < col] + [col]
+    rank = {g: r for r, g in enumerate(np.argsort([-np.mean(s) for s in samples]))}
+    cols.sort(key=lambda col: sorted(rank[g] for g in col))
+    letters = 'abcdefghijklmnopqrstuvwxyz'
+    return [''.join(letters[k] for k, col in enumerate(cols) if g in col) for g in range(n)]
+
+
 def get_fonts(pattern: str = None, sort: bool = True) -> List[str]:
     """
     EN: Return the list of all font names available on the system.
@@ -129,6 +160,7 @@ class Chart:
         self.chart_type = None
         self.custom_palettes = {}
         self.current_palette = None
+        self.sns_grid = None  # grille seaborn (pairplot, jointplot, clustermap…) le cas échéant
 
     # ──────────────────────────────────────── Appearance / Apparence
 
@@ -165,6 +197,10 @@ class Chart:
         Example / Exemple:
             chart.title('Ventes annuelles', fontsize=18, color='steelblue')
         """
+        if self.sns_grid is not None:  # figure seaborn à plusieurs panneaux : titre général
+            self.fig.suptitle(title, y=1.02, **_opts(fontsize=fontsize, fontweight=fontweight,
+                                                     color=color))
+            return self
         self.ax.set_title(title, **_opts(fontsize=fontsize, fontweight=fontweight,
                                          color=color, pad=pad, loc=loc))
         return self
@@ -196,6 +232,9 @@ class Chart:
             chart.labels(xlabel='Date', ylabel='Ventes (€)', fontsize=13)
         """
         opts = _opts(fontsize=fontsize, color=color)
+        if self.sns_grid is not None and hasattr(self.sns_grid, 'set_axis_labels'):
+            self.sns_grid.set_axis_labels(xlabel or '', ylabel or '', **opts)
+            return self
         if xlabel:
             self.ax.set_xlabel(xlabel, **opts)
         if ylabel:
@@ -2015,12 +2054,15 @@ class Chart:
         return self
 
     def mean_bar(self, x: str, y: str, hue: Optional[str] = None, error: str = 'se',
-                 points: bool = False, capsize: float = 4, alpha: float = 0.85) -> 'Chart':
+                 points: bool = False, letters: bool = False, alpha_test: float = 0.05,
+                 capsize: float = 4, alpha: float = 0.85) -> 'Chart':
         """
         EN: Bar chart of group means with error bars — the classic display of
-            field-trial treatment means. Optional second factor (hue) and raw points.
+            field-trial treatment means. Optional second factor (hue), raw points and
+            Tukey HSD compact letters (same letter = not significantly different).
         FR: Barres des moyennes par groupe avec barres d'erreur — l'affichage classique
-            des moyennes de traitements d'un essai. Second facteur (hue) et points bruts optionnels.
+            des moyennes de traitements d'un essai. Second facteur (hue), points bruts et
+            lettres du test de Tukey (même lettre = pas de différence significative).
 
         Args / Paramètres:
             x (str): EN/FR: Facteur (traitement, variété…).
@@ -2028,15 +2070,23 @@ class Chart:
             hue (str, optional): EN/FR: Second facteur → barres groupées.
             error (str): 'se' (erreur type, défaut), 'sd' (écart-type) ou 'ci95'.
             points (bool): EN/FR: Superpose les observations individuelles.
+            letters (bool): EN: Tukey HSD letters — between x levels, or between hue
+                groups within each x level when hue is given.
+                FR: Lettres de Tukey — entre niveaux de x, ou entre groupes hue à
+                l'intérieur de chaque niveau de x si hue est fourni.
+            alpha_test (float): EN/FR: Seuil de significativité du test. Défaut 0.05.
 
         Example / Exemple:
-            chart.mean_bar('traitement', 'rendement', hue='annee', error='ci95')
+            chart.mean_bar('traitement', 'rendement', letters=True)
         """
         self.chart_type = 'mean_bar'
-        levels = list(pd.unique(self.data[x]))
-        hues = list(pd.unique(self.data[hue])) if hue else [None]
+        # valeurs Python natives (0 plutôt que np.int64(0)) : clés lisibles dans tukey_letters
+        native = lambda v: v.item() if isinstance(v, np.generic) else v  # noqa: E731
+        levels = [native(v) for v in pd.unique(self.data[x])]
+        hues = [native(v) for v in pd.unique(self.data[hue])] if hue else [None]
         width = 0.8 / len(hues)
         pos = np.arange(len(levels))
+        tops = {}  # (niveau x, groupe hue) -> (abscisse, haut de la barre d'erreur)
         for j, (h, color) in enumerate(zip(hues, self._palette() * 10)):
             sub = self.data if h is None else self.data[self.data[hue] == h]
             g = sub.groupby(x)[y]
@@ -2046,6 +2096,8 @@ class Chart:
             self.ax.bar(offs, means, width=width * 0.92, yerr=errs, capsize=capsize,
                         color=color, alpha=alpha, label=None if h is None else str(h),
                         error_kw={'ecolor': plt.rcParams['axes.labelcolor'], 'elinewidth': 1})
+            for k, lv in enumerate(levels):
+                tops[(lv, h)] = (offs[k], means[lv] + errs[k])
             if points:
                 rng = np.random.default_rng(0)
                 for k, lv in enumerate(levels):
@@ -2053,6 +2105,25 @@ class Chart:
                     jitter = rng.uniform(-width * 0.25, width * 0.25, len(vals))
                     self.ax.scatter(offs[k] + jitter, vals, s=12, zorder=3,
                                     color=plt.rcParams['text.color'], alpha=0.6)
+                    if len(vals):
+                        tops[(lv, h)] = (tops[(lv, h)][0], max(tops[(lv, h)][1], vals.max()))
+        if letters:
+            # Familles comparées : les niveaux de x, ou les groupes hue dans chaque niveau de x
+            families = ([[(lv, None) for lv in levels]] if hue is None
+                        else [[(lv, h) for h in hues] for lv in levels])
+            self.tukey_letters = {}
+            span = np.nanmax([t for _, t in tops.values()]) or 1
+            for family in families:
+                samples = [self.data.loc[(self.data[x] == lv) &
+                                         (True if h is None else self.data[hue] == h), y].dropna()
+                           for lv, h in family]
+                labels = _tukey_letters(samples, alpha_test)
+                for key, lab in zip(family, labels):
+                    self.tukey_letters[key[0] if hue is None else key] = lab
+                    xpos, top = tops[key]
+                    self.ax.text(xpos, top + 0.04 * span, lab, ha='center', va='bottom',
+                                 fontsize=9, fontweight='bold', color=plt.rcParams['text.color'])
+            self.ax.margins(y=0.08)
         self.ax.set_xticks(pos)
         self.ax.set_xticklabels([str(v) for v in levels])
         self.ax.set_xlabel(x)
@@ -2146,13 +2217,15 @@ class Chart:
                            ((1 - f, f, 0), (0, f, 1 - f))):    # b constant
                 (x1, y1), (x2, y2) = xy(*p1), xy(*p2)
                 self.ax.plot([x1, x2], [y1, y2], color=grid_color, linewidth=0.7, zorder=0)
+            # Convention du triangle USDA : c lu sur le bord gauche (lignes horizontales),
+            # b sur le bord droit, a sur le bord inférieur.
             pct = f'{f * 100:.0f}'
-            bx, by = xy(1 - f, f, 0)                       # graduations de b (bas)
-            self.ax.text(bx, by - 0.035, pct, ha='center', va='top', fontsize=8, color=ink)
-            cx, cy = xy(0, 1 - f, f)                       # graduations de c (droite)
-            self.ax.text(cx + 0.03, cy, pct, ha='left', va='center', fontsize=8, color=ink)
-            ax_, ay_ = xy(f, 0, 1 - f)                     # graduations de a (gauche)
-            self.ax.text(ax_ - 0.03, ay_, pct, ha='right', va='center', fontsize=8, color=ink)
+            cx, cy = xy(1 - f, 0, f)                       # graduations de c (gauche)
+            self.ax.text(cx - 0.03, cy, pct, ha='right', va='center', fontsize=8, color=ink)
+            bx, by = xy(0, f, 1 - f)                       # graduations de b (droite)
+            self.ax.text(bx + 0.03, by, pct, ha='left', va='center', fontsize=8, color=ink)
+            ax_, ay_ = xy(f, 1 - f, 0)                     # graduations de a (bas)
+            self.ax.text(ax_, ay_ - 0.035, pct, ha='center', va='top', fontsize=8, color=ink)
         for (px, py), name, ha, va in ((xy(1, 0, 0), a, 'right', 'top'),
                                        (xy(0, 1, 0), b, 'left', 'top'),
                                        (xy(0, 0, 1), c, 'center', 'bottom')):
@@ -2174,6 +2247,251 @@ class Chart:
         if group:
             self.ax.legend(loc='upper right')
         return self
+
+    def soil_texture(self, sand: str, silt: str, clay: str, group: Optional[str] = None,
+                     show_classes: bool = True, fill: bool = True, **kwargs) -> 'Chart':
+        """
+        EN: USDA soil texture triangle: the 12 texture classes (drawn and named) with
+            the samples on top. The class of each sample is in self.texture_classes.
+        FR: Triangle des textures USDA : les 12 classes (tracées et nommées) et les
+            échantillons par-dessus. Classe de chaque échantillon dans self.texture_classes.
+
+        Args / Paramètres:
+            sand, silt, clay (str): EN/FR: Colonnes sable, limon, argile (% ou fractions).
+            group (str, optional): EN/FR: Colonne de groupe (couleurs + légende).
+            show_classes (bool): EN/FR: Trace les classes. Défaut True.
+            fill (bool): EN/FR: Colore légèrement chaque classe. Défaut True.
+            **kwargs: EN/FR: Transmis à ternary() (alpha, size, grid_step).
+
+        Example / Exemple:
+            chart.soil_texture('sable', 'limon', 'argile', group='parcelle')
+        """
+        from .soil import USDA_POLYGONS, texture_class
+        self.ternary(sand, silt, clay, group=group, **kwargs)
+        self.chart_type = 'soil_texture'
+        if show_classes:
+            h = np.sqrt(3) / 2
+            ink = plt.rcParams['axes.labelcolor']
+            for color, (name, verts) in zip(self._palette() * 10, USDA_POLYGONS.items()):
+                pts = np.array([(b / 100 + c / 200, c / 100 * h) for _, b, c in verts])
+                self.ax.add_patch(plt.Polygon(
+                    pts, closed=True, edgecolor=ink, linewidth=0.9, zorder=1,
+                    facecolor=mcolors.to_rgba(color, 0.10) if fill else 'none'))
+                cx, cy = pts.mean(axis=0)
+                self.ax.text(cx, cy, name.replace(' ', '\n', 1), ha='center', va='center',
+                             fontsize=6.5, color=ink, zorder=2, linespacing=1.0)
+        self.texture_classes = pd.Series(
+            texture_class(self.data[sand], self.data[silt], self.data[clay]),
+            index=self.data.index, name='texture')
+        return self
+
+    def circle_packing(self, values: str, labels: Optional[str] = None,
+                       group: Optional[Union[str, List[str]]] = None,
+                       show_labels: bool = True, show_values: bool = False,
+                       alpha: float = 0.85, min_label_radius: float = 0.05) -> 'Chart':
+        """
+        EN: Circle packing (circlify): one circle per row, area proportional to the
+            value. With group (one column or a list = several levels), circles are
+            nested inside their group's circle. Circles are in self.circles.
+        FR: Cercles imbriqués (circlify) : un cercle par ligne, d'aire proportionnelle
+            à la valeur. Avec group (une colonne ou une liste = plusieurs niveaux), les
+            cercles sont regroupés dans le cercle de leur groupe. Cercles dans self.circles.
+
+        Args / Paramètres:
+            values (str): EN/FR: Colonne numérique (valeurs positives).
+            labels (str, optional): EN/FR: Colonne des étiquettes (défaut : l'index).
+            group (str | List[str], optional): EN/FR: Niveau(x) de regroupement.
+            show_labels (bool): EN/FR: Affiche les étiquettes. Défaut True.
+            show_values (bool): EN/FR: Ajoute la valeur sous l'étiquette. Défaut False.
+            min_label_radius (float): EN: Smaller circles get no label (radius, 0–1).
+                FR: Pas d'étiquette sous ce rayon (0–1). Défaut 0.05.
+
+        Example / Exemple:
+            chart.circle_packing('surface', labels='culture', group='famille')
+        """
+        import circlify
+        self.chart_type = 'circle_packing'
+        levels = [group] if isinstance(group, str) else list(group or [])
+        d = self.data.dropna(subset=[values])
+        if (d[values] < 0).any():
+            raise ValueError("circle_packing demande des valeurs positives (l'aire d'un cercle)")
+        names = (d[labels] if labels else d.index.to_series()).astype(str)
+        palette = self._palette()
+        meta = {}  # id unique -> étiquette et couleur (circlify n'accepte que id/datum/children)
+
+        def build(frame, depth, path, color):
+            if depth == len(levels):
+                nodes = []
+                for k, (i, v) in enumerate(frame[values].items()):
+                    if v > 0:
+                        uid = f'{path}/{i}'
+                        meta[uid] = {'label': names[i],
+                                     'color': color or palette[k % len(palette)]}
+                        nodes.append({'id': uid, 'datum': float(v)})
+                return nodes
+            nodes = []
+            for k, (key, sub) in enumerate(frame.groupby(levels[depth], sort=False)):
+                c = palette[k % len(palette)] if depth == 0 else color
+                children = build(sub, depth + 1, f'{path}/{key}', c)
+                if children:
+                    uid = f'{path}/{key}'
+                    meta[uid] = {'label': str(key), 'color': c}
+                    nodes.append({'id': uid, 'datum': sum(ch['datum'] for ch in children),
+                                  'children': children})
+            return nodes
+
+        self.circles = circlify.circlify(build(d, 0, '', None), show_enclosure=False)
+        leaf_level = len(levels) + 1
+        bg = plt.rcParams['axes.facecolor']
+        for circle in self.circles:
+            x, y, r = circle.x, circle.y, circle.r
+            info = {**meta[circle.ex['id']], 'datum': circle.ex['datum']}
+            circle.ex.update(meta[circle.ex['id']])  # étiquette et couleur lisibles dans self.circles
+            if circle.level < leaf_level:   # cercle de groupe : contour + fond léger
+                self.ax.add_patch(plt.Circle((x, y), r, facecolor=mcolors.to_rgba(info['color'], 0.10),
+                                             edgecolor=info['color'], linewidth=1.5))
+                if show_labels:  # étiquette posée sur le bord haut du cercle de groupe
+                    self.ax.text(x, y + r, info['label'], ha='center', va='center', zorder=5,
+                                 fontsize=10 if circle.level == 1 else 8.5, fontweight='bold',
+                                 color=plt.rcParams['text.color'],
+                                 bbox=dict(boxstyle='round,pad=0.25', fc=bg,
+                                           ec=info['color'], lw=1))
+                continue
+            face = mcolors.to_rgba(info['color'], alpha)
+            self.ax.add_patch(plt.Circle((x, y), r, facecolor=face, edgecolor=bg, linewidth=1))
+            if show_labels and r >= min_label_radius:
+                lum = 0.2126 * face[0] + 0.7152 * face[1] + 0.0722 * face[2]  # texte lisible
+                text = info['label'] + (f"\n{info['datum']:,.4g}" if show_values else '')
+                self.ax.text(x, y, text, ha='center', va='center', linespacing=1.1,
+                             fontsize=max(6.5, min(12, r * 45)),
+                             color='#111111' if lum > 0.55 else 'white')
+        self.ax.set_xlim(-1.03, 1.03)
+        self.ax.set_ylim(-1.03, 1.03)
+        self.ax.set_aspect('equal')
+        self.ax.axis('off')
+        return self
+
+    def clustermap(self, columns: Optional[List[str]] = None, labels: Optional[str] = None,
+                   standardize: bool = True, cmap: Optional[str] = None,
+                   method: str = 'ward', figsize: Optional[Tuple[float, float]] = None,
+                   **kwargs) -> 'Chart':
+        """
+        EN: Heatmap with hierarchical clustering dendrograms on rows and columns
+            (seaborn.clustermap). Creates its own figure.
+        FR: Carte de chaleur avec dendrogrammes de classification sur les lignes et les
+            colonnes (seaborn.clustermap). Crée sa propre figure.
+
+        Args / Paramètres:
+            columns (List[str], optional): EN/FR: Variables numériques (défaut : toutes).
+            labels (str, optional): EN/FR: Colonne nommant les lignes.
+            standardize (bool): EN: Z-score each column (mixed units). Default True.
+                / FR: Centre-réduit chaque colonne (unités différentes). Défaut True.
+            cmap (str, optional): EN/FR: Défaut 'vlag' si standardisé, sinon celle du thème.
+            method (str): EN/FR: Méthode de liaison ('ward', 'average'…).
+
+        Example / Exemple:
+            chart.clustermap(labels='variete')
+        """
+        cols = columns or [c for c in self.data.select_dtypes('number').columns if c != labels]
+        mat = (self.data.set_index(labels) if labels else self.data)[cols]
+        return self.seaborn('clustermap', data=mat, method=method,
+                            z_score=1 if standardize else None,
+                            cmap=cmap or ('vlag' if standardize else None),
+                            center=0 if standardize else None,
+                            figsize=figsize or self.fig.get_size_inches(), **kwargs)
+
+    # ──────────────────────────────────────── Seaborn
+
+    # Fonctions seaborn qui créent leur propre figure (une grille de panneaux)
+    _SNS_FIGURE_LEVEL = {'relplot', 'displot', 'catplot', 'lmplot',
+                         'jointplot', 'pairplot', 'clustermap'}
+
+    def seaborn(self, name: str, /, **kwargs) -> 'Chart':
+        """
+        EN: Draw any seaborn chart with this Chart's data, theme and chaining.
+            Axes-level functions draw on the chart; figure-level ones (pairplot,
+            jointplot, relplot, displot, catplot, lmplot, clustermap) replace the
+            figure — the seaborn grid is then in self.sns_grid.
+        FR: Trace n'importe quel graphique seaborn avec les données, le thème et le
+            chaînage de ce Chart. Les fonctions « axes » dessinent sur le graphique ;
+            les fonctions « figure » (pairplot, jointplot, relplot, displot, catplot,
+            lmplot, clustermap) remplacent la figure — la grille seaborn est dans self.sns_grid.
+
+        Args / Paramètres:
+            name (str): EN/FR: Nom de la fonction seaborn ('violinplot', 'kdeplot'…).
+            **kwargs: EN/FR: Arguments de la fonction seaborn (x, y, hue, palette…).
+
+        Example / Exemple:
+            Chart(df).seaborn('violinplot', x='variete', y='rendement', inner='quart')
+            Chart(df).seaborn('relplot', x='dose', y='rendement', col='site', kind='line')
+        """
+        func = getattr(sns, name, None)
+        if name.startswith('_') or not callable(func):
+            raise ValueError(f"'{name}' n'est pas une fonction de tracé seaborn")
+        self.chart_type = f'seaborn.{name}'
+        kwargs.setdefault('data', self.data)
+        if name in self._SNS_FIGURE_LEVEL:
+            if name != 'clustermap':
+                kwargs.pop('figsize', None)  # ces fonctions utilisent height/aspect
+            plt.close(self.fig)
+            self.sns_grid = func(**kwargs)
+            self.fig = self.sns_grid.figure
+            self.ax = (getattr(self.sns_grid, 'ax_heatmap', None) or getattr(self.sns_grid, 'ax_joint', None)
+                       or self.sns_grid.axes.flat[0])
+        else:
+            func(ax=self.ax, **kwargs)
+        return self
+
+    def kde(self, x: str, hue: Optional[str] = None, fill: bool = True, **kwargs) -> 'Chart':
+        """EN: Kernel density estimate (seaborn.kdeplot). / FR: Densité lissée (kdeplot)."""
+        return self.seaborn('kdeplot', x=x, hue=hue, fill=fill, **kwargs)
+
+    def ecdf(self, x: str, hue: Optional[str] = None, **kwargs) -> 'Chart':
+        """EN: Empirical cumulative distribution (seaborn.ecdfplot).
+        FR: Fonction de répartition empirique (ecdfplot)."""
+        return self.seaborn('ecdfplot', x=x, hue=hue, **kwargs)
+
+    def strip(self, x: str, y: str, hue: Optional[str] = None, **kwargs) -> 'Chart':
+        """EN: Jittered points per category (seaborn.stripplot).
+        FR: Points dispersés par catégorie (stripplot)."""
+        return self.seaborn('stripplot', x=x, y=y, hue=hue, **kwargs)
+
+    def swarm(self, x: str, y: str, hue: Optional[str] = None, **kwargs) -> 'Chart':
+        """EN: Non-overlapping points per category (seaborn.swarmplot).
+        FR: Points sans chevauchement par catégorie (swarmplot)."""
+        return self.seaborn('swarmplot', x=x, y=y, hue=hue, **kwargs)
+
+    def boxen(self, x: str, y: str, hue: Optional[str] = None, **kwargs) -> 'Chart':
+        """EN: Letter-value plot for large samples (seaborn.boxenplot).
+        FR: Boîte à moustaches étendue, pour grands échantillons (boxenplot)."""
+        return self.seaborn('boxenplot', x=x, y=y, hue=hue, **kwargs)
+
+    def pointplot(self, x: str, y: str, hue: Optional[str] = None, **kwargs) -> 'Chart':
+        """EN: Means with confidence intervals joined by lines (seaborn.pointplot).
+        FR: Moyennes et intervalles de confiance reliés (pointplot)."""
+        return self.seaborn('pointplot', x=x, y=y, hue=hue, **kwargs)
+
+    def countplot(self, x: str, hue: Optional[str] = None, **kwargs) -> 'Chart':
+        """EN: Count of observations per category (seaborn.countplot).
+        FR: Effectifs par catégorie (countplot)."""
+        return self.seaborn('countplot', x=x, hue=hue, **kwargs)
+
+    def residplot(self, x: str, y: str, order: int = 1, **kwargs) -> 'Chart':
+        """EN: Residuals of a polynomial regression (seaborn.residplot).
+        FR: Résidus d'une régression polynomiale (residplot)."""
+        return self.seaborn('residplot', x=x, y=y, order=order, **kwargs)
+
+    def pairplot(self, vars: Optional[List[str]] = None, hue: Optional[str] = None,
+                 corner: bool = False, **kwargs) -> 'Chart':
+        """EN: Matrix of pairwise scatter plots and distributions (seaborn.pairplot).
+        FR: Matrice de nuages de points deux à deux et distributions (pairplot)."""
+        return self.seaborn('pairplot', vars=vars, hue=hue, corner=corner, **kwargs)
+
+    def jointplot(self, x: str, y: str, hue: Optional[str] = None, kind: str = 'scatter',
+                  **kwargs) -> 'Chart':
+        """EN: Bivariate plot with marginal distributions (seaborn.jointplot).
+        FR: Graphique bivarié avec distributions marginales (jointplot)."""
+        return self.seaborn('jointplot', x=x, y=y, hue=hue, kind=kind, **kwargs)
 
     # ──────────────────────────────────────── Utilities / Utilitaires
 
@@ -2256,6 +2574,13 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').labels('Date', 'Ventes').tight_layout().show()
         """
+        if self.sns_grid is not None:
+            # clustermap gère sa propre mise en page ; les autres grilles seaborn ont la leur
+            if hasattr(self.sns_grid, 'tight_layout') and not hasattr(self.sns_grid, 'ax_heatmap'):
+                with warnings.catch_warnings():
+                    warnings.simplefilter('ignore')
+                    self.sns_grid.tight_layout()
+            return self
         self.fig.tight_layout()
         return self
 

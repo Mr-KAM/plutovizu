@@ -38,11 +38,12 @@ Voir la page [Thèmes](themes.qmd) pour l'aperçu de chaque thème.
 
 | Fonction | Rôle |
 |---|---|
-| `set_theme(theme='pluto')` | Applique un thème à tous les graphiques suivants ; `None` revient au style matplotlib |
-| `theme_context(theme)` | Applique un thème seulement dans un bloc `with` |
-| `list_themes(source='all')` | Noms des thèmes : `'all'`, `'plutovizu'` ou `'morethemes'` |
+| `set_theme(theme='pluto', context=None)` | Applique un thème à tous les graphiques suivants ; `None` revient au style matplotlib |
+| `theme_context(theme, context=None)` | Applique un thème seulement dans un bloc `with` |
+| `list_themes(source='all')` | Noms des thèmes : `'all'`, `'plutovizu'`, `'seaborn'` ou `'morethemes'` |
 | `get_theme(name)` | Copie des réglages d'un thème, pour en dériver un thème personnalisé |
-| `THEMES`, `MORETHEMES` | Dictionnaires nom → rcParams |
+| `THEMES`, `SEABORN`, `MORETHEMES` | Dictionnaires nom → rcParams |
+| `CONTEXTS` | `('paper', 'notebook', 'talk', 'poster')` : valeurs possibles de `context` |
 | `DESCRIPTIONS` | Dictionnaire nom → description |
 
 ```python
@@ -400,6 +401,24 @@ chart.dumbbell('pays', 'pib_2020', 'pib_2024',
 
 ---
 
+### `circle_packing`
+
+```python
+.circle_packing(values: str, labels: str = None, group: str | List[str] = None,
+                show_labels: bool = True, show_values: bool = False,
+                alpha: float = 0.85, min_label_radius: float = 0.05) -> Chart
+```
+
+Cercles imbriqués (circlify) : un cercle par ligne, d'aire proportionnelle à `values`
+(valeurs positives). `group` regroupe les cercles par niveau (une colonne ou une liste).
+Les cercles (position, rayon, niveau, étiquette) sont dans `chart.circles`.
+
+```python
+chart.circle_packing('surface', labels='culture', group='famille', show_values=True)
+```
+
+---
+
 ### `streamgraph`
 
 ```python
@@ -493,14 +512,18 @@ chart.regression('dose', 'rendement', order=2)
 
 ```python
 .mean_bar(x: str, y: str, hue: str = None, error: str = 'se',
-          points: bool = False, capsize: float = 4, alpha: float = 0.85) -> Chart
+          points: bool = False, letters: bool = False, alpha_test: float = 0.05,
+          capsize: float = 4, alpha: float = 0.85) -> Chart
 ```
 
 Moyennes de `y` par niveau de `x` avec barres d'erreur ; `hue` ajoute un second facteur
 (barres groupées), `points=True` superpose les observations.
+`letters=True` affiche les lettres du test de Tukey HSD (même lettre = pas de différence
+significative au seuil `alpha_test`) — entre niveaux de `x`, ou entre groupes `hue` dans
+chaque niveau de `x`. Lettres : `chart.tukey_letters`.
 
 ```python
-chart.mean_bar('dose', 'rendement', hue='variete', error='ci95')
+chart.mean_bar('dose', 'rendement', hue='variete', error='ci95', letters=True)
 ```
 
 ### `interaction`
@@ -563,11 +586,79 @@ chart.dendrogram(labels='variete', method='average', color_threshold=4)
 ```
 
 Diagramme ternaire ; chaque ligne est normalisée à 100 %. Sommets : `a` en bas à gauche,
-`b` en bas à droite, `c` en haut.
+`b` en bas à droite, `c` en haut. Graduations selon la convention USDA : `c` sur le bord
+gauche, `b` sur le bord droit, `a` en bas.
 
 ```python
 chart.ternary('sable', 'limon', 'argile', group='zone')
 ```
+
+### `soil_texture`
+
+```python
+.soil_texture(sand: str, silt: str, clay: str, group: str = None,
+              show_classes: bool = True, fill: bool = True, **kwargs) -> Chart
+```
+
+Triangle des textures USDA : les 12 classes tracées et nommées, et les échantillons.
+Classe de chaque ligne : `chart.texture_classes`. Hors graphique, la fonction
+`texture_class(sable, limon, argile)` accepte des nombres ou des colonnes.
+
+```python
+from plutovizu import texture_class
+chart.soil_texture('sable', 'limon', 'argile', group='zone')
+df['texture'] = texture_class(df['sable'], df['limon'], df['argile'])
+```
+
+### `clustermap`
+
+```python
+.clustermap(columns: List[str] = None, labels: str = None, standardize: bool = True,
+            cmap: str = None, method: str = 'ward', figsize: Tuple = None,
+            **kwargs) -> Chart
+```
+
+Carte de chaleur avec dendrogrammes sur les lignes et les colonnes (`seaborn.clustermap`).
+Crée sa propre figure ; la grille seaborn est dans `chart.sns_grid`.
+
+---
+
+## Seaborn
+
+### `seaborn`
+
+```python
+.seaborn(name: str, /, **kwargs) -> Chart
+```
+
+Trace n'importe quelle fonction de [seaborn](https://seaborn.pydata.org/api.html) avec les
+données, le thème et le chaînage du `Chart`. Les fonctions « figure » (`relplot`,
+`displot`, `catplot`, `lmplot`, `pairplot`, `jointplot`, `clustermap`) remplacent la figure :
+la grille est dans `chart.sns_grid`, `title()` devient le titre général et `labels()`
+s'applique à tous les panneaux.
+
+```python
+chart.seaborn('violinplot', x='variete', y='rendement', inner='quart')
+chart.seaborn('relplot', x='dose', y='rendement', col='site', kind='line')
+```
+
+### Raccourcis
+
+| Méthode | Fonction seaborn | Rôle |
+|---|---|---|
+| `.kde(x, hue=None, fill=True)` | `kdeplot` | Densité lissée |
+| `.ecdf(x, hue=None)` | `ecdfplot` | Fonction de répartition empirique |
+| `.strip(x, y, hue=None)` | `stripplot` | Points dispersés par catégorie |
+| `.swarm(x, y, hue=None)` | `swarmplot` | Points sans chevauchement |
+| `.boxen(x, y, hue=None)` | `boxenplot` | Boîte étendue (grands échantillons) |
+| `.pointplot(x, y, hue=None)` | `pointplot` | Moyennes et IC reliés |
+| `.countplot(x, hue=None)` | `countplot` | Effectifs par catégorie |
+| `.residplot(x, y, order=1)` | `residplot` | Résidus d'une régression |
+| `.pairplot(vars=None, hue=None, corner=False)` | `pairplot` | Matrice de nuages de points |
+| `.jointplot(x, y, hue=None, kind='scatter')` | `jointplot` | Nuage + distributions marginales |
+
+Chaque raccourci accepte les autres arguments de la fonction seaborn (`palette`, `dodge`,
+`height`…).
 
 ---
 

@@ -235,6 +235,15 @@ wheels = [
 ]
 
 [[package]]
+name = "circlify"
+version = "0.16.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/10/3b/69f63094f8d81b0404e5b5ed65763c8478f3a9a90de97bf716d8dfa78aa8/circlify-0.16.0.tar.gz", hash = "sha256:42fd4bb3908502e027e55c47ac83405f3a7050834b39cbbaaf481430d257b31e", size = 12349, upload-time = "2026-10-31T21:59:28.279Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e7/0e/7fe21572ff168db356141ef3352fe317f2cc3bc11660c8c9ab7426a20e38/circlify-0.16.0-py3-none-any.whl", hash = "sha256:604b24b844d2523580f4afc1b8749cc2413d7bc3735b71c0ce2a4baad9e52a23", size = 11858, upload-time = "2026-10-31T21:59:27.061Z" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -983,6 +992,7 @@ name = "plutovizu"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "circlify" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "pandas" },
@@ -1000,6 +1010,7 @@ morethemes = [
 [package.dev-dependencies]
 dev = [
     { name = "ipykernel" },
+    { name = "morethemes" },
     { name = "nbclient" },
     { name = "nbformat" },
     { name = "pytest" },
@@ -1008,6 +1019,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "circlify", specifier = ">=0.16.0" },
     { name = "matplotlib", specifier = ">=3.11.0" },
     { name = "morethemes", marker = "extra == 'morethemes'", specifier = ">=0.9.0" },
     { name = "numpy", specifier = ">=2.5.0" },
@@ -1022,6 +1034,7 @@ provides-extras = ["morethemes"]
 [package.metadata.requires-dev]
 dev = [
     { name = "ipykernel", specifier = ">=7.4.0" },
+    { name = "morethemes", specifier = ">=0.9.0" },
     { name = "nbclient", specifier = ">=0.11.0" },
     { name = "nbformat", specifier = ">=5.10.4" },
     { name = "pytest", specifier = ">=9.1.1" },

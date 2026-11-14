@@ -389,3 +389,122 @@ def test_pca_arrows_inside_axes():
     for t in c.ax.texts:
         x, y = t.get_position()
         assert x0 <= x <= x1 and y0 <= y <= y1
+
+
+# ── texture du sol, Tukey, seaborn ──────────────────────────────────────────
+
+from plutovizu import texture_class, USDA_POLYGONS, SEABORN, CONTEXTS
+from plutovizu.chart import _tukey_letters
+
+@pytest.mark.parametrize('sand, silt, clay, expected', [
+    (92, 5, 3, 'Sable'), (80, 15, 5, 'Sable loameux'), (65, 25, 10, 'Loam sableux'),
+    (40, 40, 20, 'Loam'), (20, 65, 15, 'Loam limoneux'), (5, 90, 5, 'Limon'),
+    (60, 15, 25, 'Loam sablo-argileux'), (30, 35, 35, 'Loam argileux'),
+    (10, 55, 35, 'Loam limono-argileux'), (50, 5, 45, 'Argile sableuse'),
+    (5, 50, 45, 'Argile limoneuse'), (20, 20, 60, 'Argile'),
+    (100, 0, 0, 'Sable'), (0, 0, 100, 'Argile'),   # sommets
+    (0.4, 0.4, 0.2, 'Loam'),                        # fractions
+])
+def test_texture_class(sand, silt, clay, expected):
+    assert texture_class(sand, silt, clay) == expected
+
+def test_texture_class_every_point_classified():
+    g = np.array([(s, si, 100 - s - si) for s in range(0, 101, 2) for si in range(0, 101 - s, 2)])
+    assert (texture_class(g[:, 0], g[:, 1], g[:, 2]) != None).all()  # noqa: E711
+
+def test_usda_polygons_sum_to_100():
+    assert len(USDA_POLYGONS) == 12
+    assert all(sum(v) == 100 for verts in USDA_POLYGONS.values() for v in verts)
+
+def test_soil_texture_chart():
+    sol = pd.DataFrame({'sable': [92, 40, 20], 'limon': [5, 40, 20], 'argile': [3, 20, 60]})
+    c = Chart(sol).soil_texture('sable', 'limon', 'argile')
+    assert c.texture_classes.tolist() == ['Sable', 'Loam', 'Argile']
+    assert len(c.ax.patches) == 12
+
+def test_tukey_letters_separated_and_identical():
+    rng = np.random.default_rng(0)
+    far = [pd.Series(rng.normal(m, 0.1, 8)) for m in (10, 5, 0)]
+    assert _tukey_letters(far) == ['a', 'b', 'c']
+    same = [pd.Series(rng.normal(0, 1, 8)) for _ in range(3)]
+    assert _tukey_letters(same) == ['a', 'a', 'a']
+
+def test_tukey_letters_overlap():
+    # A > C nettement (écart 3), B à mi-chemin (écart 1.5 non significatif) → a, ab, b
+    dev = np.array([-2.0, 2.0] * 5)  # mêmes écarts dans chaque groupe : écart-type ≈ 2
+    g = [pd.Series(m + dev) for m in (3.0, 1.5, 0.0)]
+    assert _tukey_letters(g) == ['a', 'ab', 'b']
+
+def test_mean_bar_letters(essai):
+    c = Chart(essai).mean_bar('variete', 'rendement', letters=True)
+    assert set(c.tukey_letters) == {'V1', 'V2', 'V3'}
+    c2 = Chart(essai).mean_bar('dose', 'rendement', hue='variete', letters=True)
+    assert len(c2.tukey_letters) == 4 * 3
+
+@pytest.mark.parametrize('method, kwargs', [
+    ('kde', dict(x='rendement', hue='variete')), ('ecdf', dict(x='rendement')),
+    ('strip', dict(x='variete', y='rendement')), ('swarm', dict(x='variete', y='rendement')),
+    ('boxen', dict(x='variete', y='rendement')), ('pointplot', dict(x='dose', y='rendement')),
+    ('countplot', dict(x='variete')), ('residplot', dict(x='dose', y='rendement')),
+])
+def test_seaborn_axes_level(essai, method, kwargs):
+    c = getattr(Chart(essai), method)(**kwargs)
+    assert c.sns_grid is None and c.ax.has_data()
+
+@pytest.mark.parametrize('build', [
+    lambda d: Chart(d).pairplot(vars=['dose', 'rendement'], hue='variete'),
+    lambda d: Chart(d).jointplot('dose', 'rendement'),
+    lambda d: Chart(d).clustermap(columns=['dose', 'rep', 'rendement']),
+    lambda d: Chart(d).seaborn('relplot', x='dose', y='rendement', col='variete', kind='line'),
+])
+def test_seaborn_figure_level(essai, build):
+    c = build(essai).title('Titre').labels('x', 'y').tight_layout()
+    assert c.sns_grid is not None and c.fig is c.sns_grid.figure
+    assert c.fig._suptitle.get_text() == 'Titre'
+
+def test_seaborn_unknown_raises(df):
+    with pytest.raises(ValueError):
+        Chart(df).seaborn('pas_une_fonction')
+
+def test_seaborn_themes_and_context():
+    assert set(list_themes('seaborn')) == set(SEABORN) and len(SEABORN) == 5
+    set_theme('seaborn-darkgrid', context='poster')
+    assert plt.rcParams['axes.facecolor'] == '#EAEAF2'
+    assert plt.rcParams['font.size'] > 15
+    set_theme('pluto')
+    assert plt.rcParams['font.size'] == 10   # le contexte poster ne fuit pas
+    with pytest.raises(ValueError):
+        set_theme('pluto', context='cinema')
+
+
+# ── circle packing ──────────────────────────────────────────────────────────
+
+@pytest.fixture
+def cultures():
+    return pd.DataFrame({
+        'famille': ['Céréales', 'Céréales', 'Céréales', 'Légumineuses', 'Légumineuses', 'Tubercules'],
+        'culture': ['Riz', 'Maïs', 'Mil', 'Niébé', 'Arachide', 'Manioc'],
+        'surface': [40, 25, 15, 12, 20, 8],
+    })
+
+def test_circle_packing_flat_areas_proportional(cultures):
+    c = Chart(cultures).circle_packing('surface', labels='culture')
+    assert len(c.ax.patches) == len(cultures)
+    r = {circ.ex['label']: circ.r for circ in c.circles}
+    assert (r['Riz'] / r['Manioc']) ** 2 == pytest.approx(40 / 8, rel=1e-6)
+
+def test_circle_packing_grouped(cultures):
+    c = Chart(cultures).circle_packing('surface', labels='culture', group='famille', show_values=True)
+    assert len(c.ax.patches) == len(cultures) + 3          # 6 cultures + 3 familles
+    levels = sorted({circ.level for circ in c.circles})
+    assert levels == [1, 2]
+
+def test_circle_packing_two_levels(cultures):
+    cultures['cycle'] = ['annuel'] * 5 + ['pluriannuel']
+    c = Chart(cultures).circle_packing('surface', labels='culture', group=['cycle', 'famille'])
+    assert sorted({circ.level for circ in c.circles}) == [1, 2, 3]
+
+def test_circle_packing_negative_raises(cultures):
+    cultures.loc[0, 'surface'] = -1
+    with pytest.raises(ValueError):
+        Chart(cultures).circle_packing('surface')

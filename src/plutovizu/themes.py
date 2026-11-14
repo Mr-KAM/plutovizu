@@ -17,9 +17,10 @@ ses thèmes (wsj, economist, ft, retro, nord…) sont aussi disponibles par leur
 """
 import warnings
 from contextlib import contextmanager
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import matplotlib as mpl
+import seaborn as sns
 from cycler import cycler
 
 _SANS = ['Inter', 'Segoe UI', 'Helvetica Neue', 'Arial', 'DejaVu Sans']
@@ -165,37 +166,58 @@ try:
 except ImportError:
     MORETHEMES = {}
 
-# Valeurs matplotlib d'origine de toutes les clés touchées par un thème :
+# ── Styles seaborn : les 5 styles officiels + la palette 'deep' de seaborn
+_SNS_STYLES = {
+    'darkgrid': "Fond gris clair et grille blanche : le style par défaut de seaborn.",
+    'whitegrid': "Fond blanc et grille grise discrète.",
+    'dark': "Fond gris clair, sans grille.",
+    'white': "Fond blanc, sans grille.",
+    'ticks': "Fond blanc, sans grille, avec graduations sur les axes.",
+}
+SEABORN: Dict[str, Dict] = {
+    f'seaborn-{style}': {**dict(sns.axes_style(style)),
+                         'axes.prop_cycle': cycler(color=sns.color_palette('deep'))}
+    for style in _SNS_STYLES
+}
+DESCRIPTIONS.update({f'seaborn-{s}': f"{d} (seaborn)" for s, d in _SNS_STYLES.items()})
+
+# Contextes seaborn : mettent le texte et les traits à l'échelle du support
+CONTEXTS = ('paper', 'notebook', 'talk', 'poster')
+
+# Valeurs matplotlib d'origine de toutes les clés touchées par un thème ou un contexte :
 # on les restaure avant chaque changement pour qu'aucun réglage ne « fuie » d'un thème à l'autre.
 _DEFAULTS = {k: mpl.rcParamsDefault[k]
-             for k in set().union(*THEMES.values(), *MORETHEMES.values())}
+             for k in set().union(*THEMES.values(), *MORETHEMES.values(), *SEABORN.values(),
+                                  sns.plotting_context('notebook'))}
 
 ThemeLike = Union[str, Dict, None]
+_SOURCES = {'plutovizu': THEMES, 'morethemes': MORETHEMES, 'seaborn': SEABORN}
 
 
 def list_themes(source: str = 'all') -> List[str]:
     """Retourne les noms des thèmes disponibles.
 
     Args:
-        source: 'all' (défaut), 'plutovizu' ou 'morethemes'.
+        source: 'all' (défaut), 'plutovizu', 'morethemes' ou 'seaborn'.
     """
-    groups = {'plutovizu': THEMES, 'morethemes': MORETHEMES}
     if source == 'all':
-        return sorted({**THEMES, **MORETHEMES})
-    if source not in groups:
-        raise ValueError(f"source doit valoir 'all', 'plutovizu' ou 'morethemes', pas '{source}'")
-    return sorted(groups[source])
+        return sorted({name for group in _SOURCES.values() for name in group})
+    if source not in _SOURCES:
+        raise ValueError(f"source doit valoir 'all' ou {list(_SOURCES)}, pas '{source}'")
+    return sorted(_SOURCES[source])
 
 
-def _resolve(theme: ThemeLike) -> Dict:
+def _resolve(theme: ThemeLike, context: Optional[str] = None) -> Dict:
+    if context is not None and context not in CONTEXTS:
+        raise ValueError(f"Contexte inconnu '{context}'. Disponibles : {list(CONTEXTS)}")
+    ctx = dict(sns.plotting_context(context)) if context else {}
     if theme is None:
-        return {}
+        return ctx
     if isinstance(theme, dict):  # thème personnalisé : dict de rcParams
-        return theme
-    if theme in THEMES:
-        return THEMES[theme]
-    if theme in MORETHEMES:
-        return MORETHEMES[theme]
+        return {**theme, **ctx}
+    for group in _SOURCES.values():
+        if theme in group:
+            return {**group[theme], **ctx}
     hint = '' if MORETHEMES else " (plus de thèmes avec : pip install plutovizu[morethemes])"
     raise ValueError(f"Thème inconnu '{theme}'. Disponibles : {list_themes()}{hint}")
 
@@ -217,23 +239,25 @@ def _load_font(theme: ThemeLike) -> None:
         mpl.rcParams['font.family'] = 'sans-serif'
 
 
-def set_theme(theme: ThemeLike = 'pluto') -> None:
+def set_theme(theme: ThemeLike = 'pluto', context: Optional[str] = None) -> None:
     """Applique un thème à tous les graphiques créés ensuite.
 
     Args:
         theme: nom d'un thème (voir ``list_themes()``), dict de rcParams
             pour un thème personnalisé, ou ``None`` pour revenir au style matplotlib.
+        context: échelle du texte et des traits selon le support :
+            'paper', 'notebook', 'talk' ou 'poster' (contextes seaborn). Défaut : celle du thème.
     """
-    rc = _resolve(theme)
+    rc = _resolve(theme, context)
     mpl.rcParams.update(_DEFAULTS)
     mpl.rcParams.update(rc)
     _load_font(theme)
 
 
 @contextmanager
-def theme_context(theme: ThemeLike):
+def theme_context(theme: ThemeLike, context: Optional[str] = None):
     """Context manager : applique un thème seulement à l'intérieur d'un bloc ``with``."""
-    with mpl.rc_context({**_DEFAULTS, **_resolve(theme)}):
+    with mpl.rc_context({**_DEFAULTS, **_resolve(theme, context)}):
         _load_font(theme)
         yield
 

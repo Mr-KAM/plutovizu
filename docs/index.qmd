@@ -15,7 +15,7 @@ toc: false
   <a class="feature-card" href="gallery.html">
     <div class="feature-art"><i class="bi bi-bar-chart-line"></i></div>
     <span class="feature-title">Galerie</span>
-    <span class="feature-text">30 types de graphiques, de l'histogramme à l'ACP, au dendrogramme et au diagramme ternaire.</span>
+    <span class="feature-text">43 types de graphiques : de l'histogramme à l'ACP, aux cercles imbriqués et à tout seaborn.</span>
   </a>
   <a class="feature-card" href="customization.html">
     <div class="feature-art"><i class="bi bi-palette"></i></div>
@@ -58,12 +58,13 @@ df = pd.DataFrame({'mois': list(range(1, 13)),
 | **Graphiques de base** | `line`, `bar`, `scatter`, `histogram`, `boxplot`, `pie`, `heatmap`, `area` |
 | **Distributions** | `violin`, `ridgeline` |
 | **Comparaisons** | `radar`, `parallel_coordinates`, `dumbbell`, `bump`, `lollipop` |
-| **Composition** | `treemap`, `waterfall`, `streamgraph` |
+| **Composition** | `treemap`, `circle_packing`, `waterfall`, `streamgraph` |
 | **Volumétrique** | `hexbin` |
 | **Planification & flux** | `gantt`, `calendar_heatmap`, `sankey` |
 | **Climatologie** | `ombrothermic` |
-| **Sciences & analyse** | `regression`, `mean_bar`, `interaction`, `qqplot`, `pca_biplot`, `dendrogram`, `ternary` |
-| **Thèmes** | `set_theme`, `theme_context`, `list_themes`, `get_theme` — 14 thèmes maison + 16 via morethemes ([voir la page](themes.qmd)) |
+| **Sciences & analyse** | `regression`, `mean_bar` (lettres de Tukey), `interaction`, `qqplot`, `pca_biplot`, `dendrogram`, `clustermap`, `ternary`, `soil_texture` |
+| **Seaborn** | `seaborn(...)` pour tout seaborn, et `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot`, `pairplot`, `jointplot` |
+| **Thèmes** | `set_theme`, `theme_context`, `list_themes`, `get_theme` — 35 thèmes : maison, seaborn et morethemes ([voir la page](themes.qmd)) |
 | **Apparence** | `title`, `labels`, `grid`, `font`, `set_legend`, `set_limits`, `rotate_labels`, `set_style` |
 | **Couleurs** | `set_colors`, `create_custom_palette`, `generate_gradient_palette`, `preview_palette` |
 | **Export** | `save`, `show`, `get_figure`, `tight_layout` |
