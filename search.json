@@ -4,244 +4,419 @@
     "href": "installation.html",
     "title": "Installation",
     "section": "",
-    "text": "Python ≥ 3.12\npip ou uv (gestionnaire de paquets recommandé)"
+    "text": "Python ≥ 3.12\npip ou uv (gestionnaire de paquets recommandé)",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#prérequis",
     "href": "installation.html#prérequis",
     "title": "Installation",
     "section": "",
-    "text": "Python ≥ 3.12\npip ou uv (gestionnaire de paquets recommandé)"
+    "text": "Python ≥ 3.12\npip ou uv (gestionnaire de paquets recommandé)",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#avec-pip",
     "href": "installation.html#avec-pip",
     "title": "Installation",
     "section": "Avec pip",
-    "text": "Avec pip\npip install plutovizu\nPour mettre à jour vers la dernière version :\npip install --upgrade plutovizu"
+    "text": "Avec pip\npip install plutovizu\nPour mettre à jour vers la dernière version :\npip install --upgrade plutovizu",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#avec-uv-recommandé",
     "href": "installation.html#avec-uv-recommandé",
     "title": "Installation",
     "section": "Avec uv (recommandé)",
-    "text": "Avec uv (recommandé)\nuv est un gestionnaire de paquets Python ultra-rapide.\n# Installer uv si ce n'est pas déjà fait\npip install uv\n\n# Ajouter plutovizu à votre projet\nuv add plutovizu"
+    "text": "Avec uv (recommandé)\nuv est un gestionnaire de paquets Python ultra-rapide.\n# Installer uv si ce n'est pas déjà fait\npip install uv\n\n# Ajouter plutovizu à votre projet\nuv add plutovizu",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#depuis-les-sources-développement",
     "href": "installation.html#depuis-les-sources-développement",
     "title": "Installation",
     "section": "Depuis les sources (développement)",
-    "text": "Depuis les sources (développement)\n# Cloner le dépôt\ngit clone https://github.com/votre-compte/plutovizu.git\ncd plutovizu\n\n# Installer en mode éditable (modifications immédiatement prises en compte)\npip install -e .\n\n# Ou avec uv\nuv sync"
+    "text": "Depuis les sources (développement)\n# Cloner le dépôt\ngit clone https://github.com/votre-compte/plutovizu.git\ncd plutovizu\n\n# Installer en mode éditable (modifications immédiatement prises en compte)\npip install -e .\n\n# Ou avec uv\nuv sync",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#dépendances",
     "href": "installation.html#dépendances",
     "title": "Installation",
     "section": "Dépendances",
-    "text": "Dépendances\nLes dépendances suivantes sont installées automatiquement :\n\n\n\nPaquet\nVersion minimale\nRôle\n\n\n\n\nmatplotlib\n≥ 3.11.0\nMoteur de rendu principal\n\n\npandas\n≥ 3.0.3\nManipulation des DataFrames\n\n\nnumpy\n≥ 2.5.0\nCalcul numérique\n\n\nseaborn\n≥ 0.13.2\nPalettes de couleurs\n\n\nscipy\n≥ 1.18.0\nKDE pour ridgeline\n\n\nsquarify\n≥ 0.4.4\nAlgorithme de pavage pour treemap\n\n\n\n\nDépendances optionnelles\nCes paquets sont inclus dans matplotlib et ne nécessitent pas d’installation séparée :\n\nmatplotlib.sankey — utilisé par la méthode sankey()\nmatplotlib.patches — utilisé par la méthode gantt()"
+    "text": "Dépendances\nLes dépendances suivantes sont installées automatiquement :\n\n\n\nPaquet\nVersion minimale\nRôle\n\n\n\n\nmatplotlib\n≥ 3.11.0\nMoteur de rendu principal\n\n\npandas\n≥ 3.0.3\nManipulation des DataFrames\n\n\nnumpy\n≥ 2.5.0\nCalcul numérique\n\n\nseaborn\n≥ 0.13.2\nPalettes de couleurs\n\n\nscipy\n≥ 1.18.0\nKDE pour ridgeline\n\n\nsquarify\n≥ 0.4.4\nAlgorithme de pavage pour treemap\n\n\n\n\nDépendances optionnelles\nCes paquets sont inclus dans matplotlib et ne nécessitent pas d’installation séparée :\n\nmatplotlib.sankey — utilisé par la méthode sankey()\nmatplotlib.patches — utilisé par la méthode gantt()",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#vérification-de-linstallation",
     "href": "installation.html#vérification-de-linstallation",
     "title": "Installation",
     "section": "Vérification de l’installation",
-    "text": "Vérification de l’installation\nfrom plutovizu import Chart, get_fonts\nimport pandas as pd\n\n# Test rapide\ndf = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 2, 5]})\nc = Chart(df)\nprint(\"plutovizu installé avec succès ✓\")\nprint(f\"{len(get_fonts())} polices disponibles\")"
+    "text": "Vérification de l’installation\nfrom plutovizu import Chart, get_fonts\nimport pandas as pd\n\n# Test rapide\ndf = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 2, 5]})\nc = Chart(df)\nprint(\"plutovizu installé avec succès ✓\")\nprint(f\"{len(get_fonts())} polices disponibles\")",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#lancer-les-tests",
     "href": "installation.html#lancer-les-tests",
     "title": "Installation",
     "section": "Lancer les tests",
-    "text": "Lancer les tests\n# Avec uv\nuv run pytest test_plutovizu.py -v\n\n# Avec pip\npytest test_plutovizu.py -v"
+    "text": "Lancer les tests\n# Avec uv\nuv run pytest test_plutovizu.py -v\n\n# Avec pip\npytest test_plutovizu.py -v",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "installation.html#rendre-cette-documentation",
     "href": "installation.html#rendre-cette-documentation",
     "title": "Installation",
     "section": "Rendre cette documentation",
-    "text": "Rendre cette documentation\nCette documentation est générée avec Quarto.\n# Installer Quarto : https://quarto.org/docs/get-started/\n\n# Prévisualiser en local\ncd docs\nquarto preview\n\n# Générer le site statique\nquarto render"
+    "text": "Rendre cette documentation\nCette documentation est générée avec Quarto.\n# Installer Quarto : https://quarto.org/docs/get-started/\n\n# Prévisualiser en local\ncd docs\nquarto preview\n\n# Générer le site statique\nquarto render",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Installation"
+    ]
   },
   {
     "objectID": "gallery.html",
     "href": "gallery.html",
     "title": "Galerie de graphiques",
     "section": "",
-    "text": "Chaque exemple est autonome : les données sont générées dans la cellule, suivies du code de tracé."
+    "text": "Chaque exemple est autonome : les données sont générées dans la cellule, suivies du code de tracé.",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "gallery.html#graphiques-temporels",
     "href": "gallery.html#graphiques-temporels",
     "title": "Galerie de graphiques",
     "section": "Graphiques temporels",
-    "text": "Graphiques temporels\n\nline — Courbe\n\nmois = list(range(1, 13))\ndf = pd.DataFrame({\n    'mois':    mois,\n    'ventes':  [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16],\n    'coûts':   [10, 11, 12, 14, 16, 18, 20, 19, 17, 15, 13, 12],\n    'profit':  [2,   4,  6,  8, 12, 17, 20, 19, 13, 10,  7,  4],\n})\n\n(Chart(df)\n    .line('mois', ['ventes', 'coûts', 'profit'], marker='o', linewidth=2)\n    .title('Indicateurs financiers 2024')\n    .labels(xlabel='Mois', ylabel='k€')\n    .grid(alpha=0.3)\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nÉvolution mensuelle de trois indicateurs\n\n\n\n\n\n\narea — Aire (empilée)\n\ndf = pd.DataFrame({\n    'annee':    list(range(2015, 2025)),\n    'rock':     [30, 28, 25, 22, 20, 18, 16, 15, 13, 12],\n    'pop':      [40, 42, 44, 45, 47, 50, 52, 54, 56, 58],\n    'jazz':     [10, 11, 10, 12, 11, 10, 11, 10,  9, 10],\n    'classique':[20, 19, 21, 21, 22, 22, 21, 21, 22, 20],\n})\n\n(Chart(df)\n    .area('annee', ['rock', 'pop', 'jazz', 'classique'], stacked=True, alpha=0.75)\n    .title('Écoutes musicales par genre (2015–2024)')\n    .labels(xlabel='Année', ylabel='Part (%)')\n    .set_legend(location='upper left')\n    .tight_layout()\n    .show())\n\n\n\n\nRépartition des genres musicaux dans les écoutes"
+    "text": "Graphiques temporels\n\nline — Courbe\n\nmois = list(range(1, 13))\ndf = pd.DataFrame({\n    'mois':    mois,\n    'ventes':  [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16],\n    'coûts':   [10, 11, 12, 14, 16, 18, 20, 19, 17, 15, 13, 12],\n    'profit':  [2,   4,  6,  8, 12, 17, 20, 19, 13, 10,  7,  4],\n})\n\n(Chart(df)\n    .line('mois', ['ventes', 'coûts', 'profit'], marker='o', linewidth=2)\n    .title('Indicateurs financiers 2024')\n    .labels(xlabel='Mois', ylabel='k€')\n    .grid(alpha=0.3)\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nÉvolution mensuelle de trois indicateurs\n\n\n\n\n\n\narea — Aire (empilée)\n\ndf = pd.DataFrame({\n    'annee':    list(range(2015, 2025)),\n    'rock':     [30, 28, 25, 22, 20, 18, 16, 15, 13, 12],\n    'pop':      [40, 42, 44, 45, 47, 50, 52, 54, 56, 58],\n    'jazz':     [10, 11, 10, 12, 11, 10, 11, 10,  9, 10],\n    'classique':[20, 19, 21, 21, 22, 22, 21, 21, 22, 20],\n})\n\n(Chart(df)\n    .area('annee', ['rock', 'pop', 'jazz', 'classique'], stacked=True, alpha=0.75)\n    .title('Écoutes musicales par genre (2015–2024)')\n    .labels(xlabel='Année', ylabel='Part (%)')\n    .set_legend(location='upper left')\n    .tight_layout()\n    .show())\n\n\n\n\nRépartition des genres musicaux dans les écoutes",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "gallery.html#graphiques-de-distribution",
     "href": "gallery.html#graphiques-de-distribution",
     "title": "Galerie de graphiques",
     "section": "Graphiques de distribution",
-    "text": "Graphiques de distribution\n\nhistogram — Histogramme\n\nnp.random.seed(0)\ndf = pd.DataFrame({'salaire': np.random.normal(42000, 9000, 800)})\n\n(Chart(df)\n    .histogram('salaire', bins=30, color='steelblue', edgecolor='white')\n    .title('Distribution des salaires (n=800)')\n    .labels(xlabel='Salaire (€)', ylabel='Fréquence')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nDistribution des salaires\n\n\n\n\n\n\nboxplot — Boîte à moustaches\n\nnp.random.seed(1)\ndf = pd.DataFrame({\n    'maths':    np.random.normal(13, 3, 100),\n    'français': np.random.normal(12, 2, 100),\n    'sciences': np.random.normal(14, 2.5, 100),\n    'histoire': np.random.normal(11, 3.5, 100),\n})\n\n(Chart(df)\n    .boxplot(['maths', 'français', 'sciences', 'histoire'])\n    .title('Notes par matière (100 élèves)')\n    .labels(ylabel='Note /20')\n    .grid(alpha=0.2)\n    .tight_layout()\n    .show())\n\n\n\n\nComparaison des notes par matière\n\n\n\n\n\n\nviolin — Violon\n\nnp.random.seed(2)\ndf = pd.DataFrame({\n    'Paris':  np.random.normal(45, 15, 200),\n    'Lyon':   np.random.normal(30, 10, 200),\n    'Nantes': np.random.normal(22,  8, 200),\n    'Rennes': np.random.normal(18,  6, 200),\n})\n\n(Chart(df)\n    .violin(['Paris', 'Lyon', 'Nantes', 'Rennes'])\n    .title('Temps de trajet domicile–travail (min)')\n    .labels(ylabel='Minutes')\n    .grid(alpha=0.2)\n    .tight_layout()\n    .show())\n\n\n\n\nDistribution des temps de trajet par ville\n\n\n\n\n\n\nridgeline — Crêtes superposées\n\nnp.random.seed(3)\nsecteurs = ['Tech', 'Finance', 'Santé', 'Éducation', 'Commerce']\nmoyennes  = [68000, 72000, 52000, 38000, 44000]\n\ndfs = [\n    pd.DataFrame({'salaire': np.random.normal(m, 9000, 150), 'secteur': s})\n    for s, m in zip(secteurs, moyennes)\n]\ndf = pd.concat(dfs, ignore_index=True)\n\n(Chart(df)\n    .ridgeline('salaire', 'secteur', overlap=1.8, alpha=0.65)\n    .title('Distribution des salaires annuels par secteur')\n    .labels(xlabel='Salaire (€)')\n    .tight_layout()\n    .show())\n\n\n\n\nDistribution des salaires par secteur"
+    "text": "Graphiques de distribution\n\nhistogram — Histogramme\n\nnp.random.seed(0)\ndf = pd.DataFrame({'salaire': np.random.normal(42000, 9000, 800)})\n\n(Chart(df)\n    .histogram('salaire', bins=30, color='steelblue', edgecolor='white')\n    .title('Distribution des salaires (n=800)')\n    .labels(xlabel='Salaire (€)', ylabel='Fréquence')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nDistribution des salaires\n\n\n\n\n\n\nboxplot — Boîte à moustaches\n\nnp.random.seed(1)\ndf = pd.DataFrame({\n    'maths':    np.random.normal(13, 3, 100),\n    'français': np.random.normal(12, 2, 100),\n    'sciences': np.random.normal(14, 2.5, 100),\n    'histoire': np.random.normal(11, 3.5, 100),\n})\n\n(Chart(df)\n    .boxplot(['maths', 'français', 'sciences', 'histoire'])\n    .title('Notes par matière (100 élèves)')\n    .labels(ylabel='Note /20')\n    .grid(alpha=0.2)\n    .tight_layout()\n    .show())\n\n\n\n\nComparaison des notes par matière\n\n\n\n\n\n\nviolin — Violon\n\nnp.random.seed(2)\ndf = pd.DataFrame({\n    'Paris':  np.random.normal(45, 15, 200),\n    'Lyon':   np.random.normal(30, 10, 200),\n    'Nantes': np.random.normal(22,  8, 200),\n    'Rennes': np.random.normal(18,  6, 200),\n})\n\n(Chart(df)\n    .violin(['Paris', 'Lyon', 'Nantes', 'Rennes'])\n    .title('Temps de trajet domicile–travail (min)')\n    .labels(ylabel='Minutes')\n    .grid(alpha=0.2)\n    .tight_layout()\n    .show())\n\n\n\n\nDistribution des temps de trajet par ville\n\n\n\n\n\n\nridgeline — Crêtes superposées\n\nnp.random.seed(3)\nsecteurs = ['Tech', 'Finance', 'Santé', 'Éducation', 'Commerce']\nmoyennes  = [68000, 72000, 52000, 38000, 44000]\n\ndfs = [\n    pd.DataFrame({'salaire': np.random.normal(m, 9000, 150), 'secteur': s})\n    for s, m in zip(secteurs, moyennes)\n]\ndf = pd.concat(dfs, ignore_index=True)\n\n(Chart(df)\n    .ridgeline('salaire', 'secteur', overlap=1.8, alpha=0.65)\n    .title('Distribution des salaires annuels par secteur')\n    .labels(xlabel='Salaire (€)')\n    .tight_layout()\n    .show())\n\n\n\n\nDistribution des salaires par secteur",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "gallery.html#comparaisons",
     "href": "gallery.html#comparaisons",
     "title": "Galerie de graphiques",
     "section": "Comparaisons",
-    "text": "Comparaisons\n\nbar — Barres\n\ndf = pd.DataFrame({\n    'region': ['Île-de-France', 'Auvergne-Rhône-Alpes', 'PACA', 'Occitanie', 'Bretagne'],\n    'ca':     [980, 620, 430, 380, 270],\n})\n\n(Chart(df)\n    .bar('region', 'ca', color='steelblue', alpha=0.85)\n    .title('CA par région (M€)')\n    .labels(xlabel='Région', ylabel='CA (M€)')\n    .rotate_labels(x_rotation=20)\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nChiffre d’affaires par région\n\n\n\n\n\n\nradar — Araignée\n\ndf = pd.DataFrame({\n    'equipe':    ['A','A','B','B','C','C'],\n    'vitesse':   [8, 7, 6, 9, 5, 8],\n    'endurance': [6, 8, 7, 5, 9, 6],\n    'force':     [9, 6, 8, 7, 6, 7],\n    'agilité':   [7, 9, 5, 8, 7, 9],\n    'technique': [5, 7, 9, 6, 8, 5],\n})\n\n(Chart(df)\n    .radar(['vitesse', 'endurance', 'force', 'agilité', 'technique'],\n           group='equipe', alpha=0.2)\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nProfil multidimensionnel de trois équipes\n\n\n\n\n\n\nparallel_coordinates — Coordonnées parallèles\n\nnp.random.seed(42)\ndf = pd.DataFrame({\n    'puissance':    np.random.randint(80,  300, 60),\n    'consommation': np.random.randint(4,    12, 60),\n    'poids':        np.random.randint(1000,2000, 60),\n    'prix':         np.random.randint(15000,80000, 60),\n    'marque':       np.random.choice(['Toyota','BMW','Renault','Peugeot'], 60),\n})\n\n(Chart(df)\n    .parallel_coordinates(\n        ['puissance', 'consommation', 'poids', 'prix'],\n        group='marque', alpha=0.45)\n    .title('Comparaison multivariée de véhicules')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nProfils automobiles multi-variables\n\n\n\n\n\n\ndumbbell — Haltère (avant/après)\n\ndf = pd.DataFrame({\n    'pays':     ['France','Allemagne','Espagne','Italie','Portugal','Pays-Bas'],\n    'pib_2020': [38000, 46000, 27000, 31000, 22000, 52000],\n    'pib_2024': [42000, 51000, 33000, 34000, 26000, 58000],\n})\n\n(Chart(df)\n    .dumbbell('pays', 'pib_2020', 'pib_2024',\n              color_start='#457b9d', color_end='#e63946')\n    .title('PIB par habitant — 2020 (bleu) vs 2024 (rouge)')\n    .labels(xlabel='PIB/hab (€)')\n    .set_legend()\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nÉvolution du PIB par habitant 2020–2024\n\n\n\n\n\n\nbump — Évolution de classement\n\ndf = pd.DataFrame({\n    'saison':     [2019,2020,2021,2022,2023] * 5,\n    'equipe':     (['PSG']*5 + ['Lyon']*5 + ['Marseille']*5\n                   + ['Monaco']*5 + ['Lille']*5),\n    'classement': [1,1,1,1,1, 2,5,3,4,3, 3,2,5,2,4, 4,3,2,3,5, 5,4,4,5,2],\n})\n\n(Chart(df)\n    .bump('saison', 'classement', 'equipe')\n    .title('Classement Ligue 1 (2019–2023)')\n    .labels(xlabel='Saison', ylabel='Classement')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nClassement Ligue 1 sur 5 saisons\n\n\n\n\n\n\nlollipop — Lollipop groupé\n\nnp.random.seed(7)\nyears = np.repeat(range(2015, 2024), 2)\nstatus = ['ouragan', 'dépression tropicale'] * 9\nn = np.random.randint(20, 120, 18)\ndf = pd.DataFrame({'year': years, 'status': status, 'n': n})\n\ncolors = {'ouragan': '#e63946', 'dépression tropicale': '#457b9d'}\n\n(Chart(df)\n    .lollipop('year', 'n', 'status', colors=colors,\n               order=['ouragan', 'dépression tropicale'])\n    .title('Tempêtes tropicales (2015–2023)')\n    .labels(xlabel='Année', ylabel='Nombre')\n    .set_legend()\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nTempêtes tropicales par année et intensité"
+    "text": "Comparaisons\n\nbar — Barres\n\ndf = pd.DataFrame({\n    'region': ['Île-de-France', 'Auvergne-Rhône-Alpes', 'PACA', 'Occitanie', 'Bretagne'],\n    'ca':     [980, 620, 430, 380, 270],\n})\n\n(Chart(df)\n    .bar('region', 'ca', color='steelblue', alpha=0.85)\n    .title('CA par région (M€)')\n    .labels(xlabel='Région', ylabel='CA (M€)')\n    .rotate_labels(x_rotation=20)\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nChiffre d’affaires par région\n\n\n\n\n\n\nradar — Araignée\n\ndf = pd.DataFrame({\n    'equipe':    ['A','A','B','B','C','C'],\n    'vitesse':   [8, 7, 6, 9, 5, 8],\n    'endurance': [6, 8, 7, 5, 9, 6],\n    'force':     [9, 6, 8, 7, 6, 7],\n    'agilité':   [7, 9, 5, 8, 7, 9],\n    'technique': [5, 7, 9, 6, 8, 5],\n})\n\n(Chart(df)\n    .radar(['vitesse', 'endurance', 'force', 'agilité', 'technique'],\n           group='equipe', alpha=0.2)\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nProfil multidimensionnel de trois équipes\n\n\n\n\n\n\nparallel_coordinates — Coordonnées parallèles\n\nnp.random.seed(42)\ndf = pd.DataFrame({\n    'puissance':    np.random.randint(80,  300, 60),\n    'consommation': np.random.randint(4,    12, 60),\n    'poids':        np.random.randint(1000,2000, 60),\n    'prix':         np.random.randint(15000,80000, 60),\n    'marque':       np.random.choice(['Toyota','BMW','Renault','Peugeot'], 60),\n})\n\n(Chart(df)\n    .parallel_coordinates(\n        ['puissance', 'consommation', 'poids', 'prix'],\n        group='marque', alpha=0.45)\n    .title('Comparaison multivariée de véhicules')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nProfils automobiles multi-variables\n\n\n\n\n\n\ndumbbell — Haltère (avant/après)\n\ndf = pd.DataFrame({\n    'pays':     ['France','Allemagne','Espagne','Italie','Portugal','Pays-Bas'],\n    'pib_2020': [38000, 46000, 27000, 31000, 22000, 52000],\n    'pib_2024': [42000, 51000, 33000, 34000, 26000, 58000],\n})\n\n(Chart(df)\n    .dumbbell('pays', 'pib_2020', 'pib_2024',\n              color_start='#457b9d', color_end='#e63946')\n    .title('PIB par habitant — 2020 (bleu) vs 2024 (rouge)')\n    .labels(xlabel='PIB/hab (€)')\n    .set_legend()\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nÉvolution du PIB par habitant 2020–2024\n\n\n\n\n\n\nbump — Évolution de classement\n\ndf = pd.DataFrame({\n    'saison':     [2019,2020,2021,2022,2023] * 5,\n    'equipe':     (['PSG']*5 + ['Lyon']*5 + ['Marseille']*5\n                   + ['Monaco']*5 + ['Lille']*5),\n    'classement': [1,1,1,1,1, 2,5,3,4,3, 3,2,5,2,4, 4,3,2,3,5, 5,4,4,5,2],\n})\n\n(Chart(df)\n    .bump('saison', 'classement', 'equipe')\n    .title('Classement Ligue 1 (2019–2023)')\n    .labels(xlabel='Saison', ylabel='Classement')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nClassement Ligue 1 sur 5 saisons\n\n\n\n\n\n\nlollipop — Lollipop groupé\n\nnp.random.seed(7)\nyears = np.repeat(range(2015, 2024), 2)\nstatus = ['ouragan', 'dépression tropicale'] * 9\nn = np.random.randint(20, 120, 18)\ndf = pd.DataFrame({'year': years, 'status': status, 'n': n})\n\ncolors = {'ouragan': '#e63946', 'dépression tropicale': '#457b9d'}\n\n(Chart(df)\n    .lollipop('year', 'n', 'status', colors=colors,\n               order=['ouragan', 'dépression tropicale'])\n    .title('Tempêtes tropicales (2015–2023)')\n    .labels(xlabel='Année', ylabel='Nombre')\n    .set_legend()\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nTempêtes tropicales par année et intensité",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "gallery.html#données-volumineuses",
     "href": "gallery.html#données-volumineuses",
     "title": "Galerie de graphiques",
     "section": "Données volumineuses",
-    "text": "Données volumineuses\n\nscatter — Nuage de points\n\nnp.random.seed(10)\nn = 200\ntemp = np.random.normal(22, 8, n)\ndf = pd.DataFrame({\n    'temperature': temp,\n    'ventes':      temp * 12 + np.random.normal(0, 40, n),\n    'region':      np.random.choice(['Nord','Sud','Est','Ouest'], n),\n})\n\n(Chart(df)\n    .scatter('temperature', 'ventes', size=30, alpha=0.6)\n    .title('Températures vs ventes de glaces')\n    .labels(xlabel='Température (°C)', ylabel='Ventes (unités)')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nCorrélation température / ventes de glaces\n\n\n\n\n\n\nhexbin — Pavage hexagonal\n\nnp.random.seed(0)\ndf = pd.DataFrame({\n    'age':    np.random.normal(40, 12, 5000),\n    'revenu': np.random.normal(35000, 12000, 5000),\n})\n\n(Chart(df)\n    .hexbin('age', 'revenu', gridsize=40, cmap='YlOrRd')\n    .title('Densité âge / revenu annuel (n = 5 000)')\n    .labels(xlabel='Âge', ylabel='Revenu (€)')\n    .tight_layout()\n    .show())\n\n\n\n\nDensité âge / revenu sur 5 000 observations"
+    "text": "Données volumineuses\n\nscatter — Nuage de points\n\nnp.random.seed(10)\nn = 200\ntemp = np.random.normal(22, 8, n)\ndf = pd.DataFrame({\n    'temperature': temp,\n    'ventes':      temp * 12 + np.random.normal(0, 40, n),\n    'region':      np.random.choice(['Nord','Sud','Est','Ouest'], n),\n})\n\n(Chart(df)\n    .scatter('temperature', 'ventes', size=30, alpha=0.6)\n    .title('Températures vs ventes de glaces')\n    .labels(xlabel='Température (°C)', ylabel='Ventes (unités)')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nCorrélation température / ventes de glaces\n\n\n\n\n\n\nhexbin — Pavage hexagonal\n\nnp.random.seed(0)\ndf = pd.DataFrame({\n    'age':    np.random.normal(40, 12, 5000),\n    'revenu': np.random.normal(35000, 12000, 5000),\n})\n\n(Chart(df)\n    .hexbin('age', 'revenu', gridsize=40, cmap='YlOrRd')\n    .title('Densité âge / revenu annuel (n = 5 000)')\n    .labels(xlabel='Âge', ylabel='Revenu (€)')\n    .tight_layout()\n    .show())\n\n\n\n\nDensité âge / revenu sur 5 000 observations",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "gallery.html#composition",
     "href": "gallery.html#composition",
     "title": "Galerie de graphiques",
     "section": "Composition",
-    "text": "Composition\n\npie — Camembert\n\ndf = pd.DataFrame({\n    'segment': ['Résidentiel','Professionnel','Industrie','Administration'],\n    'part':    [42, 28, 18, 12],\n})\n\n(Chart(df)\n    .pie('part', labels='segment', autopct='%1.1f%%',\n         explode=[0.05, 0, 0, 0])\n    .title('Parts de marché 2024')\n    .tight_layout()\n    .show())\n\n\n\n\nParts de marché par segment\n\n\n\n\n\n\nheatmap — Carte de chaleur (corrélation)\n\nnp.random.seed(5)\ndf = pd.DataFrame({\n    'température': np.random.normal(20, 5, 100),\n    'humidité':    np.random.normal(60, 15, 100),\n    'pression':    np.random.normal(1013, 10, 100),\n    'vent':        np.random.normal(15, 8, 100),\n})\n# Corrélation artificielle\ndf['humidité'] = df['humidité'] - 0.6 * df['température'] + np.random.normal(0, 5, 100)\n\n(Chart(df)\n    .heatmap(cmap='RdBu_r', fmt='.2f')\n    .title('Corrélations entre variables météo')\n    .tight_layout()\n    .show())\n\n\n\n\nMatrice de corrélation\n\n\n\n\n\n\nwaterfall — Cascade financière\n\ndf = pd.DataFrame({\n    'poste': ['CA','Coût prod.','Marge brute','Loyers','Salaires','Marketing','Résultat'],\n    'delta': [500, -200, 300, -60, -140, -40, 60],\n})\n\n(Chart(df)\n    .waterfall('poste', 'delta',\n               positive_color='#2a9d8f', negative_color='#e76f51')\n    .title('Compte de résultat Q4 (k€)')\n    .labels(ylabel='k€')\n    .rotate_labels(x_rotation=25)\n    .grid(alpha=0.25)\n    .tight_layout()\n    .show())\n\n\n\n\nCompte de résultat simplifié\n\n\n\n\n\n\ntreemap — Carte arborescente\n\ndf = pd.DataFrame({\n    'departement': ['R&D','Ventes','Marketing','Ops','Finance','IT','RH'],\n    'budget':      [450, 380, 210, 280, 150, 200, 120],\n})\n\n(Chart(df)\n    .treemap('budget', labels='departement', alpha=0.85)\n    .title('Répartition budgétaire par département (k€)')\n    .tight_layout()\n    .show())\n\n\n\n\nBudget par département\n\n\n\n\n\n\nstreamgraph — Flux temporel\n\ndf = pd.DataFrame({\n    'annee':    list(range(2012, 2025)),\n    'rock':     [32,30,28,25,22,20,18,16,15,13,12,11,10],\n    'pop':      [38,40,42,44,45,47,50,52,54,56,58,60,62],\n    'jazz':     [10,10,11,10,12,11,10,11,10, 9,10, 9, 8],\n    'hip-hop':  [12,14,15,18,20,24,28,32,36,40,42,45,50],\n    'classique':[8,  6, 4, 3, 1, -2,-6,-11,-15,-18,-22,-25,-30],\n})\n# valeurs positives uniquement pour stackplot\ndf['classique'] = df['classique'].clip(lower=1)\n\n(Chart(df)\n    .streamgraph('annee', ['rock', 'pop', 'jazz', 'hip-hop', 'classique'])\n    .title('Écoutes musicales par genre (2012–2024)')\n    .labels(xlabel='Année')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nÉvolution des genres musicaux dans les écoutes"
+    "text": "Composition\n\npie — Camembert\n\ndf = pd.DataFrame({\n    'segment': ['Résidentiel','Professionnel','Industrie','Administration'],\n    'part':    [42, 28, 18, 12],\n})\n\n(Chart(df)\n    .pie('part', labels='segment', autopct='%1.1f%%',\n         explode=[0.05, 0, 0, 0])\n    .title('Parts de marché 2024')\n    .tight_layout()\n    .show())\n\n\n\n\nParts de marché par segment\n\n\n\n\n\n\nheatmap — Carte de chaleur (corrélation)\n\nnp.random.seed(5)\ndf = pd.DataFrame({\n    'température': np.random.normal(20, 5, 100),\n    'humidité':    np.random.normal(60, 15, 100),\n    'pression':    np.random.normal(1013, 10, 100),\n    'vent':        np.random.normal(15, 8, 100),\n})\n# Corrélation artificielle\ndf['humidité'] = df['humidité'] - 0.6 * df['température'] + np.random.normal(0, 5, 100)\n\n(Chart(df)\n    .heatmap(cmap='RdBu_r', fmt='.2f')\n    .title('Corrélations entre variables météo')\n    .tight_layout()\n    .show())\n\n\n\n\nMatrice de corrélation\n\n\n\n\n\n\nwaterfall — Cascade financière\n\ndf = pd.DataFrame({\n    'poste': ['CA','Coût prod.','Marge brute','Loyers','Salaires','Marketing','Résultat'],\n    'delta': [500, -200, 300, -60, -140, -40, 60],\n})\n\n(Chart(df)\n    .waterfall('poste', 'delta',\n               positive_color='#2a9d8f', negative_color='#e76f51')\n    .title('Compte de résultat Q4 (k€)')\n    .labels(ylabel='k€')\n    .rotate_labels(x_rotation=25)\n    .grid(alpha=0.25)\n    .tight_layout()\n    .show())\n\n\n\n\nCompte de résultat simplifié\n\n\n\n\n\n\ntreemap — Carte arborescente\n\ndf = pd.DataFrame({\n    'departement': ['R&D','Ventes','Marketing','Ops','Finance','IT','RH'],\n    'budget':      [450, 380, 210, 280, 150, 200, 120],\n})\n\n(Chart(df)\n    .treemap('budget', labels='departement', alpha=0.85)\n    .title('Répartition budgétaire par département (k€)')\n    .tight_layout()\n    .show())\n\n\n\n\nBudget par département\n\n\n\n\n\n\nstreamgraph — Flux temporel\n\ndf = pd.DataFrame({\n    'annee':    list(range(2012, 2025)),\n    'rock':     [32,30,28,25,22,20,18,16,15,13,12,11,10],\n    'pop':      [38,40,42,44,45,47,50,52,54,56,58,60,62],\n    'jazz':     [10,10,11,10,12,11,10,11,10, 9,10, 9, 8],\n    'hip-hop':  [12,14,15,18,20,24,28,32,36,40,42,45,50],\n    'classique':[8,  6, 4, 3, 1, -2,-6,-11,-15,-18,-22,-25,-30],\n})\n# valeurs positives uniquement pour stackplot\ndf['classique'] = df['classique'].clip(lower=1)\n\n(Chart(df)\n    .streamgraph('annee', ['rock', 'pop', 'jazz', 'hip-hop', 'classique'])\n    .title('Écoutes musicales par genre (2012–2024)')\n    .labels(xlabel='Année')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nÉvolution des genres musicaux dans les écoutes",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "gallery.html#planification-et-flux",
     "href": "gallery.html#planification-et-flux",
     "title": "Galerie de graphiques",
     "section": "Planification et flux",
-    "text": "Planification et flux\n\ngantt — Diagramme de Gantt\n\ndf = pd.DataFrame({\n    'tache':   ['Analyse','Design','Dev Backend','Dev Frontend',\n                'Intégration','Tests','Déploiement'],\n    'debut':   ['2024-01-02','2024-01-15','2024-02-01','2024-02-15',\n                '2024-04-01','2024-04-08','2024-04-22'],\n    'fin':     ['2024-01-19','2024-02-09','2024-04-05','2024-04-12',\n                '2024-04-12','2024-04-20','2024-04-30'],\n    'equipe':  ['PM','Design','Backend','Frontend',\n                'Backend','QA','DevOps'],\n})\n\n(Chart(df)\n    .gantt('tache', 'debut', 'fin', group='equipe', alpha=0.85)\n    .title('Planning projet — Q1 2024')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nPlanning projet Q1 2024\n\n\n\n\n\n\ncalendar_heatmap — Calendrier de contributions\n\nnp.random.seed(0)\ndates = pd.date_range('2024-01-01', '2024-12-31')\ncommits = np.random.poisson(3, len(dates))\n# pas de commits les week-ends\ncommits[dates.dayofweek &gt;= 5] = 0\ndf = pd.DataFrame({'date': dates, 'commits': commits})\n\n(Chart(df)\n    .calendar_heatmap('date', 'commits', cmap='Greens')\n    .title('Contributions GitHub 2024')\n    .tight_layout()\n    .show())\n\n\n\n\nCommits GitHub 2024\n\n\n\n\n\n\nsankey — Diagramme de Sankey\n\ndf = pd.DataFrame({\n    'flux':       [200, -80,  -50, -70,   80,  -30, -50],\n    'etiquette':  ['Revenus','Coût matières','Loyers','Salaires',\n                   'Marge brute','Taxes','Bénéfice net'],\n    'direction':  [0, 1, 1, -1, 0, 1, -1],\n})\n\n(Chart(df)\n    .sankey('flux', 'etiquette', orientations='direction', unit=' k€', scale=0.005)\n    .title('Flux financiers (k€)')\n    .tight_layout()\n    .show())\n\n\n\n\nFlux financiers simplifiés"
+    "text": "Planification et flux\n\ngantt — Diagramme de Gantt\n\ndf = pd.DataFrame({\n    'tache':   ['Analyse','Design','Dev Backend','Dev Frontend',\n                'Intégration','Tests','Déploiement'],\n    'debut':   ['2024-01-02','2024-01-15','2024-02-01','2024-02-15',\n                '2024-04-01','2024-04-08','2024-04-22'],\n    'fin':     ['2024-01-19','2024-02-09','2024-04-05','2024-04-12',\n                '2024-04-12','2024-04-20','2024-04-30'],\n    'equipe':  ['PM','Design','Backend','Frontend',\n                'Backend','QA','DevOps'],\n})\n\n(Chart(df)\n    .gantt('tache', 'debut', 'fin', group='equipe', alpha=0.85)\n    .title('Planning projet — Q1 2024')\n    .set_legend()\n    .tight_layout()\n    .show())\n\n\n\n\nPlanning projet Q1 2024\n\n\n\n\n\n\ncalendar_heatmap — Calendrier de contributions\n\nnp.random.seed(0)\ndates = pd.date_range('2024-01-01', '2024-12-31')\ncommits = np.random.poisson(3, len(dates))\n# pas de commits les week-ends\ncommits[dates.dayofweek &gt;= 5] = 0\ndf = pd.DataFrame({'date': dates, 'commits': commits})\n\n(Chart(df)\n    .calendar_heatmap('date', 'commits', cmap='Greens')\n    .title('Contributions GitHub 2024')\n    .tight_layout()\n    .show())\n\n\n\n\nCommits GitHub 2024\n\n\n\n\n\n\nsankey — Diagramme de Sankey\n\ndf = pd.DataFrame({\n    'flux':       [200, -80,  -50, -70,   80,  -30, -50],\n    'etiquette':  ['Revenus','Coût matières','Loyers','Salaires',\n                   'Marge brute','Taxes','Bénéfice net'],\n    'direction':  [0, 1, 1, -1, 0, 1, -1],\n})\n\n(Chart(df)\n    .sankey('flux', 'etiquette', orientations='direction', unit=' k€', scale=0.005)\n    .title('Flux financiers (k€)')\n    .tight_layout()\n    .show())\n\n\n\n\nFlux financiers simplifiés",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "gallery.html#climatologie",
     "href": "gallery.html#climatologie",
     "title": "Galerie de graphiques",
     "section": "Climatologie",
-    "text": "Climatologie\n\nombrothermic — Diagramme ombrothermique\nLe diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures et les barres de précipitations selon la convention p = 2T. Les zones où p &lt; 2T sont des périodes sèches.\n\ndf = pd.DataFrame({\n    'mois':   ['Jan','Fév','Mar','Avr','Mai','Jun',\n               'Jul','Aoû','Sep','Oct','Nov','Déc'],\n    'temp':   [23.1, 23.5, 24.2, 24.8, 26.5, 28.2,\n               28.5, 28.3, 28.0, 27.6, 25.6, 23.7],\n    'precip': [3,    1,    0,    0,    0,   16,\n               88,  235,  155,  60,    5,    5],\n})\n\n(Chart(df, figsize=(12, 6))\n    .ombrothermic('mois', 'temp', 'precip',\n                  temp_color='#e63946',\n                  precip_color='#457b9d',\n                  dry_period_color='#e63946',\n                  dry_period_alpha=0.12)\n    .title('Diagramme ombrothermique — Dakar (Sénégal)')\n    .tight_layout()\n    .show())\n\n\n\n\nDiagramme ombrothermique — Dakar (Sénégal)\n\n\n\n\nAnalyse textuelle des périodes sèches :\n\nfrom plutovizu import Chart\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'mois':   ['Jan','Fév','Mar','Avr','Mai','Jun',\n               'Jul','Aoû','Sep','Oct','Nov','Déc'],\n    'temp':   [23.1,23.5,24.2,24.8,26.5,28.2,28.5,28.3,28.0,27.6,25.6,23.7],\n    'precip': [3,1,0,0,0,16,88,235,155,60,5,5],\n})\n\n(Chart(df)\n    .print_ombrothermic_analysis('mois', 'temp', 'precip'))\n\nAnalyse des périodes sèches et humides:\n========================================\nJan: PÉRIODE SÈCHE - Précip: 3.0mm &lt; Seuil: 46.2mm\nFév: PÉRIODE SÈCHE - Précip: 1.0mm &lt; Seuil: 47.0mm\nMar: PÉRIODE SÈCHE - Précip: 0.0mm &lt; Seuil: 48.4mm\nAvr: PÉRIODE SÈCHE - Précip: 0.0mm &lt; Seuil: 49.6mm\nMai: PÉRIODE SÈCHE - Précip: 0.0mm &lt; Seuil: 53.0mm\nJun: PÉRIODE SÈCHE - Précip: 16.0mm &lt; Seuil: 56.4mm\nJul: Période humide - Précip: 88.0mm ≥ Seuil: 57.0mm\nAoû: Période humide - Précip: 235.0mm ≥ Seuil: 56.6mm\nSep: Période humide - Précip: 155.0mm ≥ Seuil: 56.0mm\nOct: Période humide - Précip: 60.0mm ≥ Seuil: 55.2mm\nNov: PÉRIODE SÈCHE - Précip: 5.0mm &lt; Seuil: 51.2mm\nDéc: PÉRIODE SÈCHE - Précip: 5.0mm &lt; Seuil: 47.4mm\n\nRésumé: 8 mois secs sur 12 mois"
+    "text": "Climatologie\n\nombrothermic — Diagramme ombrothermique\nLe diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures et les barres de précipitations selon la convention p = 2T. Les zones où p &lt; 2T sont des périodes sèches.\n\ndf = pd.DataFrame({\n    'mois':   ['Jan','Fév','Mar','Avr','Mai','Jun',\n               'Jul','Aoû','Sep','Oct','Nov','Déc'],\n    'temp':   [23.1, 23.5, 24.2, 24.8, 26.5, 28.2,\n               28.5, 28.3, 28.0, 27.6, 25.6, 23.7],\n    'precip': [3,    1,    0,    0,    0,   16,\n               88,  235,  155,  60,    5,    5],\n})\n\n(Chart(df, figsize=(12, 6))\n    .ombrothermic('mois', 'temp', 'precip',\n                  temp_color='#e63946',\n                  precip_color='#457b9d',\n                  dry_period_color='#e63946',\n                  dry_period_alpha=0.12)\n    .title('Diagramme ombrothermique — Dakar (Sénégal)')\n    .tight_layout()\n    .show())\n\n\n\n\nDiagramme ombrothermique — Dakar (Sénégal)\n\n\n\n\nAnalyse textuelle des périodes sèches :\n\nfrom plutovizu import Chart\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'mois':   ['Jan','Fév','Mar','Avr','Mai','Jun',\n               'Jul','Aoû','Sep','Oct','Nov','Déc'],\n    'temp':   [23.1,23.5,24.2,24.8,26.5,28.2,28.5,28.3,28.0,27.6,25.6,23.7],\n    'precip': [3,1,0,0,0,16,88,235,155,60,5,5],\n})\n\n(Chart(df)\n    .print_ombrothermic_analysis('mois', 'temp', 'precip'))\n\nAnalyse des périodes sèches et humides:\n========================================\nJan: PÉRIODE SÈCHE - Précip: 3.0mm &lt; Seuil: 46.2mm\nFév: PÉRIODE SÈCHE - Précip: 1.0mm &lt; Seuil: 47.0mm\nMar: PÉRIODE SÈCHE - Précip: 0.0mm &lt; Seuil: 48.4mm\nAvr: PÉRIODE SÈCHE - Précip: 0.0mm &lt; Seuil: 49.6mm\nMai: PÉRIODE SÈCHE - Précip: 0.0mm &lt; Seuil: 53.0mm\nJun: PÉRIODE SÈCHE - Précip: 16.0mm &lt; Seuil: 56.4mm\nJul: Période humide - Précip: 88.0mm ≥ Seuil: 57.0mm\nAoû: Période humide - Précip: 235.0mm ≥ Seuil: 56.6mm\nSep: Période humide - Précip: 155.0mm ≥ Seuil: 56.0mm\nOct: Période humide - Précip: 60.0mm ≥ Seuil: 55.2mm\nNov: PÉRIODE SÈCHE - Précip: 5.0mm &lt; Seuil: 51.2mm\nDéc: PÉRIODE SÈCHE - Précip: 5.0mm &lt; Seuil: 47.4mm\n\nRésumé: 8 mois secs sur 12 mois",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Galerie de graphiques"
+    ]
   },
   {
     "objectID": "api.html",
     "href": "api.html",
     "title": "Référence API",
     "section": "",
-    "text": "Référence complète de toutes les fonctions et méthodes de plutovizu. Toutes les méthodes de Chart retournent self (sauf show() et get_figure()), ce qui permet le chaînage illimité."
+    "text": "Référence complète de toutes les fonctions et méthodes de plutovizu. Toutes les méthodes de Chart retournent self (sauf show() et get_figure()), ce qui permet le chaînage illimité.",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "api.html#fonction-de-module",
     "href": "api.html#fonction-de-module",
     "title": "Référence API",
     "section": "Fonction de module",
-    "text": "Fonction de module\n\nget_fonts(pattern, sort)\nfrom plutovizu import get_fonts\n\nget_fonts(pattern: str = None, sort: bool = True) -&gt; List[str]\nRetourne la liste des polices installées sur le système.\n\n\n\n\n\n\n\n\n\nParamètre\nType\nDéfaut\nDescription\n\n\n\n\npattern\nstr\nNone\nFiltre par sous-chaîne (insensible à la casse)\n\n\nsort\nbool\nTrue\nTrier alphabétiquement\n\n\n\nget_fonts()                   # toutes les polices\nget_fonts(pattern='Times')    # polices contenant 'Times'"
+    "text": "Fonction de module\n\nget_fonts(pattern, sort)\nfrom plutovizu import get_fonts\n\nget_fonts(pattern: str = None, sort: bool = True) -&gt; List[str]\nRetourne la liste des polices installées sur le système.\n\n\n\n\n\n\n\n\n\nParamètre\nType\nDéfaut\nDescription\n\n\n\n\npattern\nstr\nNone\nFiltre par sous-chaîne (insensible à la casse)\n\n\nsort\nbool\nTrue\nTrier alphabétiquement\n\n\n\nget_fonts()                   # toutes les polices\nget_fonts(pattern='Times')    # polices contenant 'Times'",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "api.html#classe-chart",
     "href": "api.html#classe-chart",
     "title": "Référence API",
     "section": "Classe Chart",
-    "text": "Classe Chart\n\n__init__(data, figsize)\nChart(data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6))\n\n\n\n\n\n\n\n\n\nParamètre\nType\nDéfaut\nDescription\n\n\n\n\ndata\npd.DataFrame\n—\nJeu de données source\n\n\nfigsize\nTuple[int, int]\n(10, 6)\nLargeur × hauteur en pouces\n\n\n\nchart = Chart(df)\nchart = Chart(df, figsize=(14, 8))"
+    "text": "Classe Chart\n\n__init__(data, figsize)\nChart(data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6))\n\n\n\n\n\n\n\n\n\nParamètre\nType\nDéfaut\nDescription\n\n\n\n\ndata\npd.DataFrame\n—\nJeu de données source\n\n\nfigsize\nTuple[int, int]\n(10, 6)\nLargeur × hauteur en pouces\n\n\n\nchart = Chart(df)\nchart = Chart(df, figsize=(14, 8))",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "api.html#graphiques",
     "href": "api.html#graphiques",
     "title": "Référence API",
     "section": "Graphiques",
-    "text": "Graphiques\n\nline\n.line(x: str, y: Union[str, List[str]],\n      marker: str = 'o', linewidth: float = 2,\n      markersize: float = 6, alpha: float = 1.0) -&gt; Chart\nCourbe simple ou multi-séries. Plusieurs colonnes y tracent une ligne par colonne.\nchart.line('date', 'ventes')\nchart.line('date', ['ventes', 'coûts', 'profit'], marker='s', linewidth=1.5)\n\n\n\nbar\n.bar(x: str, y: str, horizontal: bool = False,\n     width: float = 0.8, alpha: float = 0.8,\n     color: Optional[str] = None) -&gt; Chart\nBarres verticales (barv) ou horizontales (barh).\nchart.bar('region', 'ca')\nchart.bar('valeur', 'categorie', horizontal=True, color='steelblue')\n\n\n\nscatter\n.scatter(x: str, y: str, size: Union[str, float] = 50,\n         color: Optional[str] = None, alpha: float = 0.7,\n         marker: str = 'o') -&gt; Chart\nNuage de points. size et color acceptent un nom de colonne (encodage) ou une valeur fixe.\nchart.scatter('temp', 'ventes', size='population', alpha=0.6)\n\n\n\nhistogram\n.histogram(column: str, bins: Union[int, str] = 30,\n           alpha: float = 0.7, color: str = None,\n           density: bool = False, edgecolor: str = 'black') -&gt; Chart\n\n\n\n\n\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\nbins\n30\nNombre de classes ou stratégie ('auto', 'fd', 'scott'…)\n\n\ndensity\nFalse\nNormaliser pour que l’aire totale vaille 1\n\n\n\nchart.histogram('salaire', bins=50, density=True, color='steelblue')\n\n\n\nboxplot\n.boxplot(columns: Union[str, List[str]],\n         vert: bool = True, patch_artist: bool = True) -&gt; Chart\nBoîte à moustaches — médiane, IQR et valeurs aberrantes.\nchart.boxplot(['maths', 'français', 'sciences'])\nchart.boxplot('note', vert=False)\n\n\n\npie\n.pie(column: str, labels: Optional[str] = None,\n     autopct: str = '%1.1f%%', startangle: float = 90,\n     explode: Optional[List[float]] = None) -&gt; Chart\nchart.pie('part', labels='region', explode=[0.05, 0, 0, 0])\n\n\n\nheatmap\n.heatmap(annot: bool = True, cmap: str = 'viridis',\n         fmt: str = '.2f', cbar: bool = True) -&gt; Chart\nMatrice de corrélation de Pearson sur toutes les colonnes numériques du DataFrame.\nchart.heatmap(cmap='coolwarm', fmt='.1f')\n\n\n\narea\n.area(x: str, y: Union[str, List[str]],\n      alpha: float = 0.7, stacked: bool = False) -&gt; Chart\nchart.area('annee', ['rock', 'pop', 'jazz'], stacked=True)\n\n\n\nviolin\n.violin(columns: Union[str, List[str]]) -&gt; Chart\nchart.violin(['groupe_A', 'groupe_B', 'groupe_C'])\n\n\n\nlollipop\n.lollipop(x: str, y: str, group: str,\n          colors: Dict[str, str], order: Optional[List[str]] = None,\n          shift_step: float = 0.2) -&gt; Chart\nLollipop groupé — bulle dimensionnée + tige pointillée. x doit être numérique.\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\ncolors\n—\n{valeur_groupe: couleur}\n\n\norder\nNone\nOrdre d’affichage des groupes\n\n\nshift_step\n0.2\nDécalage horizontal entre groupes\n\n\n\nchart.lollipop('year', 'n', 'status',\n               colors={'cat1': '#e63946', 'cat2': '#457b9d'})\n\n\n\nombrothermic\n.ombrothermic(month_col: str, temperature_col: str, precipitation_col: str,\n              temp_color: str = 'tab:red', precip_color: str = 'tab:blue',\n              dry_period_color: str = 'red', dry_period_alpha: float = 0.2,\n              show_threshold_line: bool = True,\n              temp_scale_factor: float = 2.0) -&gt; Chart\nDiagramme ombrothermique Walter-Lieth (convention p = 2T). Les zones où précipitations &lt; temp_scale_factor × température sont surlignées comme périodes sèches.\nchart.ombrothermic('mois', 'Température (°C)', 'Précipitations (mm)')\n\n\nprint_ombrothermic_analysis\n.print_ombrothermic_analysis(month_col: str, temperature_col: str,\n                              precipitation_col: str,\n                              temp_scale_factor: float = 2.0) -&gt; Chart\nAffiche dans la console une analyse mois par mois et retourne self.\n\n\n\nradar\n.radar(columns: List[str], group: Optional[str] = None,\n       alpha: float = 0.25) -&gt; Chart\nGraphique araignée sur axe polaire. Chaque colonne = un rayon.\nchart.radar(['vitesse', 'force', 'agilité', 'endurance'], group='equipe')\n\n\n\nwaterfall\n.waterfall(x: str, y: str,\n           positive_color: str = 'steelblue',\n           negative_color: str = 'salmon') -&gt; Chart\nBarres cumulatives — très utilisé en finance et en budget.\nchart.waterfall('poste', 'delta', positive_color='#2a9d8f', negative_color='#e76f51')\n\n\n\nbump\n.bump(x: str, y: str, group: str,\n      linewidth: float = 2.5, markersize: float = 8) -&gt; Chart\nÉvolution de classement — axe y inversé (rang 1 en haut).\nchart.bump('saison', 'classement', 'equipe')\n\n\n\nridgeline\n.ridgeline(value_col: str, group_col: str,\n           overlap: float = 1.5, alpha: float = 0.7) -&gt; Chart\nDistributions KDE superposées. Nécessite scipy.\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\noverlap\n1.5\nChevauchement vertical (plus élevé = plus dense)\n\n\n\nchart.ridgeline('salaire', 'secteur', overlap=2.0)\n\n\n\ntreemap\n.treemap(values: str, labels: Optional[str] = None,\n         alpha: float = 0.8) -&gt; Chart\nRectangles imbriqués dimensionnés par une colonne. Nécessite squarify.\nchart.treemap('budget', labels='departement')\n\n\n\nhexbin\n.hexbin(x: str, y: str, gridsize: int = 30,\n        cmap: str = 'YlOrRd', mincnt: int = 1) -&gt; Chart\nRemplacement du scatter pour les gros volumes — chaque hexagone est coloré par densité de points.\nchart.hexbin('age', 'revenu', gridsize=50, cmap='Blues')\n\n\n\nparallel_coordinates\n.parallel_coordinates(columns: List[str],\n                       group: Optional[str] = None,\n                       alpha: float = 0.4) -&gt; Chart\nChaque colonne devient un axe vertical normalisé [0, 1]. Chaque ligne du DataFrame est une polyligne.\nchart.parallel_coordinates(['puissance', 'conso', 'poids'], group='marque', alpha=0.3)\n\n\n\ndumbbell\n.dumbbell(y: str, x_start: str, x_end: str,\n          color_start: str = 'steelblue', color_end: str = 'salmon',\n          line_color: str = '#aaaaaa', markersize: float = 80,\n          linewidth: float = 2.0) -&gt; Chart\nComparaison avant/après — un haltère horizontal par catégorie.\nchart.dumbbell('pays', 'pib_2020', 'pib_2024',\n               color_start='#457b9d', color_end='#e63946')\n\n\n\nstreamgraph\n.streamgraph(x: str, y: Union[str, List[str]],\n             alpha: float = 0.85) -&gt; Chart\nAires empilées avec ligne de base centrée (wiggle) — esthétique pour l’évolution temporelle.\nchart.streamgraph('annee', ['rock', 'pop', 'jazz', 'hip-hop'])\n\n\n\ngantt\n.gantt(task: str, start: str, end: str,\n       group: Optional[str] = None, alpha: float = 0.8) -&gt; Chart\nBarres horizontales positionnées par décalage depuis la date de début minimale. start et end sont passées à pd.to_datetime — tous les formats de date sont acceptés.\nchart.gantt('tache', 'debut', 'fin', group='equipe')\n\n\n\ncalendar_heatmap\n.calendar_heatmap(date_col: str, value_col: str,\n                  cmap: str = 'YlGn') -&gt; Chart\nGrille style GitHub contributions : semaines en colonnes, jours en lignes. Les jours manquants sont remplis à 0.\nchart.calendar_heatmap('date', 'commits', cmap='Greens')\n\n\n\nsankey\n.sankey(flows: str, labels: str,\n        orientations: Optional[str] = None,\n        unit: str = '', scale: float = 0.01) -&gt; Chart\nFlux entre catégories via matplotlib.sankey.Sankey. Valeurs positives = entrées, négatives = sorties.\n\n\n\n\n\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\norientations\nNone\nColonne d’orientations (0 = droite, 1 = haut, −1 = bas)\n\n\nscale\n0.01\nFacteur global — plus petit = flèches plus larges\n\n\n\nchart.sankey('flux', 'etiquette', orientations='direction', unit=' k€')"
+    "text": "Graphiques\n\nline\n.line(x: str, y: Union[str, List[str]],\n      marker: str = 'o', linewidth: float = 2,\n      markersize: float = 6, alpha: float = 1.0) -&gt; Chart\nCourbe simple ou multi-séries. Plusieurs colonnes y tracent une ligne par colonne.\nchart.line('date', 'ventes')\nchart.line('date', ['ventes', 'coûts', 'profit'], marker='s', linewidth=1.5)\n\n\n\nbar\n.bar(x: str, y: str, horizontal: bool = False,\n     width: float = 0.8, alpha: float = 0.8,\n     color: Optional[str] = None) -&gt; Chart\nBarres verticales (barv) ou horizontales (barh).\nchart.bar('region', 'ca')\nchart.bar('valeur', 'categorie', horizontal=True, color='steelblue')\n\n\n\nscatter\n.scatter(x: str, y: str, size: Union[str, float] = 50,\n         color: Optional[str] = None, alpha: float = 0.7,\n         marker: str = 'o') -&gt; Chart\nNuage de points. size et color acceptent un nom de colonne (encodage) ou une valeur fixe.\nchart.scatter('temp', 'ventes', size='population', alpha=0.6)\n\n\n\nhistogram\n.histogram(column: str, bins: Union[int, str] = 30,\n           alpha: float = 0.7, color: str = None,\n           density: bool = False, edgecolor: str = 'black') -&gt; Chart\n\n\n\n\n\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\nbins\n30\nNombre de classes ou stratégie ('auto', 'fd', 'scott'…)\n\n\ndensity\nFalse\nNormaliser pour que l’aire totale vaille 1\n\n\n\nchart.histogram('salaire', bins=50, density=True, color='steelblue')\n\n\n\nboxplot\n.boxplot(columns: Union[str, List[str]],\n         vert: bool = True, patch_artist: bool = True) -&gt; Chart\nBoîte à moustaches — médiane, IQR et valeurs aberrantes.\nchart.boxplot(['maths', 'français', 'sciences'])\nchart.boxplot('note', vert=False)\n\n\n\npie\n.pie(column: str, labels: Optional[str] = None,\n     autopct: str = '%1.1f%%', startangle: float = 90,\n     explode: Optional[List[float]] = None) -&gt; Chart\nchart.pie('part', labels='region', explode=[0.05, 0, 0, 0])\n\n\n\nheatmap\n.heatmap(annot: bool = True, cmap: str = 'viridis',\n         fmt: str = '.2f', cbar: bool = True) -&gt; Chart\nMatrice de corrélation de Pearson sur toutes les colonnes numériques du DataFrame.\nchart.heatmap(cmap='coolwarm', fmt='.1f')\n\n\n\narea\n.area(x: str, y: Union[str, List[str]],\n      alpha: float = 0.7, stacked: bool = False) -&gt; Chart\nchart.area('annee', ['rock', 'pop', 'jazz'], stacked=True)\n\n\n\nviolin\n.violin(columns: Union[str, List[str]]) -&gt; Chart\nchart.violin(['groupe_A', 'groupe_B', 'groupe_C'])\n\n\n\nlollipop\n.lollipop(x: str, y: str, group: str,\n          colors: Dict[str, str], order: Optional[List[str]] = None,\n          shift_step: float = 0.2) -&gt; Chart\nLollipop groupé — bulle dimensionnée + tige pointillée. x doit être numérique.\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\ncolors\n—\n{valeur_groupe: couleur}\n\n\norder\nNone\nOrdre d’affichage des groupes\n\n\nshift_step\n0.2\nDécalage horizontal entre groupes\n\n\n\nchart.lollipop('year', 'n', 'status',\n               colors={'cat1': '#e63946', 'cat2': '#457b9d'})\n\n\n\nombrothermic\n.ombrothermic(month_col: str, temperature_col: str, precipitation_col: str,\n              temp_color: str = 'tab:red', precip_color: str = 'tab:blue',\n              dry_period_color: str = 'red', dry_period_alpha: float = 0.2,\n              show_threshold_line: bool = True,\n              temp_scale_factor: float = 2.0) -&gt; Chart\nDiagramme ombrothermique Walter-Lieth (convention p = 2T). Les zones où précipitations &lt; temp_scale_factor × température sont surlignées comme périodes sèches.\nchart.ombrothermic('mois', 'Température (°C)', 'Précipitations (mm)')\n\n\nprint_ombrothermic_analysis\n.print_ombrothermic_analysis(month_col: str, temperature_col: str,\n                              precipitation_col: str,\n                              temp_scale_factor: float = 2.0) -&gt; Chart\nAffiche dans la console une analyse mois par mois et retourne self.\n\n\n\nradar\n.radar(columns: List[str], group: Optional[str] = None,\n       alpha: float = 0.25) -&gt; Chart\nGraphique araignée sur axe polaire. Chaque colonne = un rayon.\nchart.radar(['vitesse', 'force', 'agilité', 'endurance'], group='equipe')\n\n\n\nwaterfall\n.waterfall(x: str, y: str,\n           positive_color: str = 'steelblue',\n           negative_color: str = 'salmon') -&gt; Chart\nBarres cumulatives — très utilisé en finance et en budget.\nchart.waterfall('poste', 'delta', positive_color='#2a9d8f', negative_color='#e76f51')\n\n\n\nbump\n.bump(x: str, y: str, group: str,\n      linewidth: float = 2.5, markersize: float = 8) -&gt; Chart\nÉvolution de classement — axe y inversé (rang 1 en haut).\nchart.bump('saison', 'classement', 'equipe')\n\n\n\nridgeline\n.ridgeline(value_col: str, group_col: str,\n           overlap: float = 1.5, alpha: float = 0.7) -&gt; Chart\nDistributions KDE superposées. Nécessite scipy.\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\noverlap\n1.5\nChevauchement vertical (plus élevé = plus dense)\n\n\n\nchart.ridgeline('salaire', 'secteur', overlap=2.0)\n\n\n\ntreemap\n.treemap(values: str, labels: Optional[str] = None,\n         alpha: float = 0.8) -&gt; Chart\nRectangles imbriqués dimensionnés par une colonne. Nécessite squarify.\nchart.treemap('budget', labels='departement')\n\n\n\nhexbin\n.hexbin(x: str, y: str, gridsize: int = 30,\n        cmap: str = 'YlOrRd', mincnt: int = 1) -&gt; Chart\nRemplacement du scatter pour les gros volumes — chaque hexagone est coloré par densité de points.\nchart.hexbin('age', 'revenu', gridsize=50, cmap='Blues')\n\n\n\nparallel_coordinates\n.parallel_coordinates(columns: List[str],\n                       group: Optional[str] = None,\n                       alpha: float = 0.4) -&gt; Chart\nChaque colonne devient un axe vertical normalisé [0, 1]. Chaque ligne du DataFrame est une polyligne.\nchart.parallel_coordinates(['puissance', 'conso', 'poids'], group='marque', alpha=0.3)\n\n\n\ndumbbell\n.dumbbell(y: str, x_start: str, x_end: str,\n          color_start: str = 'steelblue', color_end: str = 'salmon',\n          line_color: str = '#aaaaaa', markersize: float = 80,\n          linewidth: float = 2.0) -&gt; Chart\nComparaison avant/après — un haltère horizontal par catégorie.\nchart.dumbbell('pays', 'pib_2020', 'pib_2024',\n               color_start='#457b9d', color_end='#e63946')\n\n\n\nstreamgraph\n.streamgraph(x: str, y: Union[str, List[str]],\n             alpha: float = 0.85) -&gt; Chart\nAires empilées avec ligne de base centrée (wiggle) — esthétique pour l’évolution temporelle.\nchart.streamgraph('annee', ['rock', 'pop', 'jazz', 'hip-hop'])\n\n\n\ngantt\n.gantt(task: str, start: str, end: str,\n       group: Optional[str] = None, alpha: float = 0.8) -&gt; Chart\nBarres horizontales positionnées par décalage depuis la date de début minimale. start et end sont passées à pd.to_datetime — tous les formats de date sont acceptés.\nchart.gantt('tache', 'debut', 'fin', group='equipe')\n\n\n\ncalendar_heatmap\n.calendar_heatmap(date_col: str, value_col: str,\n                  cmap: str = 'YlGn') -&gt; Chart\nGrille style GitHub contributions : semaines en colonnes, jours en lignes. Les jours manquants sont remplis à 0.\nchart.calendar_heatmap('date', 'commits', cmap='Greens')\n\n\n\nsankey\n.sankey(flows: str, labels: str,\n        orientations: Optional[str] = None,\n        unit: str = '', scale: float = 0.01) -&gt; Chart\nFlux entre catégories via matplotlib.sankey.Sankey. Valeurs positives = entrées, négatives = sorties.\n\n\n\n\n\n\n\n\nParamètre\nDéfaut\nDescription\n\n\n\n\norientations\nNone\nColonne d’orientations (0 = droite, 1 = haut, −1 = bas)\n\n\nscale\n0.01\nFacteur global — plus petit = flèches plus larges\n\n\n\nchart.sankey('flux', 'etiquette', orientations='direction', unit=' k€')",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "api.html#apparence",
     "href": "api.html#apparence",
     "title": "Référence API",
     "section": "Apparence",
-    "text": "Apparence\n\ntitle\n.title(title: str, fontsize: int = 14, fontweight: str = 'bold',\n       color: str = 'black', pad: float = 20) -&gt; Chart\n\n\nlabels\n.labels(xlabel: str = None, ylabel: str = None,\n        fontsize: int = 12, color: str = 'black') -&gt; Chart\n\n\ngrid\n.grid(show: bool = True, alpha: float = 0.3,\n      linestyle: str = '-', linewidth: float = 0.5) -&gt; Chart\n\n\nset_legend\n.set_legend(show: bool = True, location: str = 'best',\n            fontsize: int = 10, frameon: bool = True) -&gt; Chart\n\n\nset_limits\n.set_limits(xlim: Tuple[float, float] = None,\n            ylim: Tuple[float, float] = None) -&gt; Chart\n\n\nrotate_labels\n.rotate_labels(x_rotation: float = 0, y_rotation: float = 0) -&gt; Chart\n\n\nfont\n.font(family: str = 'sans-serif', size: int = 10,\n      weight: str = 'normal') -&gt; Chart\nUtiliser get_available_fonts() pour lister les polices installées.\n\n\nset_style\n.set_style(style: str = 'default') -&gt; Chart\nApplique un style matplotlib ('ggplot', 'seaborn-v0_8', 'dark_background'…).\n\n\nadd_annotation\n.add_annotation(x: float, y: float, text: str,\n                fontsize: int = 10, color: str = 'black',\n                arrow: bool = False,\n                arrowprops: Optional[dict] = None) -&gt; Chart"
+    "text": "Apparence\n\ntitle\n.title(title: str, fontsize: int = 14, fontweight: str = 'bold',\n       color: str = 'black', pad: float = 20) -&gt; Chart\n\n\nlabels\n.labels(xlabel: str = None, ylabel: str = None,\n        fontsize: int = 12, color: str = 'black') -&gt; Chart\n\n\ngrid\n.grid(show: bool = True, alpha: float = 0.3,\n      linestyle: str = '-', linewidth: float = 0.5) -&gt; Chart\n\n\nset_legend\n.set_legend(show: bool = True, location: str = 'best',\n            fontsize: int = 10, frameon: bool = True) -&gt; Chart\n\n\nset_limits\n.set_limits(xlim: Tuple[float, float] = None,\n            ylim: Tuple[float, float] = None) -&gt; Chart\n\n\nrotate_labels\n.rotate_labels(x_rotation: float = 0, y_rotation: float = 0) -&gt; Chart\n\n\nfont\n.font(family: str = 'sans-serif', size: int = 10,\n      weight: str = 'normal') -&gt; Chart\nUtiliser get_available_fonts() pour lister les polices installées.\n\n\nset_style\n.set_style(style: str = 'default') -&gt; Chart\nApplique un style matplotlib ('ggplot', 'seaborn-v0_8', 'dark_background'…).\n\n\nadd_annotation\n.add_annotation(x: float, y: float, text: str,\n                fontsize: int = 10, color: str = 'black',\n                arrow: bool = False,\n                arrowprops: Optional[dict] = None) -&gt; Chart",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "api.html#couleurs",
     "href": "api.html#couleurs",
     "title": "Référence API",
     "section": "Couleurs",
-    "text": "Couleurs\n\nset_colors\n.set_colors(colors: Union[str, List[str]] = None) -&gt; Chart\nAccepte un nom de palette seaborn/matplotlib, un nom de palette personnalisée ou une liste de couleurs.\nchart.set_colors('deep')\nchart.set_colors(['#e63946', '#457b9d', '#1d3557'])\n\n\ncreate_custom_palette\n.create_custom_palette(name: str, colors: List[str],\n                       save_palette: bool = True) -&gt; Chart\n\n\ngenerate_gradient_palette\n.generate_gradient_palette(name: str, start_color: str, end_color: str,\n                           n_colors: int = 10,\n                           save_palette: bool = True) -&gt; Chart\n\n\npreview_palette\n.preview_palette(palette_name: str, n_colors: int = 8) -&gt; Chart\n\n\nget_available_palettes\n.get_available_palettes(include_custom: bool = True,\n                         include_seaborn: bool = True,\n                         include_matplotlib: bool = True) -&gt; Dict[str, List[str]]\n\n\nprint_available_palettes (statique)\nChart.print_available_palettes(category: str = 'all', limit: int = None) -&gt; None"
+    "text": "Couleurs\n\nset_colors\n.set_colors(colors: Union[str, List[str]] = None) -&gt; Chart\nAccepte un nom de palette seaborn/matplotlib, un nom de palette personnalisée ou une liste de couleurs.\nchart.set_colors('deep')\nchart.set_colors(['#e63946', '#457b9d', '#1d3557'])\n\n\ncreate_custom_palette\n.create_custom_palette(name: str, colors: List[str],\n                       save_palette: bool = True) -&gt; Chart\n\n\ngenerate_gradient_palette\n.generate_gradient_palette(name: str, start_color: str, end_color: str,\n                           n_colors: int = 10,\n                           save_palette: bool = True) -&gt; Chart\n\n\npreview_palette\n.preview_palette(palette_name: str, n_colors: int = 8) -&gt; Chart\n\n\nget_available_palettes\n.get_available_palettes(include_custom: bool = True,\n                         include_seaborn: bool = True,\n                         include_matplotlib: bool = True) -&gt; Dict[str, List[str]]\n\n\nprint_available_palettes (statique)\nChart.print_available_palettes(category: str = 'all', limit: int = None) -&gt; None",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "api.html#polices",
     "href": "api.html#polices",
     "title": "Référence API",
     "section": "Polices",
-    "text": "Polices\n\nget_available_fonts\n.get_available_fonts(pattern: str = None, sort: bool = True) -&gt; List[str]\n\n\nprint_available_fonts (statique)\nChart.print_available_fonts(pattern: str = None, limit: int = None) -&gt; None"
+    "text": "Polices\n\nget_available_fonts\n.get_available_fonts(pattern: str = None, sort: bool = True) -&gt; List[str]\n\n\nprint_available_fonts (statique)\nChart.print_available_fonts(pattern: str = None, limit: int = None) -&gt; None",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "api.html#export-et-utilitaires",
     "href": "api.html#export-et-utilitaires",
     "title": "Référence API",
     "section": "Export et utilitaires",
-    "text": "Export et utilitaires\n\ntight_layout\n.tight_layout() -&gt; Chart\n\n\nsave\n.save(filename: str, dpi: int = 300,\n      bbox_inches: str = 'tight', format: str = 'png') -&gt; Chart\nRetourne self — chaînable après save().\nchart.save('rapport.png').save('rapport.pdf', format='pdf').show()\n\n\nshow\n.show() -&gt; None\nTerminal du chaînage. Appelle plt.show().\n\n\nget_figure\n.get_figure() -&gt; Tuple[plt.Figure, plt.Axes]\nRetourne (fig, ax) pour personnalisation matplotlib avancée.\nfig, ax = chart.line('x', 'y').get_figure()\nax.axhspan(0, 5, alpha=0.1, color='green')\nfig.savefig('custom.png', dpi=300)"
+    "text": "Export et utilitaires\n\ntight_layout\n.tight_layout() -&gt; Chart\n\n\nsave\n.save(filename: str, dpi: int = 300,\n      bbox_inches: str = 'tight', format: str = 'png') -&gt; Chart\nRetourne self — chaînable après save().\nchart.save('rapport.png').save('rapport.pdf', format='pdf').show()\n\n\nshow\n.show() -&gt; None\nTerminal du chaînage. Appelle plt.show().\n\n\nget_figure\n.get_figure() -&gt; Tuple[plt.Figure, plt.Axes]\nRetourne (fig, ax) pour personnalisation matplotlib avancée.\nfig, ax = chart.line('x', 'y').get_figure()\nax.axhspan(0, 5, alpha=0.1, color='green')\nfig.savefig('custom.png', dpi=300)",
+    "crumbs": [
+      "Documentation",
+      "Référence",
+      "Référence API"
+    ]
   },
   {
     "objectID": "customization.html#palettes-de-couleurs",
     "href": "customization.html#palettes-de-couleurs",
     "title": "Personnalisation",
     "section": "Palettes de couleurs",
-    "text": "Palettes de couleurs\n\nPalettes seaborn intégrées\n\ndf = pd.DataFrame({\n    'x': range(10),\n    'A': np.random.randn(10).cumsum(),\n    'B': np.random.randn(10).cumsum(),\n    'C': np.random.randn(10).cumsum(),\n    'D': np.random.randn(10).cumsum(),\n})\n\n(Chart(df)\n    .set_colors('deep')\n    .line('x', ['A', 'B', 'C', 'D'], marker='o')\n    .title(\"Palette seaborn 'deep'\")\n    .set_legend()\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nCourbes avec la palette ‘deep’ de seaborn\n\n\n\n\nPalettes seaborn qualitatives disponibles :\n\n\n\nPalette\nUsage recommandé\n\n\n\n\ndeep\nCatégories distinctes (défaut seaborn)\n\n\npastel\nFond clair, couleurs douces\n\n\nbright\nForte visibilité\n\n\ndark\nFond sombre ou impression\n\n\ncolorblind\nAccessible aux daltoniens\n\n\nSet1, Set2, Set3\nCatégories qualitatives\n\n\ntab10, tab20\nNombreuses catégories\n\n\n\n\n\nPalette personnalisée\n\ndf = pd.DataFrame({\n    'categorie': ['A', 'B', 'C', 'D', 'E'],\n    'valeur':    [80, 65, 90, 45, 72],\n})\n\n(Chart(df)\n    .create_custom_palette('brand', ['#003049','#d62828','#f77f00','#fcbf49','#eae2b7'])\n    .set_colors('brand')\n    .bar('categorie', 'valeur')\n    .title(\"Palette personnalisée 'brand'\")\n    .labels(xlabel='Catégorie', ylabel='Valeur')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\nCustom palette 'brand' created with 5 colors\n\n\n\n\n\nBarres avec une palette personnalisée ‘brand’\n\n\n\n\n# Créer et réutiliser une palette personnalisée\nchart.create_custom_palette(\n    'brand',\n    ['#003049', '#d62828', '#f77f00', '#fcbf49', '#eae2b7']\n)\n# Appliquer dans le même chaînage\nchart.set_colors('brand')\n\n\nDégradé entre deux couleurs\n\ndf_dummy = pd.DataFrame({'x': [1], 'y': [1]})\n(Chart(df_dummy)\n    .generate_gradient_palette('ocean_fire', '#003049', '#d62828', n_colors=8)\n    .preview_palette('ocean_fire', n_colors=8)\n    .tight_layout()\n    .show())\n\nGradient palette 'ocean_fire' created: #003049 → #d62828\n\n\n\n\n\nAperçu d’un dégradé bleu → rouge en 8 teintes\n\n\n\n\n# Générer un dégradé de 10 teintes entre deux couleurs\nchart.generate_gradient_palette('ocean_fire', '#003049', '#d62828', n_colors=10)\nchart.set_colors('ocean_fire')\n\n\nPrévisualiser une palette\n\ndf_dummy = pd.DataFrame({'x': [1], 'y': [1]})\n(Chart(df_dummy)\n    .preview_palette('viridis', n_colors=10)\n    .tight_layout()\n    .show())\n\n\n\n\nAperçu de la palette ‘viridis’\n\n\n\n\n\n\nLister toutes les palettes disponibles\n# Toutes les palettes (seaborn + matplotlib + personnalisées)\nchart.get_available_palettes()\n\n# Affichage console, filtrée par catégorie\nChart.print_available_palettes(category='seaborn', limit=10)\nChart.print_available_palettes(category='matplotlib')\nChart.print_available_palettes(category='custom')"
+    "text": "Palettes de couleurs\n\nPalettes seaborn intégrées\n\ndf = pd.DataFrame({\n    'x': range(10),\n    'A': np.random.randn(10).cumsum(),\n    'B': np.random.randn(10).cumsum(),\n    'C': np.random.randn(10).cumsum(),\n    'D': np.random.randn(10).cumsum(),\n})\n\n(Chart(df)\n    .set_colors('deep')\n    .line('x', ['A', 'B', 'C', 'D'], marker='o')\n    .title(\"Palette seaborn 'deep'\")\n    .set_legend()\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nCourbes avec la palette ‘deep’ de seaborn\n\n\n\n\nPalettes seaborn qualitatives disponibles :\n\n\n\nPalette\nUsage recommandé\n\n\n\n\ndeep\nCatégories distinctes (défaut seaborn)\n\n\npastel\nFond clair, couleurs douces\n\n\nbright\nForte visibilité\n\n\ndark\nFond sombre ou impression\n\n\ncolorblind\nAccessible aux daltoniens\n\n\nSet1, Set2, Set3\nCatégories qualitatives\n\n\ntab10, tab20\nNombreuses catégories\n\n\n\n\n\nPalette personnalisée\n\ndf = pd.DataFrame({\n    'categorie': ['A', 'B', 'C', 'D', 'E'],\n    'valeur':    [80, 65, 90, 45, 72],\n})\n\n(Chart(df)\n    .create_custom_palette('brand', ['#003049','#d62828','#f77f00','#fcbf49','#eae2b7'])\n    .set_colors('brand')\n    .bar('categorie', 'valeur')\n    .title(\"Palette personnalisée 'brand'\")\n    .labels(xlabel='Catégorie', ylabel='Valeur')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nBarres avec une palette personnalisée ‘brand’\n\n\n\n\n# Créer et réutiliser une palette personnalisée\nchart.create_custom_palette(\n    'brand',\n    ['#003049', '#d62828', '#f77f00', '#fcbf49', '#eae2b7']\n)\n# Appliquer dans le même chaînage\nchart.set_colors('brand')\n\n\nDégradé entre deux couleurs\n\ndf_dummy = pd.DataFrame({'x': [1], 'y': [1]})\n(Chart(df_dummy)\n    .generate_gradient_palette('ocean_fire', '#003049', '#d62828', n_colors=8)\n    .preview_palette('ocean_fire', n_colors=8)\n    .tight_layout()\n    .show())\n\n\n\n\nAperçu d’un dégradé bleu → rouge en 8 teintes\n\n\n\n\n# Générer un dégradé de 10 teintes entre deux couleurs\nchart.generate_gradient_palette('ocean_fire', '#003049', '#d62828', n_colors=10)\nchart.set_colors('ocean_fire')\n\n\nPrévisualiser une palette\n\ndf_dummy = pd.DataFrame({'x': [1], 'y': [1]})\n(Chart(df_dummy)\n    .preview_palette('viridis', n_colors=10)\n    .tight_layout()\n    .show())\n\n\n\n\nAperçu de la palette ‘viridis’\n\n\n\n\n\n\nLister toutes les palettes disponibles\n# Toutes les palettes (seaborn + matplotlib + personnalisées)\nchart.get_available_palettes()\n\n# Affichage console, filtrée par catégorie\nChart.print_available_palettes(category='seaborn', limit=10)\nChart.print_available_palettes(category='matplotlib')\nChart.print_available_palettes(category='custom')",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Personnalisation"
+    ]
   },
   {
     "objectID": "customization.html#polices",
     "href": "customization.html#polices",
     "title": "Personnalisation",
     "section": "Polices",
-    "text": "Polices\n\nChanger la police globale\n\nnp.random.seed(0)\ndf = pd.DataFrame({'x': range(8), 'y': np.random.randn(8).cumsum()})\n\n(Chart(df)\n    .font('Georgia', size=12)\n    .line('x', 'y', marker='s', linewidth=2)\n    .title('Titre en Georgia', fontsize=16)\n    .labels(xlabel='Axe X', ylabel='Axe Y')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nGraphique avec la police Georgia\n\n\n\n\n# Définir la police globale\nchart.font(family='Times New Roman', size=13, weight='bold')\n\n\nLister les polices installées\nfrom plutovizu import get_fonts\n\n# Toutes les polices\nget_fonts()\n\n# Filtrer par nom\nget_fonts(pattern='Arial')\n\n# Depuis une instance\nchart.get_available_fonts(pattern='Times')\n\n# Affichage console avec limite\nChart.print_available_fonts(limit=20)\nChart.print_available_fonts(pattern='Calibri')"
+    "text": "Polices\n\nChanger la police globale\n\nnp.random.seed(0)\ndf = pd.DataFrame({'x': range(8), 'y': np.random.randn(8).cumsum()})\n\n(Chart(df)\n    .font('Georgia', size=12)\n    .line('x', 'y', marker='s', linewidth=2)\n    .title('Titre en Georgia', fontsize=16)\n    .labels(xlabel='Axe X', ylabel='Axe Y')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nGraphique avec la police Georgia\n\n\n\n\n# Définir la police globale\nchart.font(family='Times New Roman', size=13, weight='bold')\n\n\nLister les polices installées\nfrom plutovizu import get_fonts\n\n# Toutes les polices\nget_fonts()\n\n# Filtrer par nom\nget_fonts(pattern='Arial')\n\n# Depuis une instance\nchart.get_available_fonts(pattern='Times')\n\n# Affichage console avec limite\nChart.print_available_fonts(limit=20)\nChart.print_available_fonts(pattern='Calibri')",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Personnalisation"
+    ]
   },
   {
     "objectID": "customization.html#styles-matplotlib",
     "href": "customization.html#styles-matplotlib",
     "title": "Personnalisation",
     "section": "Styles matplotlib",
-    "text": "Styles matplotlib\n\nnp.random.seed(42)\ndf = pd.DataFrame({'x': range(10), 'y': np.random.randn(10).cumsum()})\n\n(Chart(df)\n    .set_style('ggplot')\n    .line('x', 'y', linewidth=2)\n    .title(\"Style 'ggplot'\")\n    .labels(xlabel='X', ylabel='Y')\n    .tight_layout()\n    .show())\n\n\n\n\nStyle ‘ggplot’\n\n\n\n\nStyles populaires : 'ggplot', 'seaborn-v0_8', 'dark_background', 'bmh', 'fivethirtyeight'.\n# Lister tous les styles installés\nimport matplotlib.pyplot as plt\nprint(plt.style.available)"
+    "text": "Styles matplotlib\n\nnp.random.seed(42)\ndf = pd.DataFrame({'x': range(10), 'y': np.random.randn(10).cumsum()})\n\n(Chart(df)\n    .set_style('ggplot')\n    .line('x', 'y', linewidth=2)\n    .title(\"Style 'ggplot'\")\n    .labels(xlabel='X', ylabel='Y')\n    .tight_layout()\n    .show())\n\n\n\n\nStyle ‘ggplot’\n\n\n\n\nStyles populaires : 'ggplot', 'seaborn-v0_8', 'dark_background', 'bmh', 'fivethirtyeight'.\n# Lister tous les styles installés\nimport matplotlib.pyplot as plt\nprint(plt.style.available)",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Personnalisation"
+    ]
   },
   {
     "objectID": "customization.html#annotations",
     "href": "customization.html#annotations",
     "title": "Personnalisation",
     "section": "Annotations",
-    "text": "Annotations\n\ndf = pd.DataFrame({\n    'mois':   list(range(1, 13)),\n    'ventes': [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16],\n})\n\n(Chart(df)\n    .line('mois', 'ventes', marker='o', linewidth=2)\n    .add_annotation(7, 40, 'Pic estival', fontsize=11,\n                    color='red', arrow=True)\n    .title('Ventes mensuelles avec annotation')\n    .labels(xlabel='Mois', ylabel='k€')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nAnnotation sur un pic de ventes\n\n\n\n\nchart.add_annotation(\n    x=7, y=40,\n    text='Pic estival',\n    fontsize=11,\n    color='red',\n    arrow=True,\n    arrowprops=dict(arrowstyle='-&gt;', color='red', lw=1.5)\n)"
+    "text": "Annotations\n\ndf = pd.DataFrame({\n    'mois':   list(range(1, 13)),\n    'ventes': [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16],\n})\n\n(Chart(df)\n    .line('mois', 'ventes', marker='o', linewidth=2)\n    .add_annotation(7, 40, 'Pic estival', fontsize=11,\n                    color='red', arrow=True)\n    .title('Ventes mensuelles avec annotation')\n    .labels(xlabel='Mois', ylabel='k€')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())\n\n\n\n\nAnnotation sur un pic de ventes\n\n\n\n\nchart.add_annotation(\n    x=7, y=40,\n    text='Pic estival',\n    fontsize=11,\n    color='red',\n    arrow=True,\n    arrowprops=dict(arrowstyle='-&gt;', color='red', lw=1.5)\n)",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Personnalisation"
+    ]
   },
   {
     "objectID": "customization.html#grille-légende-limites",
     "href": "customization.html#grille-légende-limites",
     "title": "Personnalisation",
     "section": "Grille, légende, limites",
-    "text": "Grille, légende, limites\n\nnp.random.seed(0)\ndf = pd.DataFrame({\n    'x': range(20),\n    'A': np.random.randn(20).cumsum(),\n    'B': np.random.randn(20).cumsum(),\n})\n\n(Chart(df)\n    .line('x', ['A', 'B'])\n    .grid(show=True, alpha=0.4, linestyle='--', linewidth=0.8)\n    .set_legend(show=True, location='upper left', fontsize=11, frameon=True)\n    .set_limits(xlim=(0, 19), ylim=(-8, 8))\n    .title(\"Grille personnalisée + limites d'axes\")\n    .tight_layout()\n    .show())\n\n\n\n\nContrôle de la grille, légende et des limites d’axes"
+    "text": "Grille, légende, limites\n\nnp.random.seed(0)\ndf = pd.DataFrame({\n    'x': range(20),\n    'A': np.random.randn(20).cumsum(),\n    'B': np.random.randn(20).cumsum(),\n})\n\n(Chart(df)\n    .line('x', ['A', 'B'])\n    .grid(show=True, alpha=0.4, linestyle='--', linewidth=0.8)\n    .set_legend(show=True, location='upper left', fontsize=11, frameon=True)\n    .set_limits(xlim=(0, 19), ylim=(-8, 8))\n    .title(\"Grille personnalisée + limites d'axes\")\n    .tight_layout()\n    .show())\n\n\n\n\nContrôle de la grille, légende et des limites d’axes",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Personnalisation"
+    ]
   },
   {
     "objectID": "customization.html#export",
     "href": "customization.html#export",
     "title": "Personnalisation",
     "section": "Export",
-    "text": "Export\n# Enregistrer en PNG haute résolution (retourne self — chaînable)\nchart.save('sortie.png', dpi=300)\n\n# Enregistrer en PDF vectoriel\nchart.save('rapport.pdf', format='pdf')\n\n# Enregistrer en SVG\nchart.save('figure.svg', format='svg', bbox_inches='tight')\n\n# Accéder aux objets matplotlib bruts pour personnalisation avancée\nfig, ax = chart.get_figure()\nax.axvspan(3, 5, alpha=0.1, color='red')   # zone colorée\nfig.savefig('custom.png', dpi=300)"
+    "text": "Export\n# Enregistrer en PNG haute résolution (retourne self — chaînable)\nchart.save('sortie.png', dpi=300)\n\n# Enregistrer en PDF vectoriel\nchart.save('rapport.pdf', format='pdf')\n\n# Enregistrer en SVG\nchart.save('figure.svg', format='svg', bbox_inches='tight')\n\n# Accéder aux objets matplotlib bruts pour personnalisation avancée\nfig, ax = chart.get_figure()\nax.axvspan(3, 5, alpha=0.1, color='red')   # zone colorée\nfig.savefig('custom.png', dpi=300)",
+    "crumbs": [
+      "Documentation",
+      "Créer des graphiques",
+      "Personnalisation"
+    ]
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "plutovizu",
     "section": "",
-    "text": "plutovizu encapsule matplotlib dans une API fluide orientée pandas DataFrame. Chaque méthode retourne self, ce qui permet d’enchaîner les appels sans variable intermédiaire."
+    "text": "Démarrage rapide\n    Installez plutovizu avec pip ou uv et tracez votre premier graphique en quelques minutes.\n  \n  \n    \n    Galerie\n    Plus de 25 types de graphiques, du simple histogramme au diagramme de Sankey.\n  \n  \n    \n    Personnalisation\n    Palettes, dégradés, polices et styles pour adapter chaque graphique à votre charte.\n  \n  \n    \n    Référence API\n    Toutes les méthodes de Chart, leurs paramètres et des exemples d'usage.",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html#exemple",
+    "href": "index.html#exemple",
+    "title": "plutovizu",
+    "section": "Exemple",
+    "text": "Exemple\nplutovizu encapsule matplotlib dans une API fluide orientée pandas DataFrame. Chaque méthode retourne self, ce qui permet d’enchaîner les appels sans variable intermédiaire.\nfrom plutovizu import Chart\nimport pandas as pd\n\ndf = pd.DataFrame({'mois': list(range(1, 13)),\n                   'ventes': [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16]})\n\n(Chart(df, figsize=(10, 5))\n    .line('mois', 'ventes', marker='o')\n    .title('Ventes mensuelles')\n    .labels(xlabel='Mois', ylabel='Ventes (k€)')\n    .grid(alpha=0.3)\n    .tight_layout()\n    .show())",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Introduction"
+    ]
   },
   {
     "objectID": "index.html#fonctionnalités",
     "href": "index.html#fonctionnalités",
     "title": "plutovizu",
     "section": "Fonctionnalités",
-    "text": "Fonctionnalités\n\n\n\n\n\n\n\nCatégorie\nMéthodes\n\n\n\n\nGraphiques de base\nline, bar, scatter, histogram, boxplot, pie, heatmap, area\n\n\nDistributions\nviolin, ridgeline\n\n\nComparaisons\nradar, parallel_coordinates, dumbbell, bump, lollipop\n\n\nComposition\ntreemap, waterfall, streamgraph\n\n\nVolumétrique\nhexbin\n\n\nPlanification & flux\ngantt, calendar_heatmap, sankey\n\n\nClimatologie\nombrothermic\n\n\nApparence\ntitle, labels, grid, font, set_legend, set_limits, rotate_labels, set_style\n\n\nCouleurs\nset_colors, create_custom_palette, generate_gradient_palette, preview_palette\n\n\nExport\nsave, show, get_figure, tight_layout"
+    "text": "Fonctionnalités\n\n\n\n\n\n\n\nCatégorie\nMéthodes\n\n\n\n\nGraphiques de base\nline, bar, scatter, histogram, boxplot, pie, heatmap, area\n\n\nDistributions\nviolin, ridgeline\n\n\nComparaisons\nradar, parallel_coordinates, dumbbell, bump, lollipop\n\n\nComposition\ntreemap, waterfall, streamgraph\n\n\nVolumétrique\nhexbin\n\n\nPlanification & flux\ngantt, calendar_heatmap, sankey\n\n\nClimatologie\nombrothermic\n\n\nApparence\ntitle, labels, grid, font, set_legend, set_limits, rotate_labels, set_style\n\n\nCouleurs\nset_colors, create_custom_palette, generate_gradient_palette, preview_palette\n\n\nExport\nsave, show, get_figure, tight_layout",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Introduction"
+    ]
   },
   {
     "objectID": "index.html#principe-de-chaînage",
     "href": "index.html#principe-de-chaînage",
     "title": "plutovizu",
     "section": "Principe de chaînage",
-    "text": "Principe de chaînage\n# Toutes les méthodes retournent self — on peut tout enchaîner\n(Chart(df)\n    .bar('categorie', 'valeur')       # type de graphique\n    .set_colors('pastel')             # palette\n    .title('Mon graphique')           # titre\n    .labels(xlabel='Cat', ylabel='Val')\n    .grid()\n    .set_legend()\n    .rotate_labels(x_rotation=45)\n    .tight_layout()\n    .save('out.png')                  # enregistre ET retourne self\n    .show())                          # terminal — retourne None"
-  },
-  {
-    "objectID": "index.html#liens-rapides",
-    "href": "index.html#liens-rapides",
-    "title": "plutovizu",
-    "section": "Liens rapides",
-    "text": "Liens rapides\n\nInstallation →\nGalerie de graphiques →\nPersonnalisation des couleurs et polices →\nRéférence complète de l’API →"
+    "text": "Principe de chaînage\n# Toutes les méthodes retournent self — on peut tout enchaîner\n(Chart(df)\n    .bar('categorie', 'valeur')       # type de graphique\n    .set_colors('pastel')             # palette\n    .title('Mon graphique')           # titre\n    .labels(xlabel='Cat', ylabel='Val')\n    .grid()\n    .set_legend()\n    .rotate_labels(x_rotation=45)\n    .tight_layout()\n    .save('out.png')                  # enregistre ET retourne self\n    .show())                          # terminal — retourne None",
+    "crumbs": [
+      "Documentation",
+      "Prise en main",
+      "Introduction"
+    ]
   }
 ]
