@@ -1,0 +1,118 @@
+---
+title: "Installation"
+---
+
+## Prérequis
+
+- Python ≥ 3.12
+- pip ou [uv](https://docs.astral.sh/uv/) (gestionnaire de paquets recommandé)
+
+---
+
+## Avec pip
+
+```bash
+pip install plutovizu
+```
+
+Pour mettre à jour vers la dernière version :
+
+```bash
+pip install --upgrade plutovizu
+```
+
+---
+
+## Avec uv (recommandé)
+
+[uv](https://docs.astral.sh/uv/) est un gestionnaire de paquets Python ultra-rapide.
+
+```bash
+# Installer uv si ce n'est pas déjà fait
+pip install uv
+
+# Ajouter plutovizu à votre projet
+uv add plutovizu
+```
+
+---
+
+## Depuis les sources (développement)
+
+```bash
+# Cloner le dépôt
+git clone https://github.com/votre-compte/plutovizu.git
+cd plutovizu
+
+# Installer en mode éditable (modifications immédiatement prises en compte)
+pip install -e .
+
+# Ou avec uv
+uv sync
+```
+
+---
+
+## Dépendances
+
+Les dépendances suivantes sont installées automatiquement :
+
+| Paquet | Version minimale | Rôle |
+|---|---|---|
+| `matplotlib` | ≥ 3.11.0 | Moteur de rendu principal |
+| `pandas` | ≥ 3.0.3 | Manipulation des DataFrames |
+| `numpy` | ≥ 2.5.0 | Calcul numérique |
+| `seaborn` | ≥ 0.13.2 | Palettes de couleurs |
+| `scipy` | ≥ 1.18.0 | KDE pour `ridgeline` |
+| `squarify` | ≥ 0.4.4 | Algorithme de pavage pour `treemap` |
+
+### Dépendances optionnelles
+
+Ces paquets sont inclus dans matplotlib et ne nécessitent pas d'installation séparée :
+
+- `matplotlib.sankey` — utilisé par la méthode `sankey()`
+- `matplotlib.patches` — utilisé par la méthode `gantt()`
+
+---
+
+## Vérification de l'installation
+
+```python
+from plutovizu import Chart, get_fonts
+import pandas as pd
+
+# Test rapide
+df = pd.DataFrame({'x': [1, 2, 3], 'y': [4, 2, 5]})
+c = Chart(df)
+print("plutovizu installé avec succès ✓")
+print(f"{len(get_fonts())} polices disponibles")
+```
+
+---
+
+## Lancer les tests
+
+```bash
+# Avec uv
+uv run pytest test_plutovizu.py -v
+
+# Avec pip
+pytest test_plutovizu.py -v
+```
+
+---
+
+## Rendre cette documentation
+
+Cette documentation est générée avec [Quarto](https://quarto.org).
+
+```bash
+# Installer Quarto : https://quarto.org/docs/get-started/
+
+# Prévisualiser en local
+cd docs
+quarto preview
+
+# Générer le site statique
+quarto render
+```

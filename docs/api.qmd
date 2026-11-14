@@ -1,0 +1,625 @@
+---
+title: "Référence API"
+---
+
+Référence complète de toutes les fonctions et méthodes de **plutovizu**.
+Toutes les méthodes de `Chart` retournent `self` (sauf `show()` et `get_figure()`),
+ce qui permet le chaînage illimité.
+
+---
+
+## Fonction de module
+
+### `get_fonts(pattern, sort)`
+
+```python
+from plutovizu import get_fonts
+
+get_fonts(pattern: str = None, sort: bool = True) -> List[str]
+```
+
+Retourne la liste des polices installées sur le système.
+
+| Paramètre | Type | Défaut | Description |
+|---|---|---|---|
+| `pattern` | `str` | `None` | Filtre par sous-chaîne (insensible à la casse) |
+| `sort` | `bool` | `True` | Trier alphabétiquement |
+
+```python
+get_fonts()                   # toutes les polices
+get_fonts(pattern='Times')    # polices contenant 'Times'
+```
+
+---
+
+## Classe `Chart`
+
+### `__init__(data, figsize)`
+
+```python
+Chart(data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6))
+```
+
+| Paramètre | Type | Défaut | Description |
+|---|---|---|---|
+| `data` | `pd.DataFrame` | — | Jeu de données source |
+| `figsize` | `Tuple[int, int]` | `(10, 6)` | Largeur × hauteur en pouces |
+
+```python
+chart = Chart(df)
+chart = Chart(df, figsize=(14, 8))
+```
+
+---
+
+## Graphiques
+
+### `line`
+
+```python
+.line(x: str, y: Union[str, List[str]],
+      marker: str = 'o', linewidth: float = 2,
+      markersize: float = 6, alpha: float = 1.0) -> Chart
+```
+
+Courbe simple ou multi-séries. Plusieurs colonnes `y` tracent une ligne par colonne.
+
+```python
+chart.line('date', 'ventes')
+chart.line('date', ['ventes', 'coûts', 'profit'], marker='s', linewidth=1.5)
+```
+
+---
+
+### `bar`
+
+```python
+.bar(x: str, y: str, horizontal: bool = False,
+     width: float = 0.8, alpha: float = 0.8,
+     color: Optional[str] = None) -> Chart
+```
+
+Barres verticales (`barv`) ou horizontales (`barh`).
+
+```python
+chart.bar('region', 'ca')
+chart.bar('valeur', 'categorie', horizontal=True, color='steelblue')
+```
+
+---
+
+### `scatter`
+
+```python
+.scatter(x: str, y: str, size: Union[str, float] = 50,
+         color: Optional[str] = None, alpha: float = 0.7,
+         marker: str = 'o') -> Chart
+```
+
+Nuage de points. `size` et `color` acceptent un nom de colonne (encodage) ou une valeur fixe.
+
+```python
+chart.scatter('temp', 'ventes', size='population', alpha=0.6)
+```
+
+---
+
+### `histogram`
+
+```python
+.histogram(column: str, bins: Union[int, str] = 30,
+           alpha: float = 0.7, color: str = None,
+           density: bool = False, edgecolor: str = 'black') -> Chart
+```
+
+| Paramètre | Défaut | Description |
+|---|---|---|
+| `bins` | `30` | Nombre de classes ou stratégie (`'auto'`, `'fd'`, `'scott'`…) |
+| `density` | `False` | Normaliser pour que l'aire totale vaille 1 |
+
+```python
+chart.histogram('salaire', bins=50, density=True, color='steelblue')
+```
+
+---
+
+### `boxplot`
+
+```python
+.boxplot(columns: Union[str, List[str]],
+         vert: bool = True, patch_artist: bool = True) -> Chart
+```
+
+Boîte à moustaches — médiane, IQR et valeurs aberrantes.
+
+```python
+chart.boxplot(['maths', 'français', 'sciences'])
+chart.boxplot('note', vert=False)
+```
+
+---
+
+### `pie`
+
+```python
+.pie(column: str, labels: Optional[str] = None,
+     autopct: str = '%1.1f%%', startangle: float = 90,
+     explode: Optional[List[float]] = None) -> Chart
+```
+
+```python
+chart.pie('part', labels='region', explode=[0.05, 0, 0, 0])
+```
+
+---
+
+### `heatmap`
+
+```python
+.heatmap(annot: bool = True, cmap: str = 'viridis',
+         fmt: str = '.2f', cbar: bool = True) -> Chart
+```
+
+Matrice de corrélation de Pearson sur toutes les colonnes numériques du DataFrame.
+
+```python
+chart.heatmap(cmap='coolwarm', fmt='.1f')
+```
+
+---
+
+### `area`
+
+```python
+.area(x: str, y: Union[str, List[str]],
+      alpha: float = 0.7, stacked: bool = False) -> Chart
+```
+
+```python
+chart.area('annee', ['rock', 'pop', 'jazz'], stacked=True)
+```
+
+---
+
+### `violin`
+
+```python
+.violin(columns: Union[str, List[str]]) -> Chart
+```
+
+```python
+chart.violin(['groupe_A', 'groupe_B', 'groupe_C'])
+```
+
+---
+
+### `lollipop`
+
+```python
+.lollipop(x: str, y: str, group: str,
+          colors: Dict[str, str], order: Optional[List[str]] = None,
+          shift_step: float = 0.2) -> Chart
+```
+
+Lollipop groupé — bulle dimensionnée + tige pointillée. `x` doit être numérique.
+
+| Paramètre | Défaut | Description |
+|---|---|---|
+| `colors` | — | `{valeur_groupe: couleur}` |
+| `order` | `None` | Ordre d'affichage des groupes |
+| `shift_step` | `0.2` | Décalage horizontal entre groupes |
+
+```python
+chart.lollipop('year', 'n', 'status',
+               colors={'cat1': '#e63946', 'cat2': '#457b9d'})
+```
+
+---
+
+### `ombrothermic`
+
+```python
+.ombrothermic(month_col: str, temperature_col: str, precipitation_col: str,
+              temp_color: str = 'tab:red', precip_color: str = 'tab:blue',
+              dry_period_color: str = 'red', dry_period_alpha: float = 0.2,
+              show_threshold_line: bool = True,
+              temp_scale_factor: float = 2.0) -> Chart
+```
+
+Diagramme ombrothermique Walter-Lieth (convention **p = 2T**).
+Les zones où précipitations < `temp_scale_factor` × température sont surlignées comme périodes sèches.
+
+```python
+chart.ombrothermic('mois', 'Température (°C)', 'Précipitations (mm)')
+```
+
+### `print_ombrothermic_analysis`
+
+```python
+.print_ombrothermic_analysis(month_col: str, temperature_col: str,
+                              precipitation_col: str,
+                              temp_scale_factor: float = 2.0) -> Chart
+```
+
+Affiche dans la console une analyse mois par mois et retourne `self`.
+
+---
+
+### `radar`
+
+```python
+.radar(columns: List[str], group: Optional[str] = None,
+       alpha: float = 0.25) -> Chart
+```
+
+Graphique araignée sur axe polaire. Chaque colonne = un rayon.
+
+```python
+chart.radar(['vitesse', 'force', 'agilité', 'endurance'], group='equipe')
+```
+
+---
+
+### `waterfall`
+
+```python
+.waterfall(x: str, y: str,
+           positive_color: str = 'steelblue',
+           negative_color: str = 'salmon') -> Chart
+```
+
+Barres cumulatives — très utilisé en finance et en budget.
+
+```python
+chart.waterfall('poste', 'delta', positive_color='#2a9d8f', negative_color='#e76f51')
+```
+
+---
+
+### `bump`
+
+```python
+.bump(x: str, y: str, group: str,
+      linewidth: float = 2.5, markersize: float = 8) -> Chart
+```
+
+Évolution de classement — axe y inversé (rang 1 en haut).
+
+```python
+chart.bump('saison', 'classement', 'equipe')
+```
+
+---
+
+### `ridgeline`
+
+```python
+.ridgeline(value_col: str, group_col: str,
+           overlap: float = 1.5, alpha: float = 0.7) -> Chart
+```
+
+Distributions KDE superposées. Nécessite `scipy`.
+
+| Paramètre | Défaut | Description |
+|---|---|---|
+| `overlap` | `1.5` | Chevauchement vertical (plus élevé = plus dense) |
+
+```python
+chart.ridgeline('salaire', 'secteur', overlap=2.0)
+```
+
+---
+
+### `treemap`
+
+```python
+.treemap(values: str, labels: Optional[str] = None,
+         alpha: float = 0.8) -> Chart
+```
+
+Rectangles imbriqués dimensionnés par une colonne. Nécessite `squarify`.
+
+```python
+chart.treemap('budget', labels='departement')
+```
+
+---
+
+### `hexbin`
+
+```python
+.hexbin(x: str, y: str, gridsize: int = 30,
+        cmap: str = 'YlOrRd', mincnt: int = 1) -> Chart
+```
+
+Remplacement du scatter pour les gros volumes — chaque hexagone est coloré par densité de points.
+
+```python
+chart.hexbin('age', 'revenu', gridsize=50, cmap='Blues')
+```
+
+---
+
+### `parallel_coordinates`
+
+```python
+.parallel_coordinates(columns: List[str],
+                       group: Optional[str] = None,
+                       alpha: float = 0.4) -> Chart
+```
+
+Chaque colonne devient un axe vertical normalisé [0, 1]. Chaque ligne du DataFrame est une polyligne.
+
+```python
+chart.parallel_coordinates(['puissance', 'conso', 'poids'], group='marque', alpha=0.3)
+```
+
+---
+
+### `dumbbell`
+
+```python
+.dumbbell(y: str, x_start: str, x_end: str,
+          color_start: str = 'steelblue', color_end: str = 'salmon',
+          line_color: str = '#aaaaaa', markersize: float = 80,
+          linewidth: float = 2.0) -> Chart
+```
+
+Comparaison avant/après — un haltère horizontal par catégorie.
+
+```python
+chart.dumbbell('pays', 'pib_2020', 'pib_2024',
+               color_start='#457b9d', color_end='#e63946')
+```
+
+---
+
+### `streamgraph`
+
+```python
+.streamgraph(x: str, y: Union[str, List[str]],
+             alpha: float = 0.85) -> Chart
+```
+
+Aires empilées avec ligne de base centrée (wiggle) — esthétique pour l'évolution temporelle.
+
+```python
+chart.streamgraph('annee', ['rock', 'pop', 'jazz', 'hip-hop'])
+```
+
+---
+
+### `gantt`
+
+```python
+.gantt(task: str, start: str, end: str,
+       group: Optional[str] = None, alpha: float = 0.8) -> Chart
+```
+
+Barres horizontales positionnées par décalage depuis la date de début minimale.
+`start` et `end` sont passées à `pd.to_datetime` — tous les formats de date sont acceptés.
+
+```python
+chart.gantt('tache', 'debut', 'fin', group='equipe')
+```
+
+---
+
+### `calendar_heatmap`
+
+```python
+.calendar_heatmap(date_col: str, value_col: str,
+                  cmap: str = 'YlGn') -> Chart
+```
+
+Grille style GitHub contributions : semaines en colonnes, jours en lignes. Les jours manquants sont remplis à 0.
+
+```python
+chart.calendar_heatmap('date', 'commits', cmap='Greens')
+```
+
+---
+
+### `sankey`
+
+```python
+.sankey(flows: str, labels: str,
+        orientations: Optional[str] = None,
+        unit: str = '', scale: float = 0.01) -> Chart
+```
+
+Flux entre catégories via `matplotlib.sankey.Sankey`.
+Valeurs positives = entrées, négatives = sorties.
+
+| Paramètre | Défaut | Description |
+|---|---|---|
+| `orientations` | `None` | Colonne d'orientations (0 = droite, 1 = haut, −1 = bas) |
+| `scale` | `0.01` | Facteur global — plus petit = flèches plus larges |
+
+```python
+chart.sankey('flux', 'etiquette', orientations='direction', unit=' k€')
+```
+
+---
+
+## Apparence
+
+### `title`
+
+```python
+.title(title: str, fontsize: int = 14, fontweight: str = 'bold',
+       color: str = 'black', pad: float = 20) -> Chart
+```
+
+### `labels`
+
+```python
+.labels(xlabel: str = None, ylabel: str = None,
+        fontsize: int = 12, color: str = 'black') -> Chart
+```
+
+### `grid`
+
+```python
+.grid(show: bool = True, alpha: float = 0.3,
+      linestyle: str = '-', linewidth: float = 0.5) -> Chart
+```
+
+### `set_legend`
+
+```python
+.set_legend(show: bool = True, location: str = 'best',
+            fontsize: int = 10, frameon: bool = True) -> Chart
+```
+
+### `set_limits`
+
+```python
+.set_limits(xlim: Tuple[float, float] = None,
+            ylim: Tuple[float, float] = None) -> Chart
+```
+
+### `rotate_labels`
+
+```python
+.rotate_labels(x_rotation: float = 0, y_rotation: float = 0) -> Chart
+```
+
+### `font`
+
+```python
+.font(family: str = 'sans-serif', size: int = 10,
+      weight: str = 'normal') -> Chart
+```
+
+Utiliser `get_available_fonts()` pour lister les polices installées.
+
+### `set_style`
+
+```python
+.set_style(style: str = 'default') -> Chart
+```
+
+Applique un style matplotlib (`'ggplot'`, `'seaborn-v0_8'`, `'dark_background'`…).
+
+### `add_annotation`
+
+```python
+.add_annotation(x: float, y: float, text: str,
+                fontsize: int = 10, color: str = 'black',
+                arrow: bool = False,
+                arrowprops: Optional[dict] = None) -> Chart
+```
+
+---
+
+## Couleurs
+
+### `set_colors`
+
+```python
+.set_colors(colors: Union[str, List[str]] = None) -> Chart
+```
+
+Accepte un nom de palette seaborn/matplotlib, un nom de palette personnalisée ou une liste de couleurs.
+
+```python
+chart.set_colors('deep')
+chart.set_colors(['#e63946', '#457b9d', '#1d3557'])
+```
+
+### `create_custom_palette`
+
+```python
+.create_custom_palette(name: str, colors: List[str],
+                       save_palette: bool = True) -> Chart
+```
+
+### `generate_gradient_palette`
+
+```python
+.generate_gradient_palette(name: str, start_color: str, end_color: str,
+                           n_colors: int = 10,
+                           save_palette: bool = True) -> Chart
+```
+
+### `preview_palette`
+
+```python
+.preview_palette(palette_name: str, n_colors: int = 8) -> Chart
+```
+
+### `get_available_palettes`
+
+```python
+.get_available_palettes(include_custom: bool = True,
+                         include_seaborn: bool = True,
+                         include_matplotlib: bool = True) -> Dict[str, List[str]]
+```
+
+### `print_available_palettes` *(statique)*
+
+```python
+Chart.print_available_palettes(category: str = 'all', limit: int = None) -> None
+```
+
+---
+
+## Polices
+
+### `get_available_fonts`
+
+```python
+.get_available_fonts(pattern: str = None, sort: bool = True) -> List[str]
+```
+
+### `print_available_fonts` *(statique)*
+
+```python
+Chart.print_available_fonts(pattern: str = None, limit: int = None) -> None
+```
+
+---
+
+## Export et utilitaires
+
+### `tight_layout`
+
+```python
+.tight_layout() -> Chart
+```
+
+### `save`
+
+```python
+.save(filename: str, dpi: int = 300,
+      bbox_inches: str = 'tight', format: str = 'png') -> Chart
+```
+
+Retourne `self` — chaînable après `save()`.
+
+```python
+chart.save('rapport.png').save('rapport.pdf', format='pdf').show()
+```
+
+### `show`
+
+```python
+.show() -> None
+```
+
+Terminal du chaînage. Appelle `plt.show()`.
+
+### `get_figure`
+
+```python
+.get_figure() -> Tuple[plt.Figure, plt.Axes]
+```
+
+Retourne `(fig, ax)` pour personnalisation matplotlib avancée.
+
+```python
+fig, ax = chart.line('x', 'y').get_figure()
+ax.axhspan(0, 5, alpha=0.1, color='green')
+fig.savefig('custom.png', dpi=300)
+```

@@ -1,0 +1,42 @@
+project:
+  type: website
+
+website:
+  title: "plutovizu"
+  description: "Bibliothèque Python de visualisation de données — API chaînable pour matplotlib"
+  favicon: ""
+  navbar:
+    background: primary
+    foreground: light
+    left:
+      - href: index.qmd
+        text: Accueil
+      - href: installation.qmd
+        text: Installation
+      - href: gallery.qmd
+        text: Galerie
+      - href: customization.qmd
+        text: Personnalisation
+      - href: api.qmd
+        text: Référence API
+  page-footer:
+    center: "plutovizu v0.1.0 · Documentation générée avec [Quarto](https://quarto.org)"
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    toc: true
+    toc-depth: 3
+    toc-title: "Sur cette page"
+    code-copy: true
+    code-overflow: wrap
+    highlight-style: github
+
+execute:
+  echo: true
+  warning: false
+  message: false
+
+jupyter: python3

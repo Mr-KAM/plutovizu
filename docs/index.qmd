@@ -1,0 +1,63 @@
+---
+title: "plutovizu"
+subtitle: "API chaînable de visualisation de données basée sur matplotlib"
+page-layout: full
+---
+
+**plutovizu** encapsule matplotlib dans une API fluide orientée pandas DataFrame.
+Chaque méthode retourne `self`, ce qui permet d'enchaîner les appels sans variable intermédiaire.
+
+```python
+from plutovizu import Chart
+import pandas as pd
+
+df = pd.DataFrame({'mois': list(range(1, 13)),
+                   'ventes': [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16]})
+
+(Chart(df, figsize=(10, 5))
+    .line('mois', 'ventes', marker='o')
+    .title('Ventes mensuelles')
+    .labels(xlabel='Mois', ylabel='Ventes (k€)')
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+## Fonctionnalités
+
+| Catégorie | Méthodes |
+|---|---|
+| **Graphiques de base** | `line`, `bar`, `scatter`, `histogram`, `boxplot`, `pie`, `heatmap`, `area` |
+| **Distributions** | `violin`, `ridgeline` |
+| **Comparaisons** | `radar`, `parallel_coordinates`, `dumbbell`, `bump`, `lollipop` |
+| **Composition** | `treemap`, `waterfall`, `streamgraph` |
+| **Volumétrique** | `hexbin` |
+| **Planification & flux** | `gantt`, `calendar_heatmap`, `sankey` |
+| **Climatologie** | `ombrothermic` |
+| **Apparence** | `title`, `labels`, `grid`, `font`, `set_legend`, `set_limits`, `rotate_labels`, `set_style` |
+| **Couleurs** | `set_colors`, `create_custom_palette`, `generate_gradient_palette`, `preview_palette` |
+| **Export** | `save`, `show`, `get_figure`, `tight_layout` |
+
+## Principe de chaînage
+
+```python
+# Toutes les méthodes retournent self — on peut tout enchaîner
+(Chart(df)
+    .bar('categorie', 'valeur')       # type de graphique
+    .set_colors('pastel')             # palette
+    .title('Mon graphique')           # titre
+    .labels(xlabel='Cat', ylabel='Val')
+    .grid()
+    .set_legend()
+    .rotate_labels(x_rotation=45)
+    .tight_layout()
+    .save('out.png')                  # enregistre ET retourne self
+    .show())                          # terminal — retourne None
+```
+
+## Liens rapides
+
+- [Installation →](installation.qmd)
+- [Galerie de graphiques →](gallery.qmd)
+- [Personnalisation des couleurs et polices →](customization.qmd)
+- [Référence complète de l'API →](api.qmd)

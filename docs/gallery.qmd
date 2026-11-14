@@ -1,0 +1,603 @@
+---
+title: "Galerie de graphiques"
+---
+
+```{python}
+#| include: false
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+from plutovizu import Chart
+```
+
+Chaque exemple est autonome : les données sont générées dans la cellule, suivies du code de tracé.
+
+---
+
+## Graphiques temporels
+
+### `line` — Courbe
+
+```{python}
+#| fig-cap: "Évolution mensuelle de trois indicateurs"
+#| fig-width: 9
+#| fig-height: 4
+
+mois = list(range(1, 13))
+df = pd.DataFrame({
+    'mois':    mois,
+    'ventes':  [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16],
+    'coûts':   [10, 11, 12, 14, 16, 18, 20, 19, 17, 15, 13, 12],
+    'profit':  [2,   4,  6,  8, 12, 17, 20, 19, 13, 10,  7,  4],
+})
+
+(Chart(df)
+    .line('mois', ['ventes', 'coûts', 'profit'], marker='o', linewidth=2)
+    .title('Indicateurs financiers 2024')
+    .labels(xlabel='Mois', ylabel='k€')
+    .grid(alpha=0.3)
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+### `area` — Aire (empilée)
+
+```{python}
+#| fig-cap: "Répartition des genres musicaux dans les écoutes"
+#| fig-width: 9
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'annee':    list(range(2015, 2025)),
+    'rock':     [30, 28, 25, 22, 20, 18, 16, 15, 13, 12],
+    'pop':      [40, 42, 44, 45, 47, 50, 52, 54, 56, 58],
+    'jazz':     [10, 11, 10, 12, 11, 10, 11, 10,  9, 10],
+    'classique':[20, 19, 21, 21, 22, 22, 21, 21, 22, 20],
+})
+
+(Chart(df)
+    .area('annee', ['rock', 'pop', 'jazz', 'classique'], stacked=True, alpha=0.75)
+    .title('Écoutes musicales par genre (2015–2024)')
+    .labels(xlabel='Année', ylabel='Part (%)')
+    .set_legend(location='upper left')
+    .tight_layout()
+    .show())
+```
+
+---
+
+## Graphiques de distribution
+
+### `histogram` — Histogramme
+
+```{python}
+#| fig-cap: "Distribution des salaires"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(0)
+df = pd.DataFrame({'salaire': np.random.normal(42000, 9000, 800)})
+
+(Chart(df)
+    .histogram('salaire', bins=30, color='steelblue', edgecolor='white')
+    .title('Distribution des salaires (n=800)')
+    .labels(xlabel='Salaire (€)', ylabel='Fréquence')
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+### `boxplot` — Boîte à moustaches
+
+```{python}
+#| fig-cap: "Comparaison des notes par matière"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(1)
+df = pd.DataFrame({
+    'maths':    np.random.normal(13, 3, 100),
+    'français': np.random.normal(12, 2, 100),
+    'sciences': np.random.normal(14, 2.5, 100),
+    'histoire': np.random.normal(11, 3.5, 100),
+})
+
+(Chart(df)
+    .boxplot(['maths', 'français', 'sciences', 'histoire'])
+    .title('Notes par matière (100 élèves)')
+    .labels(ylabel='Note /20')
+    .grid(alpha=0.2)
+    .tight_layout()
+    .show())
+```
+
+### `violin` — Violon
+
+```{python}
+#| fig-cap: "Distribution des temps de trajet par ville"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(2)
+df = pd.DataFrame({
+    'Paris':  np.random.normal(45, 15, 200),
+    'Lyon':   np.random.normal(30, 10, 200),
+    'Nantes': np.random.normal(22,  8, 200),
+    'Rennes': np.random.normal(18,  6, 200),
+})
+
+(Chart(df)
+    .violin(['Paris', 'Lyon', 'Nantes', 'Rennes'])
+    .title('Temps de trajet domicile–travail (min)')
+    .labels(ylabel='Minutes')
+    .grid(alpha=0.2)
+    .tight_layout()
+    .show())
+```
+
+### `ridgeline` — Crêtes superposées
+
+```{python}
+#| fig-cap: "Distribution des salaires par secteur"
+#| fig-width: 9
+#| fig-height: 5
+
+np.random.seed(3)
+secteurs = ['Tech', 'Finance', 'Santé', 'Éducation', 'Commerce']
+moyennes  = [68000, 72000, 52000, 38000, 44000]
+
+dfs = [
+    pd.DataFrame({'salaire': np.random.normal(m, 9000, 150), 'secteur': s})
+    for s, m in zip(secteurs, moyennes)
+]
+df = pd.concat(dfs, ignore_index=True)
+
+(Chart(df)
+    .ridgeline('salaire', 'secteur', overlap=1.8, alpha=0.65)
+    .title('Distribution des salaires annuels par secteur')
+    .labels(xlabel='Salaire (€)')
+    .tight_layout()
+    .show())
+```
+
+---
+
+## Comparaisons
+
+### `bar` — Barres
+
+```{python}
+#| fig-cap: "Chiffre d'affaires par région"
+#| fig-width: 8
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'region': ['Île-de-France', 'Auvergne-Rhône-Alpes', 'PACA', 'Occitanie', 'Bretagne'],
+    'ca':     [980, 620, 430, 380, 270],
+})
+
+(Chart(df)
+    .bar('region', 'ca', color='steelblue', alpha=0.85)
+    .title('CA par région (M€)')
+    .labels(xlabel='Région', ylabel='CA (M€)')
+    .rotate_labels(x_rotation=20)
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+### `radar` — Araignée
+
+```{python}
+#| fig-cap: "Profil multidimensionnel de trois équipes"
+#| fig-width: 7
+#| fig-height: 6
+
+df = pd.DataFrame({
+    'equipe':    ['A','A','B','B','C','C'],
+    'vitesse':   [8, 7, 6, 9, 5, 8],
+    'endurance': [6, 8, 7, 5, 9, 6],
+    'force':     [9, 6, 8, 7, 6, 7],
+    'agilité':   [7, 9, 5, 8, 7, 9],
+    'technique': [5, 7, 9, 6, 8, 5],
+})
+
+(Chart(df)
+    .radar(['vitesse', 'endurance', 'force', 'agilité', 'technique'],
+           group='equipe', alpha=0.2)
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+### `parallel_coordinates` — Coordonnées parallèles
+
+```{python}
+#| fig-cap: "Profils automobiles multi-variables"
+#| fig-width: 10
+#| fig-height: 5
+
+np.random.seed(42)
+df = pd.DataFrame({
+    'puissance':    np.random.randint(80,  300, 60),
+    'consommation': np.random.randint(4,    12, 60),
+    'poids':        np.random.randint(1000,2000, 60),
+    'prix':         np.random.randint(15000,80000, 60),
+    'marque':       np.random.choice(['Toyota','BMW','Renault','Peugeot'], 60),
+})
+
+(Chart(df)
+    .parallel_coordinates(
+        ['puissance', 'consommation', 'poids', 'prix'],
+        group='marque', alpha=0.45)
+    .title('Comparaison multivariée de véhicules')
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+### `dumbbell` — Haltère (avant/après)
+
+```{python}
+#| fig-cap: "Évolution du PIB par habitant 2020–2024"
+#| fig-width: 9
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'pays':     ['France','Allemagne','Espagne','Italie','Portugal','Pays-Bas'],
+    'pib_2020': [38000, 46000, 27000, 31000, 22000, 52000],
+    'pib_2024': [42000, 51000, 33000, 34000, 26000, 58000],
+})
+
+(Chart(df)
+    .dumbbell('pays', 'pib_2020', 'pib_2024',
+              color_start='#457b9d', color_end='#e63946')
+    .title('PIB par habitant — 2020 (bleu) vs 2024 (rouge)')
+    .labels(xlabel='PIB/hab (€)')
+    .set_legend()
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+### `bump` — Évolution de classement
+
+```{python}
+#| fig-cap: "Classement Ligue 1 sur 5 saisons"
+#| fig-width: 9
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'saison':     [2019,2020,2021,2022,2023] * 5,
+    'equipe':     (['PSG']*5 + ['Lyon']*5 + ['Marseille']*5
+                   + ['Monaco']*5 + ['Lille']*5),
+    'classement': [1,1,1,1,1, 2,5,3,4,3, 3,2,5,2,4, 4,3,2,3,5, 5,4,4,5,2],
+})
+
+(Chart(df)
+    .bump('saison', 'classement', 'equipe')
+    .title('Classement Ligue 1 (2019–2023)')
+    .labels(xlabel='Saison', ylabel='Classement')
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+### `lollipop` — Lollipop groupé
+
+```{python}
+#| fig-cap: "Tempêtes tropicales par année et intensité"
+#| fig-width: 10
+#| fig-height: 5
+
+np.random.seed(7)
+years = np.repeat(range(2015, 2024), 2)
+status = ['ouragan', 'dépression tropicale'] * 9
+n = np.random.randint(20, 120, 18)
+df = pd.DataFrame({'year': years, 'status': status, 'n': n})
+
+colors = {'ouragan': '#e63946', 'dépression tropicale': '#457b9d'}
+
+(Chart(df)
+    .lollipop('year', 'n', 'status', colors=colors,
+               order=['ouragan', 'dépression tropicale'])
+    .title('Tempêtes tropicales (2015–2023)')
+    .labels(xlabel='Année', ylabel='Nombre')
+    .set_legend()
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+---
+
+## Données volumineuses
+
+### `scatter` — Nuage de points
+
+```{python}
+#| fig-cap: "Corrélation température / ventes de glaces"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(10)
+n = 200
+temp = np.random.normal(22, 8, n)
+df = pd.DataFrame({
+    'temperature': temp,
+    'ventes':      temp * 12 + np.random.normal(0, 40, n),
+    'region':      np.random.choice(['Nord','Sud','Est','Ouest'], n),
+})
+
+(Chart(df)
+    .scatter('temperature', 'ventes', size=30, alpha=0.6)
+    .title('Températures vs ventes de glaces')
+    .labels(xlabel='Température (°C)', ylabel='Ventes (unités)')
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+### `hexbin` — Pavage hexagonal
+
+```{python}
+#| fig-cap: "Densité âge / revenu sur 5 000 observations"
+#| fig-width: 9
+#| fig-height: 5
+
+np.random.seed(0)
+df = pd.DataFrame({
+    'age':    np.random.normal(40, 12, 5000),
+    'revenu': np.random.normal(35000, 12000, 5000),
+})
+
+(Chart(df)
+    .hexbin('age', 'revenu', gridsize=40, cmap='YlOrRd')
+    .title('Densité âge / revenu annuel (n = 5 000)')
+    .labels(xlabel='Âge', ylabel='Revenu (€)')
+    .tight_layout()
+    .show())
+```
+
+---
+
+## Composition
+
+### `pie` — Camembert
+
+```{python}
+#| fig-cap: "Parts de marché par segment"
+#| fig-width: 6
+#| fig-height: 6
+
+df = pd.DataFrame({
+    'segment': ['Résidentiel','Professionnel','Industrie','Administration'],
+    'part':    [42, 28, 18, 12],
+})
+
+(Chart(df)
+    .pie('part', labels='segment', autopct='%1.1f%%',
+         explode=[0.05, 0, 0, 0])
+    .title('Parts de marché 2024')
+    .tight_layout()
+    .show())
+```
+
+### `heatmap` — Carte de chaleur (corrélation)
+
+```{python}
+#| fig-cap: "Matrice de corrélation"
+#| fig-width: 7
+#| fig-height: 6
+
+np.random.seed(5)
+df = pd.DataFrame({
+    'température': np.random.normal(20, 5, 100),
+    'humidité':    np.random.normal(60, 15, 100),
+    'pression':    np.random.normal(1013, 10, 100),
+    'vent':        np.random.normal(15, 8, 100),
+})
+# Corrélation artificielle
+df['humidité'] = df['humidité'] - 0.6 * df['température'] + np.random.normal(0, 5, 100)
+
+(Chart(df)
+    .heatmap(cmap='RdBu_r', fmt='.2f')
+    .title('Corrélations entre variables météo')
+    .tight_layout()
+    .show())
+```
+
+### `waterfall` — Cascade financière
+
+```{python}
+#| fig-cap: "Compte de résultat simplifié"
+#| fig-width: 9
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'poste': ['CA','Coût prod.','Marge brute','Loyers','Salaires','Marketing','Résultat'],
+    'delta': [500, -200, 300, -60, -140, -40, 60],
+})
+
+(Chart(df)
+    .waterfall('poste', 'delta',
+               positive_color='#2a9d8f', negative_color='#e76f51')
+    .title('Compte de résultat Q4 (k€)')
+    .labels(ylabel='k€')
+    .rotate_labels(x_rotation=25)
+    .grid(alpha=0.25)
+    .tight_layout()
+    .show())
+```
+
+### `treemap` — Carte arborescente
+
+```{python}
+#| fig-cap: "Budget par département"
+#| fig-width: 9
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'departement': ['R&D','Ventes','Marketing','Ops','Finance','IT','RH'],
+    'budget':      [450, 380, 210, 280, 150, 200, 120],
+})
+
+(Chart(df)
+    .treemap('budget', labels='departement', alpha=0.85)
+    .title('Répartition budgétaire par département (k€)')
+    .tight_layout()
+    .show())
+```
+
+### `streamgraph` — Flux temporel
+
+```{python}
+#| fig-cap: "Évolution des genres musicaux dans les écoutes"
+#| fig-width: 10
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'annee':    list(range(2012, 2025)),
+    'rock':     [32,30,28,25,22,20,18,16,15,13,12,11,10],
+    'pop':      [38,40,42,44,45,47,50,52,54,56,58,60,62],
+    'jazz':     [10,10,11,10,12,11,10,11,10, 9,10, 9, 8],
+    'hip-hop':  [12,14,15,18,20,24,28,32,36,40,42,45,50],
+    'classique':[8,  6, 4, 3, 1, -2,-6,-11,-15,-18,-22,-25,-30],
+})
+# valeurs positives uniquement pour stackplot
+df['classique'] = df['classique'].clip(lower=1)
+
+(Chart(df)
+    .streamgraph('annee', ['rock', 'pop', 'jazz', 'hip-hop', 'classique'])
+    .title('Écoutes musicales par genre (2012–2024)')
+    .labels(xlabel='Année')
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+---
+
+## Planification et flux
+
+### `gantt` — Diagramme de Gantt
+
+```{python}
+#| fig-cap: "Planning projet Q1 2024"
+#| fig-width: 10
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'tache':   ['Analyse','Design','Dev Backend','Dev Frontend',
+                'Intégration','Tests','Déploiement'],
+    'debut':   ['2024-01-02','2024-01-15','2024-02-01','2024-02-15',
+                '2024-04-01','2024-04-08','2024-04-22'],
+    'fin':     ['2024-01-19','2024-02-09','2024-04-05','2024-04-12',
+                '2024-04-12','2024-04-20','2024-04-30'],
+    'equipe':  ['PM','Design','Backend','Frontend',
+                'Backend','QA','DevOps'],
+})
+
+(Chart(df)
+    .gantt('tache', 'debut', 'fin', group='equipe', alpha=0.85)
+    .title('Planning projet — Q1 2024')
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+### `calendar_heatmap` — Calendrier de contributions
+
+```{python}
+#| fig-cap: "Commits GitHub 2024"
+#| fig-width: 14
+#| fig-height: 3
+
+np.random.seed(0)
+dates = pd.date_range('2024-01-01', '2024-12-31')
+commits = np.random.poisson(3, len(dates))
+# pas de commits les week-ends
+commits[dates.dayofweek >= 5] = 0
+df = pd.DataFrame({'date': dates, 'commits': commits})
+
+(Chart(df)
+    .calendar_heatmap('date', 'commits', cmap='Greens')
+    .title('Contributions GitHub 2024')
+    .tight_layout()
+    .show())
+```
+
+### `sankey` — Diagramme de Sankey
+
+```{python}
+#| fig-cap: "Flux financiers simplifiés"
+#| fig-width: 9
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'flux':       [200, -80,  -50, -70,   80,  -30, -50],
+    'etiquette':  ['Revenus','Coût matières','Loyers','Salaires',
+                   'Marge brute','Taxes','Bénéfice net'],
+    'direction':  [0, 1, 1, -1, 0, 1, -1],
+})
+
+(Chart(df)
+    .sankey('flux', 'etiquette', orientations='direction', unit=' k€', scale=0.005)
+    .title('Flux financiers (k€)')
+    .tight_layout()
+    .show())
+```
+
+---
+
+## Climatologie
+
+### `ombrothermic` — Diagramme ombrothermique
+
+Le diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures
+et les barres de précipitations selon la convention **p = 2T**.
+Les zones où p < 2T sont des **périodes sèches**.
+
+```{python}
+#| fig-cap: "Diagramme ombrothermique — Dakar (Sénégal)"
+#| fig-width: 12
+#| fig-height: 6
+
+df = pd.DataFrame({
+    'mois':   ['Jan','Fév','Mar','Avr','Mai','Jun',
+               'Jul','Aoû','Sep','Oct','Nov','Déc'],
+    'temp':   [23.1, 23.5, 24.2, 24.8, 26.5, 28.2,
+               28.5, 28.3, 28.0, 27.6, 25.6, 23.7],
+    'precip': [3,    1,    0,    0,    0,   16,
+               88,  235,  155,  60,    5,    5],
+})
+
+(Chart(df, figsize=(12, 6))
+    .ombrothermic('mois', 'temp', 'precip',
+                  temp_color='#e63946',
+                  precip_color='#457b9d',
+                  dry_period_color='#e63946',
+                  dry_period_alpha=0.12)
+    .title('Diagramme ombrothermique — Dakar (Sénégal)')
+    .tight_layout()
+    .show())
+```
+
+Analyse textuelle des périodes sèches :
+
+```{python}
+#| echo: true
+from plutovizu import Chart
+import pandas as pd
+
+df = pd.DataFrame({
+    'mois':   ['Jan','Fév','Mar','Avr','Mai','Jun',
+               'Jul','Aoû','Sep','Oct','Nov','Déc'],
+    'temp':   [23.1,23.5,24.2,24.8,26.5,28.2,28.5,28.3,28.0,27.6,25.6,23.7],
+    'precip': [3,1,0,0,0,16,88,235,155,60,5,5],
+})
+
+(Chart(df)
+    .print_ombrothermic_analysis('mois', 'temp', 'precip'))
+```
