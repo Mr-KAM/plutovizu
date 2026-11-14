@@ -1,3 +1,5 @@
+import warnings
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib.colors as mcolors
@@ -322,7 +324,7 @@ class Chart:
         available_fonts = self.get_available_fonts()
         if family not in ['sans-serif', 'serif', 'monospace', 'fantasy', 'cursive'] \
                 and family not in available_fonts:
-            print(f"Warning: Font '{family}' not found. Using 'sans-serif'.")
+            warnings.warn(f"Font '{family}' not found. Using 'sans-serif'.", stacklevel=2)
             family = 'sans-serif'
         plt.rcParams.update({
             'font.family': family,
@@ -369,7 +371,7 @@ class Chart:
                             sns.set_palette(colors)
                             self.current_palette = sns.color_palette(colors)
                         except Exception:
-                            print(f"Warning: Color palette '{colors}' not recognized")
+                            raise ValueError(f"Color palette '{colors}' not recognized") from None
             else:
                 self.current_palette = colors
                 plt.rcParams['axes.prop_cycle'] = plt.cycler(color=colors)
@@ -379,9 +381,11 @@ class Chart:
                               save_palette: bool = True) -> 'Chart':
         """
         EN: Define and optionally register a named custom color palette.
-            Invalid color strings are silently skipped.
+            Invalid color strings are skipped with a warning;
+            raises ValueError if none is valid.
         FR: Définit et enregistre optionnellement une palette de couleurs nommée.
-            Les chaînes de couleur invalides sont ignorées silencieusement.
+            Les couleurs invalides sont ignorées avec un avertissement ;
+            lève ValueError si aucune n'est valide.
 
         Args / Paramètres:
             name (str):
@@ -407,15 +411,13 @@ class Chart:
                 mcolors.to_rgba(color)
                 valid_colors.append(color)
             except ValueError:
-                print(f"Warning: Invalid color '{color}' ignored")
+                warnings.warn(f"Invalid color '{color}' ignored", stacklevel=2)
         if not valid_colors:
-            print("Error: No valid colors provided")
-            return self
+            raise ValueError("No valid colors provided")
         if save_palette:
             self.custom_palettes[name] = valid_colors
         self.current_palette = valid_colors
         plt.rcParams['axes.prop_cycle'] = plt.cycler(color=valid_colors)
-        print(f"Custom palette '{name}' created with {len(valid_colors)} colors")
         return self
 
     def get_available_palettes(self, include_custom: bool = True,
@@ -522,9 +524,8 @@ class Chart:
         elif category in palettes:
             categories_to_show = [category]
         else:
-            print(f"Unknown category: {category}")
-            print("Available categories:", list(palettes.keys()))
-            return
+            raise ValueError(f"Unknown category '{category}'. Available: "
+                             f"{['all', 'seaborn', 'matplotlib', *palettes]}")
         print("Available Color Palettes:")
         print("=" * 50)
         for cat in categories_to_show:
@@ -559,8 +560,6 @@ class Chart:
             chart.preview_palette('viridis', n_colors=10)
             chart.preview_palette('brand')   # palette personnalisée / custom
         """
-        self.ax.clear()
-        colors = []
         if palette_name in self.custom_palettes:
             colors = self.custom_palettes[palette_name][:n_colors]
         else:
@@ -568,11 +567,11 @@ class Chart:
                 colors = sns.color_palette(palette_name, n_colors)
             except Exception:
                 try:
-                    cmap = plt.cm.get_cmap(palette_name)
-                    colors = [cmap(i / (n_colors - 1)) for i in range(n_colors)]
-                except Exception:
-                    print(f"Palette '{palette_name}' not found")
-                    return self
+                    cmap = matplotlib.colormaps[palette_name]
+                except KeyError:
+                    raise ValueError(f"Palette '{palette_name}' not found") from None
+                colors = [cmap(i / max(n_colors - 1, 1)) for i in range(n_colors)]
+        self.ax.clear()
         for i, color in enumerate(colors):
             self.ax.barh(0, 1, left=i, color=color, edgecolor='white', linewidth=0.5)
         self.ax.set_xlim(0, len(colors))
@@ -619,26 +618,21 @@ class Chart:
             chart.generate_gradient_palette('ocean', '#003049', '#fcbf49', n_colors=8)
             chart.set_colors('ocean')
         """
-        try:
-            start_rgb = mcolors.to_rgba(start_color)
-            end_rgb = mcolors.to_rgba(end_color)
-            colors = []
-            for i in range(n_colors):
-                ratio = i / (n_colors - 1)
-                r = start_rgb[0] * (1 - ratio) + end_rgb[0] * ratio
-                g = start_rgb[1] * (1 - ratio) + end_rgb[1] * ratio
-                b = start_rgb[2] * (1 - ratio) + end_rgb[2] * ratio
-                a = start_rgb[3] * (1 - ratio) + end_rgb[3] * ratio
-                colors.append(mcolors.to_hex((r, g, b, a)))
-            if save_palette:
-                self.custom_palettes[name] = colors
-            self.current_palette = colors
-            plt.rcParams['axes.prop_cycle'] = plt.cycler(color=colors)
-            print(f"Gradient palette '{name}' created: {start_color} → {end_color}")
-            return self
-        except ValueError as e:
-            print(f"Error creating gradient: {e}")
-            return self
+        start_rgb = mcolors.to_rgba(start_color)  # lève ValueError si couleur invalide
+        end_rgb = mcolors.to_rgba(end_color)
+        colors = []
+        for i in range(n_colors):
+            ratio = i / max(n_colors - 1, 1)
+            r = start_rgb[0] * (1 - ratio) + end_rgb[0] * ratio
+            g = start_rgb[1] * (1 - ratio) + end_rgb[1] * ratio
+            b = start_rgb[2] * (1 - ratio) + end_rgb[2] * ratio
+            a = start_rgb[3] * (1 - ratio) + end_rgb[3] * ratio
+            colors.append(mcolors.to_hex((r, g, b, a)))
+        if save_palette:
+            self.custom_palettes[name] = colors
+        self.current_palette = colors
+        plt.rcParams['axes.prop_cycle'] = plt.cycler(color=colors)
+        return self
 
     # ──────────────────────────────────────── Fonts / Polices
 
@@ -1915,10 +1909,10 @@ class Chart:
 
     def show(self) -> None:
         """
-        EN: Display the figure in the active matplotlib backend (interactive window or notebook).
-            Calls plt.show() — does not return self as no further chaining is expected.
-        FR: Affiche la figure dans le backend matplotlib actif (fenêtre interactive ou notebook).
-            Appelle plt.show() — ne retourne pas self car aucun chaînage ultérieur n'est attendu.
+        EN: Display this chart's figure (notebook or interactive window), then close it
+            to free memory. Call save() before show() if you need both.
+        FR: Affiche la figure de ce graphique (notebook ou fenêtre interactive), puis la
+            ferme pour libérer la mémoire. Appeler save() avant show() si besoin des deux.
 
         Returns / Retourne:
             None
@@ -1926,7 +1920,14 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').tight_layout().show()
         """
-        plt.show()
+        if 'inline' in matplotlib.get_backend():
+            from IPython.display import display  # backend inline ⇒ IPython présent
+            display(self.fig)
+        else:
+            # ponytail: en script (fenêtre GUI), plt.show() affiche aussi les autres
+            # figures encore ouvertes ; les fermer (show/plt.close) si ça gêne.
+            plt.show()
+        plt.close(self.fig)
 
     def get_figure(self) -> Tuple[plt.Figure, plt.Axes]:
         """

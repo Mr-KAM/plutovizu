@@ -41,7 +41,7 @@ uv add plutovizu
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/votre-compte/plutovizu.git
+git clone https://github.com/Mr-KAM/plutovizu.git
 cd plutovizu
 
 # Installer en mode éditable (modifications immédiatement prises en compte)

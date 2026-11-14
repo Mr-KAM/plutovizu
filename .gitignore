@@ -13,3 +13,4 @@ wheels/
 .pytest_cache/
 docs/_site/
 docs/*.quarto_ipynb
+.claude/

@@ -1,8 +1,36 @@
 ---
 title: "plutovizu"
-subtitle: "API chaînable de visualisation de données basée sur matplotlib"
-page-layout: full
+subtitle: "Des graphiques matplotlib élégants à partir de vos DataFrames pandas, en une seule chaîne d'appels."
+body-classes: home
+toc: false
 ---
+
+```{=html}
+<div class="feature-grid">
+  <a class="feature-card" href="installation.html">
+    <div class="feature-art"><i class="bi bi-rocket-takeoff"></i></div>
+    <span class="feature-title">Démarrage rapide</span>
+    <span class="feature-text">Installez plutovizu avec pip ou uv et tracez votre premier graphique en quelques minutes.</span>
+  </a>
+  <a class="feature-card" href="gallery.html">
+    <div class="feature-art"><i class="bi bi-bar-chart-line"></i></div>
+    <span class="feature-title">Galerie</span>
+    <span class="feature-text">Plus de 25 types de graphiques, du simple histogramme au diagramme de Sankey.</span>
+  </a>
+  <a class="feature-card" href="customization.html">
+    <div class="feature-art"><i class="bi bi-palette"></i></div>
+    <span class="feature-title">Personnalisation</span>
+    <span class="feature-text">Palettes, dégradés, polices et styles pour adapter chaque graphique à votre charte.</span>
+  </a>
+  <a class="feature-card" href="api.html">
+    <div class="feature-art"><i class="bi bi-braces"></i></div>
+    <span class="feature-title">Référence API</span>
+    <span class="feature-text">Toutes les méthodes de <code>Chart</code>, leurs paramètres et des exemples d'usage.</span>
+  </a>
+</div>
+```
+
+## Exemple
 
 **plutovizu** encapsule matplotlib dans une API fluide orientée pandas DataFrame.
 Chaque méthode retourne `self`, ce qui permet d'enchaîner les appels sans variable intermédiaire.
@@ -54,10 +82,3 @@ df = pd.DataFrame({'mois': list(range(1, 13)),
     .save('out.png')                  # enregistre ET retourne self
     .show())                          # terminal — retourne None
 ```
-
-## Liens rapides
-
-- [Installation →](installation.qmd)
-- [Galerie de graphiques →](gallery.qmd)
-- [Personnalisation des couleurs et polices →](customization.qmd)
-- [Référence complète de l'API →](api.qmd)

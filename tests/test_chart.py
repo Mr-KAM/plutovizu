@@ -139,10 +139,31 @@ def test_create_custom_palette_stores(df):
     assert 'test' in c.custom_palettes
     assert c.custom_palettes['test'] == ['#FF0000', '#00FF00', '#0000FF']
 
-def test_create_custom_palette_invalid_color_ignored(df, capsys):
+def test_create_custom_palette_invalid_color_ignored(df):
     c = Chart(df)
-    c.create_custom_palette('p', ['red', 'not_a_color_xyz'])
+    with pytest.warns(UserWarning, match='not_a_color_xyz'):
+        c.create_custom_palette('p', ['red', 'not_a_color_xyz'])
     assert c.custom_palettes['p'] == ['red']
+
+def test_create_custom_palette_no_valid_color_raises(df):
+    with pytest.warns(UserWarning), pytest.raises(ValueError):
+        Chart(df).create_custom_palette('p', ['not_a_color_xyz'])
+
+def test_unknown_palette_raises(df):
+    with pytest.raises(ValueError):
+        Chart(df).set_colors('palette_inexistante')
+    with pytest.raises(ValueError):
+        Chart(df).preview_palette('palette_inexistante')
+    with pytest.raises(ValueError):
+        Chart.print_available_palettes(category='inexistante')
+
+def test_gradient_invalid_color_raises(df):
+    with pytest.raises(ValueError):
+        Chart(df).generate_gradient_palette('g', 'pas_une_couleur', 'red')
+
+def test_font_missing_warns(df):
+    with pytest.warns(UserWarning, match='not found'):
+        Chart(df).font('Police Qui N Existe Pas')
 
 def test_generate_gradient_palette(df):
     c = Chart(df)
@@ -194,6 +215,15 @@ def test_save_writes_file_and_returns_self(df, tmp_path):
 
 
 # ── get_figure ───────────────────────────────────────────────────────────────
+
+@pytest.mark.filterwarnings('ignore:FigureCanvasAgg is non-interactive')
+def test_show_closes_only_its_figure(df):
+    other = Chart(df)
+    c = Chart(df).line('x', 'a')
+    c.show()
+    assert not plt.fignum_exists(c.fig.number)
+    assert plt.fignum_exists(other.fig.number)
+
 
 def test_get_figure(df):
     c = Chart(df)

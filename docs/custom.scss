@@ -1,0 +1,241 @@
+/*-- scss:defaults --*/
+// Styles communs aux deux thèmes (couleurs propres : dark.scss / light.scss)
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+$font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+$font-family-monospace: "JetBrains Mono", ui-monospace, Consolas, monospace;
+$headings-font-weight: 600;
+$border-radius: .75rem;
+$code-block-border-left: false;
+
+/*-- scss:rules --*/
+
+$is-dark: lightness($body-bg) < 50%;
+$green: if($is-dark, #34d399, #047857);           // texte vert (contraste OK)
+$green-glow: #10b981;                              // décor
+$line: if($is-dark, rgba(255, 255, 255, .08), rgba(9, 9, 11, .08));
+$surface: if($is-dark, rgba(255, 255, 255, .04), rgba(9, 9, 11, .03));
+$muted: if($is-dark, #a1a1aa, #71717a);
+
+body {
+  -webkit-font-smoothing: antialiased;
+  font-size: .95rem;
+  line-height: 1.7;
+}
+
+// ── Barre du haut : onglets en pilule, recherche en pilule ──
+.navbar {
+  border-bottom: 1px solid $line;
+  box-shadow: none;
+  .navbar-title { font-weight: 700; letter-spacing: -.02em; color: $headings-color !important; }
+  .navbar-nav .nav-link {
+    font-size: .875rem;
+    font-weight: 500;
+    padding: .35rem .85rem !important;
+    border-radius: 999px;
+    &.active, &:hover { background: $surface; color: $headings-color !important; }
+  }
+}
+
+#quarto-search .aa-Form, .navbar .aa-Form {
+  border-radius: 999px !important;
+  border: 1px solid $line !important;
+  background: $surface !important;
+}
+
+// ── Barre latérale ──────────────────────────────────────
+#quarto-sidebar {
+  border-right: 1px solid $line;
+  .sidebar-item-section > .sidebar-item-container .sidebar-item-text {
+    font-size: .8rem;
+    font-weight: 600;
+    color: $headings-color;
+  }
+  .sidebar-link {
+    font-size: .875rem;
+    &.active { color: $green; font-weight: 500; }
+  }
+}
+
+// ── Titres ──────────────────────────────────────────────
+#title-block-header {
+  margin-bottom: 2rem;
+  .title { font-size: clamp(1.9rem, 4vw, 2.4rem); letter-spacing: -.03em; font-weight: 700; }
+  .subtitle { color: $muted; font-weight: 400; font-size: 1.1rem; }
+}
+
+h1, h2, h3, h4 { letter-spacing: -.02em; }
+#quarto-document-content h2 {
+  margin-top: 3rem;
+  padding-bottom: 0;
+  border-bottom: 0 !important;
+}
+
+// Fil d'Ariane : petit libellé vert au-dessus du titre
+.quarto-page-breadcrumbs .breadcrumb {
+  background: transparent !important;
+  padding: 0 !important;
+  margin-bottom: .4rem;
+  font-size: .8rem;
+  font-weight: 600;
+  .breadcrumb-item, .breadcrumb-item a, .breadcrumb-item + .breadcrumb-item::before { color: $green !important; }
+}
+.home .quarto-page-breadcrumbs { display: none !important; }
+
+#quarto-document-content :is(h2, h3, h4) code {
+  font-size: .85em;
+  color: $green;
+  background: rgba($green-glow, .1);
+  padding: .1em .4em;
+  border-radius: .4rem;
+}
+
+// ── Code ────────────────────────────────────────────────
+:not(pre) > code {
+  color: $headings-color;
+  background: $surface;
+  border: 1px solid $line;
+  padding: .1em .35em;
+  border-radius: .35rem;
+  font-size: .85em;
+}
+
+div.sourceCode {
+  border: 1px solid $line;
+  border-radius: $border-radius;
+  pre.sourceCode { padding: 1rem 1.1rem; font-size: .82rem; }
+}
+
+// ── Figures de la galerie ───────────────────────────────
+.cell-output-display {
+  img {
+    box-sizing: border-box;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid $line;
+    border-radius: $border-radius;
+    background: #fff;          // les PNG matplotlib ont un fond blanc
+    padding: .5rem;
+  }
+  figcaption, .figure-caption { color: $muted; font-size: .825rem; text-align: center; }
+}
+
+// ── Tableaux ────────────────────────────────────────────
+.table {
+  --bs-table-bg: transparent;
+  border-color: $line;
+  thead th { font-size: .8rem; font-weight: 600; color: $headings-color; border-bottom: 1px solid $line !important; }
+  td, th { border-color: $line; padding: .6rem .75rem; vertical-align: middle; }
+}
+
+hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
+
+#TOC .nav-link { font-size: .825rem; color: $muted; }
+#TOC .nav-link.active { color: $green !important; border-left-color: $green !important; }
+
+// Liens Précédent / Suivant en cartes
+.page-navigation .nav-page a {
+  display: inline-block;
+  padding: .75rem 1rem;
+  border: 1px solid $line;
+  border-radius: $border-radius;
+  &:hover { border-color: rgba($green-glow, .5); }
+}
+
+.nav-footer { color: $muted; font-size: .825rem; border-top: 1px solid $line; }
+
+::selection { background: rgba($green-glow, .3); }
+
+// ── Page d'accueil (body-classes: home) ────────────────
+.home {
+  #title-block-header {
+    text-align: center;
+    padding: 3.5rem 0 1rem;
+    background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba($green-glow, if($is-dark, .14, .08)), transparent 70%);
+    .title { font-size: clamp(2.4rem, 6vw, 3.4rem); }
+    .subtitle { max-width: 34rem; margin: .75rem auto 0; line-height: 1.6; }
+  }
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem 1.5rem;
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
+  margin: 1rem 0 3.5rem;
+}
+
+.feature-card {
+  display: block;
+  text-decoration: none !important;
+  color: inherit !important;
+
+  .feature-art {
+    aspect-ratio: 16 / 9;
+    display: grid;
+    place-items: center;
+    border-radius: 1rem;
+    border: 1px solid rgba($green-glow, .18);
+    background-color: rgba($green-glow, if($is-dark, .08, .06));
+    background-image:
+      linear-gradient(rgba($green-glow, .12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($green-glow, .12) 1px, transparent 1px);
+    background-size: 26px 26px;
+    background-position: center;
+    i { font-size: 3.6rem; color: $green; filter: drop-shadow(0 0 22px rgba($green-glow, .45)); }
+  }
+  .feature-title { display: block; margin-top: .9rem; font-weight: 600; color: $headings-color; }
+  .feature-text { display: block; margin-top: .2rem; color: $muted; font-size: .9rem; line-height: 1.55; }
+
+  &:hover .feature-art, &:focus-visible .feature-art { border-color: rgba($green-glow, .5); }
+}
+
+// ── Responsive ──────────────────────────────────────────
+// Les valeurs de code dans les tableaux ne se coupent jamais : `Tuple[int, int]`, `(10, 6)`
+#quarto-document-content :is(td, th) code { white-space: nowrap !important; }
+
+@media (max-width: 991.98px) {
+  // Tableaux larges : défilement horizontal au lieu de déborder de l'écran
+  #quarto-document-content table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #quarto-document-content td { min-width: 6rem; }
+  #quarto-document-content td:last-child { min-width: 14rem; }
+}
+
+@media (max-width: 767.98px) {
+  body { font-size: .925rem; }
+
+  // Code : défilement horizontal plutôt que des retours à la ligne illisibles
+  div.sourceCode pre.sourceCode,
+  div.sourceCode pre.sourceCode code {
+    white-space: pre !important;
+    overflow-x: auto;
+  }
+  div.sourceCode pre.sourceCode { padding: .8rem .9rem; font-size: .78rem; }
+
+  #quarto-document-content h2 { margin-top: 2.25rem; }
+  .cell-output-display img { padding: .25rem; }
+
+  .home #title-block-header {
+    padding: 2rem 0 .5rem;
+    .subtitle { font-size: 1rem; }
+  }
+  .feature-grid { gap: 1.5rem; margin-bottom: 2.5rem; }
+  .feature-card .feature-art {
+    aspect-ratio: 5 / 2;
+    i { font-size: 2.6rem; }
+  }
+
+  .page-navigation .nav-page a { max-width: 100%; padding: .6rem .8rem; }
+  .nav-footer { flex-direction: column; gap: .25rem; text-align: center; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .feature-card .feature-art i { transition: transform .25s ease; }
+  .feature-card:hover .feature-art i { transform: translateY(-4px) scale(1.06); }
+}
