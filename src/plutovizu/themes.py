@@ -11,7 +11,12 @@ palette, police, grille, épaisseurs… Comme ``seaborn.set_theme``, il s'appliq
     with theme_context('paper'):       # seulement dans ce bloc
         Chart(df).line('x', 'y').show()
     set_theme(None)                    # retour au style matplotlib d'origine
+
+Si le paquet optionnel ``morethemes`` est installé (``pip install plutovizu[morethemes]``),
+ses thèmes (wsj, economist, ft, retro, nord…) sont aussi disponibles par leur nom.
 """
+import warnings
+from contextlib import contextmanager
 from typing import Dict, List, Union
 
 import matplotlib as mpl
@@ -86,18 +91,100 @@ THEMES: Dict[str, Dict] = {
         font='monospace', cmap='cool',
         **{'axes.spines.top': True, 'axes.spines.right': True, 'axes.edgecolor': '#c7d7f5',
            'grid.linestyle': ':', 'lines.linewidth': 1.6, 'axes.titleweight': 'normal'}),
+    # Crépuscule : prune profond, oranges et roses chauds
+    'sunset': _theme(
+        bg='#1d1226', fg='#fdf2f8', muted='#c4a7c9', grid='#33223f',
+        palette=['#ff7b54', '#ffd56b', '#e85d9a', '#9b5de5', '#ffb26b', '#f15bb5'],
+        cmap='magma'),
+    # Forêt : vert sous-bois, tons naturels
+    'forest': _theme(
+        bg='#0f1d17', fg='#ecf3ec', muted='#9fb5a5', grid='#1f3329',
+        palette=['#8fd694', '#e9c46a', '#f4a261', '#76c7c0', '#e76f51', '#c9e4a7'],
+        cmap='YlGn'),
+    # Océan : bleu abyssal, cyan et corail
+    'ocean': _theme(
+        bg='#0a1929', fg='#e6f1ff', muted='#8aa4c2', grid='#16304d',
+        palette=['#3dd6d0', '#5aa9ff', '#ffd166', '#ff6b9a', '#b39ddb', '#a0e7e5'],
+        cmap='mako'),
+    # Terminal rétro : fond noir, phosphore vert, police mono
+    'terminal': _theme(
+        bg='#050805', fg='#33ff66', muted='#2bbf55', grid='#0f2a14',
+        palette=['#33ff66', '#ffb000', '#00e5ff', '#ff5f5f', '#d0ff5f'],
+        font='monospace', cmap='Greens',
+        **{'axes.titleweight': 'normal', 'lines.linewidth': 1.6}),
+    # Encre : noir et blanc + un seul rouge d'accent, idéal pour l'impression
+    'ink': _theme(
+        bg='#ffffff', fg='#111111', muted='#555555', grid='#e6e6e6',
+        palette=['#111111', '#d62828', '#7a7a7a', '#b0b0b0', '#4a4a4a'],
+        cmap='Greys', **{'lines.linewidth': 1.8}),
+    # Pastel : fond lavande très clair, couleurs douces mais lisibles
+    'pastel': _theme(
+        bg='#fbfaff', fg='#3b3552', muted='#7d7896', grid='#ece9f7',
+        palette=['#7aa6f5', '#f28b8b', '#7ccf8a', '#f5b86b', '#a594f0', '#6cc9d6'],
+        cmap='PuBuGn', **{'lines.linewidth': 2.8}),
+    # Sahel : sable, terre cuite, ocre et indigo
+    'sahel': _theme(
+        bg='#f5ebdc', fg='#3b2a1a', muted='#7a6249', grid='#e6d6bf',
+        palette=['#c1440e', '#335c67', '#e09f3e', '#9e2a2b', '#6a994e', '#540b0e'],
+        cmap='YlOrBr'),
+    # Accessible : palette Okabe-Ito, distinguable par les personnes daltoniennes
+    'accessible': _theme(
+        bg='#ffffff', fg='#1a1a1a', muted='#595959', grid='#e8e8e8',
+        palette=['#0072B2', '#E69F00', '#009E73', '#D55E00', '#CC79A7', '#56B4E9', '#F0E442'],
+        cmap='cividis'),
 }
+
+DESCRIPTIONS: Dict[str, str] = {
+    'pluto': "Quasi-noir et vert émeraude, assorti à la documentation.",
+    'editorial': "Style presse : fond blanc, grille horizontale seule, aucun axe vertical.",
+    'paper': "Papier crème, typographie serif et couleurs terre : un rendu imprimé.",
+    'arctic': "Gris bleuté et palette polaire : doux et froid, idéal pour des rapports.",
+    'neon': "Rétro-futuriste : violet nuit et couleurs fluo.",
+    'blueprint': "Plan d'architecte : fond bleu, traits blancs fins, grille pointillée, police mono.",
+    'sunset': "Crépuscule : prune profond, oranges et roses chauds.",
+    'forest': "Sous-bois : vert profond et tons naturels.",
+    'ocean': "Bleu abyssal, cyan et corail.",
+    'terminal': "Terminal rétro : phosphore vert sur noir, police mono.",
+    'ink': "Noir et blanc avec un seul rouge d'accent : parfait pour l'impression.",
+    'pastel': "Fond lavande très clair, couleurs douces et traits épais.",
+    'sahel': "Sable, terre cuite, ocre et indigo.",
+    'accessible': "Palette Okabe-Ito, lisible par les personnes daltoniennes.",
+}
+
+# ── Thèmes du paquet optionnel morethemes (MIT, https://github.com/y-sunflower/morethemes)
+# En cas de conflit de nom, le thème plutovizu est prioritaire.
+# 'brand' est exclu : il exige un fichier _brand.yml.
+try:
+    import morethemes as _mt
+    MORETHEMES: Dict[str, Dict] = {
+        name: dict(_mt.get_rcparams(name))
+        for name in _mt.ALL_THEMES if name != 'brand' and name not in THEMES
+    }
+    DESCRIPTIONS.update({name: f"{_mt.ALL_THEMES[name]['description']} (morethemes)"
+                         for name in MORETHEMES})
+except ImportError:
+    MORETHEMES = {}
 
 # Valeurs matplotlib d'origine de toutes les clés touchées par un thème :
 # on les restaure avant chaque changement pour qu'aucun réglage ne « fuie » d'un thème à l'autre.
-_DEFAULTS = {k: mpl.rcParamsDefault[k] for k in set().union(*THEMES.values())}
+_DEFAULTS = {k: mpl.rcParamsDefault[k]
+             for k in set().union(*THEMES.values(), *MORETHEMES.values())}
 
 ThemeLike = Union[str, Dict, None]
 
 
-def list_themes() -> List[str]:
-    """Retourne les noms des thèmes disponibles."""
-    return sorted(THEMES)
+def list_themes(source: str = 'all') -> List[str]:
+    """Retourne les noms des thèmes disponibles.
+
+    Args:
+        source: 'all' (défaut), 'plutovizu' ou 'morethemes'.
+    """
+    groups = {'plutovizu': THEMES, 'morethemes': MORETHEMES}
+    if source == 'all':
+        return sorted({**THEMES, **MORETHEMES})
+    if source not in groups:
+        raise ValueError(f"source doit valoir 'all', 'plutovizu' ou 'morethemes', pas '{source}'")
+    return sorted(groups[source])
 
 
 def _resolve(theme: ThemeLike) -> Dict:
@@ -105,10 +192,29 @@ def _resolve(theme: ThemeLike) -> Dict:
         return {}
     if isinstance(theme, dict):  # thème personnalisé : dict de rcParams
         return theme
-    try:
+    if theme in THEMES:
         return THEMES[theme]
-    except KeyError:
-        raise ValueError(f"Thème inconnu '{theme}'. Disponibles : {list_themes()}") from None
+    if theme in MORETHEMES:
+        return MORETHEMES[theme]
+    hint = '' if MORETHEMES else " (plus de thèmes avec : pip install plutovizu[morethemes])"
+    raise ValueError(f"Thème inconnu '{theme}'. Disponibles : {list_themes()}{hint}")
+
+
+def _load_font(theme: ThemeLike) -> None:
+    """Les thèmes morethemes utilisent une police Google Fonts, téléchargée (puis mise
+    en cache) par pyfonts. Sans réseau : avertissement et police par défaut."""
+    if not isinstance(theme, str) or theme not in MORETHEMES:
+        return
+    family = MORETHEMES[theme].get('font.family')
+    if not isinstance(family, str):
+        return
+    try:
+        from pyfonts import load_google_font, set_default_font
+        set_default_font(load_google_font(family))
+    except Exception as exc:  # réseau absent, police retirée de Google Fonts…
+        warnings.warn(f"Police « {family} » indisponible ({exc.__class__.__name__}) : "
+                      "police par défaut utilisée.", stacklevel=3)
+        mpl.rcParams['font.family'] = 'sans-serif'
 
 
 def set_theme(theme: ThemeLike = 'pluto') -> None:
@@ -121,11 +227,15 @@ def set_theme(theme: ThemeLike = 'pluto') -> None:
     rc = _resolve(theme)
     mpl.rcParams.update(_DEFAULTS)
     mpl.rcParams.update(rc)
+    _load_font(theme)
 
 
+@contextmanager
 def theme_context(theme: ThemeLike):
     """Context manager : applique un thème seulement à l'intérieur d'un bloc ``with``."""
-    return mpl.rc_context({**_DEFAULTS, **_resolve(theme)})
+    with mpl.rc_context({**_DEFAULTS, **_resolve(theme)}):
+        _load_font(theme)
+        yield
 
 
 def get_theme(name: str) -> Dict:

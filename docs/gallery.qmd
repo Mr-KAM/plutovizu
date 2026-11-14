@@ -1,5 +1,6 @@
 ---
 title: "Galerie de graphiques"
+subtitle: "Les 30 types de graphiques de plutovizu, chacun avec un exemple prêt à copier."
 ---
 
 ```{python}
@@ -12,11 +13,46 @@ from plutovizu import Chart
 
 Chaque exemple est autonome : les données sont générées dans la cellule, suivies du code de tracé.
 
+## Vue d'ensemble
+
+| Catégorie | Méthode | Graphique | Pour quoi faire |
+|---|---|---|---|
+| Temporel | [`line`](#g-line) | Courbe | Évolution d'une ou plusieurs séries |
+| Temporel | [`area`](#g-area) | Aire (empilée ou non) | Évolution de parts d'un total |
+| Distribution | [`histogram`](#g-histogram) | Histogramme | Forme d'une distribution |
+| Distribution | [`boxplot`](#g-boxplot) | Boîte à moustaches | Médiane, quartiles, valeurs extrêmes |
+| Distribution | [`violin`](#g-violin) | Violon | Densité complète par groupe |
+| Distribution | [`ridgeline`](#g-ridgeline) | Crêtes superposées | Comparer beaucoup de distributions |
+| Distribution | [`qqplot`](#g-qqplot) | Diagramme quantile-quantile | Vérifier la normalité (résidus) |
+| Comparaison | [`bar`](#g-bar) | Barres | Comparer des valeurs par catégorie |
+| Comparaison | [`mean_bar`](#g-mean_bar) | Moyennes ± erreur | Moyennes de traitements (SE, SD, IC 95 %) |
+| Comparaison | [`interaction`](#g-interaction) | Graphique d'interaction | Interaction entre deux facteurs (ANOVA) |
+| Comparaison | [`radar`](#g-radar) | Araignée | Profils multicritères |
+| Comparaison | [`parallel_coordinates`](#g-parallel_coordinates) | Coordonnées parallèles | Individus sur plusieurs variables |
+| Comparaison | [`dumbbell`](#g-dumbbell) | Haltère | Avant / après |
+| Comparaison | [`bump`](#g-bump) | Évolution de classement | Rangs au fil du temps |
+| Comparaison | [`lollipop`](#g-lollipop) | Lollipop | Barres allégées, groupées |
+| Relation | [`scatter`](#g-scatter) | Nuage de points | Relation entre deux variables |
+| Relation | [`regression`](#g-regression) | Régression | Ajustement, équation, R², bande de confiance |
+| Relation | [`hexbin`](#g-hexbin) | Pavage hexagonal | Nuage de points très dense |
+| Relation | [`heatmap`](#g-heatmap) | Carte de chaleur | Matrice de corrélation |
+| Multivarié | [`pca_biplot`](#g-pca_biplot) | Biplot d'ACP | Individus et variables sur deux axes |
+| Multivarié | [`dendrogram`](#g-dendrogram) | Dendrogramme | Classification hiérarchique |
+| Composition | [`pie`](#g-pie) | Camembert | Parts d'un total (peu de catégories) |
+| Composition | [`treemap`](#g-treemap) | Carte arborescente | Parts d'un total (beaucoup de catégories) |
+| Composition | [`waterfall`](#g-waterfall) | Cascade | Contributions successives |
+| Composition | [`streamgraph`](#g-streamgraph) | Flux temporel | Composition dans le temps |
+| Composition | [`ternary`](#g-ternary) | Diagramme ternaire | Compositions en 3 parts (texture du sol) |
+| Planification | [`gantt`](#g-gantt) | Gantt | Calendrier de tâches |
+| Planification | [`calendar_heatmap`](#g-calendar_heatmap) | Calendrier | Valeurs jour par jour |
+| Flux | [`sankey`](#g-sankey) | Sankey | Flux entre étapes |
+| Climatologie | [`ombrothermic`](#g-ombrothermic) | Diagramme ombrothermique | Mois secs et humides (p = 2T) |
+
 ---
 
 ## Graphiques temporels
 
-### `line` — Courbe
+### `line` — Courbe {#g-line}
 
 ```{python}
 #| fig-cap: "Évolution mensuelle de trois indicateurs"
@@ -41,7 +77,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `area` — Aire (empilée)
+### `area` — Aire (empilée) {#g-area}
 
 ```{python}
 #| fig-cap: "Répartition des genres musicaux dans les écoutes"
@@ -69,7 +105,7 @@ df = pd.DataFrame({
 
 ## Graphiques de distribution
 
-### `histogram` — Histogramme
+### `histogram` — Histogramme {#g-histogram}
 
 ```{python}
 #| fig-cap: "Distribution des salaires"
@@ -88,7 +124,7 @@ df = pd.DataFrame({'salaire': np.random.normal(42000, 9000, 800)})
     .show())
 ```
 
-### `boxplot` — Boîte à moustaches
+### `boxplot` — Boîte à moustaches {#g-boxplot}
 
 ```{python}
 #| fig-cap: "Comparaison des notes par matière"
@@ -112,7 +148,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `violin` — Violon
+### `violin` — Violon {#g-violin}
 
 ```{python}
 #| fig-cap: "Distribution des temps de trajet par ville"
@@ -136,7 +172,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `ridgeline` — Crêtes superposées
+### `ridgeline` — Crêtes superposées {#g-ridgeline}
 
 ```{python}
 #| fig-cap: "Distribution des salaires par secteur"
@@ -165,7 +201,7 @@ df = pd.concat(dfs, ignore_index=True)
 
 ## Comparaisons
 
-### `bar` — Barres
+### `bar` — Barres {#g-bar}
 
 ```{python}
 #| fig-cap: "Chiffre d'affaires par région"
@@ -187,7 +223,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `radar` — Araignée
+### `radar` — Araignée {#g-radar}
 
 ```{python}
 #| fig-cap: "Profil multidimensionnel de trois équipes"
@@ -211,7 +247,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `parallel_coordinates` — Coordonnées parallèles
+### `parallel_coordinates` — Coordonnées parallèles {#g-parallel_coordinates}
 
 ```{python}
 #| fig-cap: "Profils automobiles multi-variables"
@@ -237,7 +273,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `dumbbell` — Haltère (avant/après)
+### `dumbbell` — Haltère (avant/après) {#g-dumbbell}
 
 ```{python}
 #| fig-cap: "Évolution du PIB par habitant 2020–2024"
@@ -261,7 +297,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `bump` — Évolution de classement
+### `bump` — Évolution de classement {#g-bump}
 
 ```{python}
 #| fig-cap: "Classement Ligue 1 sur 5 saisons"
@@ -284,7 +320,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `lollipop` — Lollipop groupé
+### `lollipop` — Lollipop groupé {#g-lollipop}
 
 ```{python}
 #| fig-cap: "Tempêtes tropicales par année et intensité"
@@ -314,7 +350,7 @@ colors = {'ouragan': '#e63946', 'dépression tropicale': '#457b9d'}
 
 ## Données volumineuses
 
-### `scatter` — Nuage de points
+### `scatter` — Nuage de points {#g-scatter}
 
 ```{python}
 #| fig-cap: "Corrélation température / ventes de glaces"
@@ -339,7 +375,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `hexbin` — Pavage hexagonal
+### `hexbin` — Pavage hexagonal {#g-hexbin}
 
 ```{python}
 #| fig-cap: "Densité âge / revenu sur 5 000 observations"
@@ -364,7 +400,7 @@ df = pd.DataFrame({
 
 ## Composition
 
-### `pie` — Camembert
+### `pie` — Camembert {#g-pie}
 
 ```{python}
 #| fig-cap: "Parts de marché par segment"
@@ -384,7 +420,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `heatmap` — Carte de chaleur (corrélation)
+### `heatmap` — Carte de chaleur (corrélation) {#g-heatmap}
 
 ```{python}
 #| fig-cap: "Matrice de corrélation"
@@ -408,7 +444,7 @@ df['humidité'] = df['humidité'] - 0.6 * df['température'] + np.random.normal(
     .show())
 ```
 
-### `waterfall` — Cascade financière
+### `waterfall` — Cascade financière {#g-waterfall}
 
 ```{python}
 #| fig-cap: "Compte de résultat simplifié"
@@ -431,7 +467,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `treemap` — Carte arborescente
+### `treemap` — Carte arborescente {#g-treemap}
 
 ```{python}
 #| fig-cap: "Budget par département"
@@ -450,7 +486,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `streamgraph` — Flux temporel
+### `streamgraph` — Flux temporel {#g-streamgraph}
 
 ```{python}
 #| fig-cap: "Évolution des genres musicaux dans les écoutes"
@@ -481,7 +517,7 @@ df['classique'] = df['classique'].clip(lower=1)
 
 ## Planification et flux
 
-### `gantt` — Diagramme de Gantt
+### `gantt` — Diagramme de Gantt {#g-gantt}
 
 ```{python}
 #| fig-cap: "Planning projet Q1 2024"
@@ -507,7 +543,7 @@ df = pd.DataFrame({
     .show())
 ```
 
-### `calendar_heatmap` — Calendrier de contributions
+### `calendar_heatmap` — Calendrier de contributions {#g-calendar_heatmap}
 
 ```{python}
 #| fig-cap: "Commits GitHub 2024"
@@ -528,7 +564,7 @@ df = pd.DataFrame({'date': dates, 'commits': commits})
     .show())
 ```
 
-### `sankey` — Diagramme de Sankey
+### `sankey` — Diagramme de Sankey {#g-sankey}
 
 ```{python}
 #| fig-cap: "Flux financiers simplifiés"
@@ -553,7 +589,7 @@ df = pd.DataFrame({
 
 ## Climatologie
 
-### `ombrothermic` — Diagramme ombrothermique
+### `ombrothermic` — Diagramme ombrothermique {#g-ombrothermic}
 
 Le diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures
 et les barres de précipitations selon la convention **p = 2T**.
@@ -600,4 +636,161 @@ df = pd.DataFrame({
 
 (Chart(df)
     .print_ombrothermic_analysis('mois', 'temp', 'precip'))
+```
+
+---
+
+## Sciences de la nature & analyse de données
+
+Les exemples ci-dessous s'appuient sur un essai agronomique fictif : trois variétés de riz
+testées à cinq doses d'azote, en quatre blocs.
+
+```{python}
+#| include: false
+rng = np.random.default_rng(3)
+rows = []
+for variete, gain in [('Sahel-108', 0.0), ('IR-841', 0.7), ('Nerica-4', 1.3)]:
+    for dose in [0, 30, 60, 90, 120]:
+        for bloc in range(1, 5):
+            rows.append({
+                'variete': variete, 'dose': dose, 'bloc': bloc,
+                'rendement': (2.5 + gain + 0.035 * dose - 0.00018 * dose ** 2
+                              + (0.004 * dose if variete == 'Nerica-4' else 0)
+                              + rng.normal(0, 0.25)),
+            })
+essai = pd.DataFrame(rows)
+```
+
+### `regression` — Régression et courbe de réponse {#g-regression}
+
+Ajustement polynomial avec bande de confiance à 95 %, équation et R²
+(et p-value pour un ajustement linéaire). Les résultats sont aussi disponibles dans
+`chart.regression_stats`.
+
+```{python}
+#| fig-cap: "Réponse du rendement à la fertilisation azotée"
+(Chart(essai, figsize=(9, 4.5))
+    .regression('dose', 'rendement', order=2)
+    .title("Courbe de réponse à l'azote")
+    .labels(xlabel='Dose N (kg/ha)', ylabel='Rendement (t/ha)')
+    .tight_layout()
+    .show())
+```
+
+### `mean_bar` — Moyennes ± erreur {#g-mean_bar}
+
+Moyennes par traitement avec barres d'erreur : `error='se'` (erreur type, défaut),
+`'sd'` (écart-type) ou `'ci95'` (intervalle de confiance à 95 %). `hue` ajoute un second
+facteur, `points=True` superpose les observations.
+
+```{python}
+#| fig-cap: "Rendement moyen par dose et par variété"
+(Chart(essai, figsize=(10, 4.5))
+    .mean_bar('dose', 'rendement', hue='variete')
+    .title('Rendement moyen ± erreur type')
+    .labels(xlabel='Dose N (kg/ha)')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+#| fig-cap: "Intervalle de confiance à 95 % et observations individuelles"
+(Chart(essai, figsize=(8, 4.5))
+    .mean_bar('variete', 'rendement', error='ci95', points=True)
+    .title('Rendement par variété')
+    .tight_layout()
+    .show())
+```
+
+### `interaction` — Graphique d'interaction {#g-interaction}
+
+Une ligne par niveau du second facteur : des lignes non parallèles suggèrent une
+interaction (à confirmer par une ANOVA à deux facteurs).
+
+```{python}
+#| fig-cap: "Interaction dose × variété"
+(Chart(essai, figsize=(9, 4.5))
+    .interaction('dose', 'variete', 'rendement')
+    .title('Interaction dose × variété')
+    .labels(xlabel='Dose N (kg/ha)')
+    .tight_layout()
+    .show())
+```
+
+### `qqplot` — Diagramme quantile-quantile {#g-qqplot}
+
+Vérifie la normalité, par exemple des résidus d'un modèle : les points doivent suivre la droite.
+
+```{python}
+#| fig-cap: "Normalité des résidus (écart à la moyenne de chaque traitement)"
+essai['residus'] = essai['rendement'] - essai.groupby(['variete', 'dose'])['rendement'].transform('mean')
+
+(Chart(essai, figsize=(7, 4.5))
+    .qqplot('residus')
+    .title('QQ-plot des résidus')
+    .tight_layout()
+    .show())
+```
+
+### `pca_biplot` — Analyse en composantes principales {#g-pca_biplot}
+
+ACP normée : les individus sur les deux premiers axes, colorés par groupe, et les variables
+en flèches. Variance expliquée, coordonnées et contributions dans `chart.pca`.
+
+```{python}
+#| fig-cap: "ACP de cinq caractères agronomiques sur 30 variétés"
+rng = np.random.default_rng(7)
+n = 30
+precocite = rng.normal(size=n)
+caracteres = pd.DataFrame({
+    'variete':   [f'V{i:02d}' for i in range(n)],
+    'cycle':     np.where(precocite > 0, 'tardif', 'précoce'),
+    'hauteur':   95 + 12 * precocite + rng.normal(0, 5, n),
+    'jours_floraison': 85 + 10 * precocite + rng.normal(0, 3, n),
+    'talles':    12 - 2 * precocite + rng.normal(0, 1, n),
+    'pmg':       25 + rng.normal(0, 2.5, n),
+    'rendement': 4.5 + 0.5 * precocite + rng.normal(0, 0.4, n),
+})
+
+chart = (Chart(caracteres, figsize=(8, 6))
+    .pca_biplot(group='cycle')
+    .title('ACP des caractères variétaux')
+    .tight_layout())
+print('Variance expliquée :', (chart.pca['explained_variance_ratio'][:3] * 100).round(1), '%')
+chart.show()
+```
+
+### `dendrogram` — Classification hiérarchique {#g-dendrogram}
+
+Regroupe les individus selon leur ressemblance (méthode de Ward par défaut, variables
+centrées-réduites). `color_threshold` colore les groupes formés sous la hauteur de coupe,
+marquée par une ligne pointillée.
+
+```{python}
+#| fig-cap: "Classification des variétés sur leurs caractères"
+(Chart(caracteres, figsize=(11, 5))
+    .dendrogram(labels='variete', color_threshold=6)
+    .title('Dendrogramme des variétés (Ward)')
+    .tight_layout()
+    .show())
+```
+
+### `ternary` — Diagramme ternaire {#g-ternary}
+
+Pour des compositions en trois parts (pourcentages ou fractions), comme la texture du sol.
+Sommets : premier argument en bas à gauche, deuxième en bas à droite, troisième en haut.
+
+```{python}
+#| fig-cap: "Texture des sols de 40 parcelles"
+rng = np.random.default_rng(11)
+sols = pd.DataFrame({'zone': rng.choice(['bas-fond', 'plateau'], 40)})
+sols['sable'] = np.where(sols['zone'] == 'plateau', rng.uniform(55, 85, 40), rng.uniform(10, 45, 40))
+sols['argile'] = rng.uniform(5, 100 - sols['sable'] - 5)
+sols['limon'] = 100 - sols['sable'] - sols['argile']
+
+(Chart(sols, figsize=(7, 6.5))
+    .ternary('sable', 'limon', 'argile', group='zone')
+    .title('Texture des sols (%)')
+    .tight_layout()
+    .show())
 ```

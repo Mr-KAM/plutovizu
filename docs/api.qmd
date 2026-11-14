@@ -32,22 +32,48 @@ get_fonts(pattern='Times')    # polices contenant 'Times'
 
 ---
 
-## Classe `Chart`
+## Thèmes
 
-### `__init__(data, figsize)`
+Voir la page [Thèmes](themes.qmd) pour l'aperçu de chaque thème.
+
+| Fonction | Rôle |
+|---|---|
+| `set_theme(theme='pluto')` | Applique un thème à tous les graphiques suivants ; `None` revient au style matplotlib |
+| `theme_context(theme)` | Applique un thème seulement dans un bloc `with` |
+| `list_themes(source='all')` | Noms des thèmes : `'all'`, `'plutovizu'` ou `'morethemes'` |
+| `get_theme(name)` | Copie des réglages d'un thème, pour en dériver un thème personnalisé |
+| `THEMES`, `MORETHEMES` | Dictionnaires nom → rcParams |
+| `DESCRIPTIONS` | Dictionnaire nom → description |
 
 ```python
-Chart(data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6))
+from plutovizu import set_theme, theme_context, get_theme
+
+set_theme('editorial')
+with theme_context('wsj'):            # thème morethemes (paquet optionnel)
+    Chart(df).line('x', 'y').show()
+set_theme({**get_theme('pluto'), 'axes.titlesize': 20})
+```
+
+---
+
+## Classe `Chart`
+
+### `__init__(data, figsize, theme)`
+
+```python
+Chart(data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6),
+      theme: Optional[str] = None)
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `data` | `pd.DataFrame` | — | Jeu de données source |
 | `figsize` | `Tuple[int, int]` | `(10, 6)` | Largeur × hauteur en pouces |
+| `theme` | `str` | `None` | Raccourci de `set_theme(theme)` — s'applique aussi aux graphiques suivants |
 
 ```python
 chart = Chart(df)
-chart = Chart(df, figsize=(14, 8))
+chart = Chart(df, figsize=(14, 8), theme='pluto')
 ```
 
 ---
@@ -109,7 +135,7 @@ chart.scatter('temp', 'ventes', size='population', alpha=0.6)
 ```python
 .histogram(column: str, bins: Union[int, str] = 30,
            alpha: float = 0.7, color: str = None,
-           density: bool = False, edgecolor: str = 'black') -> Chart
+           density: bool = False, edgecolor: Optional[str] = None) -> Chart
 ```
 
 | Paramètre | Défaut | Description |
@@ -442,34 +468,144 @@ chart.sankey('flux', 'etiquette', orientations='direction', unit=' k€')
 
 ---
 
+## Sciences & analyse de données
+
+Exemples complets dans la [galerie](gallery.qmd#sciences-de-la-nature-analyse-de-données).
+L'argument `error` vaut `'se'` (erreur type), `'sd'` (écart-type) ou `'ci95'` (IC à 95 %).
+
+### `regression`
+
+```python
+.regression(x: str, y: str, order: int = 1, ci: bool = True,
+            show_equation: bool = True, color: str = None,
+            alpha: float = 0.7) -> Chart
+```
+
+Nuage de points + ajustement polynomial de degré `order`, bande de confiance à 95 %,
+équation et R² (p-value si `order=1`). Résultats : `chart.regression_stats`
+(`coefs`, `r2`, `p`, `n`).
+
+```python
+chart.regression('dose', 'rendement', order=2)
+```
+
+### `mean_bar`
+
+```python
+.mean_bar(x: str, y: str, hue: str = None, error: str = 'se',
+          points: bool = False, capsize: float = 4, alpha: float = 0.85) -> Chart
+```
+
+Moyennes de `y` par niveau de `x` avec barres d'erreur ; `hue` ajoute un second facteur
+(barres groupées), `points=True` superpose les observations.
+
+```python
+chart.mean_bar('dose', 'rendement', hue='variete', error='ci95')
+```
+
+### `interaction`
+
+```python
+.interaction(x: str, trace: str, response: str,
+             error: str = 'se', marker: str = 'o') -> Chart
+```
+
+Réponse moyenne selon `x`, une ligne par niveau de `trace` (`error=None` : sans barres).
+
+```python
+chart.interaction('dose', 'variete', 'rendement')
+```
+
+### `qqplot`
+
+```python
+.qqplot(column: str, color: str = None) -> Chart
+```
+
+Diagramme quantile-quantile face à la loi normale, avec le coefficient `r` de la droite.
+
+### `pca_biplot`
+
+```python
+.pca_biplot(columns: List[str] = None, group: str = None, scale: bool = True,
+            arrows: bool = True, alpha: float = 0.8) -> Chart
+```
+
+ACP (normée si `scale=True`) : individus sur CP1/CP2 et variables en flèches.
+Résultats : `chart.pca` (`explained_variance_ratio`, `scores`, `loadings`).
+
+```python
+chart.pca_biplot(group='cycle')
+chart.pca['loadings']
+```
+
+### `dendrogram`
+
+```python
+.dendrogram(labels: str = None, columns: List[str] = None, method: str = 'ward',
+            metric: str = 'euclidean', color_threshold: float = None,
+            standardize: bool = True, orientation: str = 'top',
+            leaf_rotation: float = 90) -> Chart
+```
+
+Classification hiérarchique (scipy). `color_threshold` colore les groupes sous la hauteur
+de coupe et trace la ligne de coupe. Matrice de liaison : `chart.linkage`.
+
+```python
+chart.dendrogram(labels='variete', method='average', color_threshold=4)
+```
+
+### `ternary`
+
+```python
+.ternary(a: str, b: str, c: str, group: str = None, grid_step: float = 0.1,
+         alpha: float = 0.85, size: float = 40) -> Chart
+```
+
+Diagramme ternaire ; chaque ligne est normalisée à 100 %. Sommets : `a` en bas à gauche,
+`b` en bas à droite, `c` en haut.
+
+```python
+chart.ternary('sable', 'limon', 'argile', group='zone')
+```
+
+---
+
 ## Apparence
+
+::: {.callout-note}
+Les options laissées à `None` suivent le [thème](themes.qmd) actif
+(ou le style matplotlib si aucun thème n'est appliqué).
+:::
 
 ### `title`
 
 ```python
-.title(title: str, fontsize: int = 14, fontweight: str = 'bold',
-       color: str = 'black', pad: float = 20) -> Chart
+.title(title: str, fontsize: int = None, fontweight: str = None,
+       color: str = None, pad: float = None, loc: str = None) -> Chart
 ```
+
+`loc` : alignement `'left'`, `'center'` ou `'right'`.
 
 ### `labels`
 
 ```python
 .labels(xlabel: str = None, ylabel: str = None,
-        fontsize: int = 12, color: str = 'black') -> Chart
+        fontsize: int = None, color: str = None) -> Chart
 ```
 
 ### `grid`
 
 ```python
-.grid(show: bool = True, alpha: float = 0.3,
-      linestyle: str = '-', linewidth: float = 0.5) -> Chart
+.grid(show: bool = True, alpha: float = None,
+      linestyle: str = None, linewidth: float = None) -> Chart
 ```
 
 ### `set_legend`
 
 ```python
 .set_legend(show: bool = True, location: str = 'best',
-            fontsize: int = 10, frameon: bool = True) -> Chart
+            fontsize: int = None, frameon: bool = None) -> Chart
 ```
 
 ### `set_limits`
@@ -506,7 +642,7 @@ Applique un style matplotlib (`'ggplot'`, `'seaborn-v0_8'`, `'dark_background'`�
 
 ```python
 .add_annotation(x: float, y: float, text: str,
-                fontsize: int = 10, color: str = 'black',
+                fontsize: int = 10, color: str = None,
                 arrow: bool = False,
                 arrowprops: Optional[dict] = None) -> Chart
 ```
@@ -608,7 +744,8 @@ chart.save('rapport.png').save('rapport.pdf', format='pdf').show()
 .show() -> None
 ```
 
-Terminal du chaînage. Appelle `plt.show()`.
+Terminal du chaînage. Affiche la figure du graphique (notebook ou fenêtre), puis la
+**ferme** pour libérer la mémoire : appeler `save()` avant `show()` si besoin des deux.
 
 ### `get_figure`
 

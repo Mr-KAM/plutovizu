@@ -1182,19 +1182,23 @@ class Chart:
             f'Température ({temperature_col.split("(")[-1].replace(")", "")})',
             color=temp_color)
         self.ax.tick_params(axis='y', labelcolor=temp_color)
-        temp_min = self.data[temperature_col].min() / temp_scale_factor
-        temp_max = self.data[temperature_col].max() / temp_scale_factor
-        self.ax.set_ylim(temp_min, temp_max)
         ax2 = self.ax.twinx()
+        # Échelle de Gaussen : axe P = facteur × axe T, les deux partant de 0
+        # (ou du minimum si températures négatives) → la courbe T coïncide avec le seuil.
+        temps = self.data[temperature_col]
+        t_low = min(0, temps.min())
+        p_high = max(self.data[precipitation_col].max(), temp_scale_factor * temps.max()) * 1.1
+        self.ax.set_ylim(t_low, p_high / temp_scale_factor)
+        ax2.set_ylim(t_low * temp_scale_factor, p_high)
+        # Courbe de température au-dessus des barres de précipitations
+        self.ax.set_zorder(ax2.get_zorder() + 1)
+        self.ax.patch.set_visible(False)
         ax2.bar(self.data[month_col], self.data[precipitation_col],
                 color=precip_color, alpha=0.6, label='Précipitations')
         ax2.set_ylabel(
             f'Précipitations ({precipitation_col.split("(")[-1].replace(")", "")})',
             color=precip_color)
         ax2.tick_params(axis='y', labelcolor=precip_color)
-        precip_min = self.data[precipitation_col].min() - 2
-        precip_max = self.data[precipitation_col].max() + 2
-        ax2.set_ylim(precip_min, precip_max)
         x_pos = range(len(self.data[month_col]))
         temp_threshold = [temp_scale_factor * t for t in self.data[temperature_col]]
         dry_periods = []
@@ -1818,6 +1822,357 @@ class Chart:
             labels=self.data[labels].tolist(),
             orientations=orient_vals,
         ).finish()
+        return self
+
+    # ──────────────────────────────────────── Sciences & data analysis / Sciences & analyse
+
+    @staticmethod
+    def _palette() -> List[str]:
+        """Couleurs du thème actif (cycle de couleurs matplotlib)."""
+        return plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+    @staticmethod
+    def _error(values: pd.Series, error: str) -> float:
+        """Erreur d'une série : 'se' (erreur type), 'sd' (écart-type) ou 'ci95'."""
+        n = values.count()
+        sd = values.std(ddof=1) if n > 1 else 0.0
+        if error == 'sd':
+            return sd
+        se = sd / np.sqrt(n) if n else 0.0
+        if error == 'se':
+            return se
+        if error == 'ci95':
+            from scipy import stats
+            return stats.t.ppf(0.975, n - 1) * se if n > 1 else 0.0
+        raise ValueError(f"error doit valoir 'se', 'sd' ou 'ci95', pas '{error}'")
+
+    def dendrogram(self, labels: Optional[str] = None, columns: Optional[List[str]] = None,
+                   method: str = 'ward', metric: str = 'euclidean',
+                   color_threshold: Optional[float] = None, standardize: bool = True,
+                   orientation: str = 'top', leaf_rotation: float = 90) -> 'Chart':
+        """
+        EN: Hierarchical clustering dendrogram (scipy). Branches below
+            color_threshold share a color; a dashed line marks the cut.
+        FR: Dendrogramme de classification hiérarchique (scipy). Les branches sous
+            color_threshold partagent une couleur ; une ligne pointillée marque la coupe.
+
+        Args / Paramètres:
+            labels (str, optional): EN: Column naming the leaves. / FR: Colonne nommant les feuilles.
+            columns (List[str], optional): EN: Numeric columns used (default: all).
+                / FR: Colonnes numériques utilisées (défaut : toutes).
+            method (str): EN/FR: 'ward', 'average', 'complete', 'single'…
+            metric (str): EN/FR: Distance ('euclidean', 'cityblock', 'correlation'…).
+            color_threshold (float, optional): EN: Cut height. / FR: Hauteur de coupe.
+            standardize (bool): EN: Z-score columns first (mixed units). Default True.
+                / FR: Centre-réduit les colonnes (unités différentes). Défaut True.
+            orientation (str): 'top', 'bottom', 'left', 'right'.
+            leaf_rotation (float): EN/FR: Rotation des étiquettes des feuilles.
+
+        Example / Exemple:
+            chart.dendrogram(labels='variete', color_threshold=4)
+        """
+        from scipy.cluster.hierarchy import dendrogram, linkage, set_link_color_palette
+        self.chart_type = 'dendrogram'
+        cols = columns or [c for c in self.data.select_dtypes('number').columns if c != labels]
+        X = self.data[cols].to_numpy(dtype=float)
+        if standardize:
+            X = (X - X.mean(axis=0)) / X.std(axis=0, ddof=1)
+        leaf_labels = (self.data[labels] if labels else self.data.index).astype(str).tolist()
+        Z = linkage(X, method=method, metric=metric)
+        set_link_color_palette([mcolors.to_hex(c) for c in self._palette()])
+        try:
+            dendrogram(Z, labels=leaf_labels, ax=self.ax, orientation=orientation,
+                       color_threshold=color_threshold,
+                       above_threshold_color=plt.rcParams['axes.labelcolor'],
+                       leaf_rotation=leaf_rotation)
+        finally:
+            set_link_color_palette(None)  # palette scipy globale : on la restaure
+        self.ax.grid(False)
+        vertical = orientation in ('top', 'bottom')
+        (self.ax.set_ylabel if vertical else self.ax.set_xlabel)('Distance')
+        if color_threshold is not None:
+            line = self.ax.axhline if vertical else self.ax.axvline
+            line(color_threshold, color=plt.rcParams['axes.labelcolor'], linestyle='--', linewidth=1)
+        self.linkage = Z
+        return self
+
+    def regression(self, x: str, y: str, order: int = 1, ci: bool = True,
+                   show_equation: bool = True, color: Optional[str] = None,
+                   alpha: float = 0.7) -> 'Chart':
+        """
+        EN: Scatter plot with a polynomial fit, its 95% confidence band and the
+            equation, R² (and p-value for a linear fit). Results in self.regression_stats.
+        FR: Nuage de points avec ajustement polynomial, bande de confiance à 95 %,
+            équation, R² (et p-value si linéaire). Résultats dans self.regression_stats.
+
+        Args / Paramètres:
+            x, y (str): EN/FR: Colonnes explicative et réponse.
+            order (int): EN: Polynomial degree (1 = linear, 2 = quadratic…).
+                / FR: Degré du polynôme (1 = linéaire, 2 = quadratique…).
+            ci (bool): EN/FR: Bande de confiance à 95 %. Défaut True.
+            show_equation (bool): EN/FR: Affiche équation et R². Défaut True.
+
+        Example / Exemple:
+            chart.regression('azote', 'rendement', order=2)   # courbe de réponse
+        """
+        from scipy import stats
+        self.chart_type = 'regression'
+        d = self.data[[x, y]].dropna()
+        xv, yv = d[x].to_numpy(float), d[y].to_numpy(float)
+        n = len(xv)
+        if n <= order + 1:
+            raise ValueError(f"Il faut plus de {order + 1} points pour un polynôme de degré {order}")
+        coefs = np.polyfit(xv, yv, order)
+        residuals = yv - np.polyval(coefs, xv)
+        r2 = 1 - (residuals ** 2).sum() / ((yv - yv.mean()) ** 2).sum()
+        p = stats.linregress(xv, yv).pvalue if order == 1 else None
+        c = color or self._palette()[0]
+        self.ax.scatter(xv, yv, color=c, alpha=alpha, label=y)
+        xs = np.linspace(xv.min(), xv.max(), 200)
+        fit = np.polyval(coefs, xs)
+        self.ax.plot(xs, fit, color=c, label='Ajustement')
+        if ci:
+            # Bande de confiance de la moyenne : se = sqrt(v' (X'X)^-1 v) * s
+            Xd = np.vander(xv, order + 1)
+            s2 = (residuals ** 2).sum() / (n - order - 1)
+            cov = s2 * np.linalg.pinv(Xd.T @ Xd)
+            V = np.vander(xs, order + 1)
+            half = stats.t.ppf(0.975, n - order - 1) * np.sqrt(np.einsum('ij,jk,ik->i', V, cov, V))
+            self.ax.fill_between(xs, fit - half, fit + half, color=c, alpha=0.18, linewidth=0)
+        if show_equation:
+            terms = []
+            for power, coef in zip(range(order, -1, -1), coefs):
+                var = '' if power == 0 else ('x' if power == 1 else f'x$^{power}$')
+                terms.append(f'{coef:+.3g}{var}')
+            eq = 'y = ' + ' '.join(terms).lstrip('+')
+            text = f'{eq}\n$R^2$ = {r2:.3f}' + (f'   p = {p:.2g}' if p is not None else '')
+            self.ax.text(0.02, 0.97, text, transform=self.ax.transAxes, va='top', fontsize=9,
+                         bbox=dict(boxstyle='round,pad=0.4', fc=plt.rcParams['axes.facecolor'],
+                                   ec=plt.rcParams['grid.color'], alpha=0.9))
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.regression_stats = {'coefs': coefs, 'r2': r2, 'p': p, 'n': n}
+        return self
+
+    def pca_biplot(self, columns: Optional[List[str]] = None, group: Optional[str] = None,
+                   scale: bool = True, arrows: bool = True, alpha: float = 0.8) -> 'Chart':
+        """
+        EN: Principal component analysis biplot: individuals on PC1/PC2 (colored by
+            group) and variable loadings as arrows. Results in self.pca.
+        FR: Biplot d'analyse en composantes principales : individus sur CP1/CP2
+            (colorés par groupe) et variables en flèches. Résultats dans self.pca.
+
+        Args / Paramètres:
+            columns (List[str], optional): EN/FR: Variables numériques (défaut : toutes).
+            group (str, optional): EN/FR: Colonne de groupe (couleurs + légende).
+            scale (bool): EN: Standardize variables (normed PCA). Default True.
+                / FR: Centre-réduit les variables (ACP normée). Défaut True.
+            arrows (bool): EN/FR: Affiche les flèches des variables. Défaut True.
+
+        Example / Exemple:
+            chart.pca_biplot(group='espece')
+        """
+        self.chart_type = 'pca_biplot'
+        cols = columns or [c for c in self.data.select_dtypes('number').columns if c != group]
+        if len(cols) < 2:
+            raise ValueError("L'ACP demande au moins deux variables numériques")
+        d = self.data.dropna(subset=cols)
+        X = d[cols].to_numpy(float)
+        X = X - X.mean(axis=0)
+        if scale:
+            X = X / X.std(axis=0, ddof=1)
+        U, S, Vt = np.linalg.svd(X, full_matrices=False)
+        scores = U * S
+        explained = S ** 2 / (S ** 2).sum()
+        loadings = Vt.T * S / np.sqrt(len(X) - 1)  # corrélations variable/composante si normée
+        groups = d[group] if group else pd.Series('', index=d.index)
+        for color, (name, idx) in zip(self._palette() * 10, groups.groupby(groups).groups.items()):
+            pos = d.index.get_indexer(idx)
+            self.ax.scatter(scores[pos, 0], scores[pos, 1], color=color, alpha=alpha,
+                            label=name if group else None)
+        if arrows:
+            k = 0.85 * np.abs(scores[:, :2]).max() / np.abs(loadings[:, :2]).max()
+            ink = plt.rcParams['text.color']
+            tips = loadings[:, :2] * k
+            for name, (lx, ly) in zip(cols, tips):
+                self.ax.annotate('', xy=(lx, ly), xytext=(0, 0),
+                                 arrowprops=dict(arrowstyle='->', color=ink, lw=1.2))
+                self.ax.text(lx * 1.08, ly * 1.08, name, color=ink, fontsize=9,
+                             ha='center', va='center')
+            # annotate() n'agrandit pas les axes : on y inclut les pointes et étiquettes
+            self.ax.update_datalim(tips * 1.2)
+            self.ax.autoscale_view()
+        for line in (self.ax.axhline, self.ax.axvline):
+            line(0, color=plt.rcParams['grid.color'], linewidth=1, zorder=0)
+        self.ax.set_xlabel(f'CP1 ({explained[0]:.1%})')
+        self.ax.set_ylabel(f'CP2 ({explained[1]:.1%})')
+        if group:
+            self.ax.legend()
+        pcs = [f'CP{i + 1}' for i in range(len(S))]
+        self.pca = {'explained_variance_ratio': explained,
+                    'scores': pd.DataFrame(scores, index=d.index, columns=pcs),
+                    'loadings': pd.DataFrame(loadings, index=cols, columns=pcs)}
+        return self
+
+    def mean_bar(self, x: str, y: str, hue: Optional[str] = None, error: str = 'se',
+                 points: bool = False, capsize: float = 4, alpha: float = 0.85) -> 'Chart':
+        """
+        EN: Bar chart of group means with error bars — the classic display of
+            field-trial treatment means. Optional second factor (hue) and raw points.
+        FR: Barres des moyennes par groupe avec barres d'erreur — l'affichage classique
+            des moyennes de traitements d'un essai. Second facteur (hue) et points bruts optionnels.
+
+        Args / Paramètres:
+            x (str): EN/FR: Facteur (traitement, variété…).
+            y (str): EN/FR: Variable réponse.
+            hue (str, optional): EN/FR: Second facteur → barres groupées.
+            error (str): 'se' (erreur type, défaut), 'sd' (écart-type) ou 'ci95'.
+            points (bool): EN/FR: Superpose les observations individuelles.
+
+        Example / Exemple:
+            chart.mean_bar('traitement', 'rendement', hue='annee', error='ci95')
+        """
+        self.chart_type = 'mean_bar'
+        levels = list(pd.unique(self.data[x]))
+        hues = list(pd.unique(self.data[hue])) if hue else [None]
+        width = 0.8 / len(hues)
+        pos = np.arange(len(levels))
+        for j, (h, color) in enumerate(zip(hues, self._palette() * 10)):
+            sub = self.data if h is None else self.data[self.data[hue] == h]
+            g = sub.groupby(x)[y]
+            means = g.mean().reindex(levels)
+            errs = [self._error(sub.loc[sub[x] == lv, y], error) for lv in levels]
+            offs = pos - 0.4 + width * (j + 0.5)
+            self.ax.bar(offs, means, width=width * 0.92, yerr=errs, capsize=capsize,
+                        color=color, alpha=alpha, label=None if h is None else str(h),
+                        error_kw={'ecolor': plt.rcParams['axes.labelcolor'], 'elinewidth': 1})
+            if points:
+                rng = np.random.default_rng(0)
+                for k, lv in enumerate(levels):
+                    vals = sub.loc[sub[x] == lv, y].dropna()
+                    jitter = rng.uniform(-width * 0.25, width * 0.25, len(vals))
+                    self.ax.scatter(offs[k] + jitter, vals, s=12, zorder=3,
+                                    color=plt.rcParams['text.color'], alpha=0.6)
+        self.ax.set_xticks(pos)
+        self.ax.set_xticklabels([str(v) for v in levels])
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(f'{y} (moyenne ± {error.upper()})')
+        if hue:
+            self.ax.legend(title=hue)
+        return self
+
+    def interaction(self, x: str, trace: str, response: str, error: Optional[str] = 'se',
+                    marker: str = 'o') -> 'Chart':
+        """
+        EN: Interaction plot: mean response along factor x, one line per level of
+            trace. Non-parallel lines suggest an interaction (two-way ANOVA).
+        FR: Graphique d'interaction : réponse moyenne selon le facteur x, une ligne par
+            niveau de trace. Des lignes non parallèles suggèrent une interaction (ANOVA à 2 facteurs).
+
+        Args / Paramètres:
+            x (str): EN/FR: Facteur en abscisse (ex. dose d'azote).
+            trace (str): EN/FR: Facteur tracé en lignes (ex. variété).
+            response (str): EN/FR: Variable réponse (ex. rendement).
+            error (str, optional): 'se', 'sd', 'ci95' ou None (sans barres).
+
+        Example / Exemple:
+            chart.interaction('dose', 'variete', 'rendement')
+        """
+        self.chart_type = 'interaction'
+        levels = list(pd.unique(self.data[x]))
+        pos = np.arange(len(levels))
+        for t, color in zip(pd.unique(self.data[trace]), self._palette() * 10):
+            sub = self.data[self.data[trace] == t]
+            means = sub.groupby(x)[response].mean().reindex(levels)
+            errs = ([self._error(sub.loc[sub[x] == lv, response], error) for lv in levels]
+                    if error else None)
+            self.ax.errorbar(pos, means, yerr=errs, color=color, marker=marker,
+                             capsize=3, label=str(t))
+        self.ax.set_xticks(pos)
+        self.ax.set_xticklabels([str(v) for v in levels])
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(f'{response} (moyenne)')
+        self.ax.legend(title=trace)
+        return self
+
+    def qqplot(self, column: str, color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Normal quantile-quantile plot: points close to the line indicate
+            normally distributed data (e.g. ANOVA residuals).
+        FR: Diagramme quantile-quantile normal : des points proches de la droite
+            indiquent une distribution normale (ex. résidus d'ANOVA).
+
+        Example / Exemple:
+            chart.qqplot('residus')
+        """
+        from scipy import stats
+        self.chart_type = 'qqplot'
+        (osm, osr), (slope, intercept, r) = stats.probplot(self.data[column].dropna(), dist='norm')
+        c = color or self._palette()[0]
+        self.ax.scatter(osm, osr, color=c, alpha=0.8)
+        line_x = np.array([osm.min(), osm.max()])
+        self.ax.plot(line_x, slope * line_x + intercept, color=plt.rcParams['axes.labelcolor'],
+                     linestyle='--', linewidth=1.2)
+        self.ax.set_xlabel('Quantiles théoriques (loi normale)')
+        self.ax.set_ylabel(f'Quantiles observés — {column}')
+        self.ax.text(0.02, 0.97, f'r = {r:.3f}', transform=self.ax.transAxes, va='top', fontsize=9)
+        return self
+
+    def ternary(self, a: str, b: str, c: str, group: Optional[str] = None,
+                grid_step: float = 0.1, alpha: float = 0.85, size: float = 40) -> 'Chart':
+        """
+        EN: Ternary diagram for three-part compositions summing to a constant
+            (e.g. soil texture sand / silt / clay). Values may be fractions or percents.
+            Corners: a bottom-left, b bottom-right, c top.
+        FR: Diagramme ternaire pour des compositions en trois parts de somme constante
+            (ex. texture du sol sable / limon / argile). Fractions ou pourcentages.
+            Sommets : a en bas à gauche, b en bas à droite, c en haut.
+
+        Example / Exemple:
+            chart.ternary('sable', 'limon', 'argile', group='parcelle')
+        """
+        self.chart_type = 'ternary'
+        h = np.sqrt(3) / 2
+
+        def xy(fa, fb, fc):
+            return fb + fc / 2, fc * h
+
+        ink = plt.rcParams['axes.labelcolor']
+        grid_color = plt.rcParams['grid.color']
+        self.ax.plot([0, 1, 0.5, 0], [0, 0, h, 0], color=ink, linewidth=1.2)
+        for f in np.arange(grid_step, 1, grid_step):
+            for p1, p2 in (((1 - f, 0, f), (0, 1 - f, f)),     # c constant
+                           ((f, 1 - f, 0), (f, 0, 1 - f)),     # a constant
+                           ((1 - f, f, 0), (0, f, 1 - f))):    # b constant
+                (x1, y1), (x2, y2) = xy(*p1), xy(*p2)
+                self.ax.plot([x1, x2], [y1, y2], color=grid_color, linewidth=0.7, zorder=0)
+            pct = f'{f * 100:.0f}'
+            bx, by = xy(1 - f, f, 0)                       # graduations de b (bas)
+            self.ax.text(bx, by - 0.035, pct, ha='center', va='top', fontsize=8, color=ink)
+            cx, cy = xy(0, 1 - f, f)                       # graduations de c (droite)
+            self.ax.text(cx + 0.03, cy, pct, ha='left', va='center', fontsize=8, color=ink)
+            ax_, ay_ = xy(f, 0, 1 - f)                     # graduations de a (gauche)
+            self.ax.text(ax_ - 0.03, ay_, pct, ha='right', va='center', fontsize=8, color=ink)
+        for (px, py), name, ha, va in ((xy(1, 0, 0), a, 'right', 'top'),
+                                       (xy(0, 1, 0), b, 'left', 'top'),
+                                       (xy(0, 0, 1), c, 'center', 'bottom')):
+            self.ax.text(px + {'right': -0.04, 'left': 0.04, 'center': 0}[ha],
+                         py + (0.04 if va == 'bottom' else -0.07), name,
+                         ha=ha, va=va, fontweight='bold', color=plt.rcParams['text.color'])
+        comp = self.data[[a, b, c]].to_numpy(float)
+        comp = comp / comp.sum(axis=1, keepdims=True)
+        px, py = xy(comp[:, 0], comp[:, 1], comp[:, 2])
+        groups = self.data[group] if group else pd.Series('', index=self.data.index)
+        for color, (name, idx) in zip(self._palette() * 10, groups.groupby(groups).groups.items()):
+            pos = self.data.index.get_indexer(idx)
+            self.ax.scatter(px[pos], py[pos], s=size, color=color, alpha=alpha, zorder=3,
+                            label=name if group else None)
+        self.ax.set_aspect('equal')
+        self.ax.set_xlim(-0.12, 1.12)
+        self.ax.set_ylim(-0.12, h + 0.08)
+        self.ax.axis('off')
+        if group:
+            self.ax.legend(loc='upper right')
         return self
 
     # ──────────────────────────────────────── Utilities / Utilitaires

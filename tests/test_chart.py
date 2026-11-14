@@ -235,7 +235,7 @@ def test_get_figure(df):
 
 # ── thèmes ───────────────────────────────────────────────────────────────────
 
-@pytest.mark.parametrize('name', list_themes())
+@pytest.mark.parametrize('name', list_themes('plutovizu'))
 def test_every_theme_renders(df, name):
     set_theme(name)
     c = (Chart(df).line('x', ['a', 'b']).title('t').labels('x', 'y')
@@ -265,3 +265,127 @@ def test_theme_context_is_scoped():
 def test_unknown_theme_raises():
     with pytest.raises(ValueError, match='Disponibles'):
         set_theme('inexistant')
+
+def test_ombrothermic_gaussen_scale(climate):
+    c = Chart(climate).ombrothermic('mois', 'temp', 'precip')
+    t_lo, t_hi = c.ax.get_ylim()
+    p_lo, p_hi = c.ax2.get_ylim()
+    assert t_lo <= climate['temp'].min() and climate['temp'].max() <= t_hi  # courbe visible
+    assert p_hi == pytest.approx(2 * t_hi) and p_lo == pytest.approx(2 * t_lo)  # P = 2T
+
+def test_every_theme_has_description():
+    from plutovizu import DESCRIPTIONS
+    assert set(DESCRIPTIONS) == set(list_themes())
+
+
+# ── morethemes (paquet optionnel) ───────────────────────────────────────────
+
+from plutovizu import MORETHEMES
+import plutovizu.themes as themes_mod
+
+needs_mt = pytest.mark.skipif(not MORETHEMES, reason='morethemes non installé')
+
+
+@needs_mt
+@pytest.mark.parametrize('name', sorted(MORETHEMES))
+def test_every_morethemes_theme_renders(df, name, monkeypatch):
+    monkeypatch.setattr(themes_mod, '_load_font', lambda theme: None)  # pas de réseau
+    with theme_context(name):
+        c = Chart(df).line('x', ['a', 'b']).title('t').grid().set_legend()
+        c.fig.canvas.draw()
+
+@needs_mt
+def test_morethemes_listed_and_resolvable():
+    assert 'wsj' in list_themes('morethemes') and 'wsj' in list_themes()
+    assert 'brand' not in list_themes()
+    assert set(list_themes('plutovizu')).isdisjoint(list_themes('morethemes'))
+
+@needs_mt
+def test_morethemes_font_offline_falls_back(monkeypatch):
+    import pyfonts
+    def offline(*a, **k):
+        raise ConnectionError('pas de réseau')
+    monkeypatch.setattr(pyfonts, 'load_google_font', offline)
+    with pytest.warns(UserWarning, match='indisponible'):
+        set_theme('wsj')
+    assert plt.rcParams['font.family'] == ['sans-serif']
+
+
+# ── sciences & analyse ──────────────────────────────────────────────────────
+
+@pytest.fixture
+def essai():
+    """Essai agronomique : 3 variétés × 4 doses d'azote × 3 répétitions."""
+    rng = np.random.default_rng(1)
+    rows = []
+    for v, gain in [('V1', 0.0), ('V2', 0.6), ('V3', 1.2)]:
+        for dose in [0, 40, 80, 120]:
+            for rep in range(3):
+                rows.append({'variete': v, 'dose': dose, 'rep': rep,
+                             'rendement': 3 + gain + 0.02 * dose - 0.0001 * dose ** 2
+                                          + rng.normal(0, 0.2)})
+    return pd.DataFrame(rows)
+
+def test_dendrogram_leaves_and_threshold(df):
+    c = Chart(df).dendrogram(labels='cat', columns=['a', 'b'], color_threshold=1.5)
+    assert c.linkage.shape == (len(df) - 1, 4)
+    assert len(c.ax.get_xticklabels()) == len(df)
+
+def test_regression_perfect_line():
+    d = pd.DataFrame({'x': np.arange(10.0), 'y': 2 * np.arange(10.0) + 1})
+    c = Chart(d).regression('x', 'y')
+    assert c.regression_stats['r2'] == pytest.approx(1.0)
+    assert c.regression_stats['coefs'] == pytest.approx([2, 1])
+
+def test_regression_quadratic_has_no_pvalue(essai):
+    c = Chart(essai).regression('dose', 'rendement', order=2)
+    assert c.regression_stats['p'] is None and 0 < c.regression_stats['r2'] <= 1
+
+def test_regression_too_few_points_raises():
+    with pytest.raises(ValueError):
+        Chart(pd.DataFrame({'x': [1, 2], 'y': [1, 2]})).regression('x', 'y', order=2)
+
+def test_pca_biplot(essai):
+    c = Chart(essai).pca_biplot(columns=['dose', 'rep', 'rendement'], group='variete')
+    assert c.pca['explained_variance_ratio'].sum() == pytest.approx(1.0)
+    assert list(c.pca['loadings'].index) == ['dose', 'rep', 'rendement']
+    assert len(c.ax.get_legend().get_texts()) == 3
+
+def test_mean_bar_heights_are_means(essai):
+    c = Chart(essai).mean_bar('variete', 'rendement', error='ci95')
+    heights = [p.get_height() for p in c.ax.patches]
+    expected = essai.groupby('variete')['rendement'].mean().reindex(['V1', 'V2', 'V3'])
+    assert heights == pytest.approx(expected.tolist())
+
+def test_mean_bar_with_hue_groups(essai):
+    c = Chart(essai).mean_bar('dose', 'rendement', hue='variete', points=True)
+    assert len(c.ax.patches) == 4 * 3
+
+def test_mean_bar_bad_error_raises(essai):
+    with pytest.raises(ValueError):
+        Chart(essai).mean_bar('variete', 'rendement', error='iqr')
+
+def test_interaction_one_line_per_level(essai):
+    c = Chart(essai).interaction('dose', 'variete', 'rendement')
+    assert len(c.ax.get_legend().get_texts()) == 3
+
+def test_qqplot(df):
+    c = Chart(df).qqplot('a')
+    assert len(c.ax.collections[0].get_offsets()) == len(df)
+
+def test_ternary_points_inside_triangle():
+    sol = pd.DataFrame({'sable': [70, 20, 40], 'limon': [20, 60, 40], 'argile': [10, 20, 20]})
+    c = Chart(sol).ternary('sable', 'limon', 'argile')
+    pts = c.ax.collections[-1].get_offsets()
+    h = np.sqrt(3) / 2
+    assert ((pts[:, 1] >= 0) & (pts[:, 1] <= h) & (pts[:, 0] >= 0) & (pts[:, 0] <= 1)).all()
+
+def test_pca_arrows_inside_axes():
+    rng = np.random.default_rng(0)
+    d = pd.DataFrame(rng.normal(size=(20, 4)), columns=list('abcd'))
+    d['d'] *= 0.01  # variable quasi indépendante → flèche longue sur un autre axe
+    c = Chart(d).pca_biplot()
+    (x0, x1), (y0, y1) = c.ax.get_xlim(), c.ax.get_ylim()
+    for t in c.ax.texts:
+        x, y = t.get_position()
+        assert x0 <= x <= x1 and y0 <= y <= y1

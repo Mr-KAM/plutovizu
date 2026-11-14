@@ -1,12 +1,12 @@
 ---
 title: "Thèmes"
-subtitle: "Six identités visuelles prêtes à l'emploi, loin du style matplotlib par défaut."
+subtitle: "Quatorze thèmes maison, et seize de plus avec morethemes : de quoi sortir du style matplotlib par défaut."
 ---
 
 ```{python}
 #| include: false
 import pandas as pd
-from plutovizu import Chart, list_themes, set_theme, theme_context
+from plutovizu import DESCRIPTIONS, Chart, list_themes, set_theme, theme_context
 
 ventes = pd.DataFrame({
     'mois':   range(1, 13),
@@ -14,19 +14,31 @@ ventes = pd.DataFrame({
     'coûts':  [10, 11, 12, 14, 16, 18, 20, 19, 17, 15, 13, 12],
     'profit': [2, 4, 6, 8, 12, 17, 20, 19, 13, 10, 7, 4],
 })
+
+def galerie(source):
+    for name in list_themes(source):
+        print(f"\n### `{name}`\n\n{DESCRIPTIONS[name]}\n")
+        with theme_context(name):
+            (Chart(ventes, figsize=(9, 3.8))
+                .line('mois', ['ventes', 'coûts', 'profit'], marker='o')
+                .title('Indicateurs financiers 2024')
+                .labels(xlabel='Mois', ylabel='k€')
+                .set_legend()
+                .tight_layout()
+                .show())
 ```
 
 Un thème règle d'un coup le fond, les couleurs du texte, la palette, la police,
-la grille et l'épaisseur des traits. Tous partagent la même base : titre aligné à
-gauche, pas de cadre en haut ni à droite, pas de graduations, légende sans boîte.
+la grille et l'épaisseur des traits.
 
 ## Utilisation
 
 ```python
 from plutovizu import Chart, set_theme, theme_context, list_themes
 
-list_themes()
-# ['arctic', 'blueprint', 'editorial', 'neon', 'paper', 'pluto']
+list_themes()               # tous les thèmes disponibles
+list_themes('plutovizu')    # les 14 thèmes maison
+list_themes('morethemes')   # les 16 thèmes morethemes (si installé)
 
 # 1. Pour toute la session (comme seaborn.set_theme)
 set_theme('pluto')
@@ -47,29 +59,43 @@ Comme pour seaborn, le thème doit être choisi **avant** de créer le graphique
 il est lu par matplotlib au moment où la figure est construite.
 :::
 
-## Les thèmes
+## Thèmes plutovizu
+
+Ils partagent la même base : titre aligné à gauche, pas de cadre en haut ni à droite,
+pas de graduations, légende sans boîte.
 
 ```{python}
 #| echo: false
 #| output: asis
-descriptions = {
-    'arctic':    "Gris bleuté et palette polaire : doux et froid, idéal pour des rapports.",
-    'blueprint': "Plan d'architecte : fond bleu, traits blancs fins, grille pointillée, police mono.",
-    'editorial': "Style presse : fond blanc, grille horizontale seule, aucun axe vertical.",
-    'neon':      "Rétro-futuriste : violet nuit et couleurs fluo pour des présentations qui claquent.",
-    'paper':     "Papier crème, typographie serif et couleurs terre : un rendu imprimé.",
-    'pluto':     "Le thème de cette documentation : quasi-noir et vert émeraude.",
-}
-for name in list_themes():
-    print(f"\n### `{name}`\n\n{descriptions[name]}\n")
-    with theme_context(name):
-        (Chart(ventes, figsize=(9, 3.8))
-            .line('mois', ['ventes', 'coûts', 'profit'], marker='o')
-            .title('Indicateurs financiers 2024')
-            .labels(xlabel='Mois', ylabel='k€')
-            .set_legend()
-            .tight_layout()
-            .show())
+galerie('plutovizu')
+```
+
+## Thèmes morethemes
+
+Ces thèmes viennent du projet [morethemes](https://github.com/y-sunflower/morethemes)
+de Joseph Barbier (licence MIT). Ils sont disponibles par leur nom dès que le paquet
+est installé :
+
+```bash
+pip install plutovizu[morethemes]
+```
+
+```python
+set_theme('wsj')
+with theme_context('retro'):
+    Chart(df).line('x', 'y').show()
+```
+
+::: {.callout-tip}
+Chaque thème morethemes utilise une police Google Fonts, téléchargée au premier
+usage puis mise en cache. Sans connexion, plutovizu affiche un avertissement et
+garde la police par défaut.
+:::
+
+```{python}
+#| echo: false
+#| output: asis
+galerie('morethemes')
 ```
 
 ## Créer son propre thème

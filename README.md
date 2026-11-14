@@ -45,11 +45,29 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `area(x, y)` | Aire (empilée ou non) |
 | `violin(columns)` | Violon |
 | `ombrothermic(month, temp, precip)` | Diagramme ombrothermique (p=2T) |
+| `regression(x, y, order)` | Régression avec équation, R² et bande de confiance |
+| `mean_bar(x, y, hue, error)` | Moyennes ± SE / SD / IC 95 % (essais) |
+| `interaction(x, trace, response)` | Graphique d'interaction (ANOVA à 2 facteurs) |
+| `qqplot(column)` | Diagramme quantile-quantile (normalité) |
+| `pca_biplot(columns, group)` | Biplot d'ACP |
+| `dendrogram(labels)` | Classification hiérarchique |
+| `ternary(a, b, c)` | Diagramme ternaire (texture du sol) |
+
+Liste complète des 30 types dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
 
 ## Thèmes
 
-Six thèmes prédéfinis pour sortir du style matplotlib classique :
-`pluto`, `editorial`, `paper`, `arctic`, `neon`, `blueprint`.
+Quatorze thèmes prédéfinis pour sortir du style matplotlib classique :
+`pluto`, `editorial`, `paper`, `arctic`, `neon`, `blueprint`, `sunset`, `forest`,
+`ocean`, `terminal`, `ink`, `pastel`, `sahel`, `accessible`.
+`list_themes()` les liste, `DESCRIPTIONS` les décrit.
+
+Seize thèmes supplémentaires (`wsj`, `economist`, `ft`, `nord`, `retro`, `vscode-dark`…)
+viennent du projet [morethemes](https://github.com/y-sunflower/morethemes) (MIT) :
+
+```bash
+pip install plutovizu[morethemes]
+```
 
 ```python
 from plutovizu import Chart, set_theme, theme_context
