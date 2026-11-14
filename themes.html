@@ -421,6 +421,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sunset" id="toc-sunset" class="nav-link" data-scroll-target="#sunset"><code>sunset</code></a></li>
   <li><a href="#terminal" id="toc-terminal" class="nav-link" data-scroll-target="#terminal"><code>terminal</code></a></li>
   </ul></li>
+  <li><a href="#styles-seaborn" id="toc-styles-seaborn" class="nav-link" data-scroll-target="#styles-seaborn">Styles seaborn</a>
+  <ul class="collapse">
+  <li><a href="#seaborn-dark" id="toc-seaborn-dark" class="nav-link" data-scroll-target="#seaborn-dark"><code>seaborn-dark</code></a></li>
+  <li><a href="#seaborn-darkgrid" id="toc-seaborn-darkgrid" class="nav-link" data-scroll-target="#seaborn-darkgrid"><code>seaborn-darkgrid</code></a></li>
+  <li><a href="#seaborn-ticks" id="toc-seaborn-ticks" class="nav-link" data-scroll-target="#seaborn-ticks"><code>seaborn-ticks</code></a></li>
+  <li><a href="#seaborn-white" id="toc-seaborn-white" class="nav-link" data-scroll-target="#seaborn-white"><code>seaborn-white</code></a></li>
+  <li><a href="#seaborn-whitegrid" id="toc-seaborn-whitegrid" class="nav-link" data-scroll-target="#seaborn-whitegrid"><code>seaborn-whitegrid</code></a></li>
+  </ul></li>
+  <li><a href="#contextes-adapter-la-taille-au-support" id="toc-contextes-adapter-la-taille-au-support" class="nav-link" data-scroll-target="#contextes-adapter-la-taille-au-support">Contextes : adapter la taille au support</a></li>
   <li><a href="#thèmes-morethemes" id="toc-thèmes-morethemes" class="nav-link" data-scroll-target="#thèmes-morethemes">Thèmes morethemes</a>
   <ul class="collapse">
   <li><a href="#darker" id="toc-darker" class="nav-link" data-scroll-target="#darker"><code>darker</code></a></li>
@@ -451,7 +460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gallery.html">Créer des graphiques</a></li><li class="breadcrumb-item"><a href="./themes.html">Thèmes</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Thèmes</h1>
-<p class="subtitle lead">Quatorze thèmes maison, et seize de plus avec morethemes : de quoi sortir du style matplotlib par défaut.</p>
+<p class="subtitle lead">35 thèmes : 14 maison, 5 styles seaborn et 16 morethemes, plus 4 contextes pour adapter la taille au support.</p>
 </div>
 
 
@@ -475,20 +484,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>list_themes()               <span class="co"># tous les thèmes disponibles</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'plutovizu'</span>)    <span class="co"># les 14 thèmes maison</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'morethemes'</span>)   <span class="co"># les 16 thèmes morethemes (si installé)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Pour toute la session (comme seaborn.set_theme)</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'pluto'</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Raccourci à la création d'un graphique — s'applique aussi aux suivants</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>Chart(df, theme<span class="op">=</span><span class="st">'neon'</span>).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Seulement dans un bloc</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'paper'</span>):</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    Chart(df).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Revenir au style matplotlib d'origine</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="va">None</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'seaborn'</span>)      <span class="co"># les 5 styles seaborn</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'morethemes'</span>)   <span class="co"># les 16 thèmes morethemes (si installé)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Pour toute la session (comme seaborn.set_theme)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'pluto'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Raccourci à la création d'un graphique — s'applique aussi aux suivants</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Chart(df, theme<span class="op">=</span><span class="st">'neon'</span>).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Seulement dans un bloc</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'paper'</span>):</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    Chart(df).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Adapter la taille du texte et des traits au support</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'editorial'</span>, context<span class="op">=</span><span class="st">'talk'</span>)   <span class="co"># 'paper', 'notebook', 'talk', 'poster'</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Revenir au style matplotlib d'origine</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="va">None</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -577,13 +590,65 @@ Note
 <p><img src="themes_files/figure-html/cell-3-output-28.png" width="853" height="355"></p>
 </section>
 </section>
+<section id="styles-seaborn" class="level2">
+<h2 class="anchored" data-anchor-id="styles-seaborn">Styles seaborn</h2>
+<p>Les cinq styles de <a href="https://seaborn.pydata.org/tutorial/aesthetics.html">seaborn</a>, avec sa palette <code>deep</code>, sont disponibles sous les noms <code>seaborn-darkgrid</code>, <code>seaborn-whitegrid</code>, <code>seaborn-dark</code>, <code>seaborn-white</code> et <code>seaborn-ticks</code>.</p>
+<section id="seaborn-dark" class="level3">
+<h3 class="anchored" data-anchor-id="seaborn-dark"><code>seaborn-dark</code></h3>
+<p>Fond gris clair, sans grille. (seaborn)</p>
+<p><img src="themes_files/figure-html/cell-4-output-2.png" width="855" height="355"></p>
+</section>
+<section id="seaborn-darkgrid" class="level3">
+<h3 class="anchored" data-anchor-id="seaborn-darkgrid"><code>seaborn-darkgrid</code></h3>
+<p>Fond gris clair et grille blanche : le style par défaut de seaborn. (seaborn)</p>
+<p><img src="themes_files/figure-html/cell-4-output-4.png" width="855" height="355"></p>
+</section>
+<section id="seaborn-ticks" class="level3">
+<h3 class="anchored" data-anchor-id="seaborn-ticks"><code>seaborn-ticks</code></h3>
+<p>Fond blanc, sans grille, avec graduations sur les axes. (seaborn)</p>
+<p><img src="themes_files/figure-html/cell-4-output-6.png" width="855" height="355"></p>
+</section>
+<section id="seaborn-white" class="level3">
+<h3 class="anchored" data-anchor-id="seaborn-white"><code>seaborn-white</code></h3>
+<p>Fond blanc, sans grille. (seaborn)</p>
+<p><img src="themes_files/figure-html/cell-4-output-8.png" width="855" height="355"></p>
+</section>
+<section id="seaborn-whitegrid" class="level3">
+<h3 class="anchored" data-anchor-id="seaborn-whitegrid"><code>seaborn-whitegrid</code></h3>
+<p>Fond blanc et grille grise discrète. (seaborn)</p>
+<p><img src="themes_files/figure-html/cell-4-output-10.png" width="855" height="355"></p>
+</section>
+</section>
+<section id="contextes-adapter-la-taille-au-support" class="level2">
+<h2 class="anchored" data-anchor-id="contextes-adapter-la-taille-au-support">Contextes : adapter la taille au support</h2>
+<p>Le paramètre <code>context</code> (repris de seaborn) met à l’échelle le texte et les traits de <strong>n’importe quel thème</strong> : <code>'paper'</code> (article), <code>'notebook'</code> (défaut), <code>'talk'</code> (présentation) ou <code>'poster'</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'pluto'</span>, context<span class="op">=</span><span class="st">'talk'</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'paper'</span>, context<span class="op">=</span><span class="st">'poster'</span>):</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Chart(df).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b6f4cbbd" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="themes_files/figure-html/cell-5-output-1.png" width="856" height="355" class="figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="themes_files/figure-html/cell-5-output-2.png" width="831" height="332" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section id="thèmes-morethemes" class="level2">
 <h2 class="anchored" data-anchor-id="thèmes-morethemes">Thèmes morethemes</h2>
 <p>Ces thèmes viennent du projet <a href="https://github.com/y-sunflower/morethemes">morethemes</a> de Joseph Barbier (licence MIT). Ils sont disponibles par leur nom dès que le paquet est installé :</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install plutovizu<span class="pp">[</span><span class="ss">morethemes</span><span class="pp">]</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'wsj'</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'retro'</span>):</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Chart(df).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install plutovizu<span class="pp">[</span><span class="ss">morethemes</span><span class="pp">]</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'wsj'</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'retro'</span>):</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    Chart(df).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -600,96 +665,96 @@ Astuce
 <section id="darker" class="level3">
 <h3 class="anchored" data-anchor-id="darker"><code>darker</code></h3>
 <p>A sleek, no-frills dark theme with high contrast and a modern feel (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-2.png" width="854" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-2.png" width="854" height="355"></p>
 </section>
 <section id="ebonis" class="level3">
 <h3 class="anchored" data-anchor-id="ebonis"><code>ebonis</code></h3>
 <p>Color-blind-friendly dark theme with high contrast and soft tones for dark backgrounds. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-4.png" width="854" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-4.png" width="854" height="355"></p>
 </section>
 <section id="economist" class="level3">
 <h3 class="anchored" data-anchor-id="economist"><code>economist</code></h3>
 <p>A crisp, data-focused theme with subtle gridlines and sharp contrasts. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-6.png" width="855" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-6.png" width="855" height="355"></p>
 </section>
 <section id="ft" class="level3">
 <h3 class="anchored" data-anchor-id="ft"><code>ft</code></h3>
 <p>A sophisticated, no-nonsense theme with a muted palette and strong typographic clarity, echoing the Financial Times’ aesthetic. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-8.png" width="853" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-8.png" width="853" height="355"></p>
 </section>
 <section id="greenwave" class="level3">
 <h3 class="anchored" data-anchor-id="greenwave"><code>greenwave</code></h3>
 <p>A sleek, dark-themed aesthetic with vibrant green accents, inspired by modern streaming interfaces. Designed for clarity and style, with bold typography and a focus on visual harmony. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-10.png" width="852" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-10.png" width="852" height="355"></p>
 </section>
 <section id="lighter" class="level3">
 <h3 class="anchored" data-anchor-id="lighter"><code>lighter</code></h3>
 <p>A clean, modern theme inspired by the lighter aesthetic, perfect for technical charts. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-12.png" width="854" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-12.png" width="854" height="355"></p>
 </section>
 <section id="lumen" class="level3">
 <h3 class="anchored" data-anchor-id="lumen"><code>lumen</code></h3>
 <p>Color-blind-friendly light theme with clear colors and soft background. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-14.png" width="853" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-14.png" width="853" height="355"></p>
 </section>
 <section id="minimal" class="level3">
 <h3 class="anchored" data-anchor-id="minimal"><code>minimal</code></h3>
 <p>A pure, distraction-free theme with a simple monochrome palette. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-16.png" width="855" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-16.png" width="855" height="355"></p>
 </section>
 <section id="monoblue" class="level3">
 <h3 class="anchored" data-anchor-id="monoblue"><code>monoblue</code></h3>
 <p>A high-contrast theme using shades of blue to emphasize data trends and maintain a clean, professional aesthetic. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-18.png" width="855" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-18.png" width="855" height="355"></p>
 </section>
 <section id="nature" class="level3">
 <h3 class="anchored" data-anchor-id="nature"><code>nature</code></h3>
 <p>A calming theme inspired by natural landscapes, with earthy tones and organic shapes. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-20.png" width="855" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-20.png" width="855" height="355"></p>
 </section>
 <section id="nord" class="level3">
 <h3 class="anchored" data-anchor-id="nord"><code>nord</code></h3>
 <p>A crisp, Arctic-inspired theme based on the Nord color palette with frosty blues and clean contrasts (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-22.png" width="854" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-22.png" width="854" height="355"></p>
 </section>
 <section id="retro" class="level3">
 <h3 class="anchored" data-anchor-id="retro"><code>retro</code></h3>
 <p>A nostalgic theme inspired by vintage graphics and retro gaming. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-24.png" width="855" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-24.png" width="855" height="355"></p>
 </section>
 <section id="urban" class="level3">
 <h3 class="anchored" data-anchor-id="urban"><code>urban</code></h3>
 <p>A clean, professional theme featuring the Urbanist font and muted tones. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-26.png" width="854" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-26.png" width="854" height="355"></p>
 </section>
 <section id="vscode-dark" class="level3">
 <h3 class="anchored" data-anchor-id="vscode-dark"><code>vscode-dark</code></h3>
 <p>A dark theme inspired by Visual Studio Code’s dark mode. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-28.png" width="854" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-28.png" width="854" height="355"></p>
 </section>
 <section id="wsj" class="level3">
 <h3 class="anchored" data-anchor-id="wsj"><code>wsj</code></h3>
 <p>A refined, newspaper-style theme inspired by the Wall Street Journal. (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-30.png" width="853" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-30.png" width="853" height="355"></p>
 </section>
 <section id="yellowish" class="level3">
 <h3 class="anchored" data-anchor-id="yellowish"><code>yellowish</code></h3>
 <p>A bold, National Geographic-inspired theme with a warm yellow backdrop (morethemes)</p>
-<p><img src="themes_files/figure-html/cell-4-output-32.png" width="854" height="355"></p>
+<p><img src="themes_files/figure-html/cell-6-output-32.png" width="854" height="355"></p>
 </section>
 </section>
 <section id="créer-son-propre-thème" class="level2">
 <h2 class="anchored" data-anchor-id="créer-son-propre-thème">Créer son propre thème</h2>
 <p>Un thème est un simple dictionnaire de <a href="https://matplotlib.org/stable/users/explain/customizing.html">rcParams matplotlib</a>. Partez d’un thème existant avec <code>get_theme()</code> et modifiez ce que vous voulez :</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> get_theme, set_theme</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cycler <span class="im">import</span> cycler</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>mon_theme <span class="op">=</span> {</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>get_theme(<span class="st">'pluto'</span>),</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.titlesize'</span>: <span class="dv">20</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.prop_cycle'</span>: cycler(color<span class="op">=</span>[<span class="st">'#f97316'</span>, <span class="st">'#38bdf8'</span>, <span class="st">'#a3e635'</span>]),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>set_theme(mon_theme)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> get_theme, set_theme</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cycler <span class="im">import</span> cycler</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>mon_theme <span class="op">=</span> {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>get_theme(<span class="st">'pluto'</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.titlesize'</span>: <span class="dv">20</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.prop_cycle'</span>: cycler(color<span class="op">=</span>[<span class="st">'#f97316'</span>, <span class="st">'#38bdf8'</span>, <span class="st">'#a3e635'</span>]),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>set_theme(mon_theme)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

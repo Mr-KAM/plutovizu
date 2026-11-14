@@ -451,7 +451,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="palettes-de-couleurs">Palettes de couleurs</h2>
 <section id="palettes-seaborn-intégrées" class="level3">
 <h3 class="anchored" data-anchor-id="palettes-seaborn-intégrées">Palettes seaborn intégrées</h3>
-<div id="bf49f835" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
+<div id="2129f9d7" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'x'</span>: <span class="bu">range</span>(<span class="dv">10</span>),</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'A'</span>: np.random.randn(<span class="dv">10</span>).cumsum(),</span>
@@ -471,7 +471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="customization_files/figure-html/cell-3-output-1.png" width="952" height="566" class="figure-img"></p>
+<p><img src="customization_files/figure-html/cell-3-output-1.png" width="951" height="566" class="figure-img"></p>
 <figcaption>Courbes avec la palette ‘deep’ de seaborn</figcaption>
 </figure>
 </div>
@@ -519,7 +519,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="palette-personnalisée" class="level3">
 <h3 class="anchored" data-anchor-id="palette-personnalisée">Palette personnalisée</h3>
-<div id="344a9023" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
+<div id="74527968" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'categorie'</span>: [<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>, <span class="st">'D'</span>, <span class="st">'E'</span>],</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'valeur'</span>:    [<span class="dv">80</span>, <span class="dv">65</span>, <span class="dv">90</span>, <span class="dv">45</span>, <span class="dv">72</span>],</span>
@@ -553,7 +553,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="dégradé-entre-deux-couleurs" class="level3">
 <h3 class="anchored" data-anchor-id="dégradé-entre-deux-couleurs">Dégradé entre deux couleurs</h3>
-<div id="fdbaf601" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="4">
+<div id="d9316ae3" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_dummy <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: [<span class="dv">1</span>], <span class="st">'y'</span>: [<span class="dv">1</span>]})</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(Chart(df_dummy)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .generate_gradient_palette(<span class="st">'ocean_fire'</span>, <span class="st">'#003049'</span>, <span class="st">'#d62828'</span>, n_colors<span class="op">=</span><span class="dv">8</span>)</span>
@@ -575,7 +575,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="prévisualiser-une-palette" class="level3">
 <h3 class="anchored" data-anchor-id="prévisualiser-une-palette">Prévisualiser une palette</h3>
-<div id="b8f94fcb" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="5">
+<div id="e90dd7c4" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_dummy <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: [<span class="dv">1</span>], <span class="st">'y'</span>: [<span class="dv">1</span>]})</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>(Chart(df_dummy)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .preview_palette(<span class="st">'viridis'</span>, n_colors<span class="op">=</span><span class="dv">10</span>)</span>
@@ -607,7 +607,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="polices">Polices</h2>
 <section id="changer-la-police-globale" class="level3">
 <h3 class="anchored" data-anchor-id="changer-la-police-globale">Changer la police globale</h3>
-<div id="2c5f340f" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="6">
+<div id="51c9c0bc" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: <span class="bu">range</span>(<span class="dv">8</span>), <span class="st">'y'</span>: np.random.randn(<span class="dv">8</span>).cumsum()})</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -652,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="styles-matplotlib" class="level2">
 <h2 class="anchored" data-anchor-id="styles-matplotlib">Styles matplotlib</h2>
-<div id="327efef3" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="7">
+<div id="400b4a50" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: <span class="bu">range</span>(<span class="dv">10</span>), <span class="st">'y'</span>: np.random.randn(<span class="dv">10</span>).cumsum()})</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -680,7 +680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="annotations" class="level2">
 <h2 class="anchored" data-anchor-id="annotations">Annotations</h2>
-<div id="536ddd85" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="8">
+<div id="507ef53a" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:   <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>)),</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ventes'</span>: [<span class="dv">12</span>, <span class="dv">15</span>, <span class="dv">18</span>, <span class="dv">22</span>, <span class="dv">28</span>, <span class="dv">35</span>, <span class="dv">40</span>, <span class="dv">38</span>, <span class="dv">30</span>, <span class="dv">25</span>, <span class="dv">20</span>, <span class="dv">16</span>],</span>
@@ -716,7 +716,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="grille-légende-limites" class="level2">
 <h2 class="anchored" data-anchor-id="grille-légende-limites">Grille, légende, limites</h2>
-<div id="db9016ef" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="9">
+<div id="d4bf1d30" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'x'</span>: <span class="bu">range</span>(<span class="dv">20</span>),</span>

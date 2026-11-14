@@ -456,7 +456,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#g-qqplot" id="toc-g-qqplot" class="nav-link" data-scroll-target="#g-qqplot"><code>qqplot</code> — Diagramme quantile-quantile</a></li>
   <li><a href="#g-pca_biplot" id="toc-g-pca_biplot" class="nav-link" data-scroll-target="#g-pca_biplot"><code>pca_biplot</code> — Analyse en composantes principales</a></li>
   <li><a href="#g-dendrogram" id="toc-g-dendrogram" class="nav-link" data-scroll-target="#g-dendrogram"><code>dendrogram</code> — Classification hiérarchique</a></li>
+  <li><a href="#g-clustermap" id="toc-g-clustermap" class="nav-link" data-scroll-target="#g-clustermap"><code>clustermap</code> — Carte de chaleur classée</a></li>
   <li><a href="#g-ternary" id="toc-g-ternary" class="nav-link" data-scroll-target="#g-ternary"><code>ternary</code> — Diagramme ternaire</a></li>
+  <li><a href="#g-soil_texture" id="toc-g-soil_texture" class="nav-link" data-scroll-target="#g-soil_texture"><code>soil_texture</code> — Triangle des textures USDA</a></li>
+  </ul></li>
+  <li><a href="#graphiques-seaborn" id="toc-graphiques-seaborn" class="nav-link" data-scroll-target="#graphiques-seaborn">Graphiques seaborn</a>
+  <ul class="collapse">
+  <li><a href="#g-seaborn" id="toc-g-seaborn" class="nav-link" data-scroll-target="#g-seaborn"><code>seaborn</code> — N’importe quel graphique seaborn</a></li>
+  <li><a href="#g-kde" id="toc-g-kde" class="nav-link" data-scroll-target="#g-kde"><code>kde</code> — Densité lissée</a></li>
+  <li><a href="#g-ecdf" id="toc-g-ecdf" class="nav-link" data-scroll-target="#g-ecdf"><code>ecdf</code> — Fonction de répartition empirique</a></li>
+  <li><a href="#g-strip" id="toc-g-strip" class="nav-link" data-scroll-target="#g-strip"><code>strip</code> et <code>swarm</code> — Toutes les observations</a></li>
+  <li><a href="#g-boxen" id="toc-g-boxen" class="nav-link" data-scroll-target="#g-boxen"><code>boxen</code> — Boîte à moustaches étendue</a></li>
+  <li><a href="#g-pointplot" id="toc-g-pointplot" class="nav-link" data-scroll-target="#g-pointplot"><code>pointplot</code> — Moyennes reliées</a></li>
+  <li><a href="#g-countplot" id="toc-g-countplot" class="nav-link" data-scroll-target="#g-countplot"><code>countplot</code> — Effectifs</a></li>
+  <li><a href="#g-residplot" id="toc-g-residplot" class="nav-link" data-scroll-target="#g-residplot"><code>residplot</code> — Résidus d’une régression</a></li>
+  <li><a href="#g-jointplot" id="toc-g-jointplot" class="nav-link" data-scroll-target="#g-jointplot"><code>jointplot</code> — Relation et distributions marginales</a></li>
+  <li><a href="#g-pairplot" id="toc-g-pairplot" class="nav-link" data-scroll-target="#g-pairplot"><code>pairplot</code> — Matrice de nuages de points</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -468,7 +483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gallery.html">Créer des graphiques</a></li><li class="breadcrumb-item"><a href="./gallery.html">Galerie de graphiques</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Galerie de graphiques</h1>
-<p class="subtitle lead">Les 30 types de graphiques de plutovizu, chacun avec un exemple prêt à copier.</p>
+<p class="subtitle lead">Les 42 types de graphiques de plutovizu, chacun avec un exemple prêt à copier.</p>
 </div>
 
 
@@ -541,6 +556,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Vérifier la normalité (résidus)</td>
 </tr>
 <tr class="even">
+<td>Distribution</td>
+<td><a href="#g-kde"><code>kde</code></a></td>
+<td>Densité lissée</td>
+<td>Comparer des distributions continues</td>
+</tr>
+<tr class="odd">
+<td>Distribution</td>
+<td><a href="#g-ecdf"><code>ecdf</code></a></td>
+<td>Fonction de répartition</td>
+<td>Distribution sans choix de classes</td>
+</tr>
+<tr class="even">
+<td>Distribution</td>
+<td><a href="#g-strip"><code>strip</code></a> / <a href="#g-strip"><code>swarm</code></a></td>
+<td>Points par catégorie</td>
+<td>Voir toutes les observations</td>
+</tr>
+<tr class="odd">
+<td>Distribution</td>
+<td><a href="#g-boxen"><code>boxen</code></a></td>
+<td>Boîte étendue</td>
+<td>Grands échantillons, queues de distribution</td>
+</tr>
+<tr class="even">
 <td>Comparaison</td>
 <td><a href="#g-bar"><code>bar</code></a></td>
 <td>Barres</td>
@@ -549,14 +588,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Comparaison</td>
 <td><a href="#g-mean_bar"><code>mean_bar</code></a></td>
-<td>Moyennes ± erreur</td>
-<td>Moyennes de traitements (SE, SD, IC 95 %)</td>
+<td>Moyennes ± erreur, lettres de Tukey</td>
+<td>Comparer des traitements (SE, IC 95 %, test HSD)</td>
 </tr>
 <tr class="even">
 <td>Comparaison</td>
 <td><a href="#g-interaction"><code>interaction</code></a></td>
 <td>Graphique d’interaction</td>
 <td>Interaction entre deux facteurs (ANOVA)</td>
+</tr>
+<tr class="odd">
+<td>Comparaison</td>
+<td><a href="#g-pointplot"><code>pointplot</code></a></td>
+<td>Moyennes reliées</td>
+<td>Moyennes et IC par catégorie</td>
+</tr>
+<tr class="even">
+<td>Comparaison</td>
+<td><a href="#g-countplot"><code>countplot</code></a></td>
+<td>Effectifs</td>
+<td>Nombre d’observations par catégorie</td>
 </tr>
 <tr class="odd">
 <td>Comparaison</td>
@@ -602,27 +653,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Relation</td>
+<td><a href="#g-residplot"><code>residplot</code></a></td>
+<td>Résidus</td>
+<td>Vérifier l’ajustement d’une régression</td>
+</tr>
+<tr class="odd">
+<td>Relation</td>
+<td><a href="#g-jointplot"><code>jointplot</code></a></td>
+<td>Nuage + marges</td>
+<td>Relation et distributions marginales</td>
+</tr>
+<tr class="even">
+<td>Relation</td>
+<td><a href="#g-pairplot"><code>pairplot</code></a></td>
+<td>Matrice de nuages</td>
+<td>Toutes les relations deux à deux</td>
+</tr>
+<tr class="odd">
+<td>Relation</td>
 <td><a href="#g-hexbin"><code>hexbin</code></a></td>
 <td>Pavage hexagonal</td>
 <td>Nuage de points très dense</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Relation</td>
 <td><a href="#g-heatmap"><code>heatmap</code></a></td>
 <td>Carte de chaleur</td>
 <td>Matrice de corrélation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Multivarié</td>
 <td><a href="#g-pca_biplot"><code>pca_biplot</code></a></td>
 <td>Biplot d’ACP</td>
 <td>Individus et variables sur deux axes</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Multivarié</td>
 <td><a href="#g-dendrogram"><code>dendrogram</code></a></td>
 <td>Dendrogramme</td>
 <td>Classification hiérarchique</td>
+</tr>
+<tr class="odd">
+<td>Multivarié</td>
+<td><a href="#g-clustermap"><code>clustermap</code></a></td>
+<td>Carte de chaleur + dendrogrammes</td>
+<td>Classer lignes et colonnes à la fois</td>
 </tr>
 <tr class="even">
 <td>Composition</td>
@@ -652,31 +727,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Composition</td>
 <td><a href="#g-ternary"><code>ternary</code></a></td>
 <td>Diagramme ternaire</td>
-<td>Compositions en 3 parts (texture du sol)</td>
+<td>Compositions en 3 parts</td>
 </tr>
 <tr class="odd">
+<td>Composition</td>
+<td><a href="#g-soil_texture"><code>soil_texture</code></a></td>
+<td>Triangle des textures USDA</td>
+<td>Classer des sols (12 classes)</td>
+</tr>
+<tr class="even">
 <td>Planification</td>
 <td><a href="#g-gantt"><code>gantt</code></a></td>
 <td>Gantt</td>
 <td>Calendrier de tâches</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Planification</td>
 <td><a href="#g-calendar_heatmap"><code>calendar_heatmap</code></a></td>
 <td>Calendrier</td>
 <td>Valeurs jour par jour</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Flux</td>
 <td><a href="#g-sankey"><code>sankey</code></a></td>
 <td>Sankey</td>
 <td>Flux entre étapes</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Climatologie</td>
 <td><a href="#g-ombrothermic"><code>ombrothermic</code></a></td>
 <td>Diagramme ombrothermique</td>
 <td>Mois secs et humides (p = 2T)</td>
+</tr>
+<tr class="even">
+<td>Tous</td>
+<td><a href="#g-seaborn"><code>seaborn</code></a></td>
+<td>N’importe quel graphique seaborn</td>
+<td><code>violinplot</code>, <code>relplot</code>, <code>catplot</code>, <code>lmplot</code>…</td>
 </tr>
 </tbody>
 </table>
@@ -686,7 +773,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="graphiques-temporels">Graphiques temporels</h2>
 <section id="g-line" class="level3">
 <h3 class="anchored" data-anchor-id="g-line"><code>line</code> — Courbe</h3>
-<div id="050bf601" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
+<div id="38eedde6" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mois <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:    mois,</span>
@@ -715,7 +802,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-area" class="level3">
 <h3 class="anchored" data-anchor-id="g-area"><code>area</code> — Aire (empilée)</h3>
-<div id="3d66b026" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
+<div id="619a9493" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2025</span>)),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">30</span>, <span class="dv">28</span>, <span class="dv">25</span>, <span class="dv">22</span>, <span class="dv">20</span>, <span class="dv">18</span>, <span class="dv">16</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">12</span>],</span>
@@ -747,7 +834,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="graphiques-de-distribution">Graphiques de distribution</h2>
 <section id="g-histogram" class="level3">
 <h3 class="anchored" data-anchor-id="g-histogram"><code>histogram</code> — Histogramme</h3>
-<div id="1626b523" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="4">
+<div id="1570e223" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'salaire'</span>: np.random.normal(<span class="dv">42000</span>, <span class="dv">9000</span>, <span class="dv">800</span>)})</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -770,7 +857,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-boxplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-boxplot"><code>boxplot</code> — Boîte à moustaches</h3>
-<div id="7f42d6cb" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="5">
+<div id="416d6f4f" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'maths'</span>:    np.random.normal(<span class="dv">13</span>, <span class="dv">3</span>, <span class="dv">100</span>),</span>
@@ -798,7 +885,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-violin" class="level3">
 <h3 class="anchored" data-anchor-id="g-violin"><code>violin</code> — Violon</h3>
-<div id="214cf86b" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="6">
+<div id="a96b4200" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">2</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Paris'</span>:  np.random.normal(<span class="dv">45</span>, <span class="dv">15</span>, <span class="dv">200</span>),</span>
@@ -826,7 +913,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-ridgeline" class="level3">
 <h3 class="anchored" data-anchor-id="g-ridgeline"><code>ridgeline</code> — Crêtes superposées</h3>
-<div id="3597407d" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="7">
+<div id="74a1d746" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">3</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>secteurs <span class="op">=</span> [<span class="st">'Tech'</span>, <span class="st">'Finance'</span>, <span class="st">'Santé'</span>, <span class="st">'Éducation'</span>, <span class="st">'Commerce'</span>]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>moyennes  <span class="op">=</span> [<span class="dv">68000</span>, <span class="dv">72000</span>, <span class="dv">52000</span>, <span class="dv">38000</span>, <span class="dv">44000</span>]</span>
@@ -859,7 +946,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="comparaisons">Comparaisons</h2>
 <section id="g-bar" class="level3">
 <h3 class="anchored" data-anchor-id="g-bar"><code>bar</code> — Barres</h3>
-<div id="b30390b0" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="8">
+<div id="aed2009c" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'Île-de-France'</span>, <span class="st">'Auvergne-Rhône-Alpes'</span>, <span class="st">'PACA'</span>, <span class="st">'Occitanie'</span>, <span class="st">'Bretagne'</span>],</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ca'</span>:     [<span class="dv">980</span>, <span class="dv">620</span>, <span class="dv">430</span>, <span class="dv">380</span>, <span class="dv">270</span>],</span>
@@ -885,7 +972,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-radar" class="level3">
 <h3 class="anchored" data-anchor-id="g-radar"><code>radar</code> — Araignée</h3>
-<div id="6592d1b8" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="9">
+<div id="9dd03f2b" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:    [<span class="st">'A'</span>,<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>,<span class="st">'C'</span>],</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'vitesse'</span>:   [<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">5</span>, <span class="dv">8</span>],</span>
@@ -913,7 +1000,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-parallel_coordinates" class="level3">
 <h3 class="anchored" data-anchor-id="g-parallel_coordinates"><code>parallel_coordinates</code> — Coordonnées parallèles</h3>
-<div id="ec14adc4" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="10">
+<div id="fb940dec" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'puissance'</span>:    np.random.randint(<span class="dv">80</span>,  <span class="dv">300</span>, <span class="dv">60</span>),</span>
@@ -943,7 +1030,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-dumbbell" class="level3">
 <h3 class="anchored" data-anchor-id="g-dumbbell"><code>dumbbell</code> — Haltère (avant/après)</h3>
-<div id="85c1164c" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="11">
+<div id="f3a9df72" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pays'</span>:     [<span class="st">'France'</span>,<span class="st">'Allemagne'</span>,<span class="st">'Espagne'</span>,<span class="st">'Italie'</span>,<span class="st">'Portugal'</span>,<span class="st">'Pays-Bas'</span>],</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pib_2020'</span>: [<span class="dv">38000</span>, <span class="dv">46000</span>, <span class="dv">27000</span>, <span class="dv">31000</span>, <span class="dv">22000</span>, <span class="dv">52000</span>],</span>
@@ -971,7 +1058,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-bump" class="level3">
 <h3 class="anchored" data-anchor-id="g-bump"><code>bump</code> — Évolution de classement</h3>
-<div id="eb8a8c1c" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="12">
+<div id="cf9ae01f" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'saison'</span>:     [<span class="dv">2019</span>,<span class="dv">2020</span>,<span class="dv">2021</span>,<span class="dv">2022</span>,<span class="dv">2023</span>] <span class="op">*</span> <span class="dv">5</span>,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:     ([<span class="st">'PSG'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Lyon'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Marseille'</span>]<span class="op">*</span><span class="dv">5</span></span>
@@ -998,7 +1085,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-lollipop" class="level3">
 <h3 class="anchored" data-anchor-id="g-lollipop"><code>lollipop</code> — Lollipop groupé</h3>
-<div id="b3a7e0c7" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="13">
+<div id="e5b8944d" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">7</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> np.repeat(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2024</span>), <span class="dv">2</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> [<span class="st">'ouragan'</span>, <span class="st">'dépression tropicale'</span>] <span class="op">*</span> <span class="dv">9</span></span>
@@ -1032,7 +1119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="données-volumineuses">Données volumineuses</h2>
 <section id="g-scatter" class="level3">
 <h3 class="anchored" data-anchor-id="g-scatter"><code>scatter</code> — Nuage de points</h3>
-<div id="2e00e38b" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="14">
+<div id="7ed83708" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">10</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">200</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>temp <span class="op">=</span> np.random.normal(<span class="dv">22</span>, <span class="dv">8</span>, n)</span>
@@ -1061,7 +1148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-hexbin" class="level3">
 <h3 class="anchored" data-anchor-id="g-hexbin"><code>hexbin</code> — Pavage hexagonal</h3>
-<div id="fd22c598" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
+<div id="6ed605a1" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'age'</span>:    np.random.normal(<span class="dv">40</span>, <span class="dv">12</span>, <span class="dv">5000</span>),</span>
@@ -1090,7 +1177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="composition">Composition</h2>
 <section id="g-pie" class="level3">
 <h3 class="anchored" data-anchor-id="g-pie"><code>pie</code> — Camembert</h3>
-<div id="a9fd3c5d" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="16">
+<div id="f5b2231d" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'segment'</span>: [<span class="st">'Résidentiel'</span>,<span class="st">'Professionnel'</span>,<span class="st">'Industrie'</span>,<span class="st">'Administration'</span>],</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'part'</span>:    [<span class="dv">42</span>, <span class="dv">28</span>, <span class="dv">18</span>, <span class="dv">12</span>],</span>
@@ -1114,7 +1201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="g-heatmap"><code>heatmap</code> — Carte de chaleur (corrélation)</h3>
-<div id="5596943f" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="17">
+<div id="91f6f9f5" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">5</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'température'</span>: np.random.normal(<span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">100</span>),</span>
@@ -1142,7 +1229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-waterfall" class="level3">
 <h3 class="anchored" data-anchor-id="g-waterfall"><code>waterfall</code> — Cascade financière</h3>
-<div id="9fc2d097" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="18">
+<div id="a3f8f033" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'poste'</span>: [<span class="st">'CA'</span>,<span class="st">'Coût prod.'</span>,<span class="st">'Marge brute'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,<span class="st">'Marketing'</span>,<span class="st">'Résultat'</span>],</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'delta'</span>: [<span class="dv">500</span>, <span class="op">-</span><span class="dv">200</span>, <span class="dv">300</span>, <span class="op">-</span><span class="dv">60</span>, <span class="op">-</span><span class="dv">140</span>, <span class="op">-</span><span class="dv">40</span>, <span class="dv">60</span>],</span>
@@ -1169,7 +1256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-treemap" class="level3">
 <h3 class="anchored" data-anchor-id="g-treemap"><code>treemap</code> — Carte arborescente</h3>
-<div id="8525e794" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="19">
+<div id="be51b1e2" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'departement'</span>: [<span class="st">'R&amp;D'</span>,<span class="st">'Ventes'</span>,<span class="st">'Marketing'</span>,<span class="st">'Ops'</span>,<span class="st">'Finance'</span>,<span class="st">'IT'</span>,<span class="st">'RH'</span>],</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'budget'</span>:      [<span class="dv">450</span>, <span class="dv">380</span>, <span class="dv">210</span>, <span class="dv">280</span>, <span class="dv">150</span>, <span class="dv">200</span>, <span class="dv">120</span>],</span>
@@ -1192,7 +1279,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-streamgraph" class="level3">
 <h3 class="anchored" data-anchor-id="g-streamgraph"><code>streamgraph</code> — Flux temporel</h3>
-<div id="479d4afe" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="20">
+<div id="158279f2" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2012</span>, <span class="dv">2025</span>)),</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">32</span>,<span class="dv">30</span>,<span class="dv">28</span>,<span class="dv">25</span>,<span class="dv">22</span>,<span class="dv">20</span>,<span class="dv">18</span>,<span class="dv">16</span>,<span class="dv">15</span>,<span class="dv">13</span>,<span class="dv">12</span>,<span class="dv">11</span>,<span class="dv">10</span>],</span>
@@ -1227,7 +1314,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="planification-et-flux">Planification et flux</h2>
 <section id="g-gantt" class="level3">
 <h3 class="anchored" data-anchor-id="g-gantt"><code>gantt</code> — Diagramme de Gantt</h3>
-<div id="69c46c86" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="21">
+<div id="37378b55" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tache'</span>:   [<span class="st">'Analyse'</span>,<span class="st">'Design'</span>,<span class="st">'Dev Backend'</span>,<span class="st">'Dev Frontend'</span>,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Intégration'</span>,<span class="st">'Tests'</span>,<span class="st">'Déploiement'</span>],</span>
@@ -1257,7 +1344,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-calendar_heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="g-calendar_heatmap"><code>calendar_heatmap</code> — Calendrier de contributions</h3>
-<div id="988c302f" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="22">
+<div id="fe07f4ad" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> pd.date_range(<span class="st">'2024-01-01'</span>, <span class="st">'2024-12-31'</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>commits <span class="op">=</span> np.random.poisson(<span class="dv">3</span>, <span class="bu">len</span>(dates))</span>
@@ -1282,7 +1369,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-sankey" class="level3">
 <h3 class="anchored" data-anchor-id="g-sankey"><code>sankey</code> — Diagramme de Sankey</h3>
-<div id="b5df78c2" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="23">
+<div id="0c77b6dd" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'flux'</span>:       [<span class="dv">200</span>, <span class="op">-</span><span class="dv">80</span>,  <span class="op">-</span><span class="dv">50</span>, <span class="op">-</span><span class="dv">70</span>,   <span class="dv">80</span>,  <span class="op">-</span><span class="dv">30</span>, <span class="op">-</span><span class="dv">50</span>],</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'etiquette'</span>:  [<span class="st">'Revenus'</span>,<span class="st">'Coût matières'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,</span>
@@ -1312,7 +1399,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-ombrothermic" class="level3">
 <h3 class="anchored" data-anchor-id="g-ombrothermic"><code>ombrothermic</code> — Diagramme ombrothermique</h3>
 <p>Le diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures et les barres de précipitations selon la convention <strong>p = 2T</strong>. Les zones où p &lt; 2T sont des <strong>périodes sèches</strong>.</p>
-<div id="69281af2" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="24">
+<div id="97fe01a9" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:   [<span class="st">'Jan'</span>,<span class="st">'Fév'</span>,<span class="st">'Mar'</span>,<span class="st">'Avr'</span>,<span class="st">'Mai'</span>,<span class="st">'Jun'</span>,</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">'Jul'</span>,<span class="st">'Aoû'</span>,<span class="st">'Sep'</span>,<span class="st">'Oct'</span>,<span class="st">'Nov'</span>,<span class="st">'Déc'</span>],</span>
@@ -1341,7 +1428,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Analyse textuelle des périodes sèches :</p>
-<div id="ff6f18b2" class="cell" data-execution_count="25">
+<div id="b6c57cf6" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> Chart</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -1389,7 +1476,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="g-regression" class="level3">
 <h3 class="anchored" data-anchor-id="g-regression"><code>regression</code> — Régression et courbe de réponse</h3>
 <p>Ajustement polynomial avec bande de confiance à 95 %, équation et R² (et p-value pour un ajustement linéaire). Les résultats sont aussi disponibles dans <code>chart.regression_stats</code>.</p>
-<div id="7470c6e0" class="cell" data-execution_count="27">
+<div id="db5ac47d" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    .regression(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, order<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Courbe de réponse à l'azote"</span>)</span>
@@ -1409,7 +1496,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="g-mean_bar" class="level3">
 <h3 class="anchored" data-anchor-id="g-mean_bar"><code>mean_bar</code> — Moyennes ± erreur</h3>
 <p>Moyennes par traitement avec barres d’erreur : <code>error='se'</code> (erreur type, défaut), <code>'sd'</code> (écart-type) ou <code>'ci95'</code> (intervalle de confiance à 95 %). <code>hue</code> ajoute un second facteur, <code>points=True</code> superpose les observations.</p>
-<div id="7a1ac32f" class="cell" data-execution_count="28">
+<div id="def3278b" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.5</span>))</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement moyen ± erreur type'</span>)</span>
@@ -1425,7 +1512,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 </div>
 </div>
 </div>
-<div id="70e2ea98" class="cell" data-execution_count="29">
+<div id="a599321e" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'variete'</span>, <span class="st">'rendement'</span>, error<span class="op">=</span><span class="st">'ci95'</span>, points<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par variété'</span>)</span>
@@ -1440,21 +1527,38 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 </div>
 </div>
 </div>
-</section>
-<section id="g-interaction" class="level3">
-<h3 class="anchored" data-anchor-id="g-interaction"><code>interaction</code> — Graphique d’interaction</h3>
-<p>Une ligne par niveau du second facteur : des lignes non parallèles suggèrent une interaction (à confirmer par une ANOVA à deux facteurs).</p>
-<div id="6e31824d" class="cell" data-execution_count="30">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    .interaction(<span class="st">'dose'</span>, <span class="st">'variete'</span>, <span class="st">'rendement'</span>)</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Interaction dose × variété'</span>)</span>
+<p>Avec <code>letters=True</code>, un test de Tukey HSD compare les moyennes : deux barres qui partagent une lettre ne diffèrent pas significativement (α = 5 % par défaut, réglable avec <code>alpha_test</code>). Avec <code>hue</code>, les comparaisons se font à l’intérieur de chaque niveau de <code>x</code>. Les lettres sont aussi dans <code>chart.tukey_letters</code>.</p>
+<div id="bef56618" class="cell" data-execution_count="30">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.5</span>))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, letters<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par dose — lettres de Tukey'</span>)</span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    .labels(xlabel<span class="op">=</span><span class="st">'Dose N (kg/ha)'</span>)</span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gallery_files/figure-html/cell-31-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="gallery_files/figure-html/cell-31-output-1.png" width="950" height="422" class="figure-img"></p>
+<figcaption>Comparaison des variétés à chaque dose (test de Tukey)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-interaction" class="level3">
+<h3 class="anchored" data-anchor-id="g-interaction"><code>interaction</code> — Graphique d’interaction</h3>
+<p>Une ligne par niveau du second facteur : des lignes non parallèles suggèrent une interaction (à confirmer par une ANOVA à deux facteurs).</p>
+<div id="9b4fc33a" class="cell" data-execution_count="31">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>    .interaction(<span class="st">'dose'</span>, <span class="st">'variete'</span>, <span class="st">'rendement'</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Interaction dose × variété'</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    .labels(xlabel<span class="op">=</span><span class="st">'Dose N (kg/ha)'</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-32-output-1.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Interaction dose × variété</figcaption>
 </figure>
 </div>
@@ -1464,18 +1568,18 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="g-qqplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-qqplot"><code>qqplot</code> — Diagramme quantile-quantile</h3>
 <p>Vérifie la normalité, par exemple des résidus d’un modèle : les points doivent suivre la droite.</p>
-<div id="7b13c5d7" class="cell" data-execution_count="31">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>essai[<span class="st">'residus'</span>] <span class="op">=</span> essai[<span class="st">'rendement'</span>] <span class="op">-</span> essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>])[<span class="st">'rendement'</span>].transform(<span class="st">'mean'</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">4.5</span>))</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    .qqplot(<span class="st">'residus'</span>)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'QQ-plot des résidus'</span>)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="a4c08c29" class="cell" data-execution_count="32">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>essai[<span class="st">'residus'</span>] <span class="op">=</span> essai[<span class="st">'rendement'</span>] <span class="op">-</span> essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>])[<span class="st">'rendement'</span>].transform(<span class="st">'mean'</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">4.5</span>))</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    .qqplot(<span class="st">'residus'</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'QQ-plot des résidus'</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gallery_files/figure-html/cell-32-output-1.png" width="664" height="422" class="figure-img"></p>
+<p><img src="gallery_files/figure-html/cell-33-output-1.png" width="664" height="422" class="figure-img"></p>
 <figcaption>Normalité des résidus (écart à la moyenne de chaque traitement)</figcaption>
 </figure>
 </div>
@@ -1485,33 +1589,33 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="g-pca_biplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-pca_biplot"><code>pca_biplot</code> — Analyse en composantes principales</h3>
 <p>ACP normée : les individus sur les deux premiers axes, colorés par groupe, et les variables en flèches. Variance expliquée, coordonnées et contributions dans <code>chart.pca</code>.</p>
-<div id="c1b9fe04" class="cell" data-execution_count="32">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">30</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>precocite <span class="op">=</span> rng.normal(size<span class="op">=</span>n)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>caracteres <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'variete'</span>:   [<span class="ss">f'V</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n)],</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cycle'</span>:     np.where(precocite <span class="op">&gt;</span> <span class="dv">0</span>, <span class="st">'tardif'</span>, <span class="st">'précoce'</span>),</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'hauteur'</span>:   <span class="dv">95</span> <span class="op">+</span> <span class="dv">12</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">5</span>, n),</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'jours_floraison'</span>: <span class="dv">85</span> <span class="op">+</span> <span class="dv">10</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">3</span>, n),</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'talles'</span>:    <span class="dv">12</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">1</span>, n),</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pmg'</span>:       <span class="dv">25</span> <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">2.5</span>, n),</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rendement'</span>: <span class="fl">4.5</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.4</span>, n),</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    .pca_biplot(group<span class="op">=</span><span class="st">'cycle'</span>)</span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'ACP des caractères variétaux'</span>)</span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Variance expliquée :'</span>, (chart.pca[<span class="st">'explained_variance_ratio'</span>][:<span class="dv">3</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>), <span class="st">'%'</span>)</span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="a48460ef" class="cell" data-execution_count="33">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>precocite <span class="op">=</span> rng.normal(size<span class="op">=</span>n)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>caracteres <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'variete'</span>:   [<span class="ss">f'V</span><span class="sc">{</span>i<span class="sc">:02d}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n)],</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cycle'</span>:     np.where(precocite <span class="op">&gt;</span> <span class="dv">0</span>, <span class="st">'tardif'</span>, <span class="st">'précoce'</span>),</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'hauteur'</span>:   <span class="dv">95</span> <span class="op">+</span> <span class="dv">12</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">5</span>, n),</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'jours_floraison'</span>: <span class="dv">85</span> <span class="op">+</span> <span class="dv">10</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">3</span>, n),</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'talles'</span>:    <span class="dv">12</span> <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">1</span>, n),</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pmg'</span>:       <span class="dv">25</span> <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">2.5</span>, n),</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rendement'</span>: <span class="fl">4.5</span> <span class="op">+</span> <span class="fl">0.5</span> <span class="op">*</span> precocite <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.4</span>, n),</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>    .pca_biplot(group<span class="op">=</span><span class="st">'cycle'</span>)</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'ACP des caractères variétaux'</span>)</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Variance expliquée :'</span>, (chart.pca[<span class="st">'explained_variance_ratio'</span>][:<span class="dv">3</span>] <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>), <span class="st">'%'</span>)</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Variance expliquée : [65.9 20.1  8.6] %</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gallery_files/figure-html/cell-33-output-2.png" width="759" height="566" class="figure-img"></p>
+<p><img src="gallery_files/figure-html/cell-34-output-2.png" width="759" height="566" class="figure-img"></p>
 <figcaption>ACP de cinq caractères agronomiques sur 30 variétés</figcaption>
 </figure>
 </div>
@@ -1521,17 +1625,35 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="g-dendrogram" class="level3">
 <h3 class="anchored" data-anchor-id="g-dendrogram"><code>dendrogram</code> — Classification hiérarchique</h3>
 <p>Regroupe les individus selon leur ressemblance (méthode de Ward par défaut, variables centrées-réduites). <code>color_threshold</code> colore les groupes formés sous la hauteur de coupe, marquée par une ligne pointillée.</p>
-<div id="f80a4f7f" class="cell" data-execution_count="33">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">5</span>))</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    .dendrogram(labels<span class="op">=</span><span class="st">'variete'</span>, color_threshold<span class="op">=</span><span class="dv">6</span>)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Dendrogramme des variétés (Ward)'</span>)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="8d3b5ded" class="cell" data-execution_count="34">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">5</span>))</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    .dendrogram(labels<span class="op">=</span><span class="st">'variete'</span>, color_threshold<span class="op">=</span><span class="dv">6</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Dendrogramme des variétés (Ward)'</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gallery_files/figure-html/cell-34-output-1.png" width="1048" height="471" class="figure-img"></p>
+<p><img src="gallery_files/figure-html/cell-35-output-1.png" width="1048" height="471" class="figure-img"></p>
 <figcaption>Classification des variétés sur leurs caractères</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-clustermap" class="level3">
+<h3 class="anchored" data-anchor-id="g-clustermap"><code>clustermap</code> — Carte de chaleur classée</h3>
+<p>Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs dendrogrammes. Les colonnes sont centrées-réduites par défaut (<code>standardize=True</code>).</p>
+<div id="6dd7f84a" class="cell" data-execution_count="35">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">9</span>))</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    .clustermap(labels<span class="op">=</span><span class="st">'variete'</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Clustermap des caractères variétaux'</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-36-output-1.png" width="760" height="886" class="figure-img"></p>
+<figcaption>Profils des variétés classés par ressemblance</figcaption>
 </figure>
 </div>
 </div>
@@ -1540,23 +1662,247 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="g-ternary" class="level3">
 <h3 class="anchored" data-anchor-id="g-ternary"><code>ternary</code> — Diagramme ternaire</h3>
 <p>Pour des compositions en trois parts (pourcentages ou fractions), comme la texture du sol. Sommets : premier argument en bas à gauche, deuxième en bas à droite, troisième en haut.</p>
-<div id="eaf2f805" class="cell" data-execution_count="34">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">11</span>)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>sols <span class="op">=</span> pd.DataFrame({<span class="st">'zone'</span>: rng.choice([<span class="st">'bas-fond'</span>, <span class="st">'plateau'</span>], <span class="dv">40</span>)})</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'sable'</span>] <span class="op">=</span> np.where(sols[<span class="st">'zone'</span>] <span class="op">==</span> <span class="st">'plateau'</span>, rng.uniform(<span class="dv">55</span>, <span class="dv">85</span>, <span class="dv">40</span>), rng.uniform(<span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">40</span>))</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'argile'</span>] <span class="op">=</span> rng.uniform(<span class="dv">5</span>, <span class="dv">100</span> <span class="op">-</span> sols[<span class="st">'sable'</span>] <span class="op">-</span> <span class="dv">5</span>)</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'limon'</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">-</span> sols[<span class="st">'sable'</span>] <span class="op">-</span> sols[<span class="st">'argile'</span>]</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>(Chart(sols, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">6.5</span>))</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    .ternary(<span class="st">'sable'</span>, <span class="st">'limon'</span>, <span class="st">'argile'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Texture des sols (%)'</span>)</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="0f7a95d2" class="cell" data-execution_count="36">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">11</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>sols <span class="op">=</span> pd.DataFrame({<span class="st">'zone'</span>: rng.choice([<span class="st">'bas-fond'</span>, <span class="st">'plateau'</span>], <span class="dv">40</span>)})</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'sable'</span>] <span class="op">=</span> np.where(sols[<span class="st">'zone'</span>] <span class="op">==</span> <span class="st">'plateau'</span>, rng.uniform(<span class="dv">55</span>, <span class="dv">85</span>, <span class="dv">40</span>), rng.uniform(<span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">40</span>))</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'argile'</span>] <span class="op">=</span> rng.uniform(<span class="dv">5</span>, <span class="dv">100</span> <span class="op">-</span> sols[<span class="st">'sable'</span>] <span class="op">-</span> <span class="dv">5</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'limon'</span>] <span class="op">=</span> <span class="dv">100</span> <span class="op">-</span> sols[<span class="st">'sable'</span>] <span class="op">-</span> sols[<span class="st">'argile'</span>]</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>(Chart(sols, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">6.5</span>))</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>    .ternary(<span class="st">'sable'</span>, <span class="st">'limon'</span>, <span class="st">'argile'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Texture des sols (%)'</span>)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gallery_files/figure-html/cell-35-output-1.png" width="652" height="582" class="figure-img"></p>
+<p><img src="gallery_files/figure-html/cell-37-output-1.png" width="652" height="582" class="figure-img"></p>
 <figcaption>Texture des sols de 40 parcelles</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-soil_texture" class="level3">
+<h3 class="anchored" data-anchor-id="g-soil_texture"><code>soil_texture</code> — Triangle des textures USDA</h3>
+<p>Les 12 classes de texture USDA tracées et nommées, avec les échantillons par-dessus. La classe de chaque échantillon est dans <code>chart.texture_classes</code> ; la fonction <code>texture_class(sable, limon, argile)</code> classe aussi des valeurs sans tracer.</p>
+<div id="0e83a0d9" class="cell" data-execution_count="37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(sols, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">7.5</span>))</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    .soil_texture(<span class="st">'sable'</span>, <span class="st">'limon'</span>, <span class="st">'argile'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Triangle des textures (USDA)'</span>)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.texture_classes.value_counts().to_string())</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>texture
+Loam sableux           16
+Loam limoneux           6
+Loam sablo-argileux     6
+Argile                  5
+Loam argileux           3
+Loam                    3
+Sable loameux           1</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-38-output-2.png" width="756" height="673" class="figure-img"></p>
+<figcaption>Classes de texture des 40 parcelles</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="graphiques-seaborn" class="level2">
+<h2 class="anchored" data-anchor-id="graphiques-seaborn">Graphiques seaborn</h2>
+<p>Tous les graphiques <a href="https://seaborn.pydata.org/api.html">seaborn</a> sont accessibles avec <code>chart.seaborn('nom_de_la_fonction', ...)</code> : ils profitent des données, du thème et du chaînage de plutovizu. Les plus utiles ont aussi leur propre méthode.</p>
+<section id="g-seaborn" class="level3">
+<h3 class="anchored" data-anchor-id="g-seaborn"><code>seaborn</code> — N’importe quel graphique seaborn</h3>
+<div id="7f264f60" class="cell" data-execution_count="38">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    .seaborn(<span class="st">'violinplot'</span>, x<span class="op">=</span><span class="st">'variete'</span>, y<span class="op">=</span><span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, inner<span class="op">=</span><span class="st">'quart'</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Distribution du rendement par variété'</span>)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-39-output-1.png" width="854" height="422" class="figure-img"></p>
+<figcaption>seaborn.violinplot via plutovizu</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Les fonctions seaborn « figure » (<code>relplot</code>, <code>displot</code>, <code>catplot</code>, <code>lmplot</code>, <code>pairplot</code>, <code>jointplot</code>, <code>clustermap</code>) créent une grille de panneaux : <code>title()</code> devient le titre général et la grille est disponible dans <code>chart.sns_grid</code>.</p>
+<div id="5c398df7" class="cell" data-execution_count="39">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    .seaborn(<span class="st">'relplot'</span>, x<span class="op">=</span><span class="st">'dose'</span>, y<span class="op">=</span><span class="st">'rendement'</span>, col<span class="op">=</span><span class="st">'variete'</span>, kind<span class="op">=</span><span class="st">'line'</span>,</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>             marker<span class="op">=</span><span class="st">'o'</span>, height<span class="op">=</span><span class="fl">3.2</span>, aspect<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Réponse à l'azote par variété"</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Dose N (kg/ha)'</span>, <span class="st">'Rendement (t/ha)'</span>)</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-40-output-1.png" width="913" height="318" class="figure-img"></p>
+<figcaption>Une courbe de réponse par variété (seaborn.relplot)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-kde" class="level3">
+<h3 class="anchored" data-anchor-id="g-kde"><code>kde</code> — Densité lissée</h3>
+<div id="d10e99c5" class="cell" data-execution_count="40">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>    .kde(<span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Densité du rendement'</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-41-output-1.png" width="857" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-ecdf" class="level3">
+<h3 class="anchored" data-anchor-id="g-ecdf"><code>ecdf</code> — Fonction de répartition empirique</h3>
+<div id="aef6953a" class="cell" data-execution_count="41">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>    .ecdf(<span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Part des parcelles sous chaque rendement'</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-42-output-1.png" width="856" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-strip" class="level3">
+<h3 class="anchored" data-anchor-id="g-strip"><code>strip</code> et <code>swarm</code> — Toutes les observations</h3>
+<div id="f126777e" class="cell" data-execution_count="42">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>    .swarm(<span class="st">'variete'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'dose'</span>, palette<span class="op">=</span><span class="st">'crest'</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Chaque parcelle, colorée par dose'</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-43-output-1.png" width="854" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-boxen" class="level3">
+<h3 class="anchored" data-anchor-id="g-boxen"><code>boxen</code> — Boîte à moustaches étendue</h3>
+<div id="3f3c2068" class="cell" data-execution_count="43">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    .boxen(<span class="st">'dose'</span>, <span class="st">'rendement'</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par dose (letter-value plot)'</span>)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-44-output-1.png" width="854" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-pointplot" class="level3">
+<h3 class="anchored" data-anchor-id="g-pointplot"><code>pointplot</code> — Moyennes reliées</h3>
+<div id="e6bf2b83" class="cell" data-execution_count="44">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    .pointplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, dodge<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Moyennes et IC 95 %'</span>)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-45-output-1.png" width="855" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-countplot" class="level3">
+<h3 class="anchored" data-anchor-id="g-countplot"><code>countplot</code> — Effectifs</h3>
+<div id="87d23428" class="cell" data-execution_count="45">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>(Chart(sols, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    .countplot(<span class="st">'zone'</span>)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Nombre de parcelles par zone'</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-46-output-1.png" width="759" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-residplot" class="level3">
+<h3 class="anchored" data-anchor-id="g-residplot"><code>residplot</code> — Résidus d’une régression</h3>
+<p>Des résidus sans structure valident le modèle ; une courbe signale un mauvais degré.</p>
+<div id="786bde4e" class="cell" data-execution_count="46">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    .residplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, order<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Résidus d'un ajustement linéaire : la courbure appelle un degré 2"</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-47-output-1.png" width="856" height="374" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-jointplot" class="level3">
+<h3 class="anchored" data-anchor-id="g-jointplot"><code>jointplot</code> — Relation et distributions marginales</h3>
+<div id="a41a471f" class="cell" data-execution_count="47">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    .jointplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, kind<span class="op">=</span><span class="st">'reg'</span>, height<span class="op">=</span><span class="fl">5.5</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement selon la dose'</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-48-output-1.png" width="506" height="543" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-pairplot" class="level3">
+<h3 class="anchored" data-anchor-id="g-pairplot"><code>pairplot</code> — Matrice de nuages de points</h3>
+<div id="3eff39dd" class="cell" data-execution_count="48">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    .pairplot(<span class="bu">vars</span><span class="op">=</span>[<span class="st">'hauteur'</span>, <span class="st">'jours_floraison'</span>, <span class="st">'talles'</span>, <span class="st">'rendement'</span>],</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>              hue<span class="op">=</span><span class="st">'cycle'</span>, corner<span class="op">=</span><span class="va">True</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Relations entre caractères'</span>)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="gallery_files/figure-html/cell-49-output-1.png" width="865" height="788" class="figure-img"></p>
 </figure>
 </div>
 </div>
