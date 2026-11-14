@@ -55,19 +55,29 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `soil_texture(sand, silt, clay)` | Triangle des textures USDA (12 classes) |
 | `clustermap(labels)` | Carte de chaleur + dendrogrammes |
 | `circle_packing(values, labels, group)` | Cercles imbriqués (circlify) |
+| `step`, `stem`, `band`, `timeline`, `eventplot` | Escalier, bâtons, bande, frise, événements |
+| `errorbar`, `hist2d`, `bihistogram` | Barres d'erreur, histogramme 2D, histogrammes dos à dos |
+| `confidence_ellipse`, `pivot_heatmap` | Ellipses de confiance, tableau croisé coloré |
+| `donut`, `polar`, `radial_bar`, `progress_bar` | Anneau, polaire (rose des vents), barres radiales, progression |
+| `contour`, `mesh`, `vector_field` | Courbes de niveau, grille colorée, champ de vecteurs |
+| `scatter3d`, `line3d`, `surface`, `bar3d` | Graphiques 3D |
+| `word_cloud(text)` | Nuage de mots (réponses ouvertes, entretiens) |
+| `word_frequency(text, top, ngram)` | Mots ou expressions les plus cités |
+| `likert(columns, order)` | Échelle de Likert (barres divergentes) |
+| `code_matrix(case, code)` | Matrice des codes (codage qualitatif) |
 | `seaborn(name, **kwargs)` | N'importe quel graphique seaborn (`violinplot`, `relplot`…) |
 | `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot`, `pairplot`, `jointplot` | Graphiques seaborn usuels |
 
 `mean_bar(..., letters=True)` ajoute les lettres du test de Tukey HSD ;
 `texture_class(sable, limon, argile)` donne la classe USDA d'un sol.
 
-Liste complète des 43 types dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
+Liste complète des 68 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
 
 ## Thèmes
 
-Quatorze thèmes maison pour sortir du style matplotlib classique :
+Quinze thèmes maison pour sortir du style matplotlib classique :
 `pluto`, `editorial`, `paper`, `arctic`, `neon`, `blueprint`, `sunset`, `forest`,
-`ocean`, `terminal`, `ink`, `pastel`, `sahel`, `accessible`.
+`ocean`, `terminal`, `ink`, `pastel`, `sahel`, `accessible`, `prezi`.
 `list_themes()` les liste, `DESCRIPTIONS` les décrit. Les cinq styles seaborn sont aussi
 disponibles (`seaborn-darkgrid`, `seaborn-whitegrid`…), et `context='paper' | 'talk' | 'poster'`
 adapte la taille du texte : `set_theme('pluto', context='talk')`.
@@ -78,6 +88,9 @@ viennent du projet [morethemes](https://github.com/y-sunflower/morethemes) (MIT)
 ```bash
 pip install plutovizu[morethemes]
 ```
+
+Le thème `editorial` est appliqué par défaut dès `import plutovizu` ;
+`set_theme(None)` revient au style matplotlib d'origine.
 
 ```python
 from plutovizu import Chart, set_theme, theme_context
@@ -180,5 +193,6 @@ examples/        notebook de démonstration
 uv sync            # installe le package en mode éditable + dépendances dev
 uv run pytest      # lance les tests
 uv build           # construit sdist + wheel dans dist/
+uv run python docs/_vignettes.py   # régénère les vignettes de la galerie
 quarto render docs # génère la documentation
 ```

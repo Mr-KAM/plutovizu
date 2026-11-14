@@ -38,11 +38,12 @@ Voir la page [Thèmes](themes.qmd) pour l'aperçu de chaque thème.
 
 | Fonction | Rôle |
 |---|---|
-| `set_theme(theme='pluto', context=None)` | Applique un thème à tous les graphiques suivants ; `None` revient au style matplotlib |
+| `set_theme(theme='editorial', context=None)` | Applique un thème à tous les graphiques suivants ; `None` revient au style matplotlib |
 | `theme_context(theme, context=None)` | Applique un thème seulement dans un bloc `with` |
 | `list_themes(source='all')` | Noms des thèmes : `'all'`, `'plutovizu'`, `'seaborn'` ou `'morethemes'` |
 | `get_theme(name)` | Copie des réglages d'un thème, pour en dériver un thème personnalisé |
 | `THEMES`, `SEABORN`, `MORETHEMES` | Dictionnaires nom → rcParams |
+| `DEFAULT_THEME` | `'editorial'` : thème appliqué dès `import plutovizu` |
 | `CONTEXTS` | `('paper', 'notebook', 'talk', 'poster')` : valeurs possibles de `context` |
 | `DESCRIPTIONS` | Dictionnaire nom → description |
 
@@ -101,16 +102,19 @@ chart.line('date', ['ventes', 'coûts', 'profit'], marker='s', linewidth=1.5)
 ### `bar`
 
 ```python
-.bar(x: str, y: str, horizontal: bool = False,
-     width: float = 0.8, alpha: float = 0.8,
-     color: Optional[str] = None) -> Chart
+.bar(x: str, y: str | List[str], horizontal: bool = False,
+     width: float = 0.8, alpha: float = 0.8, color: str = None,
+     stacked: bool = False, show_values: bool = False,
+     value_format: str = '{:,.0f}') -> Chart
 ```
 
-Barres verticales (`barv`) ou horizontales (`barh`).
+Barres verticales ou horizontales. Plusieurs colonnes `y` : barres groupées, ou empilées
+avec `stacked=True`. `show_values=True` écrit les valeurs sur les barres.
 
 ```python
-chart.bar('region', 'ca')
-chart.bar('valeur', 'categorie', horizontal=True, color='steelblue')
+chart.bar('region', 'ca', show_values=True)
+chart.bar('categorie', 'valeur', horizontal=True, color='steelblue')
+chart.bar('annee', ['riz', 'mais', 'mil'], stacked=True)
 ```
 
 ---
@@ -489,7 +493,7 @@ chart.sankey('flux', 'etiquette', orientations='direction', unit=' k€')
 
 ## Sciences & analyse de données
 
-Exemples complets dans la [galerie](gallery.qmd#sciences-de-la-nature-analyse-de-données).
+Exemples complets dans les pages [Comparaison](charts/comparaison.qmd), [Relation](charts/relation.qmd), [Multivarié](charts/multivarie.qmd) et [Climat & sols](charts/sciences.qmd).
 L'argument `error` vaut `'se'` (erreur type), `'sd'` (écart-type) ou `'ci95'` (IC à 95 %).
 
 ### `regression`
@@ -620,6 +624,146 @@ df['texture'] = texture_class(df['sable'], df['limon'], df['argile'])
 
 Carte de chaleur avec dendrogrammes sur les lignes et les colonnes (`seaborn.clustermap`).
 Crée sa propre figure ; la grille seaborn est dans `chart.sns_grid`.
+
+---
+
+## Types matplotlib
+
+Les types de graphiques du catalogue matplotlib
+([plot types](https://matplotlib.org/stable/plot_types/index.html)) qui n'avaient pas encore
+d'équivalent dans plutovizu. Les exemples sont dans les pages de la [galerie](gallery.qmd).
+
+### Données appariées et temporelles
+
+```python
+.step(x, y: str | List[str], where='mid', fill=False, alpha=0.2)          # escalier (step, stairs)
+.stem(x, y, baseline=0.0, color=None)                                     # bâtons
+.band(x, low, high, y=None, color=None, alpha=0.25, label=None)           # bande (fill_between)
+.timeline(date, label, levels=None, color=None)                           # frise chronologique
+.eventplot(time, group=None, linelength=0.7, linewidth=1.5)               # événements (eventplot)
+```
+
+Les dates en abscisse sont formatées de façon compacte automatiquement.
+
+### Distributions et erreurs
+
+```python
+.errorbar(x, y, yerr=None, xerr=None, group=None, capsize=3, marker='o', line=False)
+.hist2d(x, y, bins=30, cmap=None, colorbar=True)
+.bihistogram(column, group, bins=20, horizontal=False, alpha=0.85)        # 2 groupes dos à dos
+```
+
+`yerr` / `xerr` : nom de colonne ou constante. `bihistogram(..., horizontal=True)` donne une
+pyramide des âges.
+
+### Relations
+
+```python
+.confidence_ellipse(x, y, group=None, level=0.95, show_points=True, fill=True, alpha=0.15)
+.pivot_heatmap(x, y, value, aggfunc='mean', annot=True, fmt='.1f', cmap=None)
+```
+
+`confidence_ellipse` : ellipse couvrant `level` de la population (loi normale bivariée).
+`pivot_heatmap` : tableau croisé coloré, conservé dans `chart.pivot_table`.
+
+### Composition et polaire
+
+```python
+.donut(values, labels=None, group=None, hole=0.55, center_text=None, show_values=True)
+.polar(theta, r, kind='bar', group=None, degrees=True, compass=False, alpha=0.85)
+.radial_bar(values, labels=None, max_value=100, width=0.12, gap=0.04, show_values=True)
+.progress_bar(value: str | float, total=100, labels=None, color=None, height=0.5)
+```
+
+`donut(group=...)` : anneaux imbriqués. `polar` : `'bar'` (rose ; empilée par `group`,
+rose des vents avec `compass=True`), `'line'` ou `'scatter'` ; `theta` en catégories ou en
+degrés.
+
+### Champs et cartes
+
+```python
+.contour(x, y, z, filled=True, levels=10, cmap=None, show_points=False,
+         show_mesh=False, labels=True, colorbar=True)
+.mesh(x, y, z, cmap=None, colorbar=True, show_points=False)
+.vector_field(x, y, u, v, kind='quiver', cmap=None, density=1.2, colorbar=True)
+```
+
+Une grille régulière complète de (x, y) est détectée automatiquement (`contourf`,
+`pcolormesh`) ; sinon les points sont triangulés (`tricontourf`, `tripcolor`, maillage avec
+`show_mesh=True`). `vector_field` : `'quiver'` (flèches), `'barbs'` (barbules de vent) ou
+`'stream'` (lignes de courant, grille régulière).
+
+### 3D
+
+```python
+.scatter3d(x, y, z, group=None, size=30, alpha=0.8)
+.line3d(x, y, z, group=None)
+.surface(x, y, z, kind='surface', cmap=None, colorbar=True)    # 'surface', 'wireframe', 'trisurf'
+.bar3d(x, y, z, alpha=0.9)
+```
+
+Ces méthodes remplacent l'axe du graphique par un axe 3D (`chart.ax`). `surface` triangule
+automatiquement des points dispersés (`trisurf`).
+
+---
+
+## Analyse qualitative
+
+### `word_cloud`
+
+```python
+.word_cloud(text: str = None, words: str = None, weights: str = None,
+            max_words: int = 150, language: str = 'fr', stopwords: List[str] = None,
+            min_length: int = 3, ngram: int = 1, shape: str = 'rectangle',
+            colormap: str = None, random_state: int = 42) -> Chart
+```
+
+Nuage de mots (paquet wordcloud). `text` : colonne de texte libre dont les mots sont
+comptés ; ou `words` + `weights` : fréquences déjà calculées. `language` choisit les mots
+vides ignorés (`'fr'`, `'en'`, `'fr+en'`, `None`) ; `shape='circle'` donne un nuage rond.
+Couleurs et police suivent le thème. Fréquences : `chart.word_frequencies`.
+
+### `word_frequency`
+
+```python
+.word_frequency(text: str, top: int = 20, ngram: int = 1, language: str = 'fr',
+                stopwords: List[str] = None, min_length: int = 3,
+                color: str = None, show_values: bool = True) -> Chart
+```
+
+Barres horizontales des `top` mots (ou expressions de `ngram` mots) les plus fréquents.
+
+### `likert`
+
+```python
+.likert(columns: List[str], order: List, labels: Dict[str, str] = None,
+        cmap: str = 'RdYlGn', sort: bool = True, show_values: bool = True,
+        min_label: float = 5) -> Chart
+```
+
+Barres empilées divergentes centrées sur la réponse neutre. `order` : modalités du plus
+négatif au plus positif (une modalité absente de `order` lève une erreur). `labels`
+renomme les questions. Pourcentages : `chart.likert_table`.
+
+### `code_matrix`
+
+```python
+.code_matrix(case: str, code: str, normalize: bool = False,
+             annot: bool = True, cmap: str = None) -> Chart
+```
+
+Matrice cas × codes à partir d'une ligne par segment codé ; `normalize=True` donne des %
+par cas. Tableau : `chart.code_table`.
+
+### `word_counts` (fonction)
+
+```python
+from plutovizu import word_counts
+word_counts(df['reponse'], language='fr', stopwords=None, min_length=3, ngram=1)  # -> Counter
+```
+
+Compte les mots d'une série de textes : minuscules, accents conservés, « l'eau » → « eau »,
+mots vides ignorés ; les expressions (`ngram=2`…) ne franchissent pas un mot vide.
 
 ---
 

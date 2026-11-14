@@ -7,7 +7,9 @@ title: "Personnalisation"
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from plutovizu import Chart
+from plutovizu import Chart, set_theme
+
+set_theme('editorial')   # thème par défaut de la documentation
 ```
 
 ---
@@ -192,13 +194,19 @@ np.random.seed(42)
 df = pd.DataFrame({'x': range(10), 'y': np.random.randn(10).cumsum()})
 
 (Chart(df)
-    .set_style('ggplot')
+    .set_style('ggplot')          # à appeler avant de tracer
     .line('x', 'y', linewidth=2)
     .title("Style 'ggplot'")
     .labels(xlabel='X', ylabel='Y')
     .tight_layout()
     .show())
+
+set_theme()   # un style matplotlib reste actif : on revient au thème par défaut (editorial)
 ```
+
+Comme un thème, un style matplotlib s'applique à tous les graphiques suivants. Pour
+l'essentiel, préférez les [thèmes plutovizu](themes.qmd), qui comprennent aussi les
+styles seaborn.
 
 Styles populaires : `'ggplot'`, `'seaborn-v0_8'`, `'dark_background'`, `'bmh'`, `'fivethirtyeight'`.
 

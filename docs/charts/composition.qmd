@@ -1,0 +1,186 @@
+---
+title: "Composition"
+subtitle: "Les parts d'un total, et l'avancement vers un objectif."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `pie` — Camembert {#g-pie}
+
+```{python}
+#| fig-cap: "Parts de marché par segment"
+#| fig-width: 6
+#| fig-height: 6
+
+df = pd.DataFrame({
+    'segment': ['Résidentiel','Professionnel','Industrie','Administration'],
+    'part':    [42, 28, 18, 12],
+})
+
+(Chart(df)
+    .pie('part', labels='segment', autopct='%1.1f%%',
+         explode=[0.05, 0, 0, 0])
+    .title('Parts de marché 2024')
+    .tight_layout()
+    .show())
+```
+
+
+### `donut` — Anneau {#g-donut}
+
+Un camembert évidé, avec un texte central ; avec `group`, deux anneaux imbriqués
+(groupes à l'intérieur, éléments à l'extérieur).
+
+```{python}
+#| fig-cap: "Surfaces par famille et par culture"
+(Chart(cultures, figsize=(8, 7))
+    .donut('surface', labels='culture', group='famille', center_text='1 865 ha')
+    .title('Assolement')
+    .tight_layout()
+    .show())
+```
+
+
+### `treemap` — Carte arborescente {#g-treemap}
+
+```{python}
+#| fig-cap: "Budget par département"
+#| fig-width: 9
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'departement': ['R&D','Ventes','Marketing','Ops','Finance','IT','RH'],
+    'budget':      [450, 380, 210, 280, 150, 200, 120],
+})
+
+(Chart(df)
+    .treemap('budget', labels='departement', alpha=0.85)
+    .title('Répartition budgétaire par département (k€)')
+    .tight_layout()
+    .show())
+```
+
+
+### `circle_packing` — Cercles imbriqués {#g-circle_packing}
+
+Un cercle par ligne, d'aire proportionnelle à la valeur (calcul par
+[circlify](https://github.com/elmotec/circlify)). Avec `group`, les cercles sont
+regroupés dans le cercle de leur groupe ; une liste de colonnes donne plusieurs niveaux
+d'imbrication (`group=['cycle', 'famille']`).
+
+```{python}
+#| fig-cap: "Surfaces cultivées par famille de cultures"
+cultures = pd.DataFrame({
+    'famille': ['Céréales'] * 4 + ['Légumineuses'] * 3 + ['Tubercules'] * 3 + ['Maraîchage'] * 3,
+    'culture': ['Riz', 'Maïs', 'Mil', 'Sorgho', 'Niébé', 'Arachide', 'Soja',
+                'Manioc', 'Igname', 'Patate douce', 'Tomate', 'Oignon', 'Gombo'],
+    'surface': [420, 310, 180, 150, 140, 260, 60, 230, 120, 70, 45, 55, 25],
+})
+
+(Chart(cultures, figsize=(8, 8))
+    .circle_packing('surface', labels='culture', group='famille', show_values=True)
+    .title('Surfaces cultivées (ha)')
+    .tight_layout()
+    .show())
+```
+
+
+### `waterfall` — Cascade financière {#g-waterfall}
+
+```{python}
+#| fig-cap: "Compte de résultat simplifié"
+#| fig-width: 9
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'poste': ['CA','Coût prod.','Marge brute','Loyers','Salaires','Marketing','Résultat'],
+    'delta': [500, -200, 300, -60, -140, -40, 60],
+})
+
+(Chart(df)
+    .waterfall('poste', 'delta',
+               positive_color='#2a9d8f', negative_color='#e76f51')
+    .title('Compte de résultat Q4 (k€)')
+    .labels(ylabel='k€')
+    .rotate_labels(x_rotation=25)
+    .grid(alpha=0.25)
+    .tight_layout()
+    .show())
+```
+
+
+### `ternary` — Diagramme ternaire {#g-ternary}
+
+Pour des compositions en trois parts (pourcentages ou fractions), comme la texture du sol.
+Sommets : premier argument en bas à gauche, deuxième en bas à droite, troisième en haut.
+
+```{python}
+#| fig-cap: "Texture des sols de 40 parcelles"
+rng = np.random.default_rng(11)
+sols = pd.DataFrame({'zone': rng.choice(['bas-fond', 'plateau'], 40)})
+sols['sable'] = np.where(sols['zone'] == 'plateau', rng.uniform(55, 85, 40), rng.uniform(10, 45, 40))
+sols['argile'] = rng.uniform(5, 100 - sols['sable'] - 5)
+sols['limon'] = 100 - sols['sable'] - sols['argile']
+
+(Chart(sols, figsize=(7, 6.5))
+    .ternary('sable', 'limon', 'argile', group='zone')
+    .title('Texture des sols (%)')
+    .tight_layout()
+    .show())
+```
+
+
+### `sankey` — Diagramme de Sankey {#g-sankey}
+
+```{python}
+#| fig-cap: "Flux financiers simplifiés"
+#| fig-width: 9
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'flux':       [200, -80,  -50, -70,   80,  -30, -50],
+    'etiquette':  ['Revenus','Coût matières','Loyers','Salaires',
+                   'Marge brute','Taxes','Bénéfice net'],
+    'direction':  [0, 1, 1, -1, 0, 1, -1],
+})
+
+(Chart(df)
+    .sankey('flux', 'etiquette', orientations='direction', unit=' k€', scale=0.005)
+    .title('Flux financiers (k€)')
+    .tight_layout()
+    .show())
+```
+
+
+### `radial_bar` — Barres radiales {#g-radial_bar}
+
+Un arc concentrique par indicateur, sa longueur rapportée à un tour complet.
+
+```{python}
+#| fig-cap: "Avancement des activités du projet"
+(Chart(avancement, figsize=(6, 6.5))
+    .radial_bar('pct', labels='activite')
+    .title('Avancement du projet')
+    .tight_layout()
+    .show())
+```
+
+
+### `progress_bar` — Barre de progression {#g-progress_bar}
+
+Une barre pleine sur un rail clair : un nombre, ou une colonne (une barre par ligne).
+
+```{python}
+#| fig-cap: "Avancement par activité"
+(Chart(avancement, figsize=(8, 2.8))
+    .progress_bar('pct', labels='activite')
+    .title('Objectifs atteints')
+    .tight_layout()
+    .show())
+```

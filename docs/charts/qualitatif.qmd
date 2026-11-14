@@ -1,0 +1,97 @@
+---
+title: "Analyse qualitative"
+subtitle: "Réponses ouvertes, entretiens et questionnaires d'opinion."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `word_cloud` — Nuage de mots {#g-word_cloud}
+
+À partir d'une colonne de texte libre : les mots sont comptés en ignorant les mots vides
+français (`language='fr'`, ou `'en'`, `'fr+en'`). On peut ajouter ses propres mots à
+ignorer (`stopwords=[...]`), compter des expressions (`ngram=2`), ou fournir directement
+des fréquences (`words=`, `weights=`). Couleurs et police suivent le thème.
+
+```{python}
+#| fig-cap: "Les mots des producteurs"
+(Chart(enquete, figsize=(10, 5))
+    .word_cloud('reponse')
+    .title('Difficultés citées par les producteurs')
+    .show())
+```
+
+```{python}
+#| fig-cap: "Expressions de deux mots, en forme de cercle"
+with theme_context('prezi'):
+    (Chart(enquete, figsize=(7, 7))
+        .word_cloud('reponse', ngram=2, shape='circle')
+        .title('Expressions les plus fréquentes')
+        .show())
+```
+
+
+### `word_frequency` — Fréquence des mots {#g-word_frequency}
+
+Le complément chiffré du nuage : les mots (ou expressions) les plus cités, en barres.
+Les fréquences sont dans `chart.word_frequencies` ; la fonction `word_counts()` les
+calcule sans tracer.
+
+```{python}
+#| fig-cap: "Les 12 mots les plus cités"
+(Chart(enquete, figsize=(9, 5))
+    .word_frequency('reponse', top=12)
+    .title('Mots les plus cités')
+    .tight_layout()
+    .show())
+```
+
+
+### `likert` — Échelle de Likert {#g-likert}
+
+Une barre par question, centrée sur la réponse neutre : désaccord à gauche, accord à
+droite, en pourcentage. Les questions sont triées par accord net.
+
+```{python}
+#| fig-cap: "Satisfaction de 80 producteurs (échelle à 5 niveaux)"
+echelle = ['Pas du tout d’accord', 'Pas d’accord', 'Neutre', 'D’accord', 'Tout à fait d’accord']
+opinions = pd.DataFrame({q: rng.choice(echelle, 80, p=p) for q, p in {
+    'La formation était utile':      [.05, .10, .15, .40, .30],
+    'Les semences sont accessibles': [.25, .30, .20, .15, .10],
+    'Le crédit arrive à temps':      [.35, .30, .15, .15, .05],
+    'Je recommande le projet':       [.05, .05, .20, .35, .35],
+}.items()})
+
+(Chart(opinions, figsize=(10, 4.5))
+    .likert(list(opinions.columns), order=echelle)
+    .title('Satisfaction des producteurs')
+    .tight_layout()
+    .show())
+```
+
+
+### `code_matrix` — Matrice des codes {#g-code_matrix}
+
+Pour le codage d'entretiens (comme dans NVivo ou Atlas.ti) : une ligne par segment codé,
+et la matrice montre combien de fois chaque code apparaît dans chaque entretien.
+`normalize=True` donne la part de chaque code dans l'entretien.
+
+```{python}
+#| fig-cap: "Thèmes abordés dans six entretiens"
+segments = pd.DataFrame({
+    'entretien': rng.choice([f'Entretien {i}' for i in range(1, 7)], 120),
+    'code': rng.choice(['Eau', 'Prix', 'Crédit', 'Semences', 'Formation', 'Marché'], 120,
+                       p=[.25, .2, .15, .15, .1, .15]),
+})
+
+(Chart(segments, figsize=(9, 4.5))
+    .code_matrix('entretien', 'code')
+    .title('Matrice des codes')
+    .tight_layout()
+    .show())
+```

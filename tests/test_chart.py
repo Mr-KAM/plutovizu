@@ -508,3 +508,265 @@ def test_circle_packing_negative_raises(cultures):
     cultures.loc[0, 'surface'] = -1
     with pytest.raises(ValueError):
         Chart(cultures).circle_packing('surface')
+
+
+# ── analyse qualitative ─────────────────────────────────────────────────────
+
+from plutovizu import word_counts
+
+@pytest.fixture
+def avis():
+    return pd.DataFrame({
+        'reponse': ["Le prix de l'engrais est trop élevé",
+                    "Manque d'eau et prix de l'engrais",
+                    "L'accès à l'eau reste difficile, le prix aussi",
+                    "Semences améliorées trop chères"],
+        'q1': ['D’accord', 'Tout à fait', 'Neutre', 'D’accord'],
+        'q2': ['Pas du tout', 'Pas d’accord', 'Neutre', 'D’accord'],
+    })
+
+ECHELLE = ['Pas du tout', 'Pas d’accord', 'Neutre', 'D’accord', 'Tout à fait']
+
+def test_word_counts_stopwords_and_apostrophes(avis):
+    c = word_counts(avis['reponse'])
+    assert c['prix'] == 3 and c['eau'] == 2 and c['engrais'] == 2
+    assert 'le' not in c and 'est' not in c and "l'eau" not in c
+
+def test_word_counts_ngrams_do_not_cross_stopwords():
+    c = word_counts(["prix de l'engrais élevé, prix engrais élevé"], ngram=2)
+    assert c['prix engrais'] == 1 and c['engrais élevé'] == 2
+
+def test_word_counts_bad_language():
+    with pytest.raises(ValueError):
+        word_counts(['texte'], language='de')
+
+def test_word_cloud_from_text_and_weights(avis):
+    c = Chart(avis).word_cloud('reponse', shape='circle')
+    assert c.word_frequencies.index[0] == 'prix'
+    freq = pd.DataFrame({'mot': ['riz', 'mil'], 'n': [10, 3]})
+    c2 = Chart(freq).word_cloud(words='mot', weights='n')
+    assert c2.word_frequencies.to_dict() == {'riz': 10.0, 'mil': 3.0}
+
+def test_word_cloud_needs_input(avis):
+    with pytest.raises(ValueError):
+        Chart(avis).word_cloud()
+
+def test_word_frequency(avis):
+    c = Chart(avis).word_frequency('reponse', top=3)
+    assert c.word_frequencies.index[0] == 'prix' and len(c.ax.patches) == 3
+
+def test_likert_centered_on_neutral(avis):
+    c = Chart(avis).likert(['q1', 'q2'], order=ECHELLE)
+    t = c.likert_table
+    assert t.loc['q1'].sum() == pytest.approx(100)
+    # chaque barre commence à -(désaccord + neutre/2)
+    starts = {}
+    for p in c.ax.patches:
+        y = round(p.get_y() + p.get_height() / 2)
+        starts[y] = min(starts.get(y, 0), p.get_x())
+    expected = sorted(-(t[ECHELLE[:2]].sum(axis=1) + t['Neutre'] / 2))
+    assert sorted(starts.values()) == pytest.approx(expected)
+
+def test_likert_unknown_level_raises(avis):
+    with pytest.raises(ValueError, match='order'):
+        Chart(avis).likert(['q1'], order=ECHELLE[:3])
+
+def test_code_matrix_counts():
+    seg = pd.DataFrame({'entretien': ['E1', 'E1', 'E1', 'E2', 'E2'],
+                        'theme': ['eau', 'eau', 'prix', 'prix', 'crédit']})
+    c = Chart(seg).code_matrix('entretien', 'theme')
+    assert c.code_table.loc['E1', 'eau'] == 2 and c.code_table.loc['E2', 'eau'] == 0
+    assert list(c.code_table.columns)[0] in ('eau', 'prix')    # codes les plus cités d'abord
+    pct = Chart(seg).code_matrix('entretien', 'theme', normalize=True).code_table
+    assert pct.sum(axis=1).tolist() == pytest.approx([100, 100])
+
+def test_prezi_theme():
+    assert 'prezi' in list_themes('plutovizu')
+    with theme_context('prezi'):
+        assert plt.rcParams['axes.titlelocation'] == 'center'
+        assert plt.rcParams['axes.titleweight'] == 'normal'
+
+
+# ── types matplotlib ────────────────────────────────────────────────────────
+
+@pytest.fixture
+def grille():
+    xs, ys = np.meshgrid(np.linspace(0, 4, 9), np.linspace(0, 3, 7))
+    return pd.DataFrame({'x': xs.ravel(), 'y': ys.ravel(),
+                         'z': np.sin(xs.ravel()) + np.cos(ys.ravel()),
+                         'u': -ys.ravel() + 1.5, 'v': xs.ravel() - 2})
+
+@pytest.fixture
+def points():
+    rng = np.random.default_rng(2)
+    x, y = rng.uniform(0, 100, 40), rng.uniform(0, 60, 40)
+    return pd.DataFrame({'x': x, 'y': y, 'ph': 5.5 + x / 100 + rng.normal(0, .1, 40),
+                         'u': rng.normal(size=40), 'v': rng.normal(size=40)})
+
+def test_bar_grouped_and_stacked():
+    d = pd.DataFrame({'an': ['2019', '2020'], 'a': [1, 2], 'b': [3, 4]})
+    grouped = Chart(d).bar('an', ['a', 'b'], show_values=True)
+    assert len(grouped.ax.patches) == 4 and len(grouped.ax.get_legend().get_texts()) == 2
+    stacked = Chart(d).bar('an', ['a', 'b'], stacked=True)
+    tops = sorted(p.get_y() + p.get_height() for p in stacked.ax.patches)
+    assert tops[-2:] == pytest.approx([4, 6])        # empilement a + b
+
+def test_stem_step_band_errorbar(df):
+    Chart(df).stem('x', 'a')
+    Chart(df).step('x', ['a', 'b'], fill=True)
+    d = df.assign(lo=df['a'] - 1, hi=df['a'] + 1)
+    Chart(d).band('x', 'lo', 'hi', y='a')
+    c = Chart(df).errorbar('x', 'a', yerr=0.2, group='cat', line=True)
+    assert len(c.ax.get_legend().get_texts()) == df['cat'].nunique()
+
+def test_eventplot_dates():
+    d = pd.DataFrame({'date': pd.to_datetime(['2024-03-01', '2024-04-15', '2024-05-02']),
+                      'variete': ['A', 'B', 'A']})
+    c = Chart(d).eventplot('date', group='variete')
+    assert [t.get_text() for t in c.ax.get_yticklabels()] == ['A', 'B']
+
+def test_hist2d_and_bihistogram(df):
+    Chart(df).hist2d('a', 'b', bins=5)
+    d = pd.DataFrame({'age': [10, 12, 30, 35, 36, 50], 'sexe': ['F', 'H', 'F', 'H', 'H', 'F']})
+    c = Chart(d).bihistogram('age', 'sexe', bins=[0, 20, 40, 60], horizontal=True)
+    widths = [p.get_width() for p in c.ax.patches]
+    assert sorted(widths) == [-2, -1, 0, 1, 1, 1]       # H vers la gauche, F vers la droite
+    with pytest.raises(ValueError):
+        Chart(df).bihistogram('a', 'cat')                # plus de deux groupes
+
+def test_as_grid_detection(grille, points):
+    assert Chart(grille)._as_grid('x', 'y', 'z')[2][0].shape == (7, 9)
+    assert Chart(points)._as_grid('x', 'y', 'ph') is None
+
+def test_contour_mesh_grid_and_scattered(grille, points):
+    Chart(grille).contour('x', 'y', 'z')
+    Chart(grille).mesh('x', 'y', 'z')
+    Chart(points).contour('x', 'y', 'ph', show_points=True, show_mesh=True)
+    Chart(points).mesh('x', 'y', 'ph', show_points=True)
+
+def test_vector_field(grille, points):
+    for kind in ('quiver', 'barbs', 'stream'):
+        Chart(grille).vector_field('x', 'y', 'u', 'v', kind=kind)
+    with pytest.raises(ValueError, match='grille'):
+        Chart(points).vector_field('x', 'y', 'u', 'v', kind='stream')
+
+def test_3d_charts(grille, points):
+    assert Chart(points).scatter3d('x', 'y', 'ph').ax.name == '3d'
+    Chart(points).line3d('x', 'y', 'ph')
+    for kind in ('surface', 'wireframe'):
+        Chart(grille).surface('x', 'y', 'z', kind=kind)
+    Chart(points).surface('x', 'y', 'ph')                     # trisurf automatique
+    d = pd.DataFrame({'v': ['A', 'A', 'B'], 's': ['s1', 's2', 's1'], 'r': [3, 4, 5]})
+    c = Chart(d).bar3d('v', 's', 'r')
+    assert len(c.fig.axes) == 1                               # l'ancien axe 2D est retiré
+
+def test_timeline():
+    d = pd.DataFrame({'date': pd.to_datetime(['2024-06-01', '2024-07-15', '2024-10-20']),
+                      'etape': ['Semis', 'Désherbage', 'Récolte']})
+    c = Chart(d).timeline('date', 'etape')
+    assert [t.get_text() for t in c.ax.texts] == ['Semis', 'Désherbage', 'Récolte']
+
+def test_confidence_ellipse_axes():
+    rng = np.random.default_rng(0)
+    d = pd.DataFrame({'x': rng.normal(0, 2, 4000), 'y': rng.normal(0, 1, 4000)})
+    c = Chart(d).confidence_ellipse('x', 'y', level=0.95)
+    e = c.ax.patches[0]
+    from scipy.stats import chi2
+    k = 2 * np.sqrt(chi2.ppf(0.95, 2))
+    assert max(e.width, e.height) == pytest.approx(k * 2, rel=0.05)   # écart-type 2
+    assert min(e.width, e.height) == pytest.approx(k * 1, rel=0.05)   # écart-type 1
+
+def test_donut_simple_and_nested():
+    d = pd.DataFrame({'g': ['A', 'A', 'B'], 'n': ['a1', 'a2', 'b1'], 'v': [2, 3, 5]})
+    simple = Chart(d).donut('v', labels='n', center_text='10')
+    assert len(simple.ax.patches) == 3
+    nested = Chart(d).donut('v', labels='n', group='g')
+    assert len(nested.ax.patches) == 3 + 2                    # éléments + groupes
+
+def test_polar_kinds():
+    d = pd.DataFrame({'dir': ['N', 'E', 'S', 'O'] * 2, 'f': [5, 3, 2, 4, 1, 2, 1, 1],
+                      'vit': ['faible'] * 4 + ['fort'] * 4})
+    c = Chart(d).polar('dir', 'f', group='vit', compass=True)
+    assert c.ax.name == 'polar' and len(c.ax.patches) == 8
+    Chart(d).polar('dir', 'f', kind='line')
+    deg = pd.DataFrame({'angle': [0, 90, 180, 270], 'r': [1, 2, 3, 4]})
+    Chart(deg).polar('angle', 'r', kind='scatter')
+
+def test_pivot_heatmap(essai):
+    c = Chart(essai).pivot_heatmap('dose', 'variete', 'rendement')
+    assert c.pivot_table.shape == (3, 4)
+
+def test_radial_and_progress_bars():
+    d = pd.DataFrame({'act': ['Pub', 'Lettre'], 'pct': [75, 25]})
+    c = Chart(d).radial_bar('pct', labels='act')
+    filled = [p for p in c.ax.patches if p.theta2 == 90]   # les rails vont de 0 à 360
+    assert sorted(round(90 - p.theta1) for p in filled) == [90, 270]   # 25 % et 75 % d'un tour
+    Chart(d).progress_bar(80)
+    Chart(d).progress_bar('pct', labels='act')
+
+
+# ── thème par défaut et couleurs qui suivent le thème ────────────────────────
+
+def test_import_applies_editorial_by_default():
+    import subprocess, sys
+    code = ("import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt; "
+            "import plutovizu; print(plt.rcParams['axes.grid.axis'], "
+            "plt.rcParams['axes.spines.left'], plutovizu.DEFAULT_THEME)")
+    out = subprocess.run([sys.executable, '-c', code], capture_output=True, text=True, check=True)
+    assert out.stdout.split() == ['y', 'False', 'editorial']   # réglages propres à editorial
+
+def test_set_theme_without_argument_is_editorial():
+    set_theme('neon')
+    set_theme()
+    assert plt.rcParams['axes.grid.axis'] == 'y'
+
+def _hex(c):
+    return matplotlib.colors.to_hex(c)
+
+@pytest.mark.parametrize('theme', ['editorial', 'neon', 'sahel'])
+def test_waterfall_and_dumbbell_follow_theme(theme):
+    with theme_context(theme):
+        palette = [_hex(c) for c in plt.rcParams['axes.prop_cycle'].by_key()['color']]
+        w = Chart(pd.DataFrame({'p': ['a', 'b'], 'v': [5, -2]})).waterfall('p', 'v')
+        assert [_hex(p.get_facecolor()) for p in w.ax.patches] == palette[:2]
+        d = Chart(pd.DataFrame({'k': ['x'], 'a': [1], 'b': [2]})).dumbbell('k', 'a', 'b')
+        assert [_hex(col.get_facecolor()[0]) for col in d.ax.collections] == palette[:2]
+
+@pytest.mark.parametrize('theme', ['editorial', 'pluto'])
+def test_hexbin_and_heatmap_follow_theme(df, theme):
+    with theme_context(theme):
+        h = Chart(df).hexbin('a', 'b', gridsize=5)
+        assert h.ax.collections[0].get_cmap().name == plt.rcParams['image.cmap']
+        m = Chart(df).heatmap()
+        im = m.ax.images[0]
+        first = _hex(plt.rcParams['axes.prop_cycle'].by_key()['color'][0])
+        assert _hex(im.cmap(1.0)) == first                              # r = +1 → 1re couleur
+        fond = matplotlib.colors.to_rgba(plt.rcParams['axes.facecolor'])
+        assert np.allclose(im.cmap(0.5), fond, atol=0.02)  # r = 0 → fond (256 paliers)
+        assert im.norm.vmin == -1 and im.norm.vmax == 1
+        # texte lisible : sombre sur cellule claire, blanc sur cellule foncée
+        for t in m.ax.texts:
+            r = float(t.get_text())
+            assert t.get_color() == Chart._ink_on(im.cmap(im.norm(r)))
+
+
+# ── palettes appliquées au graphique courant ────────────────────────────────
+
+def test_set_colors_applies_to_this_chart_only(df):
+    before = plt.rcParams['axes.prop_cycle']
+    c = Chart(df).set_colors(['red', 'blue']).line('x', ['a', 'b'])
+    assert [_hex(l.get_color()) for l in c.ax.lines] == ['#ff0000', '#0000ff']
+    assert plt.rcParams['axes.prop_cycle'] == before            # aucun effet global
+    nxt = Chart(df).line('x', ['a', 'b'])
+    assert _hex(nxt.ax.lines[0].get_color()) != '#ff0000'
+
+def test_custom_and_gradient_palettes_apply_now(df):
+    c = Chart(df).create_custom_palette('p', ['green', 'orange']).line('x', ['a', 'b'])
+    assert [_hex(l.get_color()) for l in c.ax.lines] == [_hex('green'), _hex('orange')]
+    g = Chart(df).generate_gradient_palette('g', 'black', 'white', n_colors=2).line('x', ['a', 'b'])
+    assert [_hex(l.get_color()) for l in g.ax.lines] == ['#000000', '#ffffff']
+
+def test_named_palette_feeds_new_methods(essai):
+    c = Chart(essai).set_colors('Set2').mean_bar('variete', 'rendement')
+    import seaborn as sns
+    assert _hex(c.ax.patches[0].get_facecolor()) == _hex(sns.color_palette('Set2')[0])

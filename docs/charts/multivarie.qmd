@@ -1,0 +1,70 @@
+---
+title: "Multivarié & classification"
+subtitle: "Résumer beaucoup de variables et regrouper les individus qui se ressemblent."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `pca_biplot` — Analyse en composantes principales {#g-pca_biplot}
+
+ACP normée : les individus sur les deux premiers axes, colorés par groupe, et les variables
+en flèches. Variance expliquée, coordonnées et contributions dans `chart.pca`.
+
+```{python}
+#| fig-cap: "ACP de cinq caractères agronomiques sur 30 variétés"
+rng = np.random.default_rng(7)
+n = 30
+precocite = rng.normal(size=n)
+caracteres = pd.DataFrame({
+    'variete':   [f'V{i:02d}' for i in range(n)],
+    'cycle':     np.where(precocite > 0, 'tardif', 'précoce'),
+    'hauteur':   95 + 12 * precocite + rng.normal(0, 5, n),
+    'jours_floraison': 85 + 10 * precocite + rng.normal(0, 3, n),
+    'talles':    12 - 2 * precocite + rng.normal(0, 1, n),
+    'pmg':       25 + rng.normal(0, 2.5, n),
+    'rendement': 4.5 + 0.5 * precocite + rng.normal(0, 0.4, n),
+})
+
+chart = (Chart(caracteres, figsize=(8, 6))
+    .pca_biplot(group='cycle')
+    .title('ACP des caractères variétaux')
+    .tight_layout())
+print('Variance expliquée :', (chart.pca['explained_variance_ratio'][:3] * 100).round(1), '%')
+chart.show()
+```
+
+
+### `dendrogram` — Classification hiérarchique {#g-dendrogram}
+
+Regroupe les individus selon leur ressemblance (méthode de Ward par défaut, variables
+centrées-réduites). `color_threshold` colore les groupes formés sous la hauteur de coupe,
+marquée par une ligne pointillée.
+
+```{python}
+#| fig-cap: "Classification des variétés sur leurs caractères"
+(Chart(caracteres, figsize=(11, 5))
+    .dendrogram(labels='variete', color_threshold=6)
+    .title('Dendrogramme des variétés (Ward)')
+    .tight_layout()
+    .show())
+```
+
+
+### `clustermap` — Carte de chaleur classée {#g-clustermap}
+
+Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs
+dendrogrammes. Les colonnes sont centrées-réduites par défaut (`standardize=True`).
+
+```{python}
+#| fig-cap: "Profils des variétés classés par ressemblance"
+(Chart(caracteres, figsize=(8, 9))
+    .clustermap(labels='variete')
+    .title('Clustermap des caractères variétaux')
+    .show())
+```

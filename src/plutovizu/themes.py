@@ -12,6 +12,9 @@ palette, police, grille, épaisseurs… Comme ``seaborn.set_theme``, il s'appliq
         Chart(df).line('x', 'y').show()
     set_theme(None)                    # retour au style matplotlib d'origine
 
+Le thème 'editorial' est appliqué par défaut dès ``import plutovizu`` ;
+``set_theme(None)`` revient au style matplotlib, ``set_theme()`` remet 'editorial'.
+
 Si le paquet optionnel ``morethemes`` est installé (``pip install plutovizu[morethemes]``),
 ses thèmes (wsj, economist, ft, retro, nord…) sont aussi disponibles par leur nom.
 """
@@ -133,7 +136,24 @@ THEMES: Dict[str, Dict] = {
         bg='#ffffff', fg='#1a1a1a', muted='#595959', grid='#e8e8e8',
         palette=['#0072B2', '#E69F00', '#009E73', '#D55E00', '#CC79A7', '#56B4E9', '#F0E442'],
         cmap='cividis'),
+    # Présentation : aplats doux (sauge, corail, moutarde, ciel, lilas), titre centré non gras,
+    # axes gauche/bas foncés, grille légère, police ronde géométrique (Raleway)
+    'prezi': _theme(
+        bg='#ffffff', fg='#3d3d3d', muted='#555555', grid='#dedede',
+        palette=['#8ec3a7', '#de5253', '#f0ca6a', '#5eb6e4', '#ad92c8', '#f2a06d'],
+        cmap='crest',
+        **{'font.sans-serif': ['Raleway', 'Montserrat', 'Segoe UI', 'Helvetica Neue',
+                               'Arial', 'DejaVu Sans'],
+           'axes.titlelocation': 'center', 'axes.titleweight': 'normal', 'axes.titlesize': 17,
+           'axes.titlepad': 18, 'axes.edgecolor': '#333333', 'axes.linewidth': 1.4,
+           'axes.labelsize': 11, 'xtick.labelsize': 10, 'ytick.labelsize': 10,
+           'legend.fontsize': 10, 'grid.linewidth': 0.9,
+           'patch.edgecolor': '#ffffff', 'patch.linewidth': 1.5, 'lines.linewidth': 2.6}),
 }
+
+# Polices Google Fonts chargées (si pyfonts est installé) pour certains thèmes maison ;
+# sans pyfonts ou sans réseau, la liste font.sans-serif du thème sert de repli, sans avertissement.
+_GOOGLE_FONTS = {'prezi': 'Raleway'}
 
 DESCRIPTIONS: Dict[str, str] = {
     'pluto': "Quasi-noir et vert émeraude, assorti à la documentation.",
@@ -150,6 +170,7 @@ DESCRIPTIONS: Dict[str, str] = {
     'pastel': "Fond lavande très clair, couleurs douces et traits épais.",
     'sahel': "Sable, terre cuite, ocre et indigo.",
     'accessible': "Palette Okabe-Ito, lisible par les personnes daltoniennes.",
+    'prezi': "Style présentation : aplats doux, titre centré, police ronde (Raleway).",
 }
 
 # ── Thèmes du paquet optionnel morethemes (MIT, https://github.com/y-sunflower/morethemes)
@@ -225,7 +246,16 @@ def _resolve(theme: ThemeLike, context: Optional[str] = None) -> Dict:
 def _load_font(theme: ThemeLike) -> None:
     """Les thèmes morethemes utilisent une police Google Fonts, téléchargée (puis mise
     en cache) par pyfonts. Sans réseau : avertissement et police par défaut."""
-    if not isinstance(theme, str) or theme not in MORETHEMES:
+    if not isinstance(theme, str):
+        return
+    if theme in _GOOGLE_FONTS:  # thème maison : police bonus, repli silencieux
+        try:
+            from pyfonts import load_google_font, set_default_font
+            set_default_font(load_google_font(_GOOGLE_FONTS[theme]))
+        except Exception:
+            pass
+        return
+    if theme not in MORETHEMES:
         return
     family = MORETHEMES[theme].get('font.family')
     if not isinstance(family, str):
@@ -239,7 +269,7 @@ def _load_font(theme: ThemeLike) -> None:
         mpl.rcParams['font.family'] = 'sans-serif'
 
 
-def set_theme(theme: ThemeLike = 'pluto', context: Optional[str] = None) -> None:
+def set_theme(theme: ThemeLike = 'editorial', context: Optional[str] = None) -> None:
     """Applique un thème à tous les graphiques créés ensuite.
 
     Args:

@@ -1,0 +1,235 @@
+---
+title: "Évolution dans le temps"
+subtitle: "Séries temporelles, calendriers et événements datés."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `line` — Courbe {#g-line}
+
+```{python}
+#| fig-cap: "Évolution mensuelle de trois indicateurs"
+#| fig-width: 9
+#| fig-height: 4
+
+mois = list(range(1, 13))
+df = pd.DataFrame({
+    'mois':    mois,
+    'ventes':  [12, 15, 18, 22, 28, 35, 40, 38, 30, 25, 20, 16],
+    'coûts':   [10, 11, 12, 14, 16, 18, 20, 19, 17, 15, 13, 12],
+    'profit':  [2,   4,  6,  8, 12, 17, 20, 19, 13, 10,  7,  4],
+})
+
+(Chart(df)
+    .line('mois', ['ventes', 'coûts', 'profit'], marker='o', linewidth=2)
+    .title('Indicateurs financiers 2024')
+    .labels(xlabel='Mois', ylabel='k€')
+    .grid(alpha=0.3)
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+
+### `area` — Aire (empilée) {#g-area}
+
+```{python}
+#| fig-cap: "Répartition des genres musicaux dans les écoutes"
+#| fig-width: 9
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'annee':    list(range(2015, 2025)),
+    'rock':     [30, 28, 25, 22, 20, 18, 16, 15, 13, 12],
+    'pop':      [40, 42, 44, 45, 47, 50, 52, 54, 56, 58],
+    'jazz':     [10, 11, 10, 12, 11, 10, 11, 10,  9, 10],
+    'classique':[20, 19, 21, 21, 22, 22, 21, 21, 22, 20],
+})
+
+(Chart(df)
+    .area('annee', ['rock', 'pop', 'jazz', 'classique'], stacked=True, alpha=0.75)
+    .title('Écoutes musicales par genre (2015–2024)')
+    .labels(xlabel='Année', ylabel='Part (%)')
+    .set_legend(location='upper left')
+    .tight_layout()
+    .show())
+```
+
+
+### `streamgraph` — Flux temporel {#g-streamgraph}
+
+```{python}
+#| fig-cap: "Évolution des genres musicaux dans les écoutes"
+#| fig-width: 10
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'annee':    list(range(2012, 2025)),
+    'rock':     [32,30,28,25,22,20,18,16,15,13,12,11,10],
+    'pop':      [38,40,42,44,45,47,50,52,54,56,58,60,62],
+    'jazz':     [10,10,11,10,12,11,10,11,10, 9,10, 9, 8],
+    'hip-hop':  [12,14,15,18,20,24,28,32,36,40,42,45,50],
+    'classique':[8,  6, 4, 3, 1, -2,-6,-11,-15,-18,-22,-25,-30],
+})
+# valeurs positives uniquement pour stackplot
+df['classique'] = df['classique'].clip(lower=1)
+
+(Chart(df)
+    .streamgraph('annee', ['rock', 'pop', 'jazz', 'hip-hop', 'classique'])
+    .title('Écoutes musicales par genre (2012–2024)')
+    .labels(xlabel='Année')
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+
+### `step` — Courbe en escalier {#g-step}
+
+Valeur constante entre deux mesures (stocks, niveaux, tarifs) — `where` place la marche.
+
+```{python}
+#| fig-cap: "Pluie cumulée de la saison"
+meteo['pluie_cumulee'] = meteo['pluie'].cumsum()
+(Chart(meteo, figsize=(9, 4))
+    .step('jour', 'pluie_cumulee', where='post', fill=True)
+    .title('Pluie cumulée (mm)')
+    .tight_layout()
+    .show())
+```
+
+
+### `stem` — Diagramme en bâtons {#g-stem}
+
+Un trait par observation depuis une ligne de base : idéal pour des événements ponctuels.
+
+```{python}
+#| fig-cap: "Pluies journalières"
+(Chart(meteo[meteo['pluie'] > 0], figsize=(9, 4))
+    .stem('jour', 'pluie')
+    .title('Pluies journalières (mm)')
+    .tight_layout()
+    .show())
+```
+
+
+### `band` — Bande entre deux courbes {#g-band}
+
+Une bande colorée entre deux colonnes (minimum–maximum, intervalle de confiance), avec
+une courbe centrale optionnelle.
+
+```{python}
+#| fig-cap: "Températures minimales, maximales et moyennes"
+(Chart(meteo, figsize=(9, 4))
+    .band('jour', 'tmin', 'tmax', y='tmoy', label='Tmin – Tmax')
+    .title('Températures journalières (°C)')
+    .tight_layout()
+    .show())
+```
+
+
+### `bump` — Évolution de classement {#g-bump}
+
+```{python}
+#| fig-cap: "Classement Ligue 1 sur 5 saisons"
+#| fig-width: 9
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'saison':     [2019,2020,2021,2022,2023] * 5,
+    'equipe':     (['PSG']*5 + ['Lyon']*5 + ['Marseille']*5
+                   + ['Monaco']*5 + ['Lille']*5),
+    'classement': [1,1,1,1,1, 2,5,3,4,3, 3,2,5,2,4, 4,3,2,3,5, 5,4,4,5,2],
+})
+
+(Chart(df)
+    .bump('saison', 'classement', 'equipe')
+    .title('Classement Ligue 1 (2019–2023)')
+    .labels(xlabel='Saison', ylabel='Classement')
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+
+### `timeline` — Frise chronologique {#g-timeline}
+
+Des événements datés, chacun avec sa tige et son libellé, alternés au-dessus et au-dessous.
+
+```{python}
+#| fig-cap: "Calendrier cultural de la campagne"
+(Chart(calendrier, figsize=(10, 4))
+    .timeline('date', 'etape')
+    .title('Calendrier cultural 2024')
+    .tight_layout()
+    .show())
+```
+
+
+### `eventplot` — Événements par groupe {#g-eventplot}
+
+Un trait par événement, une ligne par groupe : dates d'observation, stades phénologiques…
+
+```{python}
+#| fig-cap: "Dates de floraison observées par variété"
+(Chart(floraison, figsize=(9, 3.5))
+    .eventplot('date', group='variete')
+    .title('Floraison par variété')
+    .tight_layout()
+    .show())
+```
+
+
+### `calendar_heatmap` — Calendrier de contributions {#g-calendar_heatmap}
+
+```{python}
+#| fig-cap: "Commits GitHub 2024"
+#| fig-width: 14
+#| fig-height: 3
+
+np.random.seed(0)
+dates = pd.date_range('2024-01-01', '2024-12-31')
+commits = np.random.poisson(3, len(dates))
+# pas de commits les week-ends
+commits[dates.dayofweek >= 5] = 0
+df = pd.DataFrame({'date': dates, 'commits': commits})
+
+(Chart(df)
+    .calendar_heatmap('date', 'commits', cmap='Greens')
+    .title('Contributions GitHub 2024')
+    .tight_layout()
+    .show())
+```
+
+
+### `gantt` — Diagramme de Gantt {#g-gantt}
+
+```{python}
+#| fig-cap: "Planning projet Q1 2024"
+#| fig-width: 10
+#| fig-height: 5
+
+df = pd.DataFrame({
+    'tache':   ['Analyse','Design','Dev Backend','Dev Frontend',
+                'Intégration','Tests','Déploiement'],
+    'debut':   ['2024-01-02','2024-01-15','2024-02-01','2024-02-15',
+                '2024-04-01','2024-04-08','2024-04-22'],
+    'fin':     ['2024-01-19','2024-02-09','2024-04-05','2024-04-12',
+                '2024-04-12','2024-04-20','2024-04-30'],
+    'equipe':  ['PM','Design','Backend','Frontend',
+                'Backend','QA','DevOps'],
+})
+
+(Chart(df)
+    .gantt('tache', 'debut', 'fin', group='equipe', alpha=0.85)
+    .title('Planning projet — Q1 2024')
+    .set_legend()
+    .tight_layout()
+    .show())
+```

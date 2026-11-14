@@ -425,21 +425,19 @@ class Chart:
         if colors:
             if isinstance(colors, str):
                 if colors in self.custom_palettes:
-                    self.current_palette = self.custom_palettes[colors]
-                    plt.rcParams['axes.prop_cycle'] = plt.cycler(color=self.current_palette)
-                else:
+                    colors = self.custom_palettes[colors]
+                else:  # palette seaborn ou colormap matplotlib
                     try:
-                        plt.style.use(colors)
+                        colors = sns.color_palette(colors)
                     except Exception:
-                        try:
-                            sns.set_palette(colors)
-                            self.current_palette = sns.color_palette(colors)
-                        except Exception:
-                            raise ValueError(f"Color palette '{colors}' not recognized") from None
-            else:
-                self.current_palette = colors
-                plt.rcParams['axes.prop_cycle'] = plt.cycler(color=colors)
+                        raise ValueError(f"Color palette '{colors}' not recognized") from None
+            self._apply_palette(colors)
         return self
+
+    def _apply_palette(self, colors) -> None:
+        """Applique une palette à CE graphique seulement (pas aux réglages globaux)."""
+        self.current_palette = [mcolors.to_hex(c) for c in colors]
+        self.ax.set_prop_cycle(color=self.current_palette)
 
     def create_custom_palette(self, name: str, colors: List[str],
                               save_palette: bool = True) -> 'Chart':
@@ -480,8 +478,7 @@ class Chart:
             raise ValueError("No valid colors provided")
         if save_palette:
             self.custom_palettes[name] = valid_colors
-        self.current_palette = valid_colors
-        plt.rcParams['axes.prop_cycle'] = plt.cycler(color=valid_colors)
+        self._apply_palette(valid_colors)
         return self
 
     def get_available_palettes(self, include_custom: bool = True,
@@ -694,8 +691,7 @@ class Chart:
             colors.append(mcolors.to_hex((r, g, b, a)))
         if save_palette:
             self.custom_palettes[name] = colors
-        self.current_palette = colors
-        plt.rcParams['axes.prop_cycle'] = plt.cycler(color=colors)
+        self._apply_palette(colors)
         return self
 
     # ──────────────────────────────────────── Fonts / Polices
@@ -807,9 +803,10 @@ class Chart:
                          alpha=alpha, label=col)
         return self
 
-    def bar(self, x: str, y: str, horizontal: bool = False,
+    def bar(self, x: str, y: Union[str, List[str]], horizontal: bool = False,
             width: float = 0.8, alpha: float = 0.8,
-            color: Optional[str] = None) -> 'Chart':
+            color: Optional[str] = None, stacked: bool = False,
+            show_values: bool = False, value_format: str = '{:,.0f}') -> 'Chart':
         """
         EN: Draw a bar chart, vertical (default) or horizontal.
         FR: Trace un graphique en barres, vertical (défaut) ou horizontal.
@@ -837,15 +834,48 @@ class Chart:
         Returns / Retourne:
             Chart: self
 
+            stacked (bool):
+                EN: With several y columns: stack them instead of grouping side by side.
+                FR: Avec plusieurs colonnes y : les empiler au lieu de les grouper.
+            show_values (bool):
+                EN: Write each value on its bar. / FR: Écrit la valeur sur chaque barre.
+            value_format (str):
+                EN/FR: Format des valeurs affichées. Défaut '{:,.0f}'.
+
         Example / Exemple:
-            chart.bar('categorie', 'ventes', color='steelblue')
-            chart.bar('ventes', 'categorie', horizontal=True)
+            chart.bar('categorie', 'ventes', color='steelblue', show_values=True)
+            chart.bar('categorie', 'ventes', horizontal=True)
+            chart.bar('annee', ['usa', 'chine', 'japon'], stacked=True)   # barres empilées
+            chart.bar('mois', ['usa', 'chine'])                           # barres groupées
         """
         self.chart_type = 'bar'
-        if horizontal:
-            self.ax.barh(self.data[x], self.data[y], height=width, alpha=alpha, color=color)
-        else:
-            self.ax.bar(self.data[x], self.data[y], width=width, alpha=alpha, color=color)
+        ys = [y] if isinstance(y, str) else list(y)
+        draw = self.ax.barh if horizontal else self.ax.bar
+        if len(ys) == 1:  # une série : positions d'origine (catégories, nombres, dates)
+            bars = draw(self.data[x], self.data[ys[0]], width, alpha=alpha,
+                        color=color or self._palette()[0])
+            if show_values:
+                self.ax.bar_label(bars, fmt=value_format, padding=3, fontsize=9)
+            return self
+        pos = np.arange(len(self.data))
+        bottom = np.zeros(len(self.data))
+        for j, (col, c) in enumerate(zip(ys, self._palette() * 10)):
+            vals = self.data[col].to_numpy(dtype=float)
+            if stacked:
+                offs, w = pos, width
+                extra = {'left' if horizontal else 'bottom': bottom.copy()}
+            else:
+                w = width / len(ys)
+                offs, extra = pos - width / 2 + w * (j + 0.5), {}
+            bars = draw(offs, vals, w, alpha=alpha, color=c, label=col, **extra)
+            if show_values:
+                self.ax.bar_label(bars, fmt=value_format, fontsize=8,
+                                  label_type='center' if stacked else 'edge',
+                                  padding=0 if stacked else 2)
+            bottom += np.nan_to_num(vals)
+        (self.ax.set_yticks if horizontal else self.ax.set_xticks)(
+            pos, self.data[x].astype(str).tolist())
+        self.ax.legend()
         return self
 
     def scatter(self, x: str, y: str, size: Union[str, float] = 50,
@@ -997,7 +1027,7 @@ class Chart:
         self.ax.axis('equal')
         return self
 
-    def heatmap(self, annot: bool = True, cmap: str = 'viridis',
+    def heatmap(self, annot: bool = True, cmap: Optional[str] = None,
                 fmt: str = '.2f', cbar: bool = True) -> 'Chart':
         """
         EN: Draw a correlation heatmap from all numeric columns in the DataFrame.
@@ -1027,19 +1057,21 @@ class Chart:
             chart.heatmap(cmap='coolwarm', fmt='.1f')
         """
         self.chart_type = 'heatmap'
-        numeric_data = self.data.select_dtypes(include=[np.number])
-        im = self.ax.imshow(numeric_data.corr(), cmap=cmap, aspect='auto')
+        corr = self.data.select_dtypes(include=[np.number]).corr()
+        # Défaut : échelle divergente tirée du thème (2e couleur ← fond → 1re couleur), centrée sur 0
+        im = self.ax.imshow(corr, cmap=cmap or self._diverging_cmap(), vmin=-1, vmax=1,
+                            aspect='auto')
         if annot:
-            for i in range(len(numeric_data.columns)):
-                for j in range(len(numeric_data.columns)):
-                    self.ax.text(j, i, format(numeric_data.corr().iloc[i, j], fmt),
-                                 ha='center', va='center', color='white')
-        self.ax.set_xticks(range(len(numeric_data.columns)))
-        self.ax.set_yticks(range(len(numeric_data.columns)))
-        self.ax.set_xticklabels(numeric_data.columns)
-        self.ax.set_yticklabels(numeric_data.columns)
+            for i in range(len(corr)):
+                for j in range(len(corr)):
+                    value = corr.iloc[i, j]
+                    self.ax.text(j, i, format(value, fmt), ha='center', va='center',
+                                 fontsize=9, color=self._ink_on(im.cmap(im.norm(value))))
+        self.ax.set_xticks(range(len(corr)), corr.columns, rotation=30, ha='right')
+        self.ax.set_yticks(range(len(corr)), corr.columns)
+        self.ax.grid(False)
         if cbar:
-            self.fig.colorbar(im, ax=self.ax)
+            self._colorbar(im, 'Corrélation (r)')
         return self
 
     def area(self, x: str, y: Union[str, List[str]],
@@ -1361,8 +1393,8 @@ class Chart:
         return self
 
     def waterfall(self, x: str, y: str,
-                  positive_color: str = 'steelblue',
-                  negative_color: str = 'salmon') -> 'Chart':
+                  positive_color: Optional[str] = None,
+                  negative_color: Optional[str] = None) -> 'Chart':
         """
         EN: Draw a waterfall chart showing the cumulative effect of sequential values.
             Bars are stacked from the running total: positive values extend upward,
@@ -1393,6 +1425,9 @@ class Chart:
                             negative_color='crimson')
         """
         self.chart_type = 'waterfall'
+        palette = self._palette()  # défaut : 1re couleur du thème = hausse, 2e = baisse
+        positive_color = positive_color or palette[0]
+        negative_color = negative_color or palette[1 % len(palette)]
         values = self.data[y].tolist()
         running = 0
         bottoms, heights, colors = [], [], []
@@ -1495,7 +1530,8 @@ class Chart:
         return self
 
     def treemap(self, values: str, labels: Optional[str] = None,
-                alpha: float = 0.8) -> 'Chart':
+                alpha: float = 0.9, show_values: bool = True,
+                value_format: str = '{:,.0f}') -> 'Chart':
         """
         EN: Draw a treemap — nested rectangles sized by a numeric column.
             Requires the ``squarify`` package (installed automatically with uv).
@@ -1524,15 +1560,31 @@ class Chart:
         except ImportError:
             raise ImportError("treemap requires squarify: uv add squarify")
         self.chart_type = 'treemap'
-        sizes = self.data[values].tolist()
-        label_data = self.data[labels].tolist() if labels else None
-        colors = plt.colormaps.get_cmap('tab20')(np.linspace(0, 1, len(sizes)))
-        squarify.plot(sizes=sizes, label=label_data, color=colors, ax=self.ax, alpha=alpha)
+        d = self.data[self.data[values] > 0].sort_values(values, ascending=False)
+        names = d[labels].astype(str).tolist() if labels else [''] * len(d)
+        W, H = 100.0, 100.0
+        rects = squarify.squarify(squarify.normalize_sizes(d[values].tolist(), W, H), 0, 0, W, H)
+        palette = self._palette()
+        # Couleurs du thème, séparateurs de la couleur du fond, étiquette en haut à gauche
+        for k, (r, name, v) in enumerate(zip(rects, names, d[values])):
+            face = mcolors.to_rgba(palette[k % len(palette)], alpha)
+            self.ax.add_patch(plt.Rectangle((r['x'], r['y']), r['dx'], r['dy'], facecolor=face,
+                                            edgecolor=plt.rcParams['axes.facecolor'], linewidth=2))
+            if min(r['dx'], r['dy']) < 6:  # bloc trop petit pour une étiquette lisible
+                continue
+            lum = 0.2126 * face[0] + 0.7152 * face[1] + 0.0722 * face[2]
+            ink = '#111111' if lum > 0.62 else 'white'
+            size = max(7, min(16, np.sqrt(r['dx'] * r['dy']) / 3.2))
+            text = name + (f'\n{value_format.format(v)}' if show_values else '')
+            self.ax.text(r['x'] + 1.2, r['y'] + r['dy'] - 1.2, text, ha='left', va='top',
+                         color=ink, fontsize=size, linespacing=1.25, wrap=True)
+        self.ax.set_xlim(0, W)
+        self.ax.set_ylim(0, H)
         self.ax.axis('off')
         return self
 
     def hexbin(self, x: str, y: str, gridsize: int = 30,
-               cmap: str = 'YlOrRd', mincnt: int = 1) -> 'Chart':
+               cmap: Optional[str] = None, mincnt: int = 1) -> 'Chart':
         """
         EN: Draw a hexagonal binning plot — the recommended scatter replacement
             when the dataset is too large for individual points to be readable.
@@ -1565,9 +1617,12 @@ class Chart:
             chart.hexbin('age', 'revenu', gridsize=50, cmap='Blues')
         """
         self.chart_type = 'hexbin'
-        hb = self.ax.hexbin(self.data[x], self.data[y],
-                            gridsize=gridsize, cmap=cmap, mincnt=mincnt)
-        self.fig.colorbar(hb, ax=self.ax, label='count')
+        hb = self.ax.hexbin(self.data[x], self.data[y], gridsize=gridsize,
+                            cmap=cmap or plt.rcParams['image.cmap'], mincnt=mincnt,
+                            linewidths=0.2, edgecolors=plt.rcParams['axes.facecolor'])
+        self._colorbar(hb, 'Effectif')
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
         return self
 
     def parallel_coordinates(self, columns: List[str],
@@ -1625,8 +1680,8 @@ class Chart:
         return self
 
     def dumbbell(self, y: str, x_start: str, x_end: str,
-                 color_start: str = 'steelblue', color_end: str = 'salmon',
-                 line_color: str = '#aaaaaa', markersize: float = 80,
+                 color_start: Optional[str] = None, color_end: Optional[str] = None,
+                 line_color: Optional[str] = None, markersize: float = 80,
                  linewidth: float = 2.0) -> 'Chart':
         """
         EN: Draw a dumbbell (connected dot) chart — ideal for before/after or A vs B
@@ -1670,6 +1725,10 @@ class Chart:
                            color_start='#457b9d', color_end='#e63946')
         """
         self.chart_type = 'dumbbell'
+        palette = self._palette()  # défaut : couleurs du thème, trait gris discret
+        color_start = color_start or palette[0]
+        color_end = color_end or palette[1 % len(palette)]
+        line_color = line_color or mcolors.to_rgba(plt.rcParams['axes.labelcolor'], 0.45)
         for _, row in self.data.iterrows():
             self.ax.plot([row[x_start], row[x_end]], [row[y], row[y]],
                          color=line_color, linewidth=linewidth, zorder=1)
@@ -1865,10 +1924,22 @@ class Chart:
 
     # ──────────────────────────────────────── Sciences & data analysis / Sciences & analyse
 
+    def _palette(self) -> List[str]:
+        """Couleurs de ce graphique : la palette choisie (set_colors…), sinon celles du thème."""
+        return (getattr(self, 'current_palette', None)
+                or plt.rcParams['axes.prop_cycle'].by_key()['color'])
+
+    def _diverging_cmap(self) -> mcolors.Colormap:
+        """Échelle divergente tirée du thème : 2e couleur ← couleur du fond → 1re couleur."""
+        p = self._palette()
+        return mcolors.LinearSegmentedColormap.from_list(
+            'plutovizu_divergent', [p[1 % len(p)], plt.rcParams['axes.facecolor'], p[0]])
+
     @staticmethod
-    def _palette() -> List[str]:
-        """Couleurs du thème actif (cycle de couleurs matplotlib)."""
-        return plt.rcParams['axes.prop_cycle'].by_key()['color']
+    def _ink_on(color) -> str:
+        """Couleur de texte lisible (presque noir ou blanc) sur un fond de couleur donnée."""
+        r, g, b, _ = mcolors.to_rgba(color)
+        return '#111111' if 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.55 else 'white'
 
     @staticmethod
     def _error(values: pd.Series, error: str) -> float:
@@ -2400,6 +2471,889 @@ class Chart:
                             center=0 if standardize else None,
                             figsize=figsize or self.fig.get_size_inches(), **kwargs)
 
+    # ──────────────────────────────────────── Matplotlib plot types / Types matplotlib
+
+    def _replace_axes(self, **kwargs):
+        """Remplace l'axe courant (projection polaire, 3D…)."""
+        self.fig.delaxes(self.ax)
+        self.ax = self.fig.add_subplot(111, **kwargs)
+        if kwargs.get('projection') == '3d':  # panneaux 3D à la couleur du thème
+            for axis in (self.ax.xaxis, self.ax.yaxis, self.ax.zaxis):
+                axis.set_pane_color(mcolors.to_rgba(plt.rcParams['axes.facecolor']))
+        return self.ax
+
+    def _as_grid(self, x: str, y: str, *z: str):
+        """Si (x, y) forment une grille régulière complète, retourne (xs, ys, [Z…]) avec
+        Z de forme (len(ys), len(xs)) ; sinon None (points irréguliers)."""
+        d = self.data[[x, y, *z]].dropna()
+        xs, ys = np.sort(d[x].unique()), np.sort(d[y].unique())
+        if len(xs) * len(ys) != len(d) or d.duplicated([x, y]).any() or min(len(xs), len(ys)) < 2:
+            return None
+        return xs, ys, [d.pivot(index=y, columns=x, values=col).reindex(index=ys, columns=xs)
+                        .to_numpy(float) for col in z]
+
+    def _concise_dates(self, column: str) -> None:
+        """Dates en abscisse : graduations compactes (« juin », « 15 »…) au lieu de dates complètes."""
+        if pd.api.types.is_datetime64_any_dtype(self.data[column]):
+            import matplotlib.dates as mdates
+            locator = mdates.AutoDateLocator()
+            self.ax.xaxis.set_major_locator(locator)
+            self.ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(locator))
+
+    def _colorbar(self, mappable, label: str):
+        cbar = self.fig.colorbar(mappable, ax=self.ax)
+        cbar.set_label(label)
+        cbar.outline.set_visible(False)
+        return cbar
+
+    def stem(self, x: str, y: str, baseline: float = 0.0, color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Stem plot: a vertical line from the baseline to each value (matplotlib stem).
+        FR: Diagramme en bâtons : un trait de la ligne de base à chaque valeur (stem).
+
+        Example / Exemple:
+            chart.stem('jour', 'pluie')
+        """
+        self.chart_type = 'stem'
+        c = color or self._palette()[0]
+        markers, stems, base = self.ax.stem(self.data[x], self.data[y], bottom=baseline)
+        plt.setp(markers, color=c)
+        plt.setp(stems, color=c, linewidth=1.5)
+        plt.setp(base, color=plt.rcParams['axes.labelcolor'], linewidth=1)
+        self.ax.set_xlabel(x)
+        self._concise_dates(x)
+        self.ax.set_ylabel(y)
+        return self
+
+    def step(self, x: str, y: Union[str, List[str]], where: str = 'mid',
+             fill: bool = False, alpha: float = 0.2) -> 'Chart':
+        """
+        EN: Step (stairs) curve — values constant between two points (matplotlib step).
+        FR: Courbe en escalier — valeur constante entre deux points (step / stairs).
+
+        Args / Paramètres:
+            where (str): 'pre', 'post' ou 'mid' (défaut) : position de la marche.
+            fill (bool): EN/FR: Remplit sous la courbe.
+
+        Example / Exemple:
+            chart.step('date', 'stock', where='post', fill=True)
+        """
+        self.chart_type = 'step'
+        ys = [y] if isinstance(y, str) else list(y)
+        for col, c in zip(ys, self._palette() * 10):
+            self.ax.step(self.data[x], self.data[col], where=where, color=c, label=col)
+            if fill:
+                self.ax.fill_between(self.data[x], self.data[col], step=where, color=c,
+                                     alpha=alpha, linewidth=0)
+        self.ax.set_xlabel(x)
+        self._concise_dates(x)
+        if len(ys) > 1:
+            self.ax.legend()
+        else:
+            self.ax.set_ylabel(ys[0])
+        return self
+
+    def band(self, x: str, low: str, high: str, y: Optional[str] = None,
+             color: Optional[str] = None, alpha: float = 0.25,
+             label: Optional[str] = None) -> 'Chart':
+        """
+        EN: Shaded band between two columns (min–max, confidence interval…), with an
+            optional central curve (matplotlib fill_between).
+        FR: Bande colorée entre deux colonnes (min–max, intervalle de confiance…), avec
+            une courbe centrale optionnelle (fill_between).
+
+        Example / Exemple:
+            chart.band('jour', 'tmin', 'tmax', y='tmoy')
+        """
+        self.chart_type = 'band'
+        c = color or self._palette()[0]
+        self.ax.fill_between(self.data[x], self.data[low], self.data[high], color=c,
+                             alpha=alpha, linewidth=0, label=label or f'{low} – {high}')
+        if y:
+            self.ax.plot(self.data[x], self.data[y], color=c, label=y)
+        self.ax.set_xlabel(x)
+        self._concise_dates(x)
+        self.ax.legend()
+        return self
+
+    def errorbar(self, x: str, y: str, yerr: Optional[Union[str, float]] = None,
+                 xerr: Optional[Union[str, float]] = None, group: Optional[str] = None,
+                 capsize: float = 3, marker: str = 'o', line: bool = False) -> 'Chart':
+        """
+        EN: Points with error bars; yerr / xerr are columns or constants (matplotlib errorbar).
+        FR: Points avec barres d'erreur ; yerr / xerr sont des colonnes ou des constantes.
+
+        Args / Paramètres:
+            group (str, optional): EN/FR: Une série (couleur) par groupe.
+            line (bool): EN/FR: Relie les points. Défaut False.
+
+        Example / Exemple:
+            chart.errorbar('dose', 'moyenne', yerr='ecart_type', group='variete', line=True)
+        """
+        self.chart_type = 'errorbar'
+        groups = self.data.groupby(group, sort=False) if group else [(None, self.data)]
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            err = {k: (sub[v] if isinstance(v, str) else v)
+                   for k, v in (('yerr', yerr), ('xerr', xerr)) if v is not None}
+            self.ax.errorbar(sub[x], sub[y], capsize=capsize, marker=marker, color=c,
+                             linestyle='-' if line else 'none', label=name, **err)
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        if group:
+            self.ax.legend(title=group)
+        return self
+
+    def eventplot(self, time: str, group: Optional[str] = None,
+                  linelength: float = 0.7, linewidth: float = 1.5) -> 'Chart':
+        """
+        EN: Event plot: one tick per event, one row per group (observation dates,
+            phenological stages, arrivals…). Works with numbers or dates.
+        FR: Diagramme d'événements : un trait par événement, une ligne par groupe (dates
+            d'observation, stades phénologiques, arrivées…). Nombres ou dates.
+
+        Example / Exemple:
+            chart.eventplot('date_floraison', group='variete')
+        """
+        import matplotlib.dates as mdates
+        self.chart_type = 'eventplot'
+        groups = list(self.data.groupby(group, sort=False)) if group else [('', self.data)]
+        is_date = pd.api.types.is_datetime64_any_dtype(self.data[time])
+        positions = [mdates.date2num(sub[time].dropna()) if is_date else sub[time].dropna()
+                     for _, sub in groups]
+        self.ax.eventplot(positions, colors=(self._palette() * 10)[:len(groups)],
+                          lineoffsets=np.arange(len(groups)), linelengths=linelength,
+                          linewidths=linewidth)
+        if is_date:
+            self.ax.xaxis_date()
+            self._concise_dates(time)
+        self.ax.set_yticks(np.arange(len(groups)), [str(n) for n, _ in groups])
+        self.ax.set_xlabel(time)
+        self.ax.grid(False, axis='y')
+        return self
+
+    def hist2d(self, x: str, y: str, bins: Union[int, Tuple[int, int]] = 30,
+               cmap: Optional[str] = None, colorbar: bool = True) -> 'Chart':
+        """
+        EN: Two-dimensional histogram: counts in rectangular bins (matplotlib hist2d).
+        FR: Histogramme 2D : effectifs dans une grille de rectangles (hist2d).
+
+        Example / Exemple:
+            chart.hist2d('temperature', 'humidite', bins=25)
+        """
+        self.chart_type = 'hist2d'
+        d = self.data[[x, y]].dropna()
+        *_, image = self.ax.hist2d(d[x], d[y], bins=bins, cmin=1,
+                                   cmap=cmap or plt.rcParams['image.cmap'])
+        if colorbar:
+            self._colorbar(image, 'Effectif')
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.ax.grid(False)
+        return self
+
+    def bihistogram(self, column: str, group: str, bins: Union[int, str] = 20,
+                    horizontal: bool = False, alpha: float = 0.85) -> 'Chart':
+        """
+        EN: Back-to-back histograms of two groups sharing the same bins (one upward, one
+            downward). horizontal=True gives a population-pyramid layout.
+        FR: Histogrammes dos à dos de deux groupes aux mêmes classes (l'un vers le haut,
+            l'autre vers le bas). horizontal=True donne une pyramide des âges.
+
+        Example / Exemple:
+            chart.bihistogram('age', 'sexe', bins=range(0, 90, 5), horizontal=True)
+        """
+        self.chart_type = 'bihistogram'
+        levels = list(pd.unique(self.data[group].dropna()))
+        if len(levels) != 2:
+            raise ValueError(f"bihistogram compare exactement 2 groupes ; '{group}' en a {len(levels)}")
+        values = self.data[column].dropna()
+        edges = np.histogram_bin_edges(values, bins=bins)
+        widths = np.diff(edges)
+        for sign, level, c in zip((1, -1), levels, self._palette()):
+            counts, _ = np.histogram(self.data.loc[self.data[group] == level, column].dropna(), edges)
+            if horizontal:
+                self.ax.barh(edges[:-1], sign * counts, height=widths, align='edge',
+                             color=c, alpha=alpha, label=str(level))
+            else:
+                self.ax.bar(edges[:-1], sign * counts, width=widths, align='edge',
+                            color=c, alpha=alpha, label=str(level))
+        zero = self.ax.axvline if horizontal else self.ax.axhline
+        zero(0, color=plt.rcParams['axes.labelcolor'], linewidth=1)
+        count_axis = self.ax.xaxis if horizontal else self.ax.yaxis
+        count_axis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{abs(v):.0f}'))
+        (self.ax.set_ylabel if horizontal else self.ax.set_xlabel)(column)
+        (self.ax.set_xlabel if horizontal else self.ax.set_ylabel)('Effectif')
+        self.ax.legend()
+        return self
+
+    def contour(self, x: str, y: str, z: str, filled: bool = True, levels: int = 10,
+                cmap: Optional[str] = None, show_points: bool = False,
+                show_mesh: bool = False, labels: bool = True,
+                colorbar: bool = True) -> 'Chart':
+        """
+        EN: Contour map of z over (x, y). Regular grid → contour/contourf; scattered
+            points (field samples) → triangulation (tricontour/tricontourf), with the
+            sample points and triangle mesh (triplot) on demand.
+        FR: Carte en courbes de niveau de z selon (x, y). Grille régulière → contour /
+            contourf ; points dispersés (prélèvements) → triangulation (tricontour /
+            tricontourf), avec points et maillage (triplot) sur demande.
+
+        Example / Exemple:
+            chart.contour('x', 'y', 'ph', show_points=True)       # carte du pH d'une parcelle
+        """
+        import matplotlib.tri as mtri
+        self.chart_type = 'contour'
+        cmap = cmap or plt.rcParams['image.cmap']
+        ink = plt.rcParams['axes.labelcolor']
+        grid = self._as_grid(x, y, z)
+        d = self.data[[x, y, z]].dropna()
+        if grid:
+            xs, ys, (Z,) = grid
+            args = (xs, ys, Z)
+            fill_fn, line_fn = self.ax.contourf, self.ax.contour
+        else:
+            tri = mtri.Triangulation(d[x], d[y])
+            args = (tri, d[z])
+            fill_fn, line_fn = self.ax.tricontourf, self.ax.tricontour
+            if show_mesh:
+                self.ax.triplot(tri, color=plt.rcParams['grid.color'], linewidth=0.6)
+        if filled:
+            mappable = fill_fn(*args, levels=levels, cmap=cmap)
+            lines = line_fn(*args, levels=mappable.levels, colors=ink, linewidths=0.5, alpha=0.6)
+        else:
+            mappable = lines = line_fn(*args, levels=levels, cmap=cmap)
+        if labels:
+            self.ax.clabel(lines, fontsize=8, fmt='%.3g')
+        if show_points:
+            self.ax.scatter(d[x], d[y], s=10, color=ink, zorder=3)
+        if colorbar:
+            self._colorbar(mappable, z)
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.ax.grid(False)
+        return self
+
+    def mesh(self, x: str, y: str, z: str, cmap: Optional[str] = None,
+             colorbar: bool = True, show_points: bool = False) -> 'Chart':
+        """
+        EN: Colored cells of z over (x, y): pcolormesh on a regular grid, tripcolor
+            (colored triangles) on scattered points.
+        FR: Cellules colorées de z selon (x, y) : pcolormesh sur une grille régulière,
+            tripcolor (triangles colorés) sur des points dispersés.
+
+        Example / Exemple:
+            chart.mesh('colonne', 'rang', 'rendement')   # rendement par micro-parcelle
+        """
+        self.chart_type = 'mesh'
+        cmap = cmap or plt.rcParams['image.cmap']
+        grid = self._as_grid(x, y, z)
+        d = self.data[[x, y, z]].dropna()
+        if grid:
+            xs, ys, (Z,) = grid
+            mappable = self.ax.pcolormesh(xs, ys, Z, cmap=cmap, shading='nearest',
+                                          edgecolors=plt.rcParams['axes.facecolor'], linewidth=0.5)
+        else:
+            mappable = self.ax.tripcolor(d[x], d[y], d[z], cmap=cmap, shading='gouraud')
+        if show_points:
+            self.ax.scatter(d[x], d[y], s=8, color=plt.rcParams['axes.labelcolor'], zorder=3)
+        if colorbar:
+            self._colorbar(mappable, z)
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.ax.grid(False)
+        return self
+
+    def vector_field(self, x: str, y: str, u: str, v: str, kind: str = 'quiver',
+                     cmap: Optional[str] = None, density: float = 1.2,
+                     colorbar: bool = True) -> 'Chart':
+        """
+        EN: Vector field (wind, water flow…) colored by magnitude: 'quiver' (arrows),
+            'barbs' (wind barbs) or 'stream' (streamlines, regular grid only).
+        FR: Champ de vecteurs (vent, écoulement…) coloré par l'intensité : 'quiver'
+            (flèches), 'barbs' (barbules de vent) ou 'stream' (lignes de courant, grille
+            régulière seulement).
+
+        Args / Paramètres:
+            u, v (str): EN/FR: Composantes horizontale et verticale du vecteur.
+            kind (str): 'quiver' (défaut), 'barbs' ou 'stream'.
+
+        Example / Exemple:
+            chart.vector_field('lon', 'lat', 'u_vent', 'v_vent', kind='stream')
+        """
+        self.chart_type = 'vector_field'
+        cmap = cmap or plt.rcParams['image.cmap']
+        d = self.data[[x, y, u, v]].dropna()
+        magnitude = np.hypot(d[u], d[v])
+        if kind == 'quiver':
+            mappable = self.ax.quiver(d[x], d[y], d[u], d[v], magnitude, cmap=cmap)
+        elif kind == 'barbs':
+            mappable = self.ax.barbs(d[x], d[y], d[u], d[v], magnitude, cmap=cmap, length=6)
+        elif kind == 'stream':
+            grid = self._as_grid(x, y, u, v)
+            if grid is None:
+                raise ValueError("kind='stream' demande une grille régulière complète de (x, y)")
+            xs, ys, (U, V) = grid
+            mappable = self.ax.streamplot(xs, ys, U, V, color=np.hypot(U, V), cmap=cmap,
+                                          density=density, linewidth=1.2).lines
+        else:
+            raise ValueError("kind doit valoir 'quiver', 'barbs' ou 'stream'")
+        if colorbar:
+            self._colorbar(mappable, 'Intensité')
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.ax.set_aspect('equal', adjustable='datalim')
+        return self
+
+    def scatter3d(self, x: str, y: str, z: str, group: Optional[str] = None,
+                  size: float = 30, alpha: float = 0.8) -> 'Chart':
+        """
+        EN: 3D scatter plot, colored by group. / FR: Nuage de points 3D, coloré par groupe.
+
+        Example / Exemple:
+            chart.scatter3d('azote', 'phosphore', 'rendement', group='variete')
+        """
+        self.chart_type = 'scatter3d'
+        ax = self._replace_axes(projection='3d')
+        groups = self.data.groupby(group, sort=False) if group else [(None, self.data)]
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            ax.scatter(sub[x], sub[y], sub[z], s=size, color=c, alpha=alpha, label=name)
+        ax.set_xlabel(x)
+        ax.set_ylabel(y)
+        ax.set_zlabel(z)
+        if group:
+            ax.legend(title=group)
+        return self
+
+    def line3d(self, x: str, y: str, z: str, group: Optional[str] = None) -> 'Chart':
+        """
+        EN: 3D curve (trajectory), one per group. / FR: Courbe 3D (trajectoire), une par groupe.
+
+        Example / Exemple:
+            chart.line3d('lon', 'lat', 'altitude', group='balise')
+        """
+        self.chart_type = 'line3d'
+        ax = self._replace_axes(projection='3d')
+        groups = self.data.groupby(group, sort=False) if group else [(None, self.data)]
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            ax.plot(sub[x], sub[y], sub[z], color=c, label=name)
+        ax.set_xlabel(x)
+        ax.set_ylabel(y)
+        ax.set_zlabel(z)
+        if group:
+            ax.legend(title=group)
+        return self
+
+    def surface(self, x: str, y: str, z: str, kind: str = 'surface',
+                cmap: Optional[str] = None, colorbar: bool = True) -> 'Chart':
+        """
+        EN: 3D surface of z over (x, y): 'surface' or 'wireframe' on a regular grid,
+            'trisurf' (triangulated) on scattered points — chosen automatically.
+        FR: Surface 3D de z selon (x, y) : 'surface' ou 'wireframe' sur une grille
+            régulière, 'trisurf' (triangulée) sur des points dispersés — choix automatique.
+
+        Example / Exemple:
+            chart.surface('azote', 'eau', 'rendement')            # surface de réponse
+            chart.surface('azote', 'eau', 'rendement', kind='wireframe')
+        """
+        self.chart_type = 'surface'
+        ax = self._replace_axes(projection='3d')
+        cmap = cmap or plt.rcParams['image.cmap']
+        grid = self._as_grid(x, y, z) if kind != 'trisurf' else None
+        mappable = None
+        if grid:
+            xs, ys, (Z,) = grid
+            X, Y = np.meshgrid(xs, ys)
+            if kind == 'wireframe':
+                ax.plot_wireframe(X, Y, Z, color=self._palette()[0], linewidth=0.8)
+            elif kind == 'surface':
+                mappable = ax.plot_surface(X, Y, Z, cmap=cmap, edgecolor='none', alpha=0.95)
+            else:
+                raise ValueError("kind doit valoir 'surface', 'wireframe' ou 'trisurf'")
+        else:
+            d = self.data[[x, y, z]].dropna()
+            mappable = ax.plot_trisurf(d[x], d[y], d[z], cmap=cmap, edgecolor='none')
+        if colorbar and mappable is not None:
+            cbar = self.fig.colorbar(mappable, ax=ax, shrink=0.6, pad=0.1)
+            cbar.set_label(z)
+        ax.set_xlabel(x)
+        ax.set_ylabel(y)
+        ax.set_zlabel(z)
+        return self
+
+    def bar3d(self, x: str, y: str, z: str, alpha: float = 0.9) -> 'Chart':
+        """
+        EN: 3D bars: one bar of height z per (x, y) pair; x and y can be categories.
+        FR: Barres 3D : une barre de hauteur z par couple (x, y) ; x et y peuvent être
+            des catégories.
+
+        Example / Exemple:
+            chart.bar3d('variete', 'site', 'rendement')
+        """
+        self.chart_type = 'bar3d'
+        ax = self._replace_axes(projection='3d')
+        d = self.data[[x, y, z]].dropna()
+        xcat, ycat = pd.Categorical(d[x]), pd.Categorical(d[y])
+        palette = self._palette()
+        colors = [palette[k % len(palette)] for k in xcat.codes]
+        ax.bar3d(xcat.codes - 0.3, ycat.codes - 0.3, 0, 0.6, 0.6, d[z], color=colors,
+                 alpha=alpha, shade=True)
+        ax.set_xticks(range(len(xcat.categories)), [str(c) for c in xcat.categories])
+        ax.set_yticks(range(len(ycat.categories)), [str(c) for c in ycat.categories])
+        ax.set_xlabel(x)
+        ax.set_ylabel(y)
+        ax.set_zlabel(z)
+        return self
+
+    def timeline(self, date: str, label: str, levels: Optional[List[float]] = None,
+                 color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Timeline: events placed on a date axis, each with a stem and its label
+            (alternating above and below to avoid overlaps).
+        FR: Frise chronologique : événements sur un axe de dates, chacun avec une tige
+            et son libellé (alternés dessus/dessous pour éviter les chevauchements).
+
+        Example / Exemple:
+            chart.timeline('date', 'etape')     # calendrier cultural, jalons de projet
+        """
+        self.chart_type = 'timeline'
+        d = self.data[[date, label]].dropna().sort_values(date)
+        heights = levels or [3, -3, 2, -2, 1, -1]
+        lv = np.resize(np.asarray(heights, dtype=float), len(d))
+        c = color or self._palette()[0]
+        ink = plt.rcParams['text.color']
+        self.ax.vlines(d[date], 0, lv, color=c, linewidth=1.2)
+        self.ax.axhline(0, color=plt.rcParams['axes.labelcolor'], linewidth=1.5, zorder=1)
+        self.ax.plot(d[date], np.zeros(len(d)), 'o', color=c, markerfacecolor=plt.rcParams['axes.facecolor'],
+                     markeredgewidth=1.5, zorder=3)
+        for when, text, h in zip(d[date], d[label], lv):
+            self.ax.annotate(str(text), xy=(when, h), xytext=(0, 4 if h > 0 else -4),
+                             textcoords='offset points', ha='center',
+                             va='bottom' if h > 0 else 'top', fontsize=9, color=ink)
+        self.ax.yaxis.set_visible(False)
+        for side in ('left', 'top', 'right'):
+            self.ax.spines[side].set_visible(False)
+        self.ax.grid(False)
+        self.ax.margins(y=0.25)
+        self._concise_dates(date)
+        return self
+
+    def confidence_ellipse(self, x: str, y: str, group: Optional[str] = None,
+                           level: float = 0.95, show_points: bool = True,
+                           fill: bool = True, alpha: float = 0.15) -> 'Chart':
+        """
+        EN: Scatter plot with one confidence ellipse per group (bivariate normal,
+            covering `level` of the population: 95 % by default).
+        FR: Nuage de points avec une ellipse de confiance par groupe (loi normale
+            bivariée, couvrant `level` de la population : 95 % par défaut).
+
+        Example / Exemple:
+            chart.confidence_ellipse('longueur', 'largeur', group='espece')
+        """
+        from matplotlib.patches import Ellipse
+        from scipy.stats import chi2
+        self.chart_type = 'confidence_ellipse'
+        scale = np.sqrt(chi2.ppf(level, 2))
+        groups = self.data.groupby(group, sort=False) if group else [(None, self.data)]
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            pts = sub[[x, y]].dropna().to_numpy(float)
+            if show_points:
+                self.ax.scatter(pts[:, 0], pts[:, 1], s=18, color=c, alpha=0.8, label=name)
+            if len(pts) < 3:
+                continue
+            vals, vecs = np.linalg.eigh(np.cov(pts, rowvar=False))
+            angle = np.degrees(np.arctan2(vecs[1, -1], vecs[0, -1]))  # axe principal
+            w, h = 2 * scale * np.sqrt(vals[::-1])
+            self.ax.add_patch(Ellipse(pts.mean(axis=0), w, h, angle=angle, edgecolor=c,
+                                      facecolor=mcolors.to_rgba(c, alpha if fill else 0),
+                                      linewidth=1.5))
+        self.ax.autoscale_view()
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        if group:
+            self.ax.legend(title=group)
+        return self
+
+    def donut(self, values: str, labels: Optional[str] = None, group: Optional[str] = None,
+              hole: float = 0.55, center_text: Optional[str] = None,
+              show_values: bool = True) -> 'Chart':
+        """
+        EN: Donut chart. With group: nested rings — groups inside, their items outside
+            in shades of the group color (matplotlib "nested pie").
+        FR: Graphique en anneau. Avec group : anneaux imbriqués — groupes à l'intérieur,
+            leurs éléments à l'extérieur dans des nuances de la couleur du groupe.
+
+        Example / Exemple:
+            chart.donut('surface', labels='culture', group='famille', center_text='1 865 ha')
+        """
+        self.chart_type = 'donut'
+        bg = plt.rcParams['axes.facecolor']
+        palette = self._palette()
+        d = self.data[self.data[values] > 0]
+        names = d[labels].astype(str).tolist() if labels else None
+        width = 1 - hole
+        pct = (lambda p: f'{p:.0f} %' if p >= 4 else '') if show_values else None
+        if group is None:
+            self.ax.pie(d[values], labels=names, colors=palette * 10, startangle=90,
+                        counterclock=False, autopct=pct, pctdistance=1 - width / 2,
+                        wedgeprops=dict(width=width, edgecolor=bg, linewidth=2))
+        else:
+            order = list(pd.unique(d[group]))
+            d = d.assign(_g=pd.Categorical(d[group], order)).sort_values('_g', kind='stable')
+            totals = d.groupby('_g', observed=True)[values].sum()
+            inner = [palette[k % len(palette)] for k in range(len(order))]
+            outer = []
+            for k, g in enumerate(order):
+                n = (d[group] == g).sum()
+                outer += [mcolors.to_hex(np.array(mcolors.to_rgb(inner[k])) * (1 - t) + t)
+                          for t in np.linspace(0.0, 0.55, n)]  # nuances vers le blanc
+            ring = width / 2
+            self.ax.pie(d[values], labels=d[labels].astype(str) if labels else None,
+                        colors=outer, startangle=90, counterclock=False, radius=1,
+                        wedgeprops=dict(width=ring, edgecolor=bg, linewidth=1.5))
+            self.ax.pie(totals, labels=None, colors=inner, startangle=90, counterclock=False,
+                        radius=1 - ring, autopct=pct, pctdistance=1 - ring / 2 / (1 - ring),
+                        wedgeprops=dict(width=ring, edgecolor=bg, linewidth=1.5))
+            self.ax.legend([plt.Rectangle((0, 0), 1, 1, color=c) for c in inner], order,
+                           loc='center left', bbox_to_anchor=(1, 0.5), title=group)
+        if center_text:
+            self.ax.text(0, 0, center_text, ha='center', va='center', fontsize=14,
+                         fontweight='bold', color=plt.rcParams['text.color'])
+        self.ax.set_aspect('equal')
+        return self
+
+    def polar(self, theta: str, r: str, kind: str = 'bar', group: Optional[str] = None,
+              degrees: bool = True, compass: bool = False, alpha: float = 0.85) -> 'Chart':
+        """
+        EN: Polar chart: 'bar' (rose / wind rose, stacked by group), 'line' or 'scatter'.
+            theta can be categories (evenly spaced) or angles in degrees.
+        FR: Graphique polaire : 'bar' (rose / rose des vents, empilée par groupe), 'line'
+            ou 'scatter'. theta : catégories (réparties sur le cercle) ou angles en degrés.
+
+        Args / Paramètres:
+            compass (bool): EN/FR: 0° au nord, sens horaire (directions de vent).
+
+        Example / Exemple:
+            chart.polar('direction', 'frequence', group='vitesse', compass=True)  # rose des vents
+            chart.polar('mois', 'pluie')                                         # pluie mensuelle
+        """
+        self.chart_type = 'polar'
+        ax = self._replace_axes(projection='polar')
+        if compass:
+            ax.set_theta_zero_location('N')
+            ax.set_theta_direction(-1)
+        categorical = not pd.api.types.is_numeric_dtype(self.data[theta])
+        cats = list(pd.unique(self.data[theta])) if categorical else None
+
+        def angles(s):
+            if categorical:
+                return 2 * np.pi * np.array([cats.index(v) for v in s]) / len(cats)
+            return np.radians(s) if degrees else np.asarray(s, float)
+
+        n_dirs = len(cats) if categorical else max(self.data[theta].nunique(), 1)
+        width = 2 * np.pi / n_dirs * 0.9
+        groups = list(self.data.groupby(group, sort=False)) if group else [(None, self.data)]
+        bottom = pd.Series(0.0, index=pd.unique(self.data[theta]))
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            sub = sub.groupby(theta, sort=False)[r].sum()
+            th = angles(sub.index)
+            if kind == 'bar':
+                base = bottom.reindex(sub.index).fillna(0).to_numpy()
+                ax.bar(th, sub.to_numpy(), width=width, bottom=base, color=c, alpha=alpha,
+                       edgecolor=plt.rcParams['axes.facecolor'], linewidth=1, label=name)
+                bottom = bottom.add(sub, fill_value=0)
+            elif kind in ('line', 'scatter'):
+                order = np.argsort(th)
+                tt, rr = th[order], sub.to_numpy()[order]
+                if kind == 'line':
+                    ax.plot(np.append(tt, tt[0]), np.append(rr, rr[0]), color=c, label=name)
+                else:
+                    ax.scatter(tt, rr, color=c, alpha=alpha, label=name)
+            else:
+                raise ValueError("kind doit valoir 'bar', 'line' ou 'scatter'")
+        if categorical:
+            ax.set_xticks(2 * np.pi * np.arange(len(cats)) / len(cats), [str(v) for v in cats])
+        if group:
+            ax.legend(title=group, loc='upper left', bbox_to_anchor=(1.05, 1.0))
+        return self
+
+    def pivot_heatmap(self, x: str, y: str, value: str, aggfunc: str = 'mean',
+                      annot: bool = True, fmt: str = '.1f', cmap: Optional[str] = None) -> 'Chart':
+        """
+        EN: Annotated heatmap of a value aggregated by two categories (pivot table),
+            e.g. mean yield by variety × site. Table in self.pivot_table.
+        FR: Carte de chaleur annotée d'une valeur agrégée selon deux catégories
+            (tableau croisé), ex. rendement moyen par variété × site. Tableau dans self.pivot_table.
+
+        Example / Exemple:
+            chart.pivot_heatmap('site', 'variete', 'rendement')
+        """
+        self.chart_type = 'pivot_heatmap'
+        table = pd.pivot_table(self.data, index=y, columns=x, values=value, aggfunc=aggfunc)
+        sns.heatmap(table, ax=self.ax, annot=annot, fmt=fmt, cmap=cmap or plt.rcParams['image.cmap'],
+                    linewidths=1, linecolor=plt.rcParams['axes.facecolor'],
+                    cbar_kws={'label': f'{value} ({aggfunc})'})
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.pivot_table = table
+        return self
+
+    def radial_bar(self, values: str, labels: Optional[str] = None, max_value: float = 100,
+                   width: float = 0.12, gap: float = 0.04, show_values: bool = True) -> 'Chart':
+        """
+        EN: Radial bars: one concentric arc per row, its length = value / max_value of a
+            full turn (progress of several indicators).
+        FR: Barres radiales : un arc concentrique par ligne, de longueur valeur / max_value
+            d'un tour complet (avancement de plusieurs indicateurs).
+
+        Example / Exemple:
+            chart.radial_bar('avancement', labels='activite')     # en % par défaut
+        """
+        from matplotlib.patches import Wedge
+        self.chart_type = 'radial_bar'
+        track = plt.rcParams['grid.color']
+        names = (self.data[labels].astype(str) if labels else self.data.index.astype(str)).tolist()
+        handles = []
+        for k, (name, v, c) in enumerate(zip(names, self.data[values], self._palette() * 10)):
+            radius = 1 - k * (width + gap)
+            if radius - width <= 0:
+                raise ValueError("Trop de barres pour ce rayon : réduire width ou gap")
+            frac = float(np.clip(v / max_value, 0, 1))
+            self.ax.add_patch(Wedge((0, 0), radius, 0, 360, width=width, color=track, alpha=0.6))
+            handles.append(self.ax.add_patch(Wedge((0, 0), radius, 90 - 360 * frac, 90,
+                                                   width=width, color=c)))
+        legend = [f'{n} : {v:g}' + (' %' if max_value == 100 else '') if show_values else n
+                  for n, v in zip(names, self.data[values])]
+        self.ax.legend(handles, legend, loc='upper center', bbox_to_anchor=(0.5, 0.0),
+                       ncol=min(len(names), 3), frameon=False)
+        self.ax.set_xlim(-1.05, 1.05)
+        self.ax.set_ylim(-1.05, 1.05)
+        self.ax.set_aspect('equal')
+        self.ax.axis('off')
+        return self
+
+    def progress_bar(self, value: Union[str, float], total: float = 100,
+                     labels: Optional[str] = None, color: Optional[str] = None,
+                     height: float = 0.5) -> 'Chart':
+        """
+        EN: Progress bar(s): a filled bar over a light track. value is a number (one bar)
+            or a column (one bar per row, named by labels).
+        FR: Barre(s) de progression : une barre pleine sur un rail clair. value est un
+            nombre (une barre) ou une colonne (une barre par ligne, nommée par labels).
+
+        Example / Exemple:
+            Chart(df).progress_bar(80, total=100)                       # 80 % collectés
+            chart.progress_bar('realise', total=100, labels='objectif')
+        """
+        self.chart_type = 'progress_bar'
+        if isinstance(value, str):
+            vals = self.data[value].to_numpy(float)
+            names = (self.data[labels].astype(str) if labels else self.data.index.astype(str)).tolist()
+        else:
+            vals, names = np.array([float(value)]), ['']
+        pos = np.arange(len(vals))[::-1]
+        palette = self._palette()
+        self.ax.barh(pos, [total] * len(vals), height=height, color=plt.rcParams['grid.color'],
+                     alpha=0.7)
+        fill = [color or palette[k % len(palette)] for k in range(len(vals))]
+        self.ax.barh(pos, np.clip(vals, 0, total), height=height, color=fill)
+        for p, v in zip(pos, vals):
+            self.ax.text(total * 1.01, p, f'{100 * v / total:.0f} %', va='center', fontsize=11,
+                         color=plt.rcParams['text.color'])
+        self.ax.set_yticks(pos, names)
+        self.ax.set_xlim(0, total * 1.12)
+        self.ax.xaxis.set_visible(False)
+        self.ax.grid(False)
+        for side in ('top', 'right', 'bottom'):
+            self.ax.spines[side].set_visible(False)
+        if names == ['']:
+            self.ax.spines['left'].set_visible(False)
+        return self
+
+    # ──────────────────────────────────────── Qualitative analysis / Analyse qualitative
+
+    def word_cloud(self, text: Optional[str] = None, words: Optional[str] = None,
+                   weights: Optional[str] = None, max_words: int = 150,
+                   language: Optional[str] = 'fr', stopwords: Optional[List[str]] = None,
+                   min_length: int = 3, ngram: int = 1, shape: str = 'rectangle',
+                   colormap: Optional[str] = None, random_state: int = 42) -> 'Chart':
+        """
+        EN: Word cloud (wordcloud package). Either a text column (open-ended answers,
+            interviews…) whose words are counted, or a words column with its weights.
+            Colors and font follow the active theme. Frequencies in self.word_frequencies.
+        FR: Nuage de mots (paquet wordcloud). Soit une colonne de texte (réponses
+            ouvertes, entretiens…) dont on compte les mots, soit une colonne de mots et
+            leurs poids. Couleurs et police suivent le thème. Fréquences dans self.word_frequencies.
+
+        Args / Paramètres:
+            text (str, optional): EN/FR: Colonne de texte libre.
+            words, weights (str, optional): EN/FR: Colonnes mot / poids (fréquences déjà calculées).
+            max_words (int): EN/FR: Nombre maximal de mots affichés. Défaut 150.
+            language (str): EN/FR: Mots vides ignorés : 'fr' (défaut), 'en', 'fr+en' ou None.
+            stopwords (List[str], optional): EN/FR: Mots supplémentaires à ignorer.
+            min_length (int): EN/FR: Longueur minimale d'un mot. Défaut 3.
+            ngram (int): EN/FR: 2 = expressions de deux mots, etc.
+            shape (str): 'rectangle' (défaut) ou 'circle'.
+            colormap (str, optional): EN/FR: Palette continue ; défaut : couleurs du thème.
+
+        Example / Exemple:
+            chart.word_cloud('reponse', stopwords=['agriculteur'])
+            chart.word_cloud(words='mot', weights='frequence', shape='circle')
+        """
+        from wordcloud import WordCloud
+        from .text import word_counts
+        self.chart_type = 'word_cloud'
+        if words and weights:
+            freqs = self.data.groupby(words)[weights].sum().astype(float).to_dict()
+        elif text:
+            freqs = dict(word_counts(self.data[text], language=language, stopwords=stopwords,
+                                     min_length=min_length, ngram=ngram))
+        else:
+            raise ValueError("Indiquer text= (texte libre) ou words= et weights= (fréquences)")
+        if not freqs:
+            raise ValueError("Aucun mot à afficher après filtrage des mots vides")
+        w_in, h_in = self.fig.get_size_inches() * self.ax.get_position().size
+        width, height = int(w_in * 100), int(h_in * 100)
+        mask = None
+        if shape == 'circle':
+            side = min(width, height)
+            yy, xx = np.ogrid[:side, :side]
+            outside = (xx - side / 2) ** 2 + (yy - side / 2) ** 2 > (side / 2 - 2) ** 2
+            mask = (outside * 255).astype(np.uint8)
+            width = height = side
+        elif shape != 'rectangle':
+            raise ValueError("shape doit valoir 'rectangle' ou 'circle'")
+        palette = [mcolors.to_hex(c) for c in self._palette()]  # PIL attend des couleurs hex
+        rng = np.random.default_rng(random_state)
+        color_func = None if colormap else (lambda *a, **k: palette[rng.integers(len(palette))])
+        font = fm.findfont(fm.FontProperties(family=plt.rcParams['font.family']))
+        cloud = WordCloud(width=width, height=height, max_words=max_words, mask=mask,
+                          background_color=mcolors.to_hex(plt.rcParams['axes.facecolor']),
+                          mode='RGBA',
+                          colormap=colormap, color_func=color_func, font_path=font,
+                          prefer_horizontal=0.9, random_state=random_state, scale=2,
+                          relative_scaling=0.5).generate_from_frequencies(freqs)
+        self.ax.imshow(cloud, interpolation='bilinear')
+        self.ax.axis('off')
+        self.word_frequencies = (pd.Series(freqs, name='frequence')
+                                 .sort_values(ascending=False).head(max_words))
+        return self
+
+    def word_frequency(self, text: str, top: int = 20, ngram: int = 1,
+                       language: Optional[str] = 'fr', stopwords: Optional[List[str]] = None,
+                       min_length: int = 3, color: Optional[str] = None,
+                       show_values: bool = True) -> 'Chart':
+        """
+        EN: Horizontal bars of the most frequent words (or n-word expressions) in a text
+            column — the quantitative companion of the word cloud.
+        FR: Barres horizontales des mots (ou expressions de n mots) les plus fréquents
+            d'une colonne de texte — le complément chiffré du nuage de mots.
+
+        Example / Exemple:
+            chart.word_frequency('reponse', top=15, ngram=2)
+        """
+        from .text import word_counts
+        self.chart_type = 'word_frequency'
+        counts = word_counts(self.data[text], language=language, stopwords=stopwords,
+                             min_length=min_length, ngram=ngram).most_common(top)
+        if not counts:
+            raise ValueError("Aucun mot à afficher après filtrage des mots vides")
+        words, values = zip(*counts[::-1])  # le plus fréquent en haut
+        bars = self.ax.barh(words, values, color=color or self._palette()[0])
+        if show_values:
+            self.ax.bar_label(bars, padding=3, fontsize=9, color=plt.rcParams['text.color'])
+        self.ax.set_xlabel('Occurrences')
+        self.ax.grid(False, axis='y')
+        self.word_frequencies = pd.Series(dict(counts), name='frequence')
+        return self
+
+    def likert(self, columns: List[str], order: List, labels: Optional[Dict[str, str]] = None,
+               cmap: str = 'RdYlGn', sort: bool = True, show_values: bool = True,
+               min_label: float = 5) -> 'Chart':
+        """
+        EN: Diverging stacked bars for Likert-scale survey items: one bar per question,
+            centered on the neutral answer; disagreement left, agreement right (in %).
+            Percentages in self.likert_table.
+        FR: Barres empilées divergentes pour des questions en échelle de Likert : une
+            barre par question, centrée sur la réponse neutre ; désaccord à gauche,
+            accord à droite (en %). Pourcentages dans self.likert_table.
+
+        Args / Paramètres:
+            columns (List[str]): EN/FR: Une colonne par question.
+            order (List): EN/FR: Modalités du plus négatif au plus positif.
+            labels (dict, optional): EN/FR: Libellés des questions {colonne: texte}.
+            cmap (str): EN/FR: Palette divergente (rouge → vert par défaut).
+            sort (bool): EN/FR: Trie les questions par accord net. Défaut True.
+            min_label (float): EN/FR: Pas d'étiquette sous ce pourcentage. Défaut 5.
+
+        Example / Exemple:
+            echelle = ['Pas du tout d’accord', 'Pas d’accord', 'Neutre', 'D’accord', 'Tout à fait d’accord']
+            chart.likert(['q1', 'q2', 'q3'], order=echelle)
+        """
+        self.chart_type = 'likert'
+        table = pd.DataFrame({c: self.data[c].value_counts(normalize=True).reindex(order)
+                              for c in columns}).T.fillna(0) * 100
+        unknown = set(self.data[columns].stack().dropna()) - set(order)
+        if unknown:
+            raise ValueError(f"Modalités absentes de order : {sorted(map(str, unknown))}")
+        k = len(order)
+        neg = list(order[:k // 2])
+        neutral = [order[k // 2]] if k % 2 else []
+        if sort:
+            pos = list(order[(k + 1) // 2:])
+            table = table.loc[(table[pos].sum(axis=1) - table[neg].sum(axis=1)).sort_values().index]
+        colors = plt.get_cmap(cmap)(np.linspace(0.08, 0.92, k))
+        left = -(table[neg].sum(axis=1) + (table[neutral[0]] / 2 if neutral else 0)).to_numpy()
+        names = [(labels or {}).get(q, q) for q in table.index]
+        for level, color in zip(order, colors):
+            widths = table[level].to_numpy()
+            bars = self.ax.barh(names, widths, left=left, color=color, label=str(level),
+                                edgecolor=plt.rcParams['axes.facecolor'], linewidth=1)
+            if show_values:
+                lum = 0.2126 * color[0] + 0.7152 * color[1] + 0.0722 * color[2]
+                self.ax.bar_label(bars, labels=[f'{w:.0f}' if w >= min_label else '' for w in widths],
+                                  label_type='center', fontsize=8,
+                                  color='#111111' if lum > 0.55 else 'white')
+            left = left + widths
+        self.ax.axvline(0, color=plt.rcParams['axes.labelcolor'], linewidth=1)
+        lim = max(abs(self.ax.get_xlim()[0]), abs(self.ax.get_xlim()[1]))
+        self.ax.set_xlim(-lim, lim)
+        self.ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{abs(v):.0f} %'))
+        self.ax.grid(False, axis='y')
+        self.ax.legend(ncol=min(k, 5), loc='upper center', bbox_to_anchor=(0.5, -0.12),
+                       frameon=False, fontsize=8)
+        self.likert_table = table
+        return self
+
+    def code_matrix(self, case: str, code: str, normalize: bool = False,
+                    annot: bool = True, cmap: Optional[str] = None) -> 'Chart':
+        """
+        EN: Code matrix for qualitative coding (cases × codes): how often each code
+            (theme) appears in each case (interview, document, group). Input: one row
+            per coded segment. normalize=True gives % per case. Table in self.code_table.
+        FR: Matrice des codes pour le codage qualitatif (cas × codes) : nombre de fois où
+            chaque code (thème) apparaît dans chaque cas (entretien, document, groupe).
+            Entrée : une ligne par segment codé. normalize=True donne des % par cas.
+            Tableau dans self.code_table.
+
+        Example / Exemple:
+            chart.code_matrix('entretien', 'theme')
+        """
+        self.chart_type = 'code_matrix'
+        table = pd.crosstab(self.data[case], self.data[code])
+        table = table[table.sum().sort_values(ascending=False).index]  # codes les plus cités d'abord
+        if normalize:
+            table = table.div(table.sum(axis=1), axis=0) * 100
+        sns.heatmap(table, ax=self.ax, annot=annot, fmt='.0f', cmap=cmap or plt.rcParams['image.cmap'],
+                    linewidths=1, linecolor=plt.rcParams['axes.facecolor'],
+                    cbar_kws={'label': '% du cas' if normalize else 'Occurrences'})
+        self.ax.set_xlabel(code)
+        self.ax.set_ylabel(case)
+        self.ax.tick_params(axis='x', rotation=30)
+        for t in self.ax.get_xticklabels():
+            t.set_ha('right')
+        self.code_table = table
+        return self
+
     # ──────────────────────────────────────── Seaborn
 
     # Fonctions seaborn qui créent leur propre figure (une grille de panneaux)
@@ -2559,6 +3513,10 @@ class Chart:
             chart.set_style('ggplot')
         """
         plt.style.use(style)
+        # La figure a été créée avant le style : on la reconstruit (vide) pour qu'il s'applique
+        size = self.fig.get_size_inches()
+        plt.close(self.fig)
+        self.fig, self.ax = plt.subplots(figsize=size)
         return self
 
     def tight_layout(self) -> 'Chart':

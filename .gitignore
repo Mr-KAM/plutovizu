@@ -14,3 +14,4 @@ wheels/
 docs/_site/
 docs/*.quarto_ipynb
 .claude/
+command.md

@@ -1,0 +1,340 @@
+- title: "Courbe"
+  description: "line() — Évolution d'une ou plusieurs séries"
+  path: charts/evolution.html#g-line
+  image: images/vignettes/line.png
+  categories: ["Évolution"]
+- title: "Aire empilée"
+  description: "area() — Évolution de parts d'un total"
+  path: charts/evolution.html#g-area
+  image: images/vignettes/area.png
+  categories: ["Évolution"]
+- title: "Flux temporel"
+  description: "streamgraph() — Composition qui évolue dans le temps"
+  path: charts/evolution.html#g-streamgraph
+  image: images/vignettes/streamgraph.png
+  categories: ["Évolution"]
+- title: "Escalier"
+  description: "step() — Valeur constante entre deux mesures"
+  path: charts/evolution.html#g-step
+  image: images/vignettes/step.png
+  categories: ["Évolution"]
+- title: "Bâtons"
+  description: "stem() — Événements ponctuels (pluies…)"
+  path: charts/evolution.html#g-stem
+  image: images/vignettes/stem.png
+  categories: ["Évolution"]
+- title: "Bande"
+  description: "band() — Plage min–max ou intervalle autour d’une courbe"
+  path: charts/evolution.html#g-band
+  image: images/vignettes/band.png
+  categories: ["Évolution"]
+- title: "Classement"
+  description: "bump() — Évolution des rangs"
+  path: charts/evolution.html#g-bump
+  image: images/vignettes/bump.png
+  categories: ["Évolution"]
+- title: "Frise chronologique"
+  description: "timeline() — Jalons et calendrier cultural"
+  path: charts/evolution.html#g-timeline
+  image: images/vignettes/timeline.png
+  categories: ["Évolution"]
+- title: "Événements"
+  description: "eventplot() — Dates d’observation par groupe"
+  path: charts/evolution.html#g-eventplot
+  image: images/vignettes/eventplot.png
+  categories: ["Évolution"]
+- title: "Calendrier"
+  description: "calendar_heatmap() — Valeurs jour par jour"
+  path: charts/evolution.html#g-calendar_heatmap
+  image: images/vignettes/calendar_heatmap.png
+  categories: ["Évolution"]
+- title: "Gantt"
+  description: "gantt() — Planning de tâches"
+  path: charts/evolution.html#g-gantt
+  image: images/vignettes/gantt.png
+  categories: ["Évolution"]
+- title: "Histogramme"
+  description: "histogram() — Forme d'une distribution"
+  path: charts/distribution.html#g-histogram
+  image: images/vignettes/histogram.png
+  categories: ["Distribution"]
+- title: "Histogrammes dos à dos"
+  description: "bihistogram() — Deux groupes, pyramide des âges"
+  path: charts/distribution.html#g-bihistogram
+  image: images/vignettes/bihistogram.png
+  categories: ["Distribution"]
+- title: "Boîte à moustaches"
+  description: "boxplot() — Médiane, quartiles, extrêmes"
+  path: charts/distribution.html#g-boxplot
+  image: images/vignettes/boxplot.png
+  categories: ["Distribution"]
+- title: "Violon"
+  description: "violin() — Densité complète par groupe"
+  path: charts/distribution.html#g-violin
+  image: images/vignettes/violin.png
+  categories: ["Distribution"]
+- title: "Crêtes"
+  description: "ridgeline() — Beaucoup de distributions superposées"
+  path: charts/distribution.html#g-ridgeline
+  image: images/vignettes/ridgeline.png
+  categories: ["Distribution"]
+- title: "Densité"
+  description: "kde() — Distributions continues lissées"
+  path: charts/distribution.html#g-kde
+  image: images/vignettes/kde.png
+  categories: ["Distribution"]
+- title: "Répartition empirique"
+  description: "ecdf() — Distribution sans choix de classes"
+  path: charts/distribution.html#g-ecdf
+  image: images/vignettes/ecdf.png
+  categories: ["Distribution"]
+- title: "Points par catégorie"
+  description: "strip() — Toutes les observations (strip, swarm)"
+  path: charts/distribution.html#g-strip
+  image: images/vignettes/strip.png
+  categories: ["Distribution"]
+- title: "Boîte étendue"
+  description: "boxen() — Grands échantillons et queues"
+  path: charts/distribution.html#g-boxen
+  image: images/vignettes/boxen.png
+  categories: ["Distribution"]
+- title: "Quantile-quantile"
+  description: "qqplot() — Vérifier la normalité"
+  path: charts/distribution.html#g-qqplot
+  image: images/vignettes/qqplot.png
+  categories: ["Distribution"]
+- title: "Histogramme 2D"
+  description: "hist2d() — Densité d’un grand nuage"
+  path: charts/distribution.html#g-hist2d
+  image: images/vignettes/hist2d.png
+  categories: ["Distribution"]
+- title: "Barres"
+  description: "bar() — Simples, groupées ou empilées"
+  path: charts/comparaison.html#g-bar
+  image: images/vignettes/bar.png
+  categories: ["Comparaison"]
+- title: "Moyennes ± erreur"
+  description: "mean_bar() — Traitements, lettres de Tukey"
+  path: charts/comparaison.html#g-mean_bar
+  image: images/vignettes/mean_bar.png
+  categories: ["Comparaison"]
+- title: "Barres d'erreur"
+  description: "errorbar() — Points ± erreur, par groupe"
+  path: charts/comparaison.html#g-errorbar
+  image: images/vignettes/errorbar.png
+  categories: ["Comparaison"]
+- title: "Interaction"
+  description: "interaction() — Deux facteurs (ANOVA)"
+  path: charts/comparaison.html#g-interaction
+  image: images/vignettes/interaction.png
+  categories: ["Comparaison"]
+- title: "Moyennes reliées"
+  description: "pointplot() — Moyennes et IC par catégorie"
+  path: charts/comparaison.html#g-pointplot
+  image: images/vignettes/pointplot.png
+  categories: ["Comparaison"]
+- title: "Effectifs"
+  description: "countplot() — Nombre d’observations par catégorie"
+  path: charts/comparaison.html#g-countplot
+  image: images/vignettes/countplot.png
+  categories: ["Comparaison"]
+- title: "Lollipop"
+  description: "lollipop() — Barres allégées, groupées"
+  path: charts/comparaison.html#g-lollipop
+  image: images/vignettes/lollipop.png
+  categories: ["Comparaison"]
+- title: "Haltère"
+  description: "dumbbell() — Avant / après"
+  path: charts/comparaison.html#g-dumbbell
+  image: images/vignettes/dumbbell.png
+  categories: ["Comparaison"]
+- title: "Radar"
+  description: "radar() — Profils multicritères"
+  path: charts/comparaison.html#g-radar
+  image: images/vignettes/radar.png
+  categories: ["Comparaison"]
+- title: "Coordonnées parallèles"
+  description: "parallel_coordinates() — Individus sur plusieurs variables"
+  path: charts/comparaison.html#g-parallel_coordinates
+  image: images/vignettes/parallel_coordinates.png
+  categories: ["Comparaison"]
+- title: "Polaire"
+  description: "polar() — Rose des vents, cycles"
+  path: charts/comparaison.html#g-polar
+  image: images/vignettes/polar.png
+  categories: ["Comparaison"]
+- title: "Nuage de points"
+  description: "scatter() — Relation entre deux variables"
+  path: charts/relation.html#g-scatter
+  image: images/vignettes/scatter.png
+  categories: ["Relation"]
+- title: "Régression"
+  description: "regression() — Ajustement, équation, R²"
+  path: charts/relation.html#g-regression
+  image: images/vignettes/regression.png
+  categories: ["Relation"]
+- title: "Résidus"
+  description: "residplot() — Vérifier un ajustement"
+  path: charts/relation.html#g-residplot
+  image: images/vignettes/residplot.png
+  categories: ["Relation"]
+- title: "Ellipses de confiance"
+  description: "confidence_ellipse() — Dispersion de groupes"
+  path: charts/relation.html#g-confidence_ellipse
+  image: images/vignettes/confidence_ellipse.png
+  categories: ["Relation"]
+- title: "Pavage hexagonal"
+  description: "hexbin() — Nuage très dense"
+  path: charts/relation.html#g-hexbin
+  image: images/vignettes/hexbin.png
+  categories: ["Relation"]
+- title: "Corrélations"
+  description: "heatmap() — Matrice de corrélation"
+  path: charts/relation.html#g-heatmap
+  image: images/vignettes/heatmap.png
+  categories: ["Relation"]
+- title: "Tableau croisé coloré"
+  description: "pivot_heatmap() — Moyenne par deux catégories"
+  path: charts/relation.html#g-pivot_heatmap
+  image: images/vignettes/pivot_heatmap.png
+  categories: ["Relation"]
+- title: "Nuage + marges"
+  description: "jointplot() — Relation et distributions marginales"
+  path: charts/relation.html#g-jointplot
+  image: images/vignettes/jointplot.png
+  categories: ["Relation"]
+- title: "Matrice de nuages"
+  description: "pairplot() — Toutes les paires de variables"
+  path: charts/relation.html#g-pairplot
+  image: images/vignettes/pairplot.png
+  categories: ["Relation"]
+- title: "ACP (biplot)"
+  description: "pca_biplot() — Individus et variables sur 2 axes"
+  path: charts/multivarie.html#g-pca_biplot
+  image: images/vignettes/pca_biplot.png
+  categories: ["Multivarié"]
+- title: "Dendrogramme"
+  description: "dendrogram() — Classification hiérarchique"
+  path: charts/multivarie.html#g-dendrogram
+  image: images/vignettes/dendrogram.png
+  categories: ["Multivarié"]
+- title: "Clustermap"
+  description: "clustermap() — Lignes et colonnes classées"
+  path: charts/multivarie.html#g-clustermap
+  image: images/vignettes/clustermap.png
+  categories: ["Multivarié"]
+- title: "Camembert"
+  description: "pie() — Parts d'un total"
+  path: charts/composition.html#g-pie
+  image: images/vignettes/pie.png
+  categories: ["Composition"]
+- title: "Anneau"
+  description: "donut() — Parts, anneaux imbriqués"
+  path: charts/composition.html#g-donut
+  image: images/vignettes/donut.png
+  categories: ["Composition"]
+- title: "Carte arborescente"
+  description: "treemap() — Parts, beaucoup de catégories"
+  path: charts/composition.html#g-treemap
+  image: images/vignettes/treemap.png
+  categories: ["Composition"]
+- title: "Cercles imbriqués"
+  description: "circle_packing() — Parts regroupées par niveaux"
+  path: charts/composition.html#g-circle_packing
+  image: images/vignettes/circle_packing.png
+  categories: ["Composition"]
+- title: "Cascade"
+  description: "waterfall() — Contributions successives"
+  path: charts/composition.html#g-waterfall
+  image: images/vignettes/waterfall.png
+  categories: ["Composition"]
+- title: "Ternaire"
+  description: "ternary() — Compositions en 3 parts"
+  path: charts/composition.html#g-ternary
+  image: images/vignettes/ternary.png
+  categories: ["Composition"]
+- title: "Sankey"
+  description: "sankey() — Flux entre étapes"
+  path: charts/composition.html#g-sankey
+  image: images/vignettes/sankey.png
+  categories: ["Composition"]
+- title: "Barres radiales"
+  description: "radial_bar() — Avancement de plusieurs indicateurs"
+  path: charts/composition.html#g-radial_bar
+  image: images/vignettes/radial_bar.png
+  categories: ["Composition"]
+- title: "Barre de progression"
+  description: "progress_bar() — Objectif atteint"
+  path: charts/composition.html#g-progress_bar
+  image: images/vignettes/progress_bar.png
+  categories: ["Composition"]
+- title: "Courbes de niveau"
+  description: "contour() — Cartes, prélèvements dispersés"
+  path: charts/champs.html#g-contour
+  image: images/vignettes/contour.png
+  categories: ["Champs & cartes"]
+- title: "Grille colorée"
+  description: "mesh() — Valeur par cellule (pcolormesh)"
+  path: charts/champs.html#g-mesh
+  image: images/vignettes/mesh.png
+  categories: ["Champs & cartes"]
+- title: "Champ de vecteurs"
+  description: "vector_field() — Vent, écoulement (flèches, lignes)"
+  path: charts/champs.html#g-vector_field
+  image: images/vignettes/vector_field.png
+  categories: ["Champs & cartes"]
+- title: "Nuage 3D"
+  description: "scatter3d() — Trois variables"
+  path: charts/3d.html#g-scatter3d
+  image: images/vignettes/scatter3d.png
+  categories: ["3D"]
+- title: "Courbe 3D"
+  description: "line3d() — Trajectoires"
+  path: charts/3d.html#g-line3d
+  image: images/vignettes/line3d.png
+  categories: ["3D"]
+- title: "Surface 3D"
+  description: "surface() — Surface de réponse"
+  path: charts/3d.html#g-surface
+  image: images/vignettes/surface.png
+  categories: ["3D"]
+- title: "Barres 3D"
+  description: "bar3d() — Valeur par couple de catégories"
+  path: charts/3d.html#g-bar3d
+  image: images/vignettes/bar3d.png
+  categories: ["3D"]
+- title: "Ombrothermique"
+  description: "ombrothermic() — Mois secs et humides (p = 2T)"
+  path: charts/sciences.html#g-ombrothermic
+  image: images/vignettes/ombrothermic.png
+  categories: ["Climat & sols"]
+- title: "Textures USDA"
+  description: "soil_texture() — Classer des sols"
+  path: charts/sciences.html#g-soil_texture
+  image: images/vignettes/soil_texture.png
+  categories: ["Climat & sols"]
+- title: "Nuage de mots"
+  description: "word_cloud() — Thèmes dominants d'un texte"
+  path: charts/qualitatif.html#g-word_cloud
+  image: images/vignettes/word_cloud.png
+  categories: ["Qualitatif"]
+- title: "Fréquence des mots"
+  description: "word_frequency() — Mots les plus cités"
+  path: charts/qualitatif.html#g-word_frequency
+  image: images/vignettes/word_frequency.png
+  categories: ["Qualitatif"]
+- title: "Échelle de Likert"
+  description: "likert() — Opinions d'enquête"
+  path: charts/qualitatif.html#g-likert
+  image: images/vignettes/likert.png
+  categories: ["Qualitatif"]
+- title: "Matrice des codes"
+  description: "code_matrix() — Codage d'entretiens"
+  path: charts/qualitatif.html#g-code_matrix
+  image: images/vignettes/code_matrix.png
+  categories: ["Qualitatif"]
+- title: "Tout seaborn"
+  description: "seaborn() — N'importe quel graphique seaborn"
+  path: charts/seaborn.html#g-seaborn
+  image: images/vignettes/seaborn.png
+  categories: ["Seaborn"]

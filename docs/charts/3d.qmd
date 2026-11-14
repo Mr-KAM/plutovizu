@@ -1,0 +1,69 @@
+---
+title: "3D"
+subtitle: "Nuages, courbes, surfaces et barres en trois dimensions."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `scatter3d` — Nuage de points 3D {#g-scatter3d}
+
+```{python}
+#| fig-cap: "Trois caractères variétaux"
+(Chart(caracteres, figsize=(8, 6.5))
+    .scatter3d('hauteur', 'jours_floraison', 'rendement', group='cycle')
+    .title('Caractères en 3D')
+    .show())
+```
+
+
+### `line3d` — Courbe 3D {#g-line3d}
+
+```{python}
+#| fig-cap: "Trajectoire d'un drone de surveillance"
+t = np.linspace(0, 6 * np.pi, 300)
+vol = pd.DataFrame({'x': np.cos(t) * t, 'y': np.sin(t) * t, 'altitude': 20 + 2 * t})
+(Chart(vol, figsize=(8, 6.5))
+    .line3d('x', 'y', 'altitude')
+    .title('Trajectoire de vol')
+    .show())
+```
+
+
+### `surface` — Surface 3D {#g-surface}
+
+Sur une grille régulière : `kind='surface'` ou `'wireframe'` ; sur des points dispersés,
+la surface est triangulée (`trisurf`) automatiquement.
+
+```{python}
+#| fig-cap: "Surface de réponse azote × irrigation"
+(Chart(reponse, figsize=(9, 6.5))
+    .surface('azote', 'eau', 'rendement')
+    .title('Surface de réponse')
+    .show())
+```
+
+```{python}
+#| fig-cap: "Même surface en fil de fer"
+(Chart(reponse, figsize=(9, 6.5))
+    .surface('azote', 'eau', 'rendement', kind='wireframe')
+    .title('Fil de fer')
+    .show())
+```
+
+
+### `bar3d` — Barres 3D {#g-bar3d}
+
+```{python}
+#| fig-cap: "Rendement moyen par variété et par dose"
+moyennes = essai.groupby(['variete', 'dose'], as_index=False)['rendement'].mean()
+(Chart(moyennes, figsize=(9, 6.5))
+    .bar3d('variete', 'dose', 'rendement')
+    .title('Rendement moyen (t/ha)')
+    .show())
+```

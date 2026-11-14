@@ -236,3 +236,33 @@ hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
   .feature-card .feature-art i { transition: transform .25s ease; }
   .feature-card:hover .feature-art i { transform: translateY(-4px) scale(1.06); }
 }
+
+// ── Galerie : cartes du listing Quarto ──────────────────
+.quarto-listing .quarto-grid-item.card {
+  border: 1px solid $line;
+  border-radius: $border-radius;
+  background: $surface;
+  overflow: hidden;
+  .card-img-top {
+    background: #fff;           // les vignettes (thème editorial) ont un fond blanc
+    padding: .4rem;
+    object-fit: contain;
+    border-bottom: 1px solid $line;
+  }
+  .card-title { font-size: .95rem; font-weight: 600; margin-bottom: .2rem; }
+  .card-text, .listing-description { font-size: .8rem; color: $muted; }
+  .listing-categories .listing-category {
+    font-size: .7rem;
+    border-radius: 999px;
+    border-color: $line;
+    color: $green;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .quarto-listing .quarto-grid-item.card { transition: transform .15s ease, border-color .15s ease; }
+}
+.quarto-listing .quarto-grid-item.card:hover {
+  border-color: rgba($green-glow, .6);
+  transform: translateY(-2px);
+}
+.quarto-listing-category-title { font-weight: 600; }

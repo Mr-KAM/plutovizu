@@ -1,0 +1,210 @@
+---
+title: "Distributions"
+subtitle: "La forme d'une variable : dispersion, symétrie, valeurs extrêmes, normalité."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `histogram` — Histogramme {#g-histogram}
+
+```{python}
+#| fig-cap: "Distribution des salaires"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(0)
+df = pd.DataFrame({'salaire': np.random.normal(42000, 9000, 800)})
+
+(Chart(df)
+    .histogram('salaire', bins=30, color='steelblue', edgecolor='white')
+    .title('Distribution des salaires (n=800)')
+    .labels(xlabel='Salaire (€)', ylabel='Fréquence')
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+
+### `bihistogram` — Histogrammes dos à dos {#g-bihistogram}
+
+Deux groupes sur les mêmes classes, l'un vers le haut, l'autre vers le bas ;
+`horizontal=True` donne une pyramide des âges.
+
+```{python}
+#| fig-cap: "Pyramide des âges d'un village"
+(Chart(population, figsize=(8, 5))
+    .bihistogram('age', 'sexe', bins=range(0, 95, 5), horizontal=True)
+    .title('Pyramide des âges')
+    .tight_layout()
+    .show())
+```
+
+
+### `boxplot` — Boîte à moustaches {#g-boxplot}
+
+```{python}
+#| fig-cap: "Comparaison des notes par matière"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(1)
+df = pd.DataFrame({
+    'maths':    np.random.normal(13, 3, 100),
+    'français': np.random.normal(12, 2, 100),
+    'sciences': np.random.normal(14, 2.5, 100),
+    'histoire': np.random.normal(11, 3.5, 100),
+})
+
+(Chart(df)
+    .boxplot(['maths', 'français', 'sciences', 'histoire'])
+    .title('Notes par matière (100 élèves)')
+    .labels(ylabel='Note /20')
+    .grid(alpha=0.2)
+    .tight_layout()
+    .show())
+```
+
+
+### `violin` — Violon {#g-violin}
+
+```{python}
+#| fig-cap: "Distribution des temps de trajet par ville"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(2)
+df = pd.DataFrame({
+    'Paris':  np.random.normal(45, 15, 200),
+    'Lyon':   np.random.normal(30, 10, 200),
+    'Nantes': np.random.normal(22,  8, 200),
+    'Rennes': np.random.normal(18,  6, 200),
+})
+
+(Chart(df)
+    .violin(['Paris', 'Lyon', 'Nantes', 'Rennes'])
+    .title('Temps de trajet domicile–travail (min)')
+    .labels(ylabel='Minutes')
+    .grid(alpha=0.2)
+    .tight_layout()
+    .show())
+```
+
+
+### `ridgeline` — Crêtes superposées {#g-ridgeline}
+
+```{python}
+#| fig-cap: "Distribution des salaires par secteur"
+#| fig-width: 9
+#| fig-height: 5
+
+np.random.seed(3)
+secteurs = ['Tech', 'Finance', 'Santé', 'Éducation', 'Commerce']
+moyennes  = [68000, 72000, 52000, 38000, 44000]
+
+dfs = [
+    pd.DataFrame({'salaire': np.random.normal(m, 9000, 150), 'secteur': s})
+    for s, m in zip(secteurs, moyennes)
+]
+df = pd.concat(dfs, ignore_index=True)
+
+(Chart(df)
+    .ridgeline('salaire', 'secteur', overlap=1.8, alpha=0.65)
+    .title('Distribution des salaires annuels par secteur')
+    .labels(xlabel='Salaire (€)')
+    .tight_layout()
+    .show())
+```
+
+
+### `kde` — Densité lissée {#g-kde}
+
+```{python}
+(Chart(essai, figsize=(9, 4))
+    .kde('rendement', hue='variete')
+    .title('Densité du rendement')
+    .tight_layout()
+    .show())
+```
+
+
+### `ecdf` — Fonction de répartition empirique {#g-ecdf}
+
+```{python}
+(Chart(essai, figsize=(9, 4))
+    .ecdf('rendement', hue='variete')
+    .title('Part des parcelles sous chaque rendement')
+    .tight_layout()
+    .show())
+```
+
+
+### `strip` et `swarm` — Toutes les observations {#g-strip}
+
+`strip` disperse les points au hasard (rapide, même sur de gros effectifs) ; `swarm` les
+range sans chevauchement (plus lisible, pour quelques centaines de points au plus).
+
+```{python}
+(Chart(essai, figsize=(9, 4))
+    .strip('variete', 'rendement', jitter=0.25, alpha=0.7)
+    .title('strip : points dispersés')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+(Chart(essai, figsize=(9, 4))
+    .swarm('variete', 'rendement', hue='dose', palette='crest')
+    .title('swarm : points rangés, colorés par dose')
+    .tight_layout()
+    .show())
+```
+
+
+### `boxen` — Boîte à moustaches étendue {#g-boxen}
+
+```{python}
+(Chart(essai, figsize=(9, 4))
+    .boxen('dose', 'rendement')
+    .title('Rendement par dose (letter-value plot)')
+    .tight_layout()
+    .show())
+```
+
+
+### `qqplot` — Diagramme quantile-quantile {#g-qqplot}
+
+Vérifie la normalité, par exemple des résidus d'un modèle : les points doivent suivre la droite.
+
+```{python}
+#| fig-cap: "Normalité des résidus (écart à la moyenne de chaque traitement)"
+essai['residus'] = essai['rendement'] - essai.groupby(['variete', 'dose'])['rendement'].transform('mean')
+
+(Chart(essai, figsize=(7, 4.5))
+    .qqplot('residus')
+    .title('QQ-plot des résidus')
+    .tight_layout()
+    .show())
+```
+
+
+### `hist2d` — Histogramme 2D {#g-hist2d}
+
+Les effectifs dans une grille de rectangles : la densité d'un grand nuage de points.
+
+```{python}
+#| fig-cap: "Relation température – pluie sur 5 000 jours simulés"
+rng = np.random.default_rng(1)
+jours = pd.DataFrame({'temperature': rng.normal(28, 3, 5000)})
+jours['humidite'] = 95 - 1.6 * jours['temperature'] + rng.normal(0, 6, 5000)
+(Chart(jours, figsize=(8, 5))
+    .hist2d('temperature', 'humidite', bins=30)
+    .title('Température et humidité')
+    .tight_layout()
+    .show())
+```

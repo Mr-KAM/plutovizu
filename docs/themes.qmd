@@ -1,6 +1,6 @@
 ---
 title: "Thèmes"
-subtitle: "35 thèmes : 14 maison, 5 styles seaborn et 16 morethemes, plus 4 contextes pour adapter la taille au support."
+subtitle: "36 thèmes : 15 maison, 5 styles seaborn et 16 morethemes, plus 4 contextes pour adapter la taille au support."
 ---
 
 ```{python}
@@ -33,11 +33,17 @@ la grille et l'épaisseur des traits.
 
 ## Utilisation
 
+::: {.callout-note}
+## Thème par défaut : `editorial`
+`import plutovizu` applique le thème `editorial`. `set_theme(None)` revient au style
+matplotlib d'origine, `set_theme()` (sans argument) remet `editorial`.
+:::
+
 ```python
 from plutovizu import Chart, set_theme, theme_context, list_themes
 
 list_themes()               # tous les thèmes disponibles
-list_themes('plutovizu')    # les 14 thèmes maison
+list_themes('plutovizu')    # les 15 thèmes maison
 list_themes('seaborn')      # les 5 styles seaborn
 list_themes('morethemes')   # les 16 thèmes morethemes (si installé)
 
@@ -54,8 +60,9 @@ with theme_context('paper'):
 # Adapter la taille du texte et des traits au support
 set_theme('editorial', context='talk')   # 'paper', 'notebook', 'talk', 'poster'
 
-# Revenir au style matplotlib d'origine
+# Revenir au style matplotlib d'origine, puis au thème par défaut (editorial)
 set_theme(None)
+set_theme()
 ```
 
 ::: {.callout-note}

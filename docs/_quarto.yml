@@ -1,5 +1,7 @@
 project:
   type: website
+  resources:
+    - images/vignettes/*.png
 
 lang: fr
 language:
@@ -30,9 +32,23 @@ website:
           - text: Introduction
             href: index.qmd
           - installation.qmd
-      - section: "Créer des graphiques"
+      - section: "Graphiques"
         contents:
-          - gallery.qmd
+          - text: Galerie
+            href: gallery.qmd
+          - charts/evolution.qmd
+          - charts/distribution.qmd
+          - charts/comparaison.qmd
+          - charts/relation.qmd
+          - charts/multivarie.qmd
+          - charts/composition.qmd
+          - charts/champs.qmd
+          - charts/3d.qmd
+          - charts/sciences.qmd
+          - charts/qualitatif.qmd
+          - charts/seaborn.qmd
+      - section: "Mise en forme"
+        contents:
           - themes.qmd
           - customization.qmd
       - section: "Référence"

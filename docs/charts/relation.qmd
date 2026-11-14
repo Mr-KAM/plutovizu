@@ -1,0 +1,164 @@
+---
+title: "Relations"
+subtitle: "Le lien entre deux variables ou plus."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `scatter` — Nuage de points {#g-scatter}
+
+```{python}
+#| fig-cap: "Corrélation température / ventes de glaces"
+#| fig-width: 8
+#| fig-height: 4
+
+np.random.seed(10)
+n = 200
+temp = np.random.normal(22, 8, n)
+df = pd.DataFrame({
+    'temperature': temp,
+    'ventes':      temp * 12 + np.random.normal(0, 40, n),
+    'region':      np.random.choice(['Nord','Sud','Est','Ouest'], n),
+})
+
+(Chart(df)
+    .scatter('temperature', 'ventes', size=30, alpha=0.6)
+    .title('Températures vs ventes de glaces')
+    .labels(xlabel='Température (°C)', ylabel='Ventes (unités)')
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+
+### `regression` — Régression et courbe de réponse {#g-regression}
+
+Ajustement polynomial avec bande de confiance à 95 %, équation et R²
+(et p-value pour un ajustement linéaire). Les résultats sont aussi disponibles dans
+`chart.regression_stats`.
+
+```{python}
+#| fig-cap: "Réponse du rendement à la fertilisation azotée"
+(Chart(essai, figsize=(9, 4.5))
+    .regression('dose', 'rendement', order=2)
+    .title("Courbe de réponse à l'azote")
+    .labels(xlabel='Dose N (kg/ha)', ylabel='Rendement (t/ha)')
+    .tight_layout()
+    .show())
+```
+
+
+### `residplot` — Résidus d'une régression {#g-residplot}
+
+Des résidus sans structure valident le modèle ; une courbe signale un mauvais degré.
+
+```{python}
+(Chart(essai, figsize=(9, 4))
+    .residplot('dose', 'rendement', order=1)
+    .title("Résidus d'un ajustement linéaire : la courbure appelle un degré 2")
+    .tight_layout()
+    .show())
+```
+
+
+### `confidence_ellipse` — Ellipses de confiance {#g-confidence_ellipse}
+
+Un nuage de points avec une ellipse par groupe, couvrant 95 % de la population
+(loi normale bivariée ; réglable avec `level`).
+
+```{python}
+#| fig-cap: "Hauteur et date de floraison selon le cycle"
+(Chart(caracteres, figsize=(8, 5))
+    .confidence_ellipse('jours_floraison', 'hauteur', group='cycle')
+    .title('Ellipses de confiance à 95 %')
+    .tight_layout()
+    .show())
+```
+
+
+### `hexbin` — Pavage hexagonal {#g-hexbin}
+
+```{python}
+#| fig-cap: "Densité âge / revenu sur 5 000 observations"
+#| fig-width: 9
+#| fig-height: 5
+
+np.random.seed(0)
+df = pd.DataFrame({
+    'age':    np.random.normal(40, 12, 5000),
+    'revenu': np.random.normal(35000, 12000, 5000),
+})
+
+(Chart(df)
+    .hexbin('age', 'revenu', gridsize=40, cmap='YlOrRd')
+    .title('Densité âge / revenu annuel (n = 5 000)')
+    .labels(xlabel='Âge', ylabel='Revenu (€)')
+    .tight_layout()
+    .show())
+```
+
+
+### `heatmap` — Carte de chaleur (corrélation) {#g-heatmap}
+
+```{python}
+#| fig-cap: "Matrice de corrélation"
+#| fig-width: 7
+#| fig-height: 6
+
+np.random.seed(5)
+df = pd.DataFrame({
+    'température': np.random.normal(20, 5, 100),
+    'humidité':    np.random.normal(60, 15, 100),
+    'pression':    np.random.normal(1013, 10, 100),
+    'vent':        np.random.normal(15, 8, 100),
+})
+# Corrélation artificielle
+df['humidité'] = df['humidité'] - 0.6 * df['température'] + np.random.normal(0, 5, 100)
+
+(Chart(df)
+    .heatmap(cmap='RdBu_r', fmt='.2f')
+    .title('Corrélations entre variables météo')
+    .tight_layout()
+    .show())
+```
+
+
+### `pivot_heatmap` — Tableau croisé coloré {#g-pivot_heatmap}
+
+Une valeur agrégée (moyenne par défaut) selon deux catégories, annotée et colorée.
+
+```{python}
+#| fig-cap: "Rendement moyen par variété et par dose"
+(Chart(essai, figsize=(8, 4))
+    .pivot_heatmap('dose', 'variete', 'rendement', fmt='.2f')
+    .title('Rendement moyen (t/ha)')
+    .tight_layout()
+    .show())
+```
+
+
+### `jointplot` — Relation et distributions marginales {#g-jointplot}
+
+```{python}
+(Chart(essai)
+    .jointplot('dose', 'rendement', kind='reg', height=5.5)
+    .title('Rendement selon la dose')
+    .show())
+```
+
+
+### `pairplot` — Matrice de nuages de points {#g-pairplot}
+
+```{python}
+(Chart(caracteres)
+    .pairplot(vars=['hauteur', 'jours_floraison', 'talles', 'rendement'],
+              hue='cycle', corner=True, height=2)
+    .title('Relations entre caractères')
+    .show())
+```

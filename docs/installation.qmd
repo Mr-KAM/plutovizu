@@ -62,16 +62,22 @@ Les dépendances suivantes sont installées automatiquement :
 | `matplotlib` | ≥ 3.11.0 | Moteur de rendu principal |
 | `pandas` | ≥ 3.0.3 | Manipulation des DataFrames |
 | `numpy` | ≥ 2.5.0 | Calcul numérique |
-| `seaborn` | ≥ 0.13.2 | Palettes de couleurs |
-| `scipy` | ≥ 1.18.0 | KDE pour `ridgeline` |
-| `squarify` | ≥ 0.4.4 | Algorithme de pavage pour `treemap` |
+| `seaborn` | ≥ 0.13.2 | Graphiques et styles seaborn, palettes |
+| `scipy` | ≥ 1.18.0 | Statistiques (régression, Tukey, ACP, KDE, dendrogramme) |
+| `squarify` | ≥ 0.4.4 | Pavage du `treemap` |
+| `circlify` | ≥ 0.16.0 | Cercles imbriqués (`circle_packing`) |
+| `wordcloud` | ≥ 1.9.6 | Nuage de mots (`word_cloud`) |
 
-### Dépendances optionnelles
+### Dépendance optionnelle : morethemes
 
-Ces paquets sont inclus dans matplotlib et ne nécessitent pas d'installation séparée :
+Les 16 thèmes de [morethemes](https://github.com/y-sunflower/morethemes) (`wsj`, `economist`,
+`retro`…) et le téléchargement des polices Google Fonts (dont Raleway pour le thème `prezi`) :
 
-- `matplotlib.sankey` — utilisé par la méthode `sankey()`
-- `matplotlib.patches` — utilisé par la méthode `gantt()`
+```bash
+pip install plutovizu[morethemes]
+# ou
+uv add plutovizu --extra morethemes
+```
 
 ---
 

@@ -1,0 +1,68 @@
+---
+title: "Champs & cartes"
+subtitle: "Une grandeur répartie dans l'espace : grilles régulières ou prélèvements dispersés."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `contour` — Courbes de niveau {#g-contour}
+
+Sur une grille régulière (`contourf`) ou, comme ici, sur des prélèvements dispersés : la
+surface est alors interpolée par triangulation (`tricontourf`). `show_points` et
+`show_mesh` montrent les points et le maillage.
+
+```{python}
+#| fig-cap: "pH du sol interpolé à partir de 60 prélèvements"
+(Chart(champ, figsize=(9, 5.5))
+    .contour('x', 'y', 'ph', show_points=True, show_mesh=True)
+    .title('Carte du pH de la parcelle')
+    .labels('x (m)', 'y (m)')
+    .tight_layout()
+    .show())
+```
+
+
+### `mesh` — Grille colorée {#g-mesh}
+
+Une cellule colorée par point d'une grille régulière (`pcolormesh`), ou des triangles
+colorés sur des points dispersés (`tripcolor`).
+
+```{python}
+#| fig-cap: "Rendement simulé selon l'azote et l'irrigation"
+(Chart(reponse, figsize=(9, 5))
+    .mesh('azote', 'eau', 'rendement')
+    .title('Rendement (t/ha)')
+    .labels('Azote (kg/ha)', 'Irrigation (mm)')
+    .tight_layout()
+    .show())
+```
+
+
+### `vector_field` — Champ de vecteurs {#g-vector_field}
+
+Vent, écoulement, gradient : flèches (`quiver`), barbules de vent (`barbs`) ou lignes de
+courant (`stream`, grille régulière), colorées par l'intensité.
+
+```{python}
+#| fig-cap: "Lignes de courant du vent"
+(Chart(vent, figsize=(9, 6))
+    .vector_field('lon', 'lat', 'u', 'v', kind='stream')
+    .title('Vent autour d\'une dépression')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+#| fig-cap: "Même champ en flèches"
+(Chart(vent, figsize=(9, 6))
+    .vector_field('lon', 'lat', 'u', 'v', kind='quiver')
+    .title('Vent (flèches)')
+    .tight_layout()
+    .show())
+```

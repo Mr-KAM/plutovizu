@@ -1,0 +1,273 @@
+---
+title: "Comparaisons"
+subtitle: "Comparer des groupes, des traitements ou des profils."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
+le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
+
+### `bar` — Barres {#g-bar}
+
+```{python}
+#| fig-cap: "Chiffre d'affaires par région"
+#| fig-width: 8
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'region': ['Île-de-France', 'Auvergne-Rhône-Alpes', 'PACA', 'Occitanie', 'Bretagne'],
+    'ca':     [980, 620, 430, 380, 270],
+})
+
+(Chart(df)
+    .bar('region', 'ca', color='steelblue', alpha=0.85)
+    .title('CA par région (M€)')
+    .labels(xlabel='Région', ylabel='CA (M€)')
+    .rotate_labels(x_rotation=20)
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+Plusieurs colonnes `y` donnent des barres groupées, ou empilées avec `stacked=True` ;
+`show_values=True` écrit chaque valeur sur sa barre.
+
+```{python}
+#| fig-cap: "Production par culture et par année (barres empilées)"
+production = pd.DataFrame({'annee': ['2021', '2022', '2023', '2024'],
+                           'Riz': [420, 455, 390, 480], 'Maïs': [310, 300, 335, 350],
+                           'Mil': [180, 165, 190, 175]})
+(Chart(production, figsize=(9, 4.5))
+    .bar('annee', ['Riz', 'Maïs', 'Mil'], stacked=True, show_values=True)
+    .title('Production (t) — barres empilées')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+#| fig-cap: "Même données, barres groupées horizontales"
+(Chart(production, figsize=(9, 4.5))
+    .bar('annee', ['Riz', 'Maïs', 'Mil'], horizontal=True, show_values=True)
+    .title('Production (t) — barres groupées')
+    .tight_layout()
+    .show())
+```
+
+
+### `mean_bar` — Moyennes ± erreur {#g-mean_bar}
+
+Moyennes par traitement avec barres d'erreur : `error='se'` (erreur type, défaut),
+`'sd'` (écart-type) ou `'ci95'` (intervalle de confiance à 95 %). `hue` ajoute un second
+facteur, `points=True` superpose les observations.
+
+```{python}
+#| fig-cap: "Rendement moyen par dose et par variété"
+(Chart(essai, figsize=(10, 4.5))
+    .mean_bar('dose', 'rendement', hue='variete')
+    .title('Rendement moyen ± erreur type')
+    .labels(xlabel='Dose N (kg/ha)')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+#| fig-cap: "Intervalle de confiance à 95 % et observations individuelles"
+(Chart(essai, figsize=(8, 4.5))
+    .mean_bar('variete', 'rendement', error='ci95', points=True)
+    .title('Rendement par variété')
+    .tight_layout()
+    .show())
+```
+
+Avec `letters=True`, un test de Tukey HSD compare les moyennes : deux barres qui
+partagent une lettre ne diffèrent pas significativement (α = 5 % par défaut, réglable
+avec `alpha_test`). Avec `hue`, les comparaisons se font à l'intérieur de chaque niveau
+de `x`. Les lettres sont aussi dans `chart.tukey_letters`.
+
+```{python}
+#| fig-cap: "Comparaison des variétés à chaque dose (test de Tukey)"
+(Chart(essai, figsize=(10, 4.5))
+    .mean_bar('dose', 'rendement', hue='variete', letters=True)
+    .title('Rendement par dose — lettres de Tukey')
+    .labels(xlabel='Dose N (kg/ha)')
+    .tight_layout()
+    .show())
+```
+
+
+### `errorbar` — Barres d'erreur {#g-errorbar}
+
+Des points avec leurs barres d'erreur (colonnes ou constantes), une série par groupe.
+
+```{python}
+#| fig-cap: "Rendement moyen ± écart-type par dose"
+resume = (essai.groupby(['variete', 'dose'], as_index=False)['rendement']
+          .agg(moyenne='mean', ecart_type='std'))
+(Chart(resume, figsize=(9, 4.5))
+    .errorbar('dose', 'moyenne', yerr='ecart_type', group='variete', line=True)
+    .title('Rendement moyen ± écart-type')
+    .labels(xlabel='Dose N (kg/ha)', ylabel='Rendement (t/ha)')
+    .tight_layout()
+    .show())
+```
+
+
+### `interaction` — Graphique d'interaction {#g-interaction}
+
+Une ligne par niveau du second facteur : des lignes non parallèles suggèrent une
+interaction (à confirmer par une ANOVA à deux facteurs).
+
+```{python}
+#| fig-cap: "Interaction dose × variété"
+(Chart(essai, figsize=(9, 4.5))
+    .interaction('dose', 'variete', 'rendement')
+    .title('Interaction dose × variété')
+    .labels(xlabel='Dose N (kg/ha)')
+    .tight_layout()
+    .show())
+```
+
+
+### `pointplot` — Moyennes reliées {#g-pointplot}
+
+```{python}
+(Chart(essai, figsize=(9, 4))
+    .pointplot('dose', 'rendement', hue='variete', dodge=True)
+    .title('Moyennes et IC 95 %')
+    .tight_layout()
+    .show())
+```
+
+
+### `countplot` — Effectifs {#g-countplot}
+
+```{python}
+(Chart(sols, figsize=(8, 4))
+    .countplot('zone')
+    .title('Nombre de parcelles par zone')
+    .tight_layout()
+    .show())
+```
+
+
+### `lollipop` — Lollipop groupé {#g-lollipop}
+
+```{python}
+#| fig-cap: "Tempêtes tropicales par année et intensité"
+#| fig-width: 10
+#| fig-height: 5
+
+np.random.seed(7)
+years = np.repeat(range(2015, 2024), 2)
+status = ['ouragan', 'dépression tropicale'] * 9
+n = np.random.randint(20, 120, 18)
+df = pd.DataFrame({'year': years, 'status': status, 'n': n})
+
+colors = {'ouragan': '#e63946', 'dépression tropicale': '#457b9d'}
+
+(Chart(df)
+    .lollipop('year', 'n', 'status', colors=colors,
+               order=['ouragan', 'dépression tropicale'])
+    .title('Tempêtes tropicales (2015–2023)')
+    .labels(xlabel='Année', ylabel='Nombre')
+    .set_legend()
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+
+### `dumbbell` — Haltère (avant/après) {#g-dumbbell}
+
+```{python}
+#| fig-cap: "Évolution du PIB par habitant 2020–2024"
+#| fig-width: 9
+#| fig-height: 4
+
+df = pd.DataFrame({
+    'pays':     ['France','Allemagne','Espagne','Italie','Portugal','Pays-Bas'],
+    'pib_2020': [38000, 46000, 27000, 31000, 22000, 52000],
+    'pib_2024': [42000, 51000, 33000, 34000, 26000, 58000],
+})
+
+(Chart(df)
+    .dumbbell('pays', 'pib_2020', 'pib_2024',
+              color_start='#457b9d', color_end='#e63946')
+    .title('PIB par habitant — 2020 (bleu) vs 2024 (rouge)')
+    .labels(xlabel='PIB/hab (€)')
+    .set_legend()
+    .grid(alpha=0.3)
+    .tight_layout()
+    .show())
+```
+
+
+### `radar` — Araignée {#g-radar}
+
+```{python}
+#| fig-cap: "Profil multidimensionnel de trois équipes"
+#| fig-width: 7
+#| fig-height: 6
+
+df = pd.DataFrame({
+    'equipe':    ['A','A','B','B','C','C'],
+    'vitesse':   [8, 7, 6, 9, 5, 8],
+    'endurance': [6, 8, 7, 5, 9, 6],
+    'force':     [9, 6, 8, 7, 6, 7],
+    'agilité':   [7, 9, 5, 8, 7, 9],
+    'technique': [5, 7, 9, 6, 8, 5],
+})
+
+(Chart(df)
+    .radar(['vitesse', 'endurance', 'force', 'agilité', 'technique'],
+           group='equipe', alpha=0.2)
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+
+### `parallel_coordinates` — Coordonnées parallèles {#g-parallel_coordinates}
+
+```{python}
+#| fig-cap: "Profils automobiles multi-variables"
+#| fig-width: 10
+#| fig-height: 5
+
+np.random.seed(42)
+df = pd.DataFrame({
+    'puissance':    np.random.randint(80,  300, 60),
+    'consommation': np.random.randint(4,    12, 60),
+    'poids':        np.random.randint(1000,2000, 60),
+    'prix':         np.random.randint(15000,80000, 60),
+    'marque':       np.random.choice(['Toyota','BMW','Renault','Peugeot'], 60),
+})
+
+(Chart(df)
+    .parallel_coordinates(
+        ['puissance', 'consommation', 'poids', 'prix'],
+        group='marque', alpha=0.45)
+    .title('Comparaison multivariée de véhicules')
+    .set_legend()
+    .tight_layout()
+    .show())
+```
+
+
+### `polar` — Graphique polaire {#g-polar}
+
+Barres (rose), courbe ou points sur un axe polaire. Avec `group`, les barres s'empilent :
+c'est la rose des vents (`compass=True` met le nord en haut, sens horaire).
+
+```{python}
+#| fig-cap: "Rose des vents de la saison"
+(Chart(rose, figsize=(7, 7))
+    .polar('direction', 'frequence', group='vitesse', compass=True)
+    .title('Rose des vents (% du temps)')
+    .tight_layout()
+    .show())
+```
