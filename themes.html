@@ -417,6 +417,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#paper" id="toc-paper" class="nav-link" data-scroll-target="#paper"><code>paper</code></a></li>
   <li><a href="#pastel" id="toc-pastel" class="nav-link" data-scroll-target="#pastel"><code>pastel</code></a></li>
   <li><a href="#pluto" id="toc-pluto" class="nav-link" data-scroll-target="#pluto"><code>pluto</code></a></li>
+  <li><a href="#prezi" id="toc-prezi" class="nav-link" data-scroll-target="#prezi"><code>prezi</code></a></li>
   <li><a href="#sahel" id="toc-sahel" class="nav-link" data-scroll-target="#sahel"><code>sahel</code></a></li>
   <li><a href="#sunset" id="toc-sunset" class="nav-link" data-scroll-target="#sunset"><code>sunset</code></a></li>
   <li><a href="#terminal" id="toc-terminal" class="nav-link" data-scroll-target="#terminal"><code>terminal</code></a></li>
@@ -460,7 +461,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gallery.html">Créer des graphiques</a></li><li class="breadcrumb-item"><a href="./themes.html">Thèmes</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Thèmes</h1>
-<p class="subtitle lead">35 thèmes : 14 maison, 5 styles seaborn et 16 morethemes, plus 4 contextes pour adapter la taille au support.</p>
+<p class="subtitle lead">36 thèmes : 15 maison, 5 styles seaborn et 16 morethemes, plus 4 contextes pour adapter la taille au support.</p>
 </div>
 
 
@@ -483,7 +484,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> Chart, set_theme, theme_context, list_themes</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>list_themes()               <span class="co"># tous les thèmes disponibles</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'plutovizu'</span>)    <span class="co"># les 14 thèmes maison</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'plutovizu'</span>)    <span class="co"># les 15 thèmes maison</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'seaborn'</span>)      <span class="co"># les 5 styles seaborn</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'morethemes'</span>)   <span class="co"># les 16 thèmes morethemes (si installé)</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -574,20 +575,25 @@ Note
 <p>Quasi-noir et vert émeraude, assorti à la documentation.</p>
 <p><img src="themes_files/figure-html/cell-3-output-22.png" width="855" height="355"></p>
 </section>
+<section id="prezi" class="level3">
+<h3 class="anchored" data-anchor-id="prezi"><code>prezi</code></h3>
+<p>Style présentation : aplats doux, titre centré, police ronde (Raleway).</p>
+<p><img src="themes_files/figure-html/cell-3-output-24.png" width="855" height="355"></p>
+</section>
 <section id="sahel" class="level3">
 <h3 class="anchored" data-anchor-id="sahel"><code>sahel</code></h3>
 <p>Sable, terre cuite, ocre et indigo.</p>
-<p><img src="themes_files/figure-html/cell-3-output-24.png" width="855" height="355"></p>
+<p><img src="themes_files/figure-html/cell-3-output-26.png" width="855" height="355"></p>
 </section>
 <section id="sunset" class="level3">
 <h3 class="anchored" data-anchor-id="sunset"><code>sunset</code></h3>
 <p>Crépuscule : prune profond, oranges et roses chauds.</p>
-<p><img src="themes_files/figure-html/cell-3-output-26.png" width="855" height="355"></p>
+<p><img src="themes_files/figure-html/cell-3-output-28.png" width="855" height="355"></p>
 </section>
 <section id="terminal" class="level3">
 <h3 class="anchored" data-anchor-id="terminal"><code>terminal</code></h3>
 <p>Terminal rétro : phosphore vert sur noir, police mono.</p>
-<p><img src="themes_files/figure-html/cell-3-output-28.png" width="853" height="355"></p>
+<p><img src="themes_files/figure-html/cell-3-output-30.png" width="853" height="355"></p>
 </section>
 </section>
 <section id="styles-seaborn" class="level2">
@@ -625,7 +631,7 @@ Note
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'pluto'</span>, context<span class="op">=</span><span class="st">'talk'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'paper'</span>, context<span class="op">=</span><span class="st">'poster'</span>):</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    Chart(df).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div id="de82a2b1" class="cell" data-execution_count="4">
+<div id="ca05f144" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
