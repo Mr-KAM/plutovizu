@@ -404,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#utilisation" id="toc-utilisation" class="nav-link active" data-scroll-target="#utilisation">Utilisation</a></li>
-  <li><a href="#les-thèmes" id="toc-les-thèmes" class="nav-link" data-scroll-target="#les-thèmes">Les thèmes</a>
+  <li><a href="#thèmes-plutovizu" id="toc-thèmes-plutovizu" class="nav-link" data-scroll-target="#thèmes-plutovizu">Thèmes plutovizu</a>
   <ul class="collapse">
   <li><a href="#accessible" id="toc-accessible" class="nav-link" data-scroll-target="#accessible"><code>accessible</code></a></li>
   <li><a href="#arctic" id="toc-arctic" class="nav-link" data-scroll-target="#arctic"><code>arctic</code></a></li>
@@ -421,6 +421,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#sunset" id="toc-sunset" class="nav-link" data-scroll-target="#sunset"><code>sunset</code></a></li>
   <li><a href="#terminal" id="toc-terminal" class="nav-link" data-scroll-target="#terminal"><code>terminal</code></a></li>
   </ul></li>
+  <li><a href="#thèmes-morethemes" id="toc-thèmes-morethemes" class="nav-link" data-scroll-target="#thèmes-morethemes">Thèmes morethemes</a>
+  <ul class="collapse">
+  <li><a href="#darker" id="toc-darker" class="nav-link" data-scroll-target="#darker"><code>darker</code></a></li>
+  <li><a href="#ebonis" id="toc-ebonis" class="nav-link" data-scroll-target="#ebonis"><code>ebonis</code></a></li>
+  <li><a href="#economist" id="toc-economist" class="nav-link" data-scroll-target="#economist"><code>economist</code></a></li>
+  <li><a href="#ft" id="toc-ft" class="nav-link" data-scroll-target="#ft"><code>ft</code></a></li>
+  <li><a href="#greenwave" id="toc-greenwave" class="nav-link" data-scroll-target="#greenwave"><code>greenwave</code></a></li>
+  <li><a href="#lighter" id="toc-lighter" class="nav-link" data-scroll-target="#lighter"><code>lighter</code></a></li>
+  <li><a href="#lumen" id="toc-lumen" class="nav-link" data-scroll-target="#lumen"><code>lumen</code></a></li>
+  <li><a href="#minimal" id="toc-minimal" class="nav-link" data-scroll-target="#minimal"><code>minimal</code></a></li>
+  <li><a href="#monoblue" id="toc-monoblue" class="nav-link" data-scroll-target="#monoblue"><code>monoblue</code></a></li>
+  <li><a href="#nature" id="toc-nature" class="nav-link" data-scroll-target="#nature"><code>nature</code></a></li>
+  <li><a href="#nord" id="toc-nord" class="nav-link" data-scroll-target="#nord"><code>nord</code></a></li>
+  <li><a href="#retro" id="toc-retro" class="nav-link" data-scroll-target="#retro"><code>retro</code></a></li>
+  <li><a href="#urban" id="toc-urban" class="nav-link" data-scroll-target="#urban"><code>urban</code></a></li>
+  <li><a href="#vscode-dark" id="toc-vscode-dark" class="nav-link" data-scroll-target="#vscode-dark"><code>vscode-dark</code></a></li>
+  <li><a href="#wsj" id="toc-wsj" class="nav-link" data-scroll-target="#wsj"><code>wsj</code></a></li>
+  <li><a href="#yellowish" id="toc-yellowish" class="nav-link" data-scroll-target="#yellowish"><code>yellowish</code></a></li>
+  </ul></li>
   <li><a href="#créer-son-propre-thème" id="toc-créer-son-propre-thème" class="nav-link" data-scroll-target="#créer-son-propre-thème">Créer son propre thème</a></li>
   </ul>
 </nav>
@@ -432,7 +451,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gallery.html">Créer des graphiques</a></li><li class="breadcrumb-item"><a href="./themes.html">Thèmes</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Thèmes</h1>
-<p class="subtitle lead">Quatorze identités visuelles prêtes à l’emploi, loin du style matplotlib par défaut.</p>
+<p class="subtitle lead">Quatorze thèmes maison, et seize de plus avec morethemes : de quoi sortir du style matplotlib par défaut.</p>
 </div>
 
 
@@ -449,14 +468,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Un thème règle d’un coup le fond, les couleurs du texte, la palette, la police, la grille et l’épaisseur des traits. Tous partagent la même base : titre aligné à gauche, pas de cadre en haut ni à droite, pas de graduations, légende sans boîte.</p>
+<p>Un thème règle d’un coup le fond, les couleurs du texte, la palette, la police, la grille et l’épaisseur des traits.</p>
 <section id="utilisation" class="level2">
 <h2 class="anchored" data-anchor-id="utilisation">Utilisation</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> Chart, set_theme, theme_context, list_themes</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>list_themes()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ['accessible', 'arctic', 'blueprint', 'editorial', 'forest', 'ink', 'neon',</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  'ocean', 'paper', 'pastel', 'pluto', 'sahel', 'sunset', 'terminal']</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>list_themes()               <span class="co"># tous les thèmes disponibles</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'plutovizu'</span>)    <span class="co"># les 14 thèmes maison</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>list_themes(<span class="st">'morethemes'</span>)   <span class="co"># les 16 thèmes morethemes (si installé)</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Pour toute la session (comme seaborn.set_theme)</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'pluto'</span>)</span>
@@ -484,8 +503,9 @@ Note
 </div>
 </div>
 </section>
-<section id="les-thèmes" class="level2">
-<h2 class="anchored" data-anchor-id="les-thèmes">Les thèmes</h2>
+<section id="thèmes-plutovizu" class="level2">
+<h2 class="anchored" data-anchor-id="thèmes-plutovizu">Thèmes plutovizu</h2>
+<p>Ils partagent la même base : titre aligné à gauche, pas de cadre en haut ni à droite, pas de graduations, légende sans boîte.</p>
 <section id="accessible" class="level3">
 <h3 class="anchored" data-anchor-id="accessible"><code>accessible</code></h3>
 <p>Palette Okabe-Ito, lisible par les personnes daltoniennes.</p>
@@ -557,18 +577,119 @@ Note
 <p><img src="themes_files/figure-html/cell-3-output-28.png" width="853" height="355"></p>
 </section>
 </section>
+<section id="thèmes-morethemes" class="level2">
+<h2 class="anchored" data-anchor-id="thèmes-morethemes">Thèmes morethemes</h2>
+<p>Ces thèmes viennent du projet <a href="https://github.com/y-sunflower/morethemes">morethemes</a> de Joseph Barbier (licence MIT). Ils sont disponibles par leur nom dès que le paquet est installé :</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install plutovizu<span class="pp">[</span><span class="ss">morethemes</span><span class="pp">]</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>set_theme(<span class="st">'wsj'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'retro'</span>):</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    Chart(df).line(<span class="st">'x'</span>, <span class="st">'y'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Astuce
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Chaque thème morethemes utilise une police Google Fonts, téléchargée au premier usage puis mise en cache. Sans connexion, plutovizu affiche un avertissement et garde la police par défaut.</p>
+</div>
+</div>
+<section id="darker" class="level3">
+<h3 class="anchored" data-anchor-id="darker"><code>darker</code></h3>
+<p>A sleek, no-frills dark theme with high contrast and a modern feel (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-2.png" width="854" height="355"></p>
+</section>
+<section id="ebonis" class="level3">
+<h3 class="anchored" data-anchor-id="ebonis"><code>ebonis</code></h3>
+<p>Color-blind-friendly dark theme with high contrast and soft tones for dark backgrounds. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-4.png" width="854" height="355"></p>
+</section>
+<section id="economist" class="level3">
+<h3 class="anchored" data-anchor-id="economist"><code>economist</code></h3>
+<p>A crisp, data-focused theme with subtle gridlines and sharp contrasts. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-6.png" width="855" height="355"></p>
+</section>
+<section id="ft" class="level3">
+<h3 class="anchored" data-anchor-id="ft"><code>ft</code></h3>
+<p>A sophisticated, no-nonsense theme with a muted palette and strong typographic clarity, echoing the Financial Times’ aesthetic. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-8.png" width="853" height="355"></p>
+</section>
+<section id="greenwave" class="level3">
+<h3 class="anchored" data-anchor-id="greenwave"><code>greenwave</code></h3>
+<p>A sleek, dark-themed aesthetic with vibrant green accents, inspired by modern streaming interfaces. Designed for clarity and style, with bold typography and a focus on visual harmony. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-10.png" width="852" height="355"></p>
+</section>
+<section id="lighter" class="level3">
+<h3 class="anchored" data-anchor-id="lighter"><code>lighter</code></h3>
+<p>A clean, modern theme inspired by the lighter aesthetic, perfect for technical charts. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-12.png" width="854" height="355"></p>
+</section>
+<section id="lumen" class="level3">
+<h3 class="anchored" data-anchor-id="lumen"><code>lumen</code></h3>
+<p>Color-blind-friendly light theme with clear colors and soft background. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-14.png" width="853" height="355"></p>
+</section>
+<section id="minimal" class="level3">
+<h3 class="anchored" data-anchor-id="minimal"><code>minimal</code></h3>
+<p>A pure, distraction-free theme with a simple monochrome palette. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-16.png" width="855" height="355"></p>
+</section>
+<section id="monoblue" class="level3">
+<h3 class="anchored" data-anchor-id="monoblue"><code>monoblue</code></h3>
+<p>A high-contrast theme using shades of blue to emphasize data trends and maintain a clean, professional aesthetic. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-18.png" width="855" height="355"></p>
+</section>
+<section id="nature" class="level3">
+<h3 class="anchored" data-anchor-id="nature"><code>nature</code></h3>
+<p>A calming theme inspired by natural landscapes, with earthy tones and organic shapes. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-20.png" width="855" height="355"></p>
+</section>
+<section id="nord" class="level3">
+<h3 class="anchored" data-anchor-id="nord"><code>nord</code></h3>
+<p>A crisp, Arctic-inspired theme based on the Nord color palette with frosty blues and clean contrasts (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-22.png" width="854" height="355"></p>
+</section>
+<section id="retro" class="level3">
+<h3 class="anchored" data-anchor-id="retro"><code>retro</code></h3>
+<p>A nostalgic theme inspired by vintage graphics and retro gaming. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-24.png" width="855" height="355"></p>
+</section>
+<section id="urban" class="level3">
+<h3 class="anchored" data-anchor-id="urban"><code>urban</code></h3>
+<p>A clean, professional theme featuring the Urbanist font and muted tones. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-26.png" width="854" height="355"></p>
+</section>
+<section id="vscode-dark" class="level3">
+<h3 class="anchored" data-anchor-id="vscode-dark"><code>vscode-dark</code></h3>
+<p>A dark theme inspired by Visual Studio Code’s dark mode. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-28.png" width="854" height="355"></p>
+</section>
+<section id="wsj" class="level3">
+<h3 class="anchored" data-anchor-id="wsj"><code>wsj</code></h3>
+<p>A refined, newspaper-style theme inspired by the Wall Street Journal. (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-30.png" width="853" height="355"></p>
+</section>
+<section id="yellowish" class="level3">
+<h3 class="anchored" data-anchor-id="yellowish"><code>yellowish</code></h3>
+<p>A bold, National Geographic-inspired theme with a warm yellow backdrop (morethemes)</p>
+<p><img src="themes_files/figure-html/cell-4-output-32.png" width="854" height="355"></p>
+</section>
+</section>
 <section id="créer-son-propre-thème" class="level2">
 <h2 class="anchored" data-anchor-id="créer-son-propre-thème">Créer son propre thème</h2>
 <p>Un thème est un simple dictionnaire de <a href="https://matplotlib.org/stable/users/explain/customizing.html">rcParams matplotlib</a>. Partez d’un thème existant avec <code>get_theme()</code> et modifiez ce que vous voulez :</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> get_theme, set_theme</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cycler <span class="im">import</span> cycler</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mon_theme <span class="op">=</span> {</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>get_theme(<span class="st">'pluto'</span>),</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.titlesize'</span>: <span class="dv">20</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.prop_cycle'</span>: cycler(color<span class="op">=</span>[<span class="st">'#f97316'</span>, <span class="st">'#38bdf8'</span>, <span class="st">'#a3e635'</span>]),</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>set_theme(mon_theme)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> get_theme, set_theme</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> cycler <span class="im">import</span> cycler</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>mon_theme <span class="op">=</span> {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>get_theme(<span class="st">'pluto'</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.titlesize'</span>: <span class="dv">20</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'axes.prop_cycle'</span>: cycler(color<span class="op">=</span>[<span class="st">'#f97316'</span>, <span class="st">'#38bdf8'</span>, <span class="st">'#a3e635'</span>]),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>set_theme(mon_theme)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
