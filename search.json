@@ -16,7 +16,7 @@
     "href": "themes.html#utilisation",
     "title": "Thèmes",
     "section": "Utilisation",
-    "text": "Utilisation\nfrom plutovizu import Chart, set_theme, theme_context, list_themes\n\nlist_themes()\n# ['arctic', 'blueprint', 'editorial', 'neon', 'paper', 'pluto']\n\n# 1. Pour toute la session (comme seaborn.set_theme)\nset_theme('pluto')\n\n# 2. Raccourci à la création d'un graphique — s'applique aussi aux suivants\nChart(df, theme='neon').line('x', 'y').show()\n\n# 3. Seulement dans un bloc\nwith theme_context('paper'):\n    Chart(df).line('x', 'y').show()\n\n# Revenir au style matplotlib d'origine\nset_theme(None)\n\n\n\n\n\n\nNote\n\n\n\nComme pour seaborn, le thème doit être choisi avant de créer le graphique : il est lu par matplotlib au moment où la figure est construite.",
+    "text": "Utilisation\nfrom plutovizu import Chart, set_theme, theme_context, list_themes\n\nlist_themes()\n# ['accessible', 'arctic', 'blueprint', 'editorial', 'forest', 'ink', 'neon',\n#  'ocean', 'paper', 'pastel', 'pluto', 'sahel', 'sunset', 'terminal']\n\n# 1. Pour toute la session (comme seaborn.set_theme)\nset_theme('pluto')\n\n# 2. Raccourci à la création d'un graphique — s'applique aussi aux suivants\nChart(df, theme='neon').line('x', 'y').show()\n\n# 3. Seulement dans un bloc\nwith theme_context('paper'):\n    Chart(df).line('x', 'y').show()\n\n# Revenir au style matplotlib d'origine\nset_theme(None)\n\n\n\n\n\n\nNote\n\n\n\nComme pour seaborn, le thème doit être choisi avant de créer le graphique : il est lu par matplotlib au moment où la figure est construite.",
     "crumbs": [
       "Documentation",
       "Créer des graphiques",
@@ -28,7 +28,7 @@
     "href": "themes.html#les-thèmes",
     "title": "Thèmes",
     "section": "Les thèmes",
-    "text": "Les thèmes\n\narctic\nGris bleuté et palette polaire : doux et froid, idéal pour des rapports.\n\n\n\nblueprint\nPlan d’architecte : fond bleu, traits blancs fins, grille pointillée, police mono.\n\n\n\neditorial\nStyle presse : fond blanc, grille horizontale seule, aucun axe vertical.\n\n\n\nneon\nRétro-futuriste : violet nuit et couleurs fluo pour des présentations qui claquent.\n\n\n\npaper\nPapier crème, typographie serif et couleurs terre : un rendu imprimé.\n\n\n\npluto\nLe thème de cette documentation : quasi-noir et vert émeraude.",
+    "text": "Les thèmes\n\naccessible\nPalette Okabe-Ito, lisible par les personnes daltoniennes.\n\n\n\narctic\nGris bleuté et palette polaire : doux et froid, idéal pour des rapports.\n\n\n\nblueprint\nPlan d’architecte : fond bleu, traits blancs fins, grille pointillée, police mono.\n\n\n\neditorial\nStyle presse : fond blanc, grille horizontale seule, aucun axe vertical.\n\n\n\nforest\nSous-bois : vert profond et tons naturels.\n\n\n\nink\nNoir et blanc avec un seul rouge d’accent : parfait pour l’impression.\n\n\n\nneon\nRétro-futuriste : violet nuit et couleurs fluo.\n\n\n\nocean\nBleu abyssal, cyan et corail.\n\n\n\npaper\nPapier crème, typographie serif et couleurs terre : un rendu imprimé.\n\n\n\npastel\nFond lavande très clair, couleurs douces et traits épais.\n\n\n\npluto\nQuasi-noir et vert émeraude, assorti à la documentation.\n\n\n\nsahel\nSable, terre cuite, ocre et indigo.\n\n\n\nsunset\nCrépuscule : prune profond, oranges et roses chauds.\n\n\n\nterminal\nTerminal rétro : phosphore vert sur noir, police mono.",
     "crumbs": [
       "Documentation",
       "Créer des graphiques",
@@ -76,7 +76,7 @@
     "href": "index.html#fonctionnalités",
     "title": "plutovizu",
     "section": "Fonctionnalités",
-    "text": "Fonctionnalités\n\n\n\n\n\n\n\nCatégorie\nMéthodes\n\n\n\n\nGraphiques de base\nline, bar, scatter, histogram, boxplot, pie, heatmap, area\n\n\nDistributions\nviolin, ridgeline\n\n\nComparaisons\nradar, parallel_coordinates, dumbbell, bump, lollipop\n\n\nComposition\ntreemap, waterfall, streamgraph\n\n\nVolumétrique\nhexbin\n\n\nPlanification & flux\ngantt, calendar_heatmap, sankey\n\n\nClimatologie\nombrothermic\n\n\nThèmes\nset_theme, theme_context, list_themes, get_theme — pluto, editorial, paper, arctic, neon, blueprint\n\n\nApparence\ntitle, labels, grid, font, set_legend, set_limits, rotate_labels, set_style\n\n\nCouleurs\nset_colors, create_custom_palette, generate_gradient_palette, preview_palette\n\n\nExport\nsave, show, get_figure, tight_layout",
+    "text": "Fonctionnalités\n\n\n\nCatégorie\nMéthodes\n\n\n\n\nGraphiques de base\nline, bar, scatter, histogram, boxplot, pie, heatmap, area\n\n\nDistributions\nviolin, ridgeline\n\n\nComparaisons\nradar, parallel_coordinates, dumbbell, bump, lollipop\n\n\nComposition\ntreemap, waterfall, streamgraph\n\n\nVolumétrique\nhexbin\n\n\nPlanification & flux\ngantt, calendar_heatmap, sankey\n\n\nClimatologie\nombrothermic\n\n\nThèmes\nset_theme, theme_context, list_themes, get_theme — 14 thèmes prédéfinis (voir la page)\n\n\nApparence\ntitle, labels, grid, font, set_legend, set_limits, rotate_labels, set_style\n\n\nCouleurs\nset_colors, create_custom_palette, generate_gradient_palette, preview_palette\n\n\nExport\nsave, show, get_figure, tight_layout",
     "crumbs": [
       "Documentation",
       "Prise en main",

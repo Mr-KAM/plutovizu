@@ -479,7 +479,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="graphiques-temporels">Graphiques temporels</h2>
 <section id="line-courbe" class="level3">
 <h3 class="anchored" data-anchor-id="line-courbe"><code>line</code> — Courbe</h3>
-<div id="86633fdf" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
+<div id="7af5b45c" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mois <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:    mois,</span>
@@ -508,7 +508,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="area-aire-empilée" class="level3">
 <h3 class="anchored" data-anchor-id="area-aire-empilée"><code>area</code> — Aire (empilée)</h3>
-<div id="5953a526" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
+<div id="29066acf" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2025</span>)),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">30</span>, <span class="dv">28</span>, <span class="dv">25</span>, <span class="dv">22</span>, <span class="dv">20</span>, <span class="dv">18</span>, <span class="dv">16</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">12</span>],</span>
@@ -540,7 +540,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="graphiques-de-distribution">Graphiques de distribution</h2>
 <section id="histogram-histogramme" class="level3">
 <h3 class="anchored" data-anchor-id="histogram-histogramme"><code>histogram</code> — Histogramme</h3>
-<div id="b755c019" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="4">
+<div id="1047af91" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'salaire'</span>: np.random.normal(<span class="dv">42000</span>, <span class="dv">9000</span>, <span class="dv">800</span>)})</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -563,7 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="boxplot-boîte-à-moustaches" class="level3">
 <h3 class="anchored" data-anchor-id="boxplot-boîte-à-moustaches"><code>boxplot</code> — Boîte à moustaches</h3>
-<div id="f54ec2a5" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="5">
+<div id="57dab6c3" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'maths'</span>:    np.random.normal(<span class="dv">13</span>, <span class="dv">3</span>, <span class="dv">100</span>),</span>
@@ -591,7 +591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="violin-violon" class="level3">
 <h3 class="anchored" data-anchor-id="violin-violon"><code>violin</code> — Violon</h3>
-<div id="2d3897b3" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="6">
+<div id="432fd0fd" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">2</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Paris'</span>:  np.random.normal(<span class="dv">45</span>, <span class="dv">15</span>, <span class="dv">200</span>),</span>
@@ -619,7 +619,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="ridgeline-crêtes-superposées" class="level3">
 <h3 class="anchored" data-anchor-id="ridgeline-crêtes-superposées"><code>ridgeline</code> — Crêtes superposées</h3>
-<div id="416b103e" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="7">
+<div id="e932dfce" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">3</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>secteurs <span class="op">=</span> [<span class="st">'Tech'</span>, <span class="st">'Finance'</span>, <span class="st">'Santé'</span>, <span class="st">'Éducation'</span>, <span class="st">'Commerce'</span>]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>moyennes  <span class="op">=</span> [<span class="dv">68000</span>, <span class="dv">72000</span>, <span class="dv">52000</span>, <span class="dv">38000</span>, <span class="dv">44000</span>]</span>
@@ -652,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="comparaisons">Comparaisons</h2>
 <section id="bar-barres" class="level3">
 <h3 class="anchored" data-anchor-id="bar-barres"><code>bar</code> — Barres</h3>
-<div id="a6b80c15" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="8">
+<div id="2ac6d13d" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'Île-de-France'</span>, <span class="st">'Auvergne-Rhône-Alpes'</span>, <span class="st">'PACA'</span>, <span class="st">'Occitanie'</span>, <span class="st">'Bretagne'</span>],</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ca'</span>:     [<span class="dv">980</span>, <span class="dv">620</span>, <span class="dv">430</span>, <span class="dv">380</span>, <span class="dv">270</span>],</span>
@@ -678,7 +678,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="radar-araignée" class="level3">
 <h3 class="anchored" data-anchor-id="radar-araignée"><code>radar</code> — Araignée</h3>
-<div id="56962e1c" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="9">
+<div id="61601e61" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:    [<span class="st">'A'</span>,<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>,<span class="st">'C'</span>],</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'vitesse'</span>:   [<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">5</span>, <span class="dv">8</span>],</span>
@@ -706,7 +706,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="parallel_coordinates-coordonnées-parallèles" class="level3">
 <h3 class="anchored" data-anchor-id="parallel_coordinates-coordonnées-parallèles"><code>parallel_coordinates</code> — Coordonnées parallèles</h3>
-<div id="489a89ce" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="10">
+<div id="2c3597e3" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'puissance'</span>:    np.random.randint(<span class="dv">80</span>,  <span class="dv">300</span>, <span class="dv">60</span>),</span>
@@ -736,7 +736,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="dumbbell-haltère-avantaprès" class="level3">
 <h3 class="anchored" data-anchor-id="dumbbell-haltère-avantaprès"><code>dumbbell</code> — Haltère (avant/après)</h3>
-<div id="2f0de424" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="11">
+<div id="3ff74aa6" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pays'</span>:     [<span class="st">'France'</span>,<span class="st">'Allemagne'</span>,<span class="st">'Espagne'</span>,<span class="st">'Italie'</span>,<span class="st">'Portugal'</span>,<span class="st">'Pays-Bas'</span>],</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pib_2020'</span>: [<span class="dv">38000</span>, <span class="dv">46000</span>, <span class="dv">27000</span>, <span class="dv">31000</span>, <span class="dv">22000</span>, <span class="dv">52000</span>],</span>
@@ -764,7 +764,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="bump-évolution-de-classement" class="level3">
 <h3 class="anchored" data-anchor-id="bump-évolution-de-classement"><code>bump</code> — Évolution de classement</h3>
-<div id="1fea2109" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="12">
+<div id="3f55ea32" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'saison'</span>:     [<span class="dv">2019</span>,<span class="dv">2020</span>,<span class="dv">2021</span>,<span class="dv">2022</span>,<span class="dv">2023</span>] <span class="op">*</span> <span class="dv">5</span>,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:     ([<span class="st">'PSG'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Lyon'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Marseille'</span>]<span class="op">*</span><span class="dv">5</span></span>
@@ -791,7 +791,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="lollipop-lollipop-groupé" class="level3">
 <h3 class="anchored" data-anchor-id="lollipop-lollipop-groupé"><code>lollipop</code> — Lollipop groupé</h3>
-<div id="313d07de" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="13">
+<div id="6bba7b00" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">7</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> np.repeat(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2024</span>), <span class="dv">2</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> [<span class="st">'ouragan'</span>, <span class="st">'dépression tropicale'</span>] <span class="op">*</span> <span class="dv">9</span></span>
@@ -825,7 +825,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="données-volumineuses">Données volumineuses</h2>
 <section id="scatter-nuage-de-points" class="level3">
 <h3 class="anchored" data-anchor-id="scatter-nuage-de-points"><code>scatter</code> — Nuage de points</h3>
-<div id="13871f40" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="14">
+<div id="693fc240" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">10</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">200</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>temp <span class="op">=</span> np.random.normal(<span class="dv">22</span>, <span class="dv">8</span>, n)</span>
@@ -854,7 +854,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="hexbin-pavage-hexagonal" class="level3">
 <h3 class="anchored" data-anchor-id="hexbin-pavage-hexagonal"><code>hexbin</code> — Pavage hexagonal</h3>
-<div id="f9709f50" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
+<div id="b279da52" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'age'</span>:    np.random.normal(<span class="dv">40</span>, <span class="dv">12</span>, <span class="dv">5000</span>),</span>
@@ -883,7 +883,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="composition">Composition</h2>
 <section id="pie-camembert" class="level3">
 <h3 class="anchored" data-anchor-id="pie-camembert"><code>pie</code> — Camembert</h3>
-<div id="932a82f4" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="16">
+<div id="7b6efb62" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'segment'</span>: [<span class="st">'Résidentiel'</span>,<span class="st">'Professionnel'</span>,<span class="st">'Industrie'</span>,<span class="st">'Administration'</span>],</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'part'</span>:    [<span class="dv">42</span>, <span class="dv">28</span>, <span class="dv">18</span>, <span class="dv">12</span>],</span>
@@ -907,7 +907,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="heatmap-carte-de-chaleur-corrélation" class="level3">
 <h3 class="anchored" data-anchor-id="heatmap-carte-de-chaleur-corrélation"><code>heatmap</code> — Carte de chaleur (corrélation)</h3>
-<div id="cf4a7b58" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="17">
+<div id="52fa7208" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">5</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'température'</span>: np.random.normal(<span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">100</span>),</span>
@@ -935,7 +935,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="waterfall-cascade-financière" class="level3">
 <h3 class="anchored" data-anchor-id="waterfall-cascade-financière"><code>waterfall</code> — Cascade financière</h3>
-<div id="1fb64354" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="18">
+<div id="18436b73" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'poste'</span>: [<span class="st">'CA'</span>,<span class="st">'Coût prod.'</span>,<span class="st">'Marge brute'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,<span class="st">'Marketing'</span>,<span class="st">'Résultat'</span>],</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'delta'</span>: [<span class="dv">500</span>, <span class="op">-</span><span class="dv">200</span>, <span class="dv">300</span>, <span class="op">-</span><span class="dv">60</span>, <span class="op">-</span><span class="dv">140</span>, <span class="op">-</span><span class="dv">40</span>, <span class="dv">60</span>],</span>
@@ -962,7 +962,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="treemap-carte-arborescente" class="level3">
 <h3 class="anchored" data-anchor-id="treemap-carte-arborescente"><code>treemap</code> — Carte arborescente</h3>
-<div id="2626fedd" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="19">
+<div id="be198c28" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'departement'</span>: [<span class="st">'R&amp;D'</span>,<span class="st">'Ventes'</span>,<span class="st">'Marketing'</span>,<span class="st">'Ops'</span>,<span class="st">'Finance'</span>,<span class="st">'IT'</span>,<span class="st">'RH'</span>],</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'budget'</span>:      [<span class="dv">450</span>, <span class="dv">380</span>, <span class="dv">210</span>, <span class="dv">280</span>, <span class="dv">150</span>, <span class="dv">200</span>, <span class="dv">120</span>],</span>
@@ -985,7 +985,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="streamgraph-flux-temporel" class="level3">
 <h3 class="anchored" data-anchor-id="streamgraph-flux-temporel"><code>streamgraph</code> — Flux temporel</h3>
-<div id="060da1fe" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="20">
+<div id="e67358fb" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2012</span>, <span class="dv">2025</span>)),</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">32</span>,<span class="dv">30</span>,<span class="dv">28</span>,<span class="dv">25</span>,<span class="dv">22</span>,<span class="dv">20</span>,<span class="dv">18</span>,<span class="dv">16</span>,<span class="dv">15</span>,<span class="dv">13</span>,<span class="dv">12</span>,<span class="dv">11</span>,<span class="dv">10</span>],</span>
@@ -1020,7 +1020,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="planification-et-flux">Planification et flux</h2>
 <section id="gantt-diagramme-de-gantt" class="level3">
 <h3 class="anchored" data-anchor-id="gantt-diagramme-de-gantt"><code>gantt</code> — Diagramme de Gantt</h3>
-<div id="b13a0976" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="21">
+<div id="28775732" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tache'</span>:   [<span class="st">'Analyse'</span>,<span class="st">'Design'</span>,<span class="st">'Dev Backend'</span>,<span class="st">'Dev Frontend'</span>,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Intégration'</span>,<span class="st">'Tests'</span>,<span class="st">'Déploiement'</span>],</span>
@@ -1050,7 +1050,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="calendar_heatmap-calendrier-de-contributions" class="level3">
 <h3 class="anchored" data-anchor-id="calendar_heatmap-calendrier-de-contributions"><code>calendar_heatmap</code> — Calendrier de contributions</h3>
-<div id="77c7587f" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="22">
+<div id="5bf200cf" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> pd.date_range(<span class="st">'2024-01-01'</span>, <span class="st">'2024-12-31'</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>commits <span class="op">=</span> np.random.poisson(<span class="dv">3</span>, <span class="bu">len</span>(dates))</span>
@@ -1075,7 +1075,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="sankey-diagramme-de-sankey" class="level3">
 <h3 class="anchored" data-anchor-id="sankey-diagramme-de-sankey"><code>sankey</code> — Diagramme de Sankey</h3>
-<div id="e6967aaf" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="23">
+<div id="15111fb6" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'flux'</span>:       [<span class="dv">200</span>, <span class="op">-</span><span class="dv">80</span>,  <span class="op">-</span><span class="dv">50</span>, <span class="op">-</span><span class="dv">70</span>,   <span class="dv">80</span>,  <span class="op">-</span><span class="dv">30</span>, <span class="op">-</span><span class="dv">50</span>],</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'etiquette'</span>:  [<span class="st">'Revenus'</span>,<span class="st">'Coût matières'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,</span>
@@ -1105,7 +1105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="ombrothermic-diagramme-ombrothermique" class="level3">
 <h3 class="anchored" data-anchor-id="ombrothermic-diagramme-ombrothermique"><code>ombrothermic</code> — Diagramme ombrothermique</h3>
 <p>Le diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures et les barres de précipitations selon la convention <strong>p = 2T</strong>. Les zones où p &lt; 2T sont des <strong>périodes sèches</strong>.</p>
-<div id="3e0d5e06" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="24">
+<div id="80cd5ea6" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:   [<span class="st">'Jan'</span>,<span class="st">'Fév'</span>,<span class="st">'Mar'</span>,<span class="st">'Avr'</span>,<span class="st">'Mai'</span>,<span class="st">'Jun'</span>,</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">'Jul'</span>,<span class="st">'Aoû'</span>,<span class="st">'Sep'</span>,<span class="st">'Oct'</span>,<span class="st">'Nov'</span>,<span class="st">'Déc'</span>],</span>
@@ -1127,14 +1127,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="gallery_files/figure-html/cell-25-output-1.png" width="1146" height="567" class="figure-img"></p>
+<p><img src="gallery_files/figure-html/cell-25-output-1.png" width="1145" height="567" class="figure-img"></p>
 <figcaption>Diagramme ombrothermique — Dakar (Sénégal)</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Analyse textuelle des périodes sèches :</p>
-<div id="e0947871" class="cell" data-execution_count="25">
+<div id="81be4562" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> Chart</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
