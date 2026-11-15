@@ -411,6 +411,18 @@ wheels = [
 ]
 
 [[package]]
+name = "drawarrow"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/49/30/0a9b0cb8cc08c8a70406ddb0b6c6704b8281f12c13334b76ec195994f764/drawarrow-0.1.0.tar.gz", hash = "sha256:e7be36bac90f13054e58b3ea8ffaa52f9c13a6189c25d86d2a930a00c26875ad", size = 10383, upload-time = "2025-03-18T20:53:29.092Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ca/dd/7a9d9846a46670b4012fac9afa52aa922f27bf412b437eee8d76de90f6aa/drawarrow-0.1.0-py3-none-any.whl", hash = "sha256:aafd22658a05d31562c18089b3c7b5769e9af3182e6b29a26a1475920017f619", size = 8208, upload-time = "2025-03-18T20:53:26.819Z" },
+]
+
+[[package]]
 name = "executing"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1104,9 +1116,11 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "circlify" },
+    { name = "drawarrow" },
     { name = "matplotlib" },
     { name = "numpy" },
     { name = "pandas" },
+    { name = "pyfonts" },
     { name = "pyyaml" },
     { name = "scipy" },
     { name = "seaborn" },
@@ -1139,11 +1153,13 @@ dev = [
 requires-dist = [
     { name = "circlify", specifier = ">=0.16.0" },
     { name = "contextily", marker = "extra == 'map'", specifier = ">=1.7.1" },
+    { name = "drawarrow", specifier = ">=0.1.0" },
     { name = "geopandas", marker = "extra == 'map'", specifier = ">=1.2.0" },
     { name = "matplotlib", specifier = ">=3.11.0" },
     { name = "morethemes", marker = "extra == 'morethemes'", specifier = ">=0.9.0" },
     { name = "numpy", specifier = ">=2.5.0" },
     { name = "pandas", specifier = ">=3.0.3" },
+    { name = "pyfonts", specifier = ">=1.4.2" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "scipy", specifier = ">=1.18.0" },
     { name = "seaborn", specifier = ">=0.13.2" },

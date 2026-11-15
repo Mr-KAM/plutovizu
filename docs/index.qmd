@@ -1,11 +1,16 @@
 ---
-title: "plutovizu"
-subtitle: "Des graphiques matplotlib élégants à partir de vos DataFrames pandas, en une seule chaîne d'appels."
+pagetitle: "plutovizu"
 body-classes: home
 toc: false
 ---
 
 ```{=html}
+<header class="home-hero">
+  <h1 class="visually-hidden">plutovizu</h1>
+  <img class="home-logo light-content" src="logo/plutovizu-signature-fond-clair.svg" alt="plutovizu">
+  <img class="home-logo dark-content" src="logo/plutovizu-signature-fond-sombre.svg" alt="plutovizu">
+  <p class="subtitle">Des graphiques matplotlib élégants à partir de vos DataFrames pandas, en une seule chaîne d'appels.</p>
+</header>
 <div class="feature-grid">
   <a class="feature-card" href="installation.html">
     <div class="feature-art"><i class="bi bi-rocket-takeoff"></i></div>

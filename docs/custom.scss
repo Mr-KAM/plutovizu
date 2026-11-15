@@ -146,15 +146,16 @@ hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
 ::selection { background: rgba($green-glow, .3); }
 
 // ── Page d'accueil (body-classes: home) ────────────────
-.home {
-  #title-block-header {
-    text-align: center;
-    padding: 3.5rem 0 1rem;
-    background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba($green-glow, if($is-dark, .14, .08)), transparent 70%);
-    .title { font-size: clamp(2.4rem, 6vw, 3.4rem); }
-    .subtitle { max-width: 34rem; margin: .75rem auto 0; line-height: 1.6; }
-  }
+.home-hero {
+  text-align: center;
+  padding: 2.5rem 0 1.5rem;
+  background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba($green-glow, if($is-dark, .14, .08)), transparent 70%);
+  .home-logo { width: min(560px, 100%); height: auto; }
+  .subtitle { max-width: 34rem; margin: .5rem auto 0; line-height: 1.6; font-size: 1.1rem; color: $text-muted; }
 }
+
+// Logo de la barre du haut (logo horizontal : le nom est dans l'image)
+.navbar .navbar-logo { max-height: 42px; padding-right: 0; }
 
 .feature-grid {
   display: grid;
@@ -218,10 +219,11 @@ hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
 
   #quarto-document-content h2 { margin-top: 2.25rem; }
 
-  .home #title-block-header {
-    padding: 2rem 0 .5rem;
+  .home-hero {
+    padding: 1.5rem 0 .5rem;
     .subtitle { font-size: 1rem; }
   }
+  .navbar .navbar-logo { max-height: 34px; }
   .feature-grid { gap: 1.5rem; margin-bottom: 2.5rem; }
   .feature-card .feature-art {
     aspect-ratio: 5 / 2;

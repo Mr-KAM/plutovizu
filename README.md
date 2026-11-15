@@ -1,6 +1,17 @@
-# plutovizu
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/logo/plutovizu-horizontal-fond-sombre.svg">
+    <img src="docs/logo/plutovizu-horizontal-fond-clair.svg" alt="plutovizu" width="420">
+  </picture>
+</p>
 
-Bibliothèque Python de visualisation de données basée sur matplotlib, avec une API chaînable pour créer des graphiques à partir de DataFrames pandas.
+<p align="center">
+  Bibliothèque Python de visualisation de données basée sur matplotlib, avec une API chaînable pour créer des graphiques à partir de DataFrames pandas.
+  <br>
+  <a href="https://mr-kam.github.io/plutovizu/">Documentation</a> ·
+  <a href="https://mr-kam.github.io/plutovizu/gallery.html">Galerie</a> ·
+  <a href="examples/README.md">Notebooks</a>
+</p>
 
 ## Installation
 

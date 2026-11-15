@@ -2,6 +2,7 @@ project:
   type: website
   resources:
     - images/vignettes/*.png
+    - logo/*
 
 lang: fr
 language:
@@ -10,12 +11,19 @@ language:
 website:
   title: "plutovizu"
   description: "Bibliothèque Python de visualisation de données — API chaînable pour matplotlib"
-  favicon: ""
+  favicon: logo/favicon.svg
+  open-graph:
+    image: logo/open-graph-1200x630.png
   page-navigation: true
   search:
     location: navbar
     type: textbox
   navbar:
+    logo:
+      light: logo/plutovizu-horizontal-fond-clair.svg
+      dark: logo/plutovizu-horizontal-fond-sombre.svg
+    logo-alt: "plutovizu"
+    title: false
     left:
       - href: index.qmd
         text: Documentation
