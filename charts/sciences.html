@@ -439,6 +439,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -548,8 +554,126 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-ombrothermic" class="level3">
 <h3 class="anchored" data-anchor-id="g-ombrothermic"><code>ombrothermic</code> — Diagramme ombrothermique</h3>
+<p>Diagramme ombrothermique de Bagnouls et Gaussen : températures et précipitations mensuelles sur deux axes à l’échelle P = 2T ; un mois est sec quand P &lt; 2T. En barres (défaut) ou en deux courbes avec la saison sèche hachurée (<code>kind='lines'</code>).</p>
+<p><strong>Quand l’utiliser.</strong> Caractériser le climat d’une station, délimiter la saison sèche et la saison des pluies pour raisonner un calendrier cultural.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par mois (12 lignes), dans l’ordre du calendrier.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>mois</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>month_col</code> : nom du mois</td>
+<td style="text-align: left;">Jan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temp</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>temperature_col</code> : température moyenne (°C)</td>
+<td style="text-align: left;">24.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>precip</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>precipitation_col</code> : précipitations (mm)</td>
+<td style="text-align: left;">3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>month_col</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les étiquettes de mois (axe x).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temperature_col</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec la température mensuelle moyenne (°C).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>precipitation_col</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les précipitations mensuelles totales (mm).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temp_color</code></td>
+<td style="text-align: left;"><code>'tab:red'</code></td>
+<td style="text-align: left;">Couleur de la courbe de température.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>precip_color</code></td>
+<td style="text-align: left;"><code>'tab:blue'</code></td>
+<td style="text-align: left;">Couleur des barres de précipitations.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>dry_period_color</code></td>
+<td style="text-align: left;"><code>'red'</code></td>
+<td style="text-align: left;">Couleur de surbrillance des zones sèches.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>dry_period_alpha</code></td>
+<td style="text-align: left;"><code>0.2</code></td>
+<td style="text-align: left;">Opacité des zones sèches.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_threshold_line</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Afficher la ligne de référence p = 2T.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>temp_scale_factor</code></td>
+<td style="text-align: left;"><code>2.0</code></td>
+<td style="text-align: left;">Rapport d’échelle précipitations/température (défaut 2.0 pour p = 2T).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>kind</code></td>
+<td style="text-align: left;"><code>'bars'</code></td>
+<td style="text-align: left;">‘bars’ (barres de pluie) ou ‘lines’ (deux courbes, saison sèche hachurée).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>hatch</code></td>
+<td style="text-align: left;"><code>'///'</code></td>
+<td style="text-align: left;">Motif des hachures de la saison sèche (<code>kind='lines'</code>) : ‘///’, ‘xx’, ‘…’.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>humid_fill</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Colore légèrement la saison humide (<code>kind='lines'</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.dry_months</code> (mode ‘lines’) : la liste des mois secs.</p>
+<p><strong>Exemple</strong></p>
 <p>Le diagramme ombrothermique de Bagnouls et Gaussen met en regard la courbe des températures et les barres de précipitations selon la convention <strong>p = 2T</strong>. Les zones où p &lt; 2T sont des <strong>périodes sèches</strong>.</p>
-<div id="0f45b524" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="2">
+<div id="1d298fa2" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:   [<span class="st">'Jan'</span>,<span class="st">'Fév'</span>,<span class="st">'Mar'</span>,<span class="st">'Avr'</span>,<span class="st">'Mai'</span>,<span class="st">'Jun'</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">'Jul'</span>,<span class="st">'Aoû'</span>,<span class="st">'Sep'</span>,<span class="st">'Oct'</span>,<span class="st">'Nov'</span>,<span class="st">'Déc'</span>],</span>
@@ -571,14 +695,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-3-output-1.png" width="1145" height="566" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-4-output-1.png" width="1145" height="566" class="figure-img"></p>
 <figcaption>Diagramme ombrothermique — Dakar (Sénégal)</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Analyse textuelle des périodes sèches :</p>
-<div id="8b1d6faa" class="cell" data-execution_count="3">
+<div id="6f162089" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> Chart</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -612,7 +736,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-4-output-2.png" width="794" height="486" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-5-output-2.png" width="794" height="486" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -620,7 +744,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="variante-en-deux-courbes-périodes-sèches-hachurées" class="level4">
 <h4 class="anchored" data-anchor-id="variante-en-deux-courbes-périodes-sèches-hachurées">Variante en deux courbes, périodes sèches hachurées</h4>
 <p>Avec <code>kind='lines'</code>, les précipitations sont tracées en <strong>courbe</strong> (sur l’échelle P = 2T) et les <strong>périodes sèches</strong> — là où la courbe des pluies passe sous celle des températures — sont <strong>hachurées</strong> entre les deux courbes. Les hachures s’arrêtent exactement aux croisements. <code>hatch</code> change le motif (<code>'///'</code>, <code>'xx'</code>, <code>'...'</code>) ; les mois secs sont dans <code>chart.dry_months</code>.</p>
-<div id="fee009bf" class="cell" data-execution_count="4">
+<div id="fa0ce538" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .ombrothermic(<span class="st">'mois'</span>, <span class="st">'temperature'</span>, <span class="st">'pluie'</span>, kind<span class="op">=</span><span class="st">'lines'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Diagramme ombrothermique — Station B (fictive)'</span>)</span>
@@ -633,7 +757,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-5-output-2.png" width="953" height="470" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-6-output-2.png" width="953" height="470" class="figure-img"></p>
 <figcaption>Diagramme ombrothermique en courbes, saison sèche hachurée (station fictive)</figcaption>
 </figure>
 </div>
@@ -643,8 +767,101 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 </section>
 <section id="g-soil_texture" class="level3">
 <h3 class="anchored" data-anchor-id="g-soil_texture"><code>soil_texture</code> — Triangle des textures USDA</h3>
+<p>Triangle des textures USDA : les 12 classes texturales tracées et nommées, et les échantillons placés selon leurs teneurs en sable, limon et argile.</p>
+<p><strong>Quand l’utiliser.</strong> Classer des échantillons de sol par texture et comparer des sites ou des horizons.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par échantillon ; sable + limon + argile = 100.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>sable</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>sand</code> : % de sable</td>
+<td style="text-align: left;">45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>limon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>silt</code> : % de limon</td>
+<td style="text-align: left;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>argile</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>clay</code> : % d’argile</td>
+<td style="text-align: left;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>zone</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel)</td>
+<td style="text-align: left;">Bas-fond</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>sand</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des teneurs en sable (%).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>silt</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des teneurs en limon (%).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>clay</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des teneurs en argile (%).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de groupe (couleurs + légende).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_classes</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Trace et nomme les 12 classes texturales.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>fill</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Colore légèrement chaque classe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>**kwargs</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Options supplémentaires transmises à la fonction sous-jacente (seaborn ou matplotlib).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.texture_classes</code> : la classe USDA de chaque échantillon.</p>
+<p><strong>Exemple</strong></p>
 <p>Les 12 classes de texture USDA tracées et nommées, avec les échantillons par-dessus. La classe de chaque échantillon est dans <code>chart.texture_classes</code> ; la fonction <code>texture_class(sable, limon, argile)</code> classe aussi des valeurs sans tracer.</p>
-<div id="d7b8f6cd" class="cell" data-execution_count="5">
+<div id="f5bf858e" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(sols, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">7.5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .soil_texture(<span class="st">'sable'</span>, <span class="st">'limon'</span>, <span class="st">'argile'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Triangle des textures (USDA)'</span>)</span>
@@ -664,7 +881,7 @@ Sable loameux           1</code></pre>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-6-output-2.png" width="758" height="691" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-8-output-2.png" width="758" height="691" class="figure-img"></p>
 <figcaption>Classes de texture des 40 parcelles</figcaption>
 </figure>
 </div>
@@ -688,8 +905,107 @@ Note
 </div>
 <section id="g-walter_lieth" class="level3">
 <h3 class="anchored" data-anchor-id="g-walter_lieth"><code>walter_lieth</code> — Climatogramme de Walter-Lieth</h3>
+<p>Climatogramme de Walter et Lieth : 10 °C correspondent à 20 mm, échelle des pluies comprimée au-delà de 100 mm, saison humide en bleu, saison sèche pointillée, mois de gel sous l’axe.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer des climats selon la convention internationale des écologues, avec un résumé (températures et pluie annuelles) dans l’en-tête.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par mois (12 lignes).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>mois</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>month</code> : nom du mois</td>
+<td style="text-align: left;">Juil</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temperature</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>temp</code> : température moyenne (°C)</td>
+<td style="text-align: left;">28.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pluie</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>precip</code> : précipitations (mm)</td>
+<td style="text-align: left;">142</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tmin</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>tmin</code> (optionnel) : minimum (°C), pour les mois de gel</td>
+<td style="text-align: left;">21.4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>month</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des mois.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temp</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des températures moyennes mensuelles (°C).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>precip</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des précipitations mensuelles (mm).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tmin</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne optionnelle des températures minimales ; tmin &lt; 0 marque un mois de gel.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>station</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Nom de la station écrit dans l’en-tête.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temp_color</code></td>
+<td style="text-align: left;"><code>'#d1495b'</code></td>
+<td style="text-align: left;">Couleur de la courbe des températures.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>precip_color</code></td>
+<td style="text-align: left;"><code>'#2e86de'</code></td>
+<td style="text-align: left;">Couleur de la courbe des précipitations.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.climate_summary</code> : moyennes et totaux annuels.</p>
+<p><strong>Exemple</strong></p>
 <p>Le diagramme climatique de référence en écologie : 10 °C correspondent à 20 mm de pluie, l’échelle des pluies est comprimée au 1/10 au-delà de 100 mm (aplat bleu foncé). La saison humide est en bleu, la saison sèche en pointillés rouges, les mois de gel (<code>tmin</code> &lt; 0) sont marqués sous l’axe. Moyenne annuelle et cumul en haut à droite ; résumé dans <code>chart.climate_summary</code>.</p>
-<div id="fd570df9" class="cell" data-execution_count="6">
+<div id="28739841" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .walter_lieth(<span class="st">'mois'</span>, <span class="st">'temperature'</span>, <span class="st">'pluie'</span>, tmin<span class="op">=</span><span class="st">'tmin'</span>, station<span class="op">=</span><span class="st">'Station B (fictive)'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
@@ -701,7 +1017,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-7-output-2.png" width="857" height="519" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-10-output-2.png" width="857" height="519" class="figure-img"></p>
 <figcaption>Climatogramme d’une station de type soudanien</figcaption>
 </figure>
 </div>
@@ -710,8 +1026,96 @@ Note
 </section>
 <section id="g-climogram" class="level3">
 <h3 class="anchored" data-anchor-id="g-climogram"><code>climogram</code> — Climogramme (hythergramme)</h3>
+<p>Climogramme (hythergramme) : chaque mois est un point (précipitations, température), reliés en boucle fermée ; une boucle par station.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer d’un coup d’œil le régime climatique de plusieurs stations (forme et position des boucles).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par mois et par station.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>station</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : une boucle par station</td>
+<td style="text-align: left;">Station A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mois</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>month</code> (optionnel) : étiquette des points</td>
+<td style="text-align: left;">Août</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pluie</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>precip</code> : précipitations (mm)</td>
+<td style="text-align: left;">235</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temperature</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>temp</code> : température (°C)</td>
+<td style="text-align: left;">28.3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>precip</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des précipitations (axe horizontal).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temp</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des températures (axe vertical).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>month</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des mois, écrits à côté des points.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Température et précipitations de chaque mois en un point, reliés en boucle : la forme de la boucle résume le climat, et plusieurs stations se comparent d’un coup d’œil.</p>
-<div id="1f8b222c" class="cell" data-execution_count="7">
+<div id="4b884325" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(stations_climat, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .climogram(<span class="st">'pluie'</span>, <span class="st">'temperature'</span>, month<span class="op">=</span><span class="st">'mois'</span>, group<span class="op">=</span><span class="st">'station'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Climogrammes'</span>)</span>
@@ -720,7 +1124,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-8-output-1.png" width="855" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-12-output-1.png" width="855" height="518" class="figure-img"></p>
 <figcaption>Trois climats tropicaux</figcaption>
 </figure>
 </div>
@@ -729,8 +1133,90 @@ Note
 </section>
 <section id="g-water_balance" class="level3">
 <h3 class="anchored" data-anchor-id="g-water_balance"><code>water_balance</code> — Bilan hydrique</h3>
+<p>Bilan hydrique simplifié : précipitations face à l’évapotranspiration potentielle ; excédent (P &gt; ETP) et déficit (P &lt; ETP) colorés.</p>
+<p><strong>Quand l’utiliser.</strong> Repérer les mois de recharge et de déficit en eau, raisonner l’irrigation et le choix des cycles culturaux.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par mois.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>mois</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>month</code></td>
+<td style="text-align: left;">Sept</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pluie</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>precip</code> : précipitations (mm)</td>
+<td style="text-align: left;">155</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>etp</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>etp</code> : évapotranspiration potentielle (mm)</td>
+<td style="text-align: left;">130</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>month</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des mois.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>precip</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des précipitations (mm).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>etp</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’évapotranspiration potentielle (mm).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_bars</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute les barres de précipitations.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>surplus_color</code></td>
+<td style="text-align: left;"><code>'#2e86de'</code></td>
+<td style="text-align: left;">Couleur de l’excédent (P &gt; ETP).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>deficit_color</code></td>
+<td style="text-align: left;"><code>'#e67e22'</code></td>
+<td style="text-align: left;">Couleur du déficit (P &lt; ETP).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.water_table</code> (bilan mensuel), <code>chart.water_summary</code> (totaux).</p>
+<p><strong>Exemple</strong></p>
 <p>Précipitations face à l’évapotranspiration potentielle (ETP) : excédent en bleu, déficit en orange. Bilan mensuel dans <code>chart.water_table</code>, totaux dans <code>chart.water_summary</code>.</p>
-<div id="f69bd1c4" class="cell" data-execution_count="8">
+<div id="08404feb" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .water_balance(<span class="st">'mois'</span>, <span class="st">'pluie'</span>, <span class="st">'etp'</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Bilan hydrique (mm)'</span>)</span>
@@ -743,7 +1229,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-9-output-2.png" width="856" height="422" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-14-output-2.png" width="856" height="422" class="figure-img"></p>
 <figcaption>Bilan hydrique simplifié P – ETP</figcaption>
 </figure>
 </div>
@@ -752,8 +1238,95 @@ Note
 </section>
 <section id="g-degree_days" class="level3">
 <h3 class="anchored" data-anchor-id="g-degree_days"><code>degree_days</code> — Degrés-jours de croissance</h3>
+<p>Degrés-jours de croissance cumulés, DJ = max(0, (Tmax + Tmin) / 2 − base), avec la date d’atteinte de chaque stade.</p>
+<p><strong>Quand l’utiliser.</strong> Prévoir les stades de développement d’une culture (floraison, maturité) ou d’un ravageur à partir des températures journalières.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par jour.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>jour</code></td>
+<td style="text-align: left;">date</td>
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;">2024-07-15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tmin</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>tmin</code> : minimum du jour (°C)</td>
+<td style="text-align: left;">23.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>tmax</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>tmax</code> : maximum du jour (°C)</td>
+<td style="text-align: left;">33.1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des dates (une ligne par jour).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tmin</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des températures minimales journalières (°C).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>tmax</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des températures maximales journalières (°C).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>base</code></td>
+<td style="text-align: left;"><code>10.0</code></td>
+<td style="text-align: left;">Température de base sous laquelle la plante ne se développe pas (°C).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Plafond appliqué à Tmax (°C) ; <code>None</code> = pas de plafond.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>stages</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Dictionnaire {stade: DJ requis}, ex. {‘Floraison’: 1250}.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.gdd</code> (série journalière), <code>chart.stage_dates</code> (date de chaque stade).</p>
+<p><strong>Exemple</strong></p>
 <p>Somme des températures utiles à la culture : chaque jour apporte max(0, (Tmax + Tmin) / 2 − base), Tmax pouvant être plafonnée (<code>cap</code>). <code>stages</code> marque la date d’atteinte de chaque stade.</p>
-<div id="e65838fb" class="cell" data-execution_count="9">
+<div id="4d33b506" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    .degree_days(<span class="st">'jour'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, base<span class="op">=</span><span class="dv">10</span>, cap<span class="op">=</span><span class="dv">35</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                 stages<span class="op">=</span>{<span class="st">'Tallage'</span>: <span class="dv">600</span>, <span class="st">'Initiation paniculaire'</span>: <span class="dv">950</span>, <span class="st">'Floraison'</span>: <span class="dv">1250</span>})</span>
@@ -767,7 +1340,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-10-output-2.png" width="856" height="422" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-16-output-2.png" width="856" height="422" class="figure-img"></p>
 <figcaption>Degrés-jours cumulés et stades d’un riz (seuils illustratifs)</figcaption>
 </figure>
 </div>
@@ -776,8 +1349,90 @@ Note
 </section>
 <section id="g-wind_rose" class="level3">
 <h3 class="anchored" data-anchor-id="g-wind_rose"><code>wind_rose</code> — Rose des vents</h3>
+<p>Rose des vents à partir des observations brutes : directions regroupées en secteurs, vitesses en classes, en % des observations.</p>
+<p><strong>Quand l’utiliser.</strong> Connaître les vents dominants d’un site : implantation de brise-vent, d’éoliennes, orientation de bâtiments, dispersion de traitements.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par observation (direction et vitesse).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>direction</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>direction</code> : degrés (0 = nord, 90 = est)</td>
+<td style="text-align: left;">315</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>vitesse</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>speed</code> : vitesse</td>
+<td style="text-align: left;">4.2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>direction</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des directions d’où vient le vent, en degrés (0 = nord).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>speed</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des vitesses.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>sectors</code></td>
+<td style="text-align: left;"><code>16</code></td>
+<td style="text-align: left;">Nombre de secteurs de direction (8, 16…).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>speed_bins</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Bornes des classes de vitesse ; <code>None</code> = automatique.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>unit</code></td>
+<td style="text-align: left;"><code>'m/s'</code></td>
+<td style="text-align: left;">Unité des vitesses affichée dans la légende.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.wind_table</code> : fréquences par secteur et classe de vitesse.</p>
+<p><strong>Exemple</strong></p>
 <p>Directement à partir des observations : directions en degrés (0 = nord) regroupées en secteurs, vitesses en classes, fréquences en % des observations.</p>
-<div id="bf551e01" class="cell" data-execution_count="10">
+<div id="d8a94112" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent_obs, figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="fl">6.5</span>))</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    .wind_rose(<span class="st">'direction'</span>, <span class="st">'vitesse'</span>, speed_bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>])</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rose des vents'</span>)</span>
@@ -786,7 +1441,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-11-output-1.png" width="684" height="614" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-18-output-1.png" width="684" height="614" class="figure-img"></p>
 <figcaption>Rose des vents à partir de 900 observations</figcaption>
 </figure>
 </div>
@@ -795,8 +1450,90 @@ Note
 </section>
 <section id="g-anomaly" class="level3">
 <h3 class="anchored" data-anchor-id="g-anomaly"><code>anomaly</code> — Anomalies</h3>
+<p>Barres d’anomalies : l’écart de chaque valeur à une référence (moyenne, nombre ou période de référence), avec une moyenne glissante en option.</p>
+<p><strong>Quand l’utiliser.</strong> Mettre en évidence les années chaudes ou sèches, une tendance climatique, un écart à une normale.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par période (année).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>annee</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code> : période</td>
+<td style="text-align: left;">1998</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temperature</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value</code> : valeur comparée à la référence</td>
+<td style="text-align: left;">27.9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>baseline</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Référence : <code>None</code> (moyenne), un nombre, ou une période (début, fin) de x, ex. (1961, 1990).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>window</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Largeur de la moyenne glissante ; <code>None</code> = pas de moyenne glissante.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pos_color</code></td>
+<td style="text-align: left;"><code>'#d6604d'</code></td>
+<td style="text-align: left;">Couleur des anomalies positives.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>neg_color</code></td>
+<td style="text-align: left;"><code>'#4393c3'</code></td>
+<td style="text-align: left;">Couleur des anomalies négatives.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.anomalies</code> : les écarts.</p>
+<p><strong>Exemple</strong></p>
 <p>L’écart de chaque année à une référence : la moyenne, un nombre, ou la moyenne d’une période (<code>baseline=(1961, 1990)</code>), avec une moyenne glissante en option.</p>
-<div id="013a1738" class="cell" data-execution_count="11">
+<div id="8d8876e5" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    .anomaly(<span class="st">'annee'</span>, <span class="st">'temperature'</span>, baseline<span class="op">=</span>(<span class="dv">1961</span>, <span class="dv">1990</span>), window<span class="op">=</span><span class="dv">10</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Écart à la normale 1961-1990 (°C)'</span>)</span>
@@ -805,7 +1542,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-12-output-1.png" width="951" height="374" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-20-output-1.png" width="951" height="374" class="figure-img"></p>
 <figcaption>Anomalies de température par rapport à 1961-1990</figcaption>
 </figure>
 </div>
@@ -814,15 +1551,80 @@ Note
 </section>
 <section id="g-climate_stripes" class="level3">
 <h3 class="anchored" data-anchor-id="g-climate_stripes"><code>climate_stripes</code> — Bandes climatiques</h3>
+<p>Bandes climatiques (« warming stripes ») : une bande verticale par année, colorée selon l’écart à la moyenne, du bleu (froid) au rouge (chaud).</p>
+<p><strong>Quand l’utiliser.</strong> Communiquer une tendance de long terme de façon immédiate, sans chiffres.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par année.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>annee</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">2010</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temperature</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;">28.4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs (ex. température moyenne annuelle).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>'RdBu_r'</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_years</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche quelques années sous les bandes.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une bande par année, du bleu (plus froid que la moyenne) au rouge (plus chaud), dans l’esprit des <em>warming stripes</em> d’Ed Hawkins.</p>
-<div id="7a8d0aaa" class="cell" data-execution_count="12">
+<div id="b91bc6e6" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">2.5</span>))</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    .climate_stripes(<span class="st">'annee'</span>, <span class="st">'temperature'</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-13-output-1.png" width="770" height="223" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-22-output-1.png" width="770" height="223" class="figure-img"></p>
 <figcaption>Bandes climatiques 1961-2024</figcaption>
 </figure>
 </div>
@@ -834,8 +1636,112 @@ Note
 <h2 class="anchored" data-anchor-id="sol">Sol</h2>
 <section id="g-soil_profile" class="level3">
 <h3 class="anchored" data-anchor-id="g-soil_profile"><code>soil_profile</code> — Profil de sol</h3>
+<p>Profil de sol : les horizons empilés selon la profondeur (vers le bas), une colonne par fosse, colorés par horizon ou par leur couleur réelle.</p>
+<p><strong>Quand l’utiliser.</strong> Décrire et comparer des fosses pédologiques (toposéquence, parcelles), illustrer un rapport de description des sols.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par horizon.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>fosse</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>profile</code> (optionnel) : une colonne par fosse</td>
+<td style="text-align: left;">Plateau</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>horizon</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>horizon</code> : nom de l’horizon</td>
+<td style="text-align: left;">Bt</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>haut</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>top</code> : profondeur du haut (cm)</td>
+<td style="text-align: left;">18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>bas</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>bottom</code> : profondeur du bas (cm)</td>
+<td style="text-align: left;">70</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>couleur</code></td>
+<td style="text-align: left;">texte (couleur)</td>
+<td style="text-align: left;"><code>color</code> (optionnel) : couleur réelle (hex)</td>
+<td style="text-align: left;">#a0522d</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>top</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la profondeur du haut de l’horizon (cm).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>bottom</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la profondeur du bas de l’horizon (cm).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>horizon</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne du nom de l’horizon (écrit dans le rectangle).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>profile</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne du nom de la fosse ; une colonne par fosse.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de couleurs (hexadécimal, ex. Munsell converti) ; <code>None</code> = couleurs du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>width</code></td>
+<td style="text-align: left;"><code>0.6</code></td>
+<td style="text-align: left;">Largeur de chaque colonne de profil.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_labels</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit le nom des horizons.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Les horizons empilés selon la profondeur, une colonne par fosse. <code>color</code> accepte une colonne de couleurs, par exemple des notations Munsell converties en hexadécimal.</p>
-<div id="ef21c988" class="cell" data-execution_count="13">
+<div id="264bccf1" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(Chart(horizons, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    .soil_profile(<span class="st">'haut'</span>, <span class="st">'bas'</span>, <span class="st">'horizon'</span>, profile<span class="op">=</span><span class="st">'fosse'</span>, color<span class="op">=</span><span class="st">'couleur'</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Profils de sol'</span>)</span>
@@ -844,7 +1750,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-14-output-1.png" width="760" height="566" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-24-output-1.png" width="760" height="566" class="figure-img"></p>
 <figcaption>Trois fosses le long d’une toposéquence</figcaption>
 </figure>
 </div>
@@ -853,7 +1759,84 @@ Note
 </section>
 <section id="g-depth_profile" class="level3">
 <h3 class="anchored" data-anchor-id="g-depth_profile"><code>depth_profile</code> — Variable selon la profondeur</h3>
-<div id="486f6587" class="cell" data-execution_count="14">
+<p>Une variable selon la profondeur : profondeur sur l’axe vertical, orientée vers le bas, une courbe par groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Profils d’humidité, de matière organique, de température ou de densité d’un sol ; comparer des dates ou des sites.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par profondeur mesurée (et par groupe).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>profondeur</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>depth</code> : profondeur (cm)</td>
+<td style="text-align: left;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>humidite</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value</code> : variable mesurée</td>
+<td style="text-align: left;">21.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : une courbe par groupe</td>
+<td style="text-align: left;">15 août</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>depth</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des profondeurs (axe vertical, vers le bas).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la variable mesurée (axe horizontal, lu en haut).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>marker</code></td>
+<td style="text-align: left;"><code>'o'</code></td>
+<td style="text-align: left;">Symbole des points (<code>o</code>, <code>s</code>, <code>^</code>, <code>None</code>…).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="49fd1e14" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(Chart(profil_humidite, figsize<span class="op">=</span>(<span class="fl">6.5</span>, <span class="dv">6</span>))</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    .depth_profile(<span class="st">'profondeur'</span>, <span class="st">'humidite'</span>, group<span class="op">=</span><span class="st">'date'</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Humidité (%)'</span>, <span class="st">'Profondeur (cm)'</span>)</span>
@@ -862,7 +1845,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-15-output-1.png" width="616" height="566" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-26-output-1.png" width="616" height="566" class="figure-img"></p>
 <figcaption>Humidité volumique du sol à deux dates</figcaption>
 </figure>
 </div>
@@ -871,8 +1854,102 @@ Note
 </section>
 <section id="g-soil_properties" class="level3">
 <h3 class="anchored" data-anchor-id="g-soil_properties"><code>soil_properties</code> — Profil multi-variables</h3>
+<p>Profil multi-variables : plusieurs propriétés côte à côte, un panneau par propriété, sur une échelle de profondeur commune ; en paliers par horizon avec <code>bottom</code>.</p>
+<p><strong>Quand l’utiliser.</strong> Synthèse analytique d’une ou plusieurs fosses (pH, matière organique, argile, CEC) pour lire les discontinuités entre horizons.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par horizon (ou par profondeur mesurée) et par fosse.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>fosse</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : une courbe par fosse</td>
+<td style="text-align: left;">Fosse 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>haut</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>depth</code> : haut de l’horizon (cm), ou profondeur du point</td>
+<td style="text-align: left;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>bas</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>bottom</code> (optionnel) : bas de l’horizon (cm)</td>
+<td style="text-align: left;">45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pH</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : un panneau par propriété</td>
+<td style="text-align: left;">5.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MO (%)</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : autre propriété</td>
+<td style="text-align: left;">1.2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>depth</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la profondeur (haut de l’horizon si <code>bottom</code> est donné).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>columns</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Liste des propriétés ; un panneau par colonne.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>bottom</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne du bas de l’horizon ; valeurs tracées en paliers d’épaisseur de l’horizon.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>marker</code></td>
+<td style="text-align: left;"><code>'o'</code></td>
+<td style="text-align: left;">Symbole des points (<code>o</code>, <code>s</code>, <code>^</code>, <code>None</code>…).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Plusieurs propriétés côte à côte sur la même échelle de profondeur. Avec <code>bottom</code>, les valeurs sont tracées en <strong>paliers</strong> sur l’épaisseur de chaque horizon.</p>
-<div id="beabc965" class="cell" data-execution_count="15">
+<div id="6338e1ea" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(Chart(proprietes, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    .soil_properties(<span class="st">'haut'</span>, [<span class="st">'pH'</span>, <span class="st">'MO (%)'</span>, <span class="st">'Argile (%)'</span>, <span class="st">'CEC (cmol+/kg)'</span>],</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                     bottom<span class="op">=</span><span class="st">'bas'</span>, group<span class="op">=</span><span class="st">'fosse'</span>)</span>
@@ -881,7 +1958,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-16-output-1.png" width="814" height="500" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-28-output-1.png" width="814" height="500" class="figure-img"></p>
 <figcaption>Propriétés de deux fosses par horizon (données fictives)</figcaption>
 </figure>
 </div>
@@ -890,8 +1967,101 @@ Note
 </section>
 <section id="g-retention_curve" class="level3">
 <h3 class="anchored" data-anchor-id="g-retention_curve"><code>retention_curve</code> — Courbe de rétention d’eau (pF)</h3>
+<p>Courbe de rétention d’eau (courbe pF) : teneur en eau selon la succion, capacité au champ (pF 2,5), point de flétrissement (pF 4,2) et réserve utile, ajustement de van Genuchten.</p>
+<p><strong>Quand l’utiliser.</strong> Caractériser les propriétés hydriques d’un sol ou d’un horizon, calculer la réserve utile pour le pilotage de l’irrigation.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par mesure (succion, teneur en eau) et par échantillon.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>horizon</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : une courbe par échantillon</td>
+<td style="text-align: left;">Bt (argileux)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pF</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>suction</code> : succion (pF, kPa ou cm selon <code>unit</code>)</td>
+<td style="text-align: left;">2.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>theta</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>water</code> : teneur en eau (m³/m³ ou %)</td>
+<td style="text-align: left;">0.238</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>suction</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la succion.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>water</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la teneur en eau.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>unit</code></td>
+<td style="text-align: left;"><code>'pF'</code></td>
+<td style="text-align: left;">Unité de la succion : ‘pF’ (log10 de cm d’eau), ‘kPa’ ou ‘cm’.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>fit</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajuste le modèle de van Genuchten (au moins 4 points) ; sinon interpolation linéaire.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>field_capacity</code></td>
+<td style="text-align: left;"><code>2.5</code></td>
+<td style="text-align: left;">pF de la capacité au champ (2.5 ; 2.0 est aussi utilisé).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>wilting_point</code></td>
+<td style="text-align: left;"><code>4.2</code></td>
+<td style="text-align: left;">pF du point de flétrissement permanent (4.2).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.retention</code> : θr, θs, α, n, capacité au champ, point de flétrissement, réserve utile.</p>
+<p><strong>Exemple</strong></p>
 <p>Teneur en eau selon la succion (pF = log₁₀ de la succion en cm d’eau). Les lignes marquent la <strong>capacité au champ</strong> (pF 2,5) et le <strong>point de flétrissement</strong> (pF 4,2) ; la <strong>réserve utile</strong> est l’eau retenue entre les deux. Le modèle de <strong>van Genuchten</strong> est ajusté sur les points (<code>fit=False</code> : simple interpolation). <code>unit='kPa'</code> ou <code>'cm'</code> si la succion n’est pas en pF.</p>
-<div id="bfe20cbf" class="cell" data-execution_count="16">
+<div id="a4e3068d" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(retention, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    .retention_curve(<span class="st">'pF'</span>, <span class="st">'theta'</span>, group<span class="op">=</span><span class="st">'horizon'</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Teneur en eau volumique θ (m³/m³)'</span>)</span>
@@ -902,12 +2072,12 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-17-output-1.png" width="855" height="519" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-30-output-1.png" width="855" height="519" class="figure-img"></p>
 <figcaption>Courbes pF de deux horizons (données fictives)</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="29">
 <div>
 
 
@@ -955,7 +2125,7 @@ Note
 </div>
 </div>
 <p>Avec un seul échantillon, la réserve utile est surlignée :</p>
-<div id="902aa483" class="cell" data-execution_count="17">
+<div id="ad1b115b" class="cell" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(Chart(retention[retention[<span class="st">'horizon'</span>] <span class="op">==</span> <span class="st">'A (limoneux)'</span>], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    .retention_curve(<span class="st">'pF'</span>, <span class="st">'theta'</span>)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Teneur en eau volumique θ (m³/m³)'</span>)</span>
@@ -965,7 +2135,7 @@ Note
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-18-output-1.png" width="855" height="519" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-31-output-1.png" width="855" height="519" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -973,8 +2143,91 @@ Note
 </section>
 <section id="g-grain_size_curve" class="level3">
 <h3 class="anchored" data-anchor-id="g-grain_size_curve"><code>grain_size_curve</code> — Courbe granulométrique cumulative</h3>
+<p>Courbe granulométrique cumulative : pourcentage de particules plus fines qu’un diamètre (échelle log), avec les limites argile / limon / sable / graviers.</p>
+<p><strong>Quand l’utiliser.</strong> Analyse granulométrique d’un sol ou d’un matériau : comparer des échantillons, calculer D10, D60 et le coefficient d’uniformité (géotechnique, drainage, filtres).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par tamis (diamètre, % passant) et par échantillon.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>echantillon</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : une courbe par échantillon</td>
+<td style="text-align: left;">Limon</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>diametre_mm</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>diameter</code> : diamètre (mm)</td>
+<td style="text-align: left;">0.05</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>passant</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>passing</code> : % de passants cumulés</td>
+<td style="text-align: left;">64</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>diameter</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des diamètres (mm).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>passing</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des pourcentages cumulés de particules plus fines.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>limits</code></td>
+<td style="text-align: left;"><code>(0.002, 0.05, 2.0)</code></td>
+<td style="text-align: left;">Diamètres (mm) séparant les classes ; défaut 2 µm, 50 µm, 2 mm.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>names</code></td>
+<td style="text-align: left;"><code>('Argile', 'Limon', 'Sable', 'Graviers')</code></td>
+<td style="text-align: left;">Noms des classes, un de plus que de limites.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.grain_size</code> : D10, D30, D60, Cu, Cc.</p>
+<p><strong>Exemple</strong></p>
 <p>Pourcentage de particules plus fines qu’un diamètre (échelle log), avec les limites argile (2 µm), limon (50 µm), sable (2 mm). <code>chart.grain_size</code> donne D10, D30, D60, le coefficient d’uniformité <strong>Cu = D60/D10</strong> et de courbure <strong>Cc = D30²/(D10·D60)</strong> ; NaN quand le diamètre est hors des mesures. <code>limits</code> et <code>names</code> changent la classification.</p>
-<div id="38be5fa8" class="cell" data-execution_count="18">
+<div id="77cacdbf" class="cell" data-execution_count="32">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(granulo, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    .grain_size_curve(<span class="st">'diametre_mm'</span>, <span class="st">'passant'</span>, group<span class="op">=</span><span class="st">'echantillon'</span>)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes granulométriques'</span>)</span>
@@ -984,12 +2237,12 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-19-output-1.png" width="952" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-33-output-1.png" width="952" height="518" class="figure-img"></p>
 <figcaption>Granulométrie de trois matériaux (données fictives)</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="32">
 <div>
 
 
@@ -1042,8 +2295,97 @@ Note
 </section>
 <section id="g-exchange_complex" class="level3">
 <h3 class="anchored" data-anchor-id="g-exchange_complex"><code>exchange_complex</code> — Complexe d’échange et saturation</h3>
+<p>Complexe d’échange par horizon : cations échangeables empilés (cmol+/kg), acidité hachurée, CEC marquée d’un trait et taux de saturation V = S/T.</p>
+<p><strong>Quand l’utiliser.</strong> Diagnostiquer la fertilité chimique d’un profil : réserve en bases, désaturation, besoin de chaulage.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par horizon, de la surface vers la profondeur.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>horizon</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>horizon</code> : nom de la barre</td>
+<td style="text-align: left;">A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Ca</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>cations</code> : calcium échangeable (cmol+/kg)</td>
+<td style="text-align: left;">9.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Mg</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>cations</code> : magnésium échangeable</td>
+<td style="text-align: left;">2.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>H_Al</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>acidity</code> (optionnel) : acidité échangeable</td>
+<td style="text-align: left;">1.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>CEC</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>cec</code> (optionnel) : capacité d’échange</td>
+<td style="text-align: left;">14.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>horizon</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des noms d’horizons (une barre par ligne, surface en haut).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cations</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Liste des colonnes de cations basiques (Ca, Mg, K, Na…) en cmol+/kg.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>acidity</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de l’acidité échangeable (H + Al), hachurée.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cec</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de la CEC (T) ; sans elle, T = somme des bases + acidité.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_saturation</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit le taux de saturation V au bout des barres.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.base_saturation</code> : V (%) par horizon.</p>
+<p><strong>Exemple</strong></p>
 <p>Cations échangeables empilés par horizon (cmol+/kg), acidité échangeable hachurée, CEC marquée d’un trait. Le <strong>taux de saturation V = S/T</strong> (S = somme des bases, T = CEC, ou S + acidité sans <code>cec</code>) est écrit au bout des barres et stocké dans <code>chart.base_saturation</code>.</p>
-<div id="da60eb43" class="cell" data-execution_count="19">
+<div id="6d57d2c7" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(complexe, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    .exchange_complex(<span class="st">'horizon'</span>, [<span class="st">'Ca'</span>, <span class="st">'Mg'</span>, <span class="st">'K'</span>, <span class="st">'Na'</span>], acidity<span class="op">=</span><span class="st">'H_Al'</span>, cec<span class="op">=</span><span class="st">'CEC'</span>)</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Complexe d</span><span class="ch">\'</span><span class="st">échange par horizon'</span>)</span>
@@ -1053,12 +2395,12 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-20-output-1.png" width="854" height="466" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-35-output-1.png" width="854" height="466" class="figure-img"></p>
 <figcaption>Complexe d’échange d’un sol lessivé (données fictives)</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="34">
 <pre><code>A     84.8
 E     66.3
 Bt    90.7
@@ -1069,8 +2411,80 @@ Name: V (%), dtype: float64</code></pre>
 </section>
 <section id="g-infiltration_curve" class="level3">
 <h3 class="anchored" data-anchor-id="g-infiltration_curve"><code>infiltration_curve</code> — Courbe d’infiltration</h3>
+<p>Courbe d’infiltration : infiltration cumulée d’un essai au cours du temps avec un modèle ajusté (Philip ou Horton) et la vitesse d’infiltration sur l’axe de droite.</p>
+<p><strong>Quand l’utiliser.</strong> Exploiter un essai au double anneau ou Beerkan : vitesse d’infiltration finale (perméabilité), comparaison de pratiques culturales, risque de ruissellement.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par lecture (temps, cumul).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>minutes</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>time</code> : temps écoulé</td>
+<td style="text-align: left;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>infiltration_mm</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>cumulative</code> : lame infiltrée cumulée</td>
+<td style="text-align: left;">29.2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>time</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne du temps écoulé depuis le début de l’essai.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cumulative</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’infiltration cumulée.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>model</code></td>
+<td style="text-align: left;"><code>'philip'</code></td>
+<td style="text-align: left;">‘philip’ (I = S·√t + A·t) ou ‘horton’ (vitesse décroissant exponentiellement vers fc).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_rate</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute la vitesse d’infiltration mesurée et modélisée sur un axe de droite.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.infiltration</code> : paramètres du modèle et vitesse finale.</p>
+<p><strong>Exemple</strong></p>
 <p>Infiltration cumulée d’un essai (double anneau, Beerkan…) avec un modèle ajusté : <strong>Philip</strong> I = S·√t + A·t (défaut) ou <strong>Horton</strong> I = fc·t + (f0 − fc)(1 − e^(−kt))/k. La vitesse d’infiltration, mesurée et modélisée, est sur l’axe de droite ; la ligne pointillée est la vitesse finale (A ou fc). Paramètres dans <code>chart.infiltration</code>.</p>
-<div id="3ca97517" class="cell" data-execution_count="20">
+<div id="61bff9af" class="cell" data-execution_count="36">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(infiltration, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    .infiltration_curve(<span class="st">'minutes'</span>, <span class="st">'infiltration_mm'</span>, model<span class="op">=</span><span class="st">'philip'</span>)</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Infiltration — modèle de Philip'</span>)</span>
@@ -1080,7 +2494,7 @@ Name: V (%), dtype: float64</code></pre>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-21-output-1.png" width="952" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-37-output-1.png" width="952" height="518" class="figure-img"></p>
 <figcaption>Essai d’infiltration (données fictives)</figcaption>
 </figure>
 </div>
@@ -1092,8 +2506,89 @@ Name: V (%), dtype: float64</code></pre>
 </section>
 <section id="g-isopleth" class="level3">
 <h3 class="anchored" data-anchor-id="g-isopleth"><code>isopleth</code> — Diagramme des isoplèthes</h3>
+<p>Diagramme des isoplèthes : une variable du sol dans le plan temps × profondeur, en courbes de niveau remplies, profondeur vers le bas.</p>
+<p><strong>Quand l’utiliser.</strong> Suivre l’humectation et le dessèchement d’un profil au fil des saisons, la propagation de la chaleur, d’un front de salinité.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par date et par profondeur (format long).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;">date ou nombre</td>
+<td style="text-align: left;"><code>time</code> : date de mesure</td>
+<td style="text-align: left;">2025-03-01</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>profondeur</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>depth</code> : profondeur (cm)</td>
+<td style="text-align: left;">40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>humidite</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value</code> : variable mesurée</td>
+<td style="text-align: left;">27.3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>time</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des dates (ou instants numériques).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>depth</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des profondeurs (axe vertical, vers le bas).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la variable cartographiée.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>levels</code></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">Nombre de niveaux (ou liste des seuils) des courbes de niveau.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>contour_labels</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute des isolignes annotées.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une variable du sol dans le plan <strong>profondeur × temps</strong> : on suit l’humectation et le dessèchement du profil au fil des saisons. Données en format long (une ligne par date et profondeur).</p>
-<div id="040f7221" class="cell" data-execution_count="21">
+<div id="728b47f2" class="cell" data-execution_count="38">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(Chart(humidite_sol, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    .isopleth(<span class="st">'date'</span>, <span class="st">'profondeur'</span>, <span class="st">'humidite'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">'Profondeur (cm)'</span>)</span>
@@ -1103,7 +2598,7 @@ Name: V (%), dtype: float64</code></pre>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-22-output-1.png" width="894" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-39-output-1.png" width="894" height="518" class="figure-img"></p>
 <figcaption>Humidité du sol (%) selon la date et la profondeur (données fictives)</figcaption>
 </figure>
 </div>

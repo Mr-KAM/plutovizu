@@ -439,6 +439,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -557,8 +563,94 @@ Note
 <h2 class="anchored" data-anchor-id="modèles-et-courbes-de-réponse">Modèles et courbes de réponse</h2>
 <section id="g-glm_curve" class="level3">
 <h3 class="anchored" data-anchor-id="g-glm_curve"><code>glm_curve</code> — Courbe d’un GLM</h3>
+<p>Courbe de réponse d’un modèle linéaire généralisé avec sa bande de confiance à 95 % : logistique (présence / absence → probabilité) ou de Poisson (comptages) ; <code>degree=2</code> donne une réponse en cloche et son optimum.</p>
+<p><strong>Quand l’utiliser.</strong> Relier la présence ou l’abondance d’une espèce à une variable du milieu (nitrates, pH, altitude) et visualiser le modèle ajusté avec les observations.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par relevé.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>nitrates</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code> : variable explicative</td>
+<td style="text-align: left;">23.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>presence</code></td>
+<td style="text-align: left;">entier (0/1) ou comptage</td>
+<td style="text-align: left;"><code>y</code> : réponse</td>
+<td style="text-align: left;">1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>family</code></td>
+<td style="text-align: left;"><code>'binomial'</code></td>
+<td style="text-align: left;">‘binomial’ (présence / absence, proportion) ou ‘poisson’ (comptages).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>degree</code></td>
+<td style="text-align: left;"><code>1</code></td>
+<td style="text-align: left;">Degré du polynôme en x (2 = réponse unimodale en cloche, avec optimum).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ci</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche la bande de confiance à 95 %.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>jitter</code></td>
+<td style="text-align: left;"><code>0.03</code></td>
+<td style="text-align: left;">Décalage vertical aléatoire des observations 0/1, pour les rendre visibles.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_stats</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit D² (déviance expliquée), la p-value et l’AIC.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.glm</code> : coefficients, D², p-value, AIC, optimum.</p>
+<p><strong>Exemple</strong></p>
 <p>Régression <strong>logistique</strong> (<code>family='binomial'</code>, présence/absence → probabilité) ou de <strong>Poisson</strong> (<code>family='poisson'</code>, comptages), avec la bande de confiance à 95 % et les observations. L’encadré donne la part de déviance expliquée (D²), la p-value du test du rapport de vraisemblance et l’AIC ; tout est dans <code>chart.glm</code>.</p>
-<div id="d415dae4" class="cell" data-execution_count="2">
+<div id="99830cb9" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(grenouille, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .glm_curve(<span class="st">'nitrates'</span>, <span class="st">'presence'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Présence selon la teneur en nitrates'</span>)</span>
@@ -572,14 +664,14 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-3-output-2.png" width="855" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-4-output-2.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Probabilité de présence d’une grenouille selon les nitrates (fictif)</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Avec <code>degree=2</code>, la réponse peut être <strong>en cloche</strong> : l’espèce a un optimum le long du gradient (sa niche), marqué sur le graphique.</p>
-<div id="1e6656cc" class="cell" data-execution_count="3">
+<div id="f3f1ee4f" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(niche, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .glm_curve(<span class="st">'ph'</span>, <span class="st">'presence'</span>, degree<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Réponse en cloche : optimum de pH'</span>)</span>
@@ -588,7 +680,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-4-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-5-output-1.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Niche d’une espèce le long d’un gradient de pH (fictif)</figcaption>
 </figure>
 </div>
@@ -597,8 +689,94 @@ Note
 </section>
 <section id="g-response_curve" class="level3">
 <h3 class="anchored" data-anchor-id="g-response_curve"><code>response_curve</code> — Réponse lissée</h3>
+<p>Réponse lissée d’une espèce le long d’un gradient (régression locale LOWESS) avec une bande à 95 % par bootstrap ; l’optimum écologique est marqué.</p>
+<p><strong>Quand l’utiliser.</strong> Décrire la niche d’une espèce sans imposer de forme au modèle : optimum, amplitude, réponse asymétrique.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par relevé (site).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>humidite</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code> : gradient</td>
+<td style="text-align: left;">62.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Typha</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : abondance de l’espèce</td>
+<td style="text-align: left;">18</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>frac</code></td>
+<td style="text-align: left;"><code>0.5</code></td>
+<td style="text-align: left;">Part des données utilisée pour chaque lissage local (0–1) ; plus grand = plus lisse.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ci</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute la bande de confiance à 95 % (bootstrap).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>n_boot</code></td>
+<td style="text-align: left;"><code>200</code></td>
+<td style="text-align: left;">Nombre de rééchantillonnages bootstrap pour la bande.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_optimum</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Marque l’optimum (maximum de la courbe).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>random_state</code></td>
+<td style="text-align: left;"><code>0</code></td>
+<td style="text-align: left;">Graine du hasard, pour un résultat reproductible.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.response</code> : courbe lissée et optimum.</p>
+<p><strong>Exemple</strong></p>
 <p>Une régression locale (LOWESS, dans l’esprit d’un GAM) suit la forme des données sans imposer de modèle ; la bande à 95 % vient d’un bootstrap. <code>frac</code> règle le lissage.</p>
-<div id="341356ec" class="cell" data-execution_count="4">
+<div id="d30e2339" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .response_curve(<span class="st">'humidite'</span>, <span class="st">'Typha'</span>, frac<span class="op">=</span><span class="fl">0.4</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Réponse de Typha à l</span><span class="ch">\'</span><span class="st">humidité'</span>)</span>
@@ -608,7 +786,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-5-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-7-output-1.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Abondance de Typha le long du gradient d’humidité</figcaption>
 </figure>
 </div>
@@ -617,8 +795,63 @@ Note
 </section>
 <section id="g-count_distribution" class="level3">
 <h3 class="anchored" data-anchor-id="g-count_distribution"><code>count_distribution</code> — Excès de zéros et surdispersion</h3>
+<p>Fréquences des comptages observés face à celles attendues sous une loi de Poisson et une loi binomiale négative.</p>
+<p><strong>Quand l’utiliser.</strong> Avant de modéliser des comptages : détecter l’excès de zéros et la surdispersion (variance &gt; moyenne) qui invalident un modèle de Poisson.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par unité d’échantillonnage.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>individus</code></td>
+<td style="text-align: left;">entier ≥ 0</td>
+<td style="text-align: left;"><code>column</code> : comptage</td>
+<td style="text-align: left;">3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>column</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des comptages (entiers positifs ou nuls).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>max_count</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Plus grand comptage affiché ; <code>None</code> = automatique.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.count_stats</code> : moyenne, variance, % de zéros observés et attendus.</p>
+<p><strong>Exemple</strong></p>
 <p>Les fréquences observées face à une loi de Poisson et à une loi binomiale négative de même moyenne. Beaucoup plus de zéros qu’attendu, ou une variance bien supérieure à la moyenne, orientent vers les modèles binomiaux négatifs, <em>zero-inflated</em> ou <em>hurdle</em>.</p>
-<div id="b9bd614e" class="cell" data-execution_count="5">
+<div id="eb1f8a2e" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(comptages, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .count_distribution(<span class="st">'individus'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Distribution des comptages'</span>)</span>
@@ -631,7 +864,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-6-output-2.png" width="855" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-9-output-2.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Nombre d’individus par piège</figcaption>
 </figure>
 </div>
@@ -640,8 +873,110 @@ Note
 </section>
 <section id="g-forest_plot" class="level3">
 <h3 class="anchored" data-anchor-id="g-forest_plot"><code>forest_plot</code> — Effets estimés</h3>
+<p>Forest plot : chaque estimation avec son intervalle, alignées sur une ligne de référence ; les intervalles qui excluent la référence sont mis en évidence.</p>
+<p><strong>Quand l’utiliser.</strong> Présenter les coefficients d’un modèle, des odds ratios, une méta-analyse, des effets aléatoires ou des intervalles crédibles bayésiens.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par estimation.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>variable</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>label</code> : nom de l’estimation</td>
+<td style="text-align: left;">Nitrates</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>odds_ratio</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>estimate</code> : valeur estimée</td>
+<td style="text-align: left;">0.62</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ic_bas</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lower</code> : borne basse</td>
+<td style="text-align: left;">0.48</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ic_haut</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>upper</code> : borne haute</td>
+<td style="text-align: left;">0.80</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>label</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des noms des estimations.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>estimate</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs estimées.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>lower</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de la borne basse de l’intervalle.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>upper</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de la borne haute de l’intervalle.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>se</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne d’erreurs types, à la place de lower / upper (intervalle = estimation ± 1,96 se).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ref</code></td>
+<td style="text-align: left;"><code>0.0</code></td>
+<td style="text-align: left;">Valeur de référence (0 pour des coefficients, 1 pour des rapports).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>log</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Échelle logarithmique, pour des rapports (odds ratios, risques relatifs).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>sort</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Trie les estimations par valeur.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Des estimations avec leurs intervalles : coefficients d’un modèle, odds ratios, effets aléatoires d’un modèle mixte, intervalles crédibles bayésiens. Les intervalles qui excluent la référence sont mis en évidence. Il se remplit avec les résultats de n’importe quel logiciel (R, statsmodels…) ; <code>se=</code> calcule l’intervalle à 95 % à partir de l’erreur type.</p>
-<div id="88004b23" class="cell" data-execution_count="6">
+<div id="a77de058" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(Chart(effets, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .forest_plot(<span class="st">'variable'</span>, <span class="st">'odds_ratio'</span>, <span class="st">'ic_bas'</span>, <span class="st">'ic_haut'</span>, ref<span class="op">=</span><span class="dv">1</span>, log<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Effet des variables sur la présence'</span>)</span>
@@ -651,7 +986,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-7-output-1.png" width="857" height="374" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-11-output-1.png" width="857" height="374" class="figure-img"></p>
 <figcaption>Odds ratios d’un modèle de présence (valeurs illustratives)</figcaption>
 </figure>
 </div>
@@ -663,8 +998,112 @@ Note
 <h2 class="anchored" data-anchor-id="ordination-des-communautés">Ordination des communautés</h2>
 <section id="g-ordination" class="level3">
 <h3 class="anchored" data-anchor-id="g-ordination"><code>ordination</code> — AFC, CCA, ACP, RDA</h3>
+<p>Triplot d’ordination de communautés : sites (points), espèces (+) et variables du milieu (flèches), par AFC, ACC, ACP ou ARD ; les axes donnent le % d’inertie.</p>
+<p><strong>Quand l’utiliser.</strong> Résumer la composition de nombreux relevés et la relier aux gradients du milieu (CCA pour des réponses unimodales, RDA pour des réponses linéaires).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par site, une colonne par espèce (abondances) et par variable du milieu.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>placette</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> (optionnel)</td>
+<td style="text-align: left;">P12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Carex</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>species</code> : abondance d’une espèce</td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Typha</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>species</code> : abondance d’une autre espèce</td>
+<td style="text-align: left;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>humidite</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>env</code> (optionnel) : variable du milieu</td>
+<td style="text-align: left;">62.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>zone</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : couleur des sites</td>
+<td style="text-align: left;">humide</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>species</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonnes d’abondance (une par espèce, une ligne par site).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>env</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Liste des variables du milieu (flèches ; contraintes pour ‘cca’ et ‘rda’).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>method</code></td>
+<td style="text-align: left;"><code>'ca'</code></td>
+<td style="text-align: left;">‘ca’ (AFC), ‘cca’ (canonique des correspondances), ‘pca’ (ACP) ou ‘rda’ (redondance).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_species</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche les espèces (+ et noms).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>axes</code></td>
+<td style="text-align: left;"><code>(1, 2)</code></td>
+<td style="text-align: left;">Axes représentés, ex. (1, 2) ou (1, 3).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>scale</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Centre-réduit les abondances (ACP / ARD).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.ord</code> : coordonnées, valeurs propres, inertie expliquée.</p>
+<p><strong>Exemple</strong></p>
 <p>Le triplot des communautés : sites (points), espèces (+) et variables environnementales (flèches). <code>method='ca'</code> pour l’AFC, <code>'cca'</code> pour l’analyse canonique des correspondances (réponses unimodales, en cloche), <code>'pca'</code> et <code>'rda'</code> (analyse de redondance, réponses linéaires). Les axes donnent la part d’inertie ; <code>chart.ord</code> contient valeurs propres et scores.</p>
-<div id="dc4020cd" class="cell" data-execution_count="7">
+<div id="63d7b3f0" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .ordination(especes, env<span class="op">=</span>[<span class="st">'humidite'</span>, <span class="st">'ph'</span>], method<span class="op">=</span><span class="st">'cca'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Analyse canonique des correspondances'</span>)</span>
@@ -673,13 +1112,13 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-8-output-1.png" width="854" height="662" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-13-output-1.png" width="854" height="662" class="figure-img"></p>
 <figcaption>CCA de 30 placettes et 10 espèces, contrainte par l’humidité et le pH</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="142eaee4" class="cell" data-execution_count="8">
+<div id="f5c9f7ab" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .ordination(especes, method<span class="op">=</span><span class="st">'ca'</span>, group<span class="op">=</span><span class="st">'zone'</span>, labels<span class="op">=</span><span class="st">'placette'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Analyse factorielle des correspondances'</span>)</span>
@@ -688,7 +1127,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-9-output-1.png" width="855" height="662" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-14-output-1.png" width="855" height="662" class="figure-img"></p>
 <figcaption>AFC du même tableau, sans contrainte</figcaption>
 </figure>
 </div>
@@ -700,8 +1139,84 @@ Note
 <h2 class="anchored" data-anchor-id="diversité">Diversité</h2>
 <section id="g-rank_abundance" class="level3">
 <h3 class="anchored" data-anchor-id="g-rank_abundance"><code>rank_abundance</code> — Courbe rang-abondance</h3>
+<p>Courbe rang-abondance (diagramme de Whittaker) : abondance relative de chaque espèce selon son rang, une courbe par site ou par groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer la structure des communautés : une courbe raide = quelques espèces dominantes, une courbe plate = communauté équilibrée.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par site (ou groupe), une colonne par espèce.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>zone</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> (optionnel) : nom de la courbe</td>
+<td style="text-align: left;">sèche</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Carex</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>species</code> : abondance</td>
+<td style="text-align: left;">125</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Juncus</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>species</code> : abondance</td>
+<td style="text-align: left;">48</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>species</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Liste des colonnes d’espèces (abondances, une colonne par espèce).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pooled</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Additionne tous les sites en une seule courbe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>log</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Axe des abondances en échelle logarithmique.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>marker</code></td>
+<td style="text-align: left;"><code>'o'</code></td>
+<td style="text-align: left;">Symbole des points (<code>o</code>, <code>s</code>, <code>^</code>, <code>None</code>…).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Le diagramme de Whittaker : l’abondance relative de chaque espèce selon son rang. Une courbe raide signale quelques espèces dominantes, une courbe plate une communauté équilibrée.</p>
-<div id="31a86145" class="cell" data-execution_count="9">
+<div id="404e1eb5" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>par_zone <span class="op">=</span> communaute.groupby(<span class="st">'zone'</span>, sort<span class="op">=</span><span class="va">False</span>)[especes].<span class="bu">sum</span>().reset_index()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>(Chart(par_zone, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .rank_abundance(especes, labels<span class="op">=</span><span class="st">'zone'</span>)</span>
@@ -711,7 +1226,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-10-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-16-output-1.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Une courbe par zone (placettes regroupées)</figcaption>
 </figure>
 </div>
@@ -720,8 +1235,79 @@ Note
 </section>
 <section id="g-accumulation" class="level3">
 <h3 class="anchored" data-anchor-id="g-accumulation"><code>accumulation</code> — Accumulation et raréfaction</h3>
+<p>Courbe d’accumulation : richesse en espèces quand on ajoute des sites (moyenne ± écart-type, estimateur Chao2), ou courbes de raréfaction par site.</p>
+<p><strong>Quand l’utiliser.</strong> Juger si l’effort d’échantillonnage est suffisant (plateau) et estimer la richesse totale ; comparer des sites à effort égal.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par site, une colonne par espèce (abondances ou 0/1).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>Carex</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>species</code> : abondance</td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Lemna</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>species</code> : abondance</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>species</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Liste des colonnes d’espèces (abondances, une colonne par espèce).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>kind</code></td>
+<td style="text-align: left;"><code>'sites'</code></td>
+<td style="text-align: left;">‘sites’ (accumulation en ajoutant des sites) ou ‘individuals’ (raréfaction de chaque site).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>n_perm</code></td>
+<td style="text-align: left;"><code>100</code></td>
+<td style="text-align: left;">Nombre de permutations de l’ordre des sites.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.accumulation_stats</code> : richesse observée et estimée (Chao2).</p>
+<p><strong>Exemple</strong></p>
 <p><code>kind='sites'</code> : la richesse cumulée quand on ajoute des placettes (ordre aléatoire, moyenne ± écart-type), avec l’estimateur <strong>Chao2</strong> de la richesse totale. Un plateau qui rejoint Chao2 indique un échantillonnage suffisant. <code>kind='individuals'</code> : la courbe de <strong>raréfaction</strong> de chaque site, pour comparer des richesses à effort égal.</p>
-<div id="48e08ff3" class="cell" data-execution_count="10">
+<div id="3cce9f3b" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .accumulation(especes)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Effort d</span><span class="ch">\'</span><span class="st">échantillonnage'</span>)</span>
@@ -734,13 +1320,13 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-11-output-2.png" width="855" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-18-output-2.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Courbe d’accumulation des espèces</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="0bb2463f" class="cell" data-execution_count="11">
+<div id="30975a85" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute.iloc[[<span class="dv">3</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">26</span>]], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    .accumulation(especes, kind<span class="op">=</span><span class="st">'individuals'</span>, labels<span class="op">=</span><span class="st">'placette'</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes de raréfaction'</span>)</span>
@@ -749,7 +1335,7 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-12-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-19-output-1.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Raréfaction de quatre placettes</figcaption>
 </figure>
 </div>
@@ -758,8 +1344,96 @@ Note
 </section>
 <section id="g-diversity" class="level3">
 <h3 class="anchored" data-anchor-id="g-diversity"><code>diversity</code> — Indices de diversité</h3>
+<p>Indice de diversité par site en barres, ou moyenne ± erreur type par groupe avec lettres de Tukey.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer la diversité entre sites, habitats ou traitements (richesse, Shannon, Simpson, équitabilité de Pielou).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par site, une colonne par espèce.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>placette</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> (optionnel)</td>
+<td style="text-align: left;">P03</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Carex</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>species</code> : abondance</td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>zone</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : moyenne par groupe</td>
+<td style="text-align: left;">intermédiaire</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>species</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Liste des colonnes d’espèces (abondances, une colonne par espèce).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>index</code></td>
+<td style="text-align: left;"><code>'shannon'</code></td>
+<td style="text-align: left;">‘richesse’, ‘shannon’, ‘simpson’, ‘inv_simpson’ ou ‘pielou’.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>letters</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Lettres du test de Tukey entre groupes (avec <code>group</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.diversity_table</code> : tous les indices de tous les sites.</p>
+<p><strong>Exemple</strong></p>
 <p>Richesse, Shannon H’, Simpson (1 − D), inverse de Simpson et équitabilité de Pielou, par site ; avec <code>group</code>, moyenne ± erreur type par groupe et lettres de Tukey. Tous les indices sont dans <code>chart.diversity_table</code> (et <code>diversity_indices()</code> les calcule sans tracer).</p>
-<div id="758b96ee" class="cell" data-execution_count="12">
+<div id="c76f27ac" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(communaute, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    .diversity(especes, index<span class="op">=</span><span class="st">'shannon'</span>, group<span class="op">=</span><span class="st">'zone'</span>, letters<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Diversité de Shannon par zone'</span>)</span>
@@ -769,12 +1443,12 @@ Note
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="ecologie_files/figure-html/cell-13-output-1.png" width="759" height="422" class="figure-img"></p>
+<p><img src="ecologie_files/figure-html/cell-21-output-1.png" width="759" height="422" class="figure-img"></p>
 <figcaption>Shannon par zone, comparaisons de Tukey</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 
 

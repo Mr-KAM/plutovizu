@@ -86,7 +86,8 @@ ul.task-list li input[type="checkbox"] {
 
     const options = {
       valueNames: ['listing-image','listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
+      page: 100,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
       searchColumns: ["listing-title","listing-description","listing-image","listing-categories"],
     };
 
@@ -461,6 +462,12 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -513,7 +520,7 @@ window.Quarto = {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Catégories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">Tous <span class="quarto-category-count">(97)</span></div><div class="category" data-category="M0Q=">3D <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Q2hhbXBz">Champs <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Q2xpbWF0JTIwJTI2JTIwc29scw==">Climat &amp; sols <span class="quarto-category-count">(17)</span></div><div class="category" data-category="Q29tcGFyYWlzb24=">Comparaison <span class="quarto-category-count">(11)</span></div><div class="category" data-category="Q29tcG9zaXRpb24=">Composition <span class="quarto-category-count">(9)</span></div><div class="category" data-category="RGlzdHJpYnV0aW9u">Distribution <span class="quarto-category-count">(11)</span></div><div class="category" data-category="JUMzJTg5Y29sb2dpZQ==">Écologie <span class="quarto-category-count">(8)</span></div><div class="category" data-category="JUMzJTg5dm9sdXRpb24=">Évolution <span class="quarto-category-count">(11)</span></div><div class="category" data-category="TWFw">Map <span class="quarto-category-count">(6)</span></div><div class="category" data-category="TXVsdGl2YXJpJUMzJUE5">Multivarié <span class="quarto-category-count">(3)</span></div><div class="category" data-category="UXVhbGl0YXRpZg==">Qualitatif <span class="quarto-category-count">(4)</span></div><div class="category" data-category="UmVsYXRpb24=">Relation <span class="quarto-category-count">(9)</span></div><div class="category" data-category="U2VhYm9ybg==">Seaborn <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Catégories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">Tous <span class="quarto-category-count">(104)</span></div><div class="category" data-category="M0Q=">3D <span class="quarto-category-count">(4)</span></div><div class="category" data-category="Q2hhbXBz">Champs <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Q2xpbWF0JTIwJTI2JTIwc29scw==">Climat &amp; sols <span class="quarto-category-count">(17)</span></div><div class="category" data-category="Q29tcGFyYWlzb24=">Comparaison <span class="quarto-category-count">(11)</span></div><div class="category" data-category="Q29tcG9zaXRpb24=">Composition <span class="quarto-category-count">(9)</span></div><div class="category" data-category="RGlzdHJpYnV0aW9u">Distribution <span class="quarto-category-count">(11)</span></div><div class="category" data-category="JUMzJTg5Y29sb2dpZQ==">Écologie <span class="quarto-category-count">(8)</span></div><div class="category" data-category="JUMzJTg5dm9sdXRpb24=">Évolution <span class="quarto-category-count">(11)</span></div><div class="category" data-category="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">Graphes &amp; réseaux <span class="quarto-category-count">(7)</span></div><div class="category" data-category="TWFw">Map <span class="quarto-category-count">(6)</span></div><div class="category" data-category="TXVsdGl2YXJpJUMzJUE5">Multivarié <span class="quarto-category-count">(3)</span></div><div class="category" data-category="UXVhbGl0YXRpZg==">Qualitatif <span class="quarto-category-count">(4)</span></div><div class="category" data-category="UmVsYXRpb24=">Relation <span class="quarto-category-count">(9)</span></div><div class="category" data-category="U2VhYm9ybg==">Seaborn <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -521,7 +528,7 @@ window.Quarto = {
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./gallery.html">Graphiques</a></li><li class="breadcrumb-item"><a href="./gallery.html">Galerie</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Galerie</h1>
-<p class="subtitle lead">Les 97 graphiques de plutovizu. Cliquez sur une carte pour voir l’exemple et son code.</p>
+<p class="subtitle lead">Les 104 graphiques de plutovizu. Cliquez sur une carte pour voir l’exemple et son code.</p>
 </div>
 
 
@@ -538,7 +545,7 @@ window.Quarto = {
 </header>
 
 
-<p>Les graphiques sont rangés par catégorie, chacune avec sa page d’exemples : <a href="./charts/evolution.html">Évolution</a> · <a href="./charts/distribution.html">Distribution</a> · <a href="./charts/comparaison.html">Comparaison</a> · <a href="./charts/relation.html">Relation</a> · <a href="./charts/multivarie.html">Multivarié</a> · <a href="./charts/composition.html">Composition</a> · <a href="./charts/champs.html">Champs</a> · <a href="./charts/3d.html">3D</a> · <a href="./charts/sciences.html">Climat &amp; sols</a> · <a href="./charts/map.html">Map</a> · <a href="./charts/ecologie.html">Écologie</a> · <a href="./charts/qualitatif.html">Qualitatif</a> · <a href="./charts/seaborn.html">Seaborn</a></p>
+<p>Les graphiques sont rangés par catégorie, chacune avec sa page d’exemples : <a href="./charts/evolution.html">Évolution</a> · <a href="./charts/distribution.html">Distribution</a> · <a href="./charts/comparaison.html">Comparaison</a> · <a href="./charts/relation.html">Relation</a> · <a href="./charts/multivarie.html">Multivarié</a> · <a href="./charts/composition.html">Composition</a> · <a href="./charts/champs.html">Champs</a> · <a href="./charts/3d.html">3D</a> · <a href="./charts/sciences.html">Climat &amp; sols</a> · <a href="./charts/map.html">Map</a> · <a href="./charts/ecologie.html">Écologie</a> · <a href="./charts/qualitatif.html">Qualitatif</a> · <a href="./charts/graphes.html">Graphes &amp; réseaux</a> · <a href="./charts/seaborn.html">Seaborn</a></p>
 <p>Toutes les vignettes utilisent le thème <code>editorial</code>, le thème par défaut de cette documentation ; la page <a href="./themes.html">Thèmes</a> présente les 35 autres.</p>
 <div id="listing-galerie" class="quarto-listing quarto-listing-container-grid">
 <div class="listing-actions-group">
@@ -2564,11 +2571,158 @@ Matrice des codes
 </div>
 </div></a>
 </div>
-<div class="g-col-1" data-index="96" data-categories="U2VhYm9ybg==">
+<div class="g-col-1" data-index="96" data-categories="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">
+<a href="charts/graphes.html#g-network" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="images/vignettes/network.png" class="thumbnail-image card-img" style="height: 170px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Réseau
+</h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA=='); return false;">Graphes &amp; réseaux</div>
+
+</div>
+<div class="card-text listing-description delink">
+<p>network() — Liens entre acteurs, échanges</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="97" data-categories="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">
+<a href="charts/graphes.html#g-shortest_path" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="images/vignettes/shortest_path.png" class="thumbnail-image card-img" style="height: 170px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Plus court chemin
+</h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA=='); return false;">Graphes &amp; réseaux</div>
+
+</div>
+<div class="card-text listing-description delink">
+<p>shortest_path() — Itinéraire optimal (Dijkstra)</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="98" data-categories="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">
+<a href="charts/graphes.html#g-spanning_tree" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="images/vignettes/spanning_tree.png" class="thumbnail-image card-img" style="height: 170px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Arbre couvrant minimal
+</h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA=='); return false;">Graphes &amp; réseaux</div>
+
+</div>
+<div class="card-text listing-description delink">
+<p>spanning_tree() — Réseau le moins coûteux</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="99" data-categories="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">
+<a href="charts/graphes.html#g-max_flow" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" src="images/vignettes/max_flow.png" class="thumbnail-image card-img" style="height: 170px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Flot maximal
+</h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA=='); return false;">Graphes &amp; réseaux</div>
+
+</div>
+<div class="card-text listing-description delink">
+<p>max_flow() — Capacités, goulots</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="100" data-categories="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">
+<a href="charts/graphes.html#g-critical_path" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" data-src="images/vignettes/critical_path.png" class="thumbnail-image card-img" style="height: 170px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Chemin critique
+</h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA=='); return false;">Graphes &amp; réseaux</div>
+
+</div>
+<div class="card-text listing-description delink">
+<p>critical_path() — Planning PERT / CPM</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="101" data-categories="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">
+<a href="charts/graphes.html#g-tsp_route" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" data-src="images/vignettes/tsp_route.png" class="thumbnail-image card-img" style="height: 170px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Tournée optimale
+</h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA=='); return false;">Graphes &amp; réseaux</div>
+
+</div>
+<div class="card-text listing-description delink">
+<p>tsp_route() — Voyageur de commerce</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="102" data-categories="R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA==">
+<a href="charts/graphes.html#g-arc_diagram" class="quarto-grid-link">
+<div class="quarto-grid-item card h-100 card-left">
+<p class="card-img-top">
+<img loading="lazy" data-src="images/vignettes/arc_diagram.png" class="thumbnail-image card-img" style="height: 170px;">
+</p>
+<div class="card-body post-contents">
+<h5 class="no-anchor card-title listing-title">
+Diagramme en arcs
+</h5>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('R3JhcGhlcyUyMCUyNiUyMHIlQzMlQTlzZWF1eA=='); return false;">Graphes &amp; réseaux</div>
+
+</div>
+<div class="card-text listing-description delink">
+<p>arc_diagram() — Mouvements entre lieux</p>
+</div>
+</div>
+</div></a>
+</div>
+<div class="g-col-1" data-index="103" data-categories="U2VhYm9ybg==">
 <a href="charts/seaborn.html#g-seaborn" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
-<img loading="lazy" src="images/vignettes/seaborn.png" class="thumbnail-image card-img" style="height: 170px;">
+<img loading="lazy" data-src="images/vignettes/seaborn.png" class="thumbnail-image card-img" style="height: 170px;">
 </p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
@@ -2587,6 +2741,9 @@ Tout seaborn
 </div>
 </div>
 <div class="listing-no-matching d-none">Aucun article correspondant</div>
+<nav id="galerie-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
 </div>
 
 

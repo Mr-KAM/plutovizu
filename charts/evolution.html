@@ -436,6 +436,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -533,7 +539,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-line" class="level3">
 <h3 class="anchored" data-anchor-id="g-line"><code>line</code> — Courbe</h3>
-<div id="5c56c141" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
+<p>Courbe reliant des valeurs successives : une ligne par colonne <code>y</code>, sur un axe x commun (dates, mois, années, doses…).</p>
+<p><strong>Quand l’utiliser.</strong> Suivre l’évolution d’une ou plusieurs grandeurs dans le temps ou le long d’un gradient ordonné, repérer tendances, saisonnalités et ruptures. À éviter pour des catégories sans ordre (préférer <code>bar</code>).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par pas de temps (format large, une colonne par série).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>mois</code></td>
+<td style="text-align: left;">nombre, date ou texte ordonné</td>
+<td style="text-align: left;"><code>x</code> : position sur l’axe horizontal</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ventes</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : une série (une colonne = une courbe)</td>
+<td style="text-align: left;">18</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>coûts</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : autre série, passée dans une liste</td>
+<td style="text-align: left;">12</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne pour l’axe x (dates, catégories, numérique).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Une colonne ou une liste de colonnes ; une courbe (et une entrée de légende) par colonne.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>marker</code></td>
+<td style="text-align: left;"><code>'o'</code></td>
+<td style="text-align: left;">Symbole de marqueur (‘o’, ‘s’, ‘^’, ‘None’…).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>linewidth</code></td>
+<td style="text-align: left;"><code>2</code></td>
+<td style="text-align: left;">Épaisseur du trait.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>markersize</code></td>
+<td style="text-align: left;"><code>6</code></td>
+<td style="text-align: left;">Diamètre du marqueur.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>1.0</code></td>
+<td style="text-align: left;">Opacité, 0–1.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="115086a5" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mois <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:    mois,</span>
@@ -553,7 +646,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-3-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-4-output-1.png" width="951" height="566" class="figure-img"></p>
 <figcaption>Évolution mensuelle de trois indicateurs</figcaption>
 </figure>
 </div>
@@ -562,7 +655,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-area" class="level3">
 <h3 class="anchored" data-anchor-id="g-area"><code>area</code> — Aire (empilée)</h3>
-<div id="027187c6" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
+<p>Courbes dont la surface sous la ligne est remplie ; avec <code>stacked=True</code>, les séries s’empilent et le haut de la pile donne le total.</p>
+<p><strong>Quand l’utiliser.</strong> Montrer un volume qui évolue (production, écoutes, surfaces) et, en mode empilé, la contribution de chaque composante au total au fil du temps.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par pas de temps, une colonne par série.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>annee</code></td>
+<td style="text-align: left;">nombre ou date</td>
+<td style="text-align: left;"><code>x</code> : temps</td>
+<td style="text-align: left;">2015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>rock</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : première série (aire)</td>
+<td style="text-align: left;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pop</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : autre série</td>
+<td style="text-align: left;">28</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne pour l’axe x.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Une colonne ou une liste de colonnes ; une aire par colonne.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.7</code></td>
+<td style="text-align: left;">Opacité du remplissage.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>stacked</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Empile les séries (le haut de la pile = total) au lieu de les superposer.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="082ec468" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2025</span>)),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">30</span>, <span class="dv">28</span>, <span class="dv">25</span>, <span class="dv">22</span>, <span class="dv">20</span>, <span class="dv">18</span>, <span class="dv">16</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">12</span>],</span>
@@ -581,7 +745,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-4-output-1.png" width="952" height="566" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-6-output-1.png" width="952" height="566" class="figure-img"></p>
 <figcaption>Répartition des genres musicaux dans les écoutes</figcaption>
 </figure>
 </div>
@@ -590,7 +754,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-streamgraph" class="level3">
 <h3 class="anchored" data-anchor-id="g-streamgraph"><code>streamgraph</code> — Flux temporel</h3>
-<div id="e370a0e8" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="4">
+<p>Aires empilées autour d’une ligne de base centrée et ondulante : un « flux » organique dont l’épaisseur totale varie dans le temps.</p>
+<p><strong>Quand l’utiliser.</strong> Raconter l’évolution de la composition d’un total sur une longue période (genres, espèces, produits) quand la forme générale compte plus que les valeurs exactes.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par pas de temps, une colonne par composante.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>annee</code></td>
+<td style="text-align: left;">nombre ou date</td>
+<td style="text-align: left;"><code>x</code> : temps</td>
+<td style="text-align: left;">2010</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>rock</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : épaisseur d’une composante</td>
+<td style="text-align: left;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>jazz</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : autre composante</td>
+<td style="text-align: left;">8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne pour l’axe temporel / de période.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Liste des colonnes à empiler (une couche par colonne).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.85</code></td>
+<td style="text-align: left;">Opacité du remplissage.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="171d74c2" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2012</span>, <span class="dv">2025</span>)),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">32</span>,<span class="dv">30</span>,<span class="dv">28</span>,<span class="dv">25</span>,<span class="dv">22</span>,<span class="dv">20</span>,<span class="dv">18</span>,<span class="dv">16</span>,<span class="dv">15</span>,<span class="dv">13</span>,<span class="dv">12</span>,<span class="dv">11</span>,<span class="dv">10</span>],</span>
@@ -612,7 +842,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-5-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-8-output-1.png" width="951" height="566" class="figure-img"></p>
 <figcaption>Évolution des genres musicaux dans les écoutes</figcaption>
 </figure>
 </div>
@@ -621,8 +851,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-step" class="level3">
 <h3 class="anchored" data-anchor-id="g-step"><code>step</code> — Courbe en escalier</h3>
+<p>Courbe en escalier : la valeur reste constante entre deux points puis change d’un coup.</p>
+<p><strong>Quand l’utiliser.</strong> Grandeurs qui varient par paliers : cumuls (pluie cumulée), tarifs, stocks, niveaux réglementaires, effectifs entre deux comptages.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par point de changement.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>jour</code></td>
+<td style="text-align: left;">nombre ou date</td>
+<td style="text-align: left;"><code>x</code> : instant du changement</td>
+<td style="text-align: left;">2024-07-15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pluie_cumulee</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : valeur du palier</td>
+<td style="text-align: left;">182.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>where</code></td>
+<td style="text-align: left;"><code>'mid'</code></td>
+<td style="text-align: left;">Position de la marche : ‘pre’ (avant le point), ‘post’ (après le point, valeur valable jusqu’au point suivant) ou ‘mid’ (à mi-chemin).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>fill</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Remplit la surface sous l’escalier.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.2</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Valeur constante entre deux mesures (stocks, niveaux, tarifs) — <code>where</code> place la marche.</p>
-<div id="92a541bd" class="cell" data-execution_count="5">
+<div id="83ffb6e8" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>meteo[<span class="st">'pluie_cumulee'</span>] <span class="op">=</span> meteo[<span class="st">'pluie'</span>].cumsum()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .step(<span class="st">'jour'</span>, <span class="st">'pluie_cumulee'</span>, where<span class="op">=</span><span class="st">'post'</span>, fill<span class="op">=</span><span class="va">True</span>)</span>
@@ -632,7 +932,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-6-output-1.png" width="856" height="374" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-10-output-1.png" width="856" height="374" class="figure-img"></p>
 <figcaption>Pluie cumulée de la saison</figcaption>
 </figure>
 </div>
@@ -641,8 +941,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-stem" class="level3">
 <h3 class="anchored" data-anchor-id="g-stem"><code>stem</code> — Diagramme en bâtons</h3>
+<p>Diagramme en bâtons : un trait vertical de la ligne de base à chaque valeur, terminé par un point.</p>
+<p><strong>Quand l’utiliser.</strong> Valeurs ponctuelles et discrètes dans le temps (pluies journalières, événements comptés, signaux échantillonnés), quand relier les points par une ligne serait trompeur.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par observation.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>jour</code></td>
+<td style="text-align: left;">nombre ou date</td>
+<td style="text-align: left;"><code>x</code> : position du bâton</td>
+<td style="text-align: left;">2024-08-03</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pluie</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : hauteur du bâton</td>
+<td style="text-align: left;">24.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>baseline</code></td>
+<td style="text-align: left;"><code>0.0</code></td>
+<td style="text-align: left;">Niveau de départ des bâtons (0 par défaut).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Un trait par observation depuis une ligne de base : idéal pour des événements ponctuels.</p>
-<div id="ddc02bb4" class="cell" data-execution_count="6">
+<div id="d539f62d" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(meteo[meteo[<span class="st">'pluie'</span>] <span class="op">&gt;</span> <span class="dv">0</span>], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .stem(<span class="st">'jour'</span>, <span class="st">'pluie'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluies journalières (mm)'</span>)</span>
@@ -651,7 +1016,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-7-output-1.png" width="855" height="374" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-12-output-1.png" width="855" height="374" class="figure-img"></p>
 <figcaption>Pluies journalières</figcaption>
 </figure>
 </div>
@@ -660,8 +1025,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-band" class="level3">
 <h3 class="anchored" data-anchor-id="g-band"><code>band</code> — Bande entre deux courbes</h3>
+<p>Bande colorée entre une limite basse et une limite haute, avec éventuellement une courbe centrale.</p>
+<p><strong>Quand l’utiliser.</strong> Montrer une plage de variation (Tmin–Tmax), un intervalle de confiance ou de prévision, une enveloppe min–max autour d’une moyenne.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par pas de temps.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>jour</code></td>
+<td style="text-align: left;">nombre ou date</td>
+<td style="text-align: left;"><code>x</code> : temps</td>
+<td style="text-align: left;">2024-06-01</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tmin</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>low</code> : bord inférieur</td>
+<td style="text-align: left;">24.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>tmax</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>high</code> : bord supérieur</td>
+<td style="text-align: left;">35.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tmoy</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> (optionnel) : courbe centrale</td>
+<td style="text-align: left;">29.9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>low</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne du bord inférieur de la bande.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>high</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne du bord supérieur de la bande.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne optionnelle tracée en courbe au milieu de la bande (moyenne, médiane…).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.25</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>label</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Texte de la bande dans la légende.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une bande colorée entre deux colonnes (minimum–maximum, intervalle de confiance), avec une courbe centrale optionnelle.</p>
-<div id="19b09534" class="cell" data-execution_count="7">
+<div id="085d5db8" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .band(<span class="st">'jour'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, y<span class="op">=</span><span class="st">'tmoy'</span>, label<span class="op">=</span><span class="st">'Tmin – Tmax'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Températures journalières (°C)'</span>)</span>
@@ -670,7 +1127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-8-output-1.png" width="855" height="374" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-14-output-1.png" width="855" height="374" class="figure-img"></p>
 <figcaption>Températures minimales, maximales et moyennes</figcaption>
 </figure>
 </div>
@@ -679,7 +1136,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-bump" class="level3">
 <h3 class="anchored" data-anchor-id="g-bump"><code>bump</code> — Évolution de classement</h3>
-<div id="c35bff2d" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="8">
+<p>Graphique de classement : le rang de chaque élément à chaque période, relié par des lignes ; le rang 1 est en haut.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer l’évolution des positions relatives (classement d’équipes, de cultures, de pays) quand l’ordre compte plus que les valeurs.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par élément et par période (format long).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>saison</code></td>
+<td style="text-align: left;">nombre ou texte ordonné</td>
+<td style="text-align: left;"><code>x</code> : période</td>
+<td style="text-align: left;">2021</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>classement</code></td>
+<td style="text-align: left;">entier</td>
+<td style="text-align: left;"><code>y</code> : rang (1 = premier)</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>equipe</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> : élément classé (une ligne par élément)</td>
+<td style="text-align: left;">Lyon</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne pour les périodes ou saisons.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les valeurs de rang (entier, plus bas = meilleur).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne identifiant chaque entité classée.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>linewidth</code></td>
+<td style="text-align: left;"><code>2.5</code></td>
+<td style="text-align: left;">Épaisseur du trait.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>markersize</code></td>
+<td style="text-align: left;"><code>8</code></td>
+<td style="text-align: left;">Diamètre du marqueur à chaque point de données.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="26d25273" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'saison'</span>:     [<span class="dv">2019</span>,<span class="dv">2020</span>,<span class="dv">2021</span>,<span class="dv">2022</span>,<span class="dv">2023</span>] <span class="op">*</span> <span class="dv">5</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:     ([<span class="st">'PSG'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Lyon'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Marseille'</span>]<span class="op">*</span><span class="dv">5</span></span>
@@ -697,7 +1236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-9-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-16-output-1.png" width="951" height="566" class="figure-img"></p>
 <figcaption>Classement Ligue 1 sur 5 saisons</figcaption>
 </figure>
 </div>
@@ -706,8 +1245,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-timeline" class="level3">
 <h3 class="anchored" data-anchor-id="g-timeline"><code>timeline</code> — Frise chronologique</h3>
+<p>Frise chronologique : chaque événement est une tige posée sur un axe des dates, avec son libellé, alterné dessus/dessous.</p>
+<p><strong>Quand l’utiliser.</strong> Présenter les étapes d’un projet, d’une campagne agricole, d’une histoire ; repérer les intervalles entre événements datés.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par événement.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;">date</td>
+<td style="text-align: left;"><code>date</code> : moment de l’événement</td>
+<td style="text-align: left;">2024-06-20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>etape</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>label</code> : libellé affiché</td>
+<td style="text-align: left;">Semis</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des dates (ou nombres) des événements.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>label</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des libellés affichés au bout des tiges.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>levels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Hauteurs des tiges (liste) ; <code>None</code> = hauteurs alternées automatiques.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Des événements datés, chacun avec sa tige et son libellé, alternés au-dessus et au-dessous.</p>
-<div id="1b46c0de" class="cell" data-execution_count="9">
+<div id="4c76a790" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(calendrier, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .timeline(<span class="st">'date'</span>, <span class="st">'etape'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Calendrier cultural 2024'</span>)</span>
@@ -716,7 +1320,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-10-output-1.png" width="950" height="374" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-18-output-1.png" width="950" height="374" class="figure-img"></p>
 <figcaption>Calendrier cultural de la campagne</figcaption>
 </figure>
 </div>
@@ -725,8 +1329,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-eventplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-eventplot"><code>eventplot</code> — Événements par groupe</h3>
+<p>Diagramme d’événements : un petit trait par occurrence, une rangée par groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer la répartition dans le temps d’événements répétés : dates de floraison par variété, passages d’animaux, pannes, arrivées.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par événement.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;">date ou nombre</td>
+<td style="text-align: left;"><code>time</code> : instant de l’événement</td>
+<td style="text-align: left;">2024-09-12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : une rangée par groupe</td>
+<td style="text-align: left;">Sahel-108</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>time</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des instants (dates ou nombres).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>linelength</code></td>
+<td style="text-align: left;"><code>0.7</code></td>
+<td style="text-align: left;">Hauteur de chaque trait, en fraction de l’écart entre rangées.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>linewidth</code></td>
+<td style="text-align: left;"><code>1.5</code></td>
+<td style="text-align: left;">Épaisseur des lignes.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Un trait par événement, une ligne par groupe : dates d’observation, stades phénologiques…</p>
-<div id="3b0a4f8b" class="cell" data-execution_count="10">
+<div id="dc83eba5" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(floraison, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.5</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .eventplot(<span class="st">'date'</span>, group<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Floraison par variété'</span>)</span>
@@ -735,7 +1410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-11-output-1.png" width="857" height="326" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-20-output-1.png" width="857" height="326" class="figure-img"></p>
 <figcaption>Dates de floraison observées par variété</figcaption>
 </figure>
 </div>
@@ -744,7 +1419,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-calendar_heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="g-calendar_heatmap"><code>calendar_heatmap</code> — Calendrier de contributions</h3>
-<div id="aeecd63e" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="11">
+<p>Calendrier coloré : une case par jour, semaines en colonnes et jours de la semaine en lignes (style GitHub).</p>
+<p><strong>Quand l’utiliser.</strong> Repérer des rythmes hebdomadaires et saisonniers dans une activité quotidienne (observations, ventes, pluies, contributions).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par jour.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>date</code></td>
+<td style="text-align: left;">date</td>
+<td style="text-align: left;"><code>date_col</code> : jour</td>
+<td style="text-align: left;">2024-03-14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>commits</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value_col</code> : intensité de la case</td>
+<td style="text-align: left;">5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>date_col</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les dates (tout format analysable par pd.to_datetime).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>value_col</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne numérique déterminant l’intensité de couleur des cellules.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>'YlGn'</code></td>
+<td style="text-align: left;">Nom du colormap.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="f4283f37" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> pd.date_range(<span class="st">'2024-01-01'</span>, <span class="st">'2024-12-31'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>commits <span class="op">=</span> np.random.poisson(<span class="dv">3</span>, <span class="bu">len</span>(dates))</span>
@@ -760,7 +1495,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-12-output-1.png" width="951" height="217" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-22-output-1.png" width="951" height="217" class="figure-img"></p>
 <figcaption>Commits GitHub 2024</figcaption>
 </figure>
 </div>
@@ -769,7 +1504,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-gantt" class="level3">
 <h3 class="anchored" data-anchor-id="g-gantt"><code>gantt</code> — Diagramme de Gantt</h3>
-<div id="6adab2a9" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="12">
+<p>Diagramme de Gantt : une barre horizontale par tâche, de sa date de début à sa date de fin, colorée par groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Planifier et suivre un projet, un calendrier cultural ou une campagne de terrain. Pour calculer le chemin critique à partir des durées et dépendances, voir <code>critical_path</code>.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par tâche.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>tache</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>task</code> : nom de la tâche (une barre)</td>
+<td style="text-align: left;">Semis</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>debut</code></td>
+<td style="text-align: left;">date</td>
+<td style="text-align: left;"><code>start</code> : début</td>
+<td style="text-align: left;">2024-06-20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>fin</code></td>
+<td style="text-align: left;">date</td>
+<td style="text-align: left;"><code>end</code> : fin</td>
+<td style="text-align: left;">2024-07-05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>equipe</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : couleur</td>
+<td style="text-align: left;">Terrain</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>task</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les noms des tâches (utilisée comme étiquettes de l’axe y).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>start</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les dates de début (tout format analysable par pd.to_datetime).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>end</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les dates de fin.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne pour colorier les barres par catégorie (ex. équipe, phase).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.8</code></td>
+<td style="text-align: left;">Opacité des barres.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="0a08abf7" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tache'</span>:   [<span class="st">'Analyse'</span>,<span class="st">'Design'</span>,<span class="st">'Dev Backend'</span>,<span class="st">'Dev Frontend'</span>,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Intégration'</span>,<span class="st">'Tests'</span>,<span class="st">'Déploiement'</span>],</span>
@@ -790,7 +1607,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="evolution_files/figure-html/cell-13-output-1.png" width="952" height="566" class="figure-img"></p>
+<p><img src="evolution_files/figure-html/cell-24-output-1.png" width="952" height="566" class="figure-img"></p>
 <figcaption>Planning projet Q1 2024</figcaption>
 </figure>
 </div>

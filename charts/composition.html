@@ -436,6 +436,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -531,7 +537,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-pie" class="level3">
 <h3 class="anchored" data-anchor-id="g-pie"><code>pie</code> — Camembert</h3>
-<div id="3345453c" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="2">
+<p>Camembert : chaque part est un secteur d’angle proportionnel à sa valeur.</p>
+<p><strong>Quand l’utiliser.</strong> Montrer la répartition d’un total en peu de parts (2 à 6). Au-delà, ou pour comparer des valeurs proches, préférer des barres.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par part.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>segment</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom de la part</td>
+<td style="text-align: left;">Entreprises</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>part</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>column</code> : taille de la part</td>
+<td style="text-align: left;">35</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>column</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs (tailles des parts).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne utilisée comme étiquettes. Utilise l’index par défaut.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>autopct</code></td>
+<td style="text-align: left;"><code>'%1.1f%%'</code></td>
+<td style="text-align: left;">Format de chaîne de style printf pour les pourcentages.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>startangle</code></td>
+<td style="text-align: left;"><code>90</code></td>
+<td style="text-align: left;">Angle en degrés pour le premier secteur.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>explode</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Décalage fractionnaire pour extraire chaque secteur (0 = pas de décalage).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="cc147cf6" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'segment'</span>: [<span class="st">'Résidentiel'</span>,<span class="st">'Professionnel'</span>,<span class="st">'Industrie'</span>,<span class="st">'Administration'</span>],</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'part'</span>:    [<span class="dv">42</span>, <span class="dv">28</span>, <span class="dv">18</span>, <span class="dv">12</span>],</span>
@@ -546,7 +622,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-3-output-1.png" width="950" height="566" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-4-output-1.png" width="950" height="566" class="figure-img"></p>
 <figcaption>Parts de marché par segment</figcaption>
 </figure>
 </div>
@@ -555,8 +631,95 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-donut" class="level3">
 <h3 class="anchored" data-anchor-id="g-donut"><code>donut</code> — Anneau</h3>
+<p>Anneau : un camembert évidé, avec un texte au centre ; avec <code>group</code>, deux anneaux imbriqués (groupes à l’intérieur, éléments à l’extérieur).</p>
+<p><strong>Quand l’utiliser.</strong> Répartition d’un total avec un chiffre clé au centre, ou composition hiérarchique à deux niveaux (famille de cultures → culture).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par élément.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>culture</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom de l’élément</td>
+<td style="text-align: left;">Mil</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>surface</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>values</code> : taille</td>
+<td style="text-align: left;">420</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>famille</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : anneau intérieur</td>
+<td style="text-align: left;">Céréales</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>values</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs (taille de chaque secteur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>hole</code></td>
+<td style="text-align: left;"><code>0.55</code></td>
+<td style="text-align: left;">Taille du trou central, en fraction du rayon (0 = camembert).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>center_text</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Texte écrit au centre de l’anneau (total, titre…).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_values</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit les valeurs sur le graphique.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Un camembert évidé, avec un texte central ; avec <code>group</code>, deux anneaux imbriqués (groupes à l’intérieur, éléments à l’extérieur).</p>
-<div id="dc4c7df5" class="cell" data-execution_count="3">
+<div id="06790ac1" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(cultures, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .donut(<span class="st">'surface'</span>, labels<span class="op">=</span><span class="st">'culture'</span>, group<span class="op">=</span><span class="st">'famille'</span>, center_text<span class="op">=</span><span class="st">'1 865 ha'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Assolement'</span>)</span>
@@ -565,7 +728,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-4-output-1.png" width="752" height="662" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-6-output-1.png" width="752" height="662" class="figure-img"></p>
 <figcaption>Surfaces par famille et par culture</figcaption>
 </figure>
 </div>
@@ -574,7 +737,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-treemap" class="level3">
 <h3 class="anchored" data-anchor-id="g-treemap"><code>treemap</code> — Carte arborescente</h3>
-<div id="742289e6" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="4">
+<p>Carte arborescente : des rectangles juxtaposés d’aire proportionnelle à la valeur (paquet <code>squarify</code>).</p>
+<p><strong>Quand l’utiliser.</strong> Comparer les parts de nombreux éléments d’un total (budgets, surfaces, ventes) dans un espace compact.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par élément.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>departement</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom du rectangle</td>
+<td style="text-align: left;">R&amp;D</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>budget</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>values</code> : aire du rectangle</td>
+<td style="text-align: left;">420</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>values</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec des tailles numériques positives (détermine l’aire du rectangle).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne pour les étiquettes textuelles à l’intérieur de chaque rectangle.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.9</code></td>
+<td style="text-align: left;">Opacité du remplissage.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_values</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit les valeurs sur le graphique.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>value_format</code></td>
+<td style="text-align: left;"><code>'{:,.0f}'</code></td>
+<td style="text-align: left;">Format des valeurs affichées (<code>{:,.0f}</code>, <code>{:.1%}</code>…).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="9c4db5af" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'departement'</span>: [<span class="st">'R&amp;D'</span>,<span class="st">'Ventes'</span>,<span class="st">'Marketing'</span>,<span class="st">'Ops'</span>,<span class="st">'Finance'</span>,<span class="st">'IT'</span>,<span class="st">'RH'</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'budget'</span>:      [<span class="dv">450</span>, <span class="dv">380</span>, <span class="dv">210</span>, <span class="dv">280</span>, <span class="dv">150</span>, <span class="dv">200</span>, <span class="dv">120</span>],</span>
@@ -588,7 +821,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-5-output-1.png" width="950" height="566" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-8-output-1.png" width="950" height="566" class="figure-img"></p>
 <figcaption>Budget par département</figcaption>
 </figure>
 </div>
@@ -597,8 +830,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-circle_packing" class="level3">
 <h3 class="anchored" data-anchor-id="g-circle_packing"><code>circle_packing</code> — Cercles imbriqués</h3>
+<p>Cercles imbriqués (circlify) : un cercle par élément, d’aire proportionnelle à la valeur, regroupés dans le cercle de leur groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Composition hiérarchique (familles → cultures, régions → communes) quand l’aspect visuel compte plus que la lecture précise des valeurs.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par élément (feuille de la hiérarchie).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>culture</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom du cercle</td>
+<td style="text-align: left;">Arachide</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>surface</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>values</code> : aire du cercle</td>
+<td style="text-align: left;">380</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>famille</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : cercle englobant</td>
+<td style="text-align: left;">Légumineuses</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>values</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs (aire de chaque cercle).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (défaut : l’index).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne (ou liste de colonnes pour plusieurs niveaux) des groupes englobants.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_labels</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit le nom des éléments dans les cercles.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_values</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Ajoute la valeur sous l’étiquette.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.85</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>min_label_radius</code></td>
+<td style="text-align: left;"><code>0.05</code></td>
+<td style="text-align: left;">Rayon minimal (en fraction du cercle principal) pour écrire une étiquette.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Un cercle par ligne, d’aire proportionnelle à la valeur (calcul par <a href="https://github.com/elmotec/circlify">circlify</a>). Avec <code>group</code>, les cercles sont regroupés dans le cercle de leur groupe ; une liste de colonnes donne plusieurs niveaux d’imbrication (<code>group=['cycle', 'famille']</code>).</p>
-<div id="787d6f0c" class="cell" data-execution_count="5">
+<div id="5d8b6fa7" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cultures <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'famille'</span>: [<span class="st">'Céréales'</span>] <span class="op">*</span> <span class="dv">4</span> <span class="op">+</span> [<span class="st">'Légumineuses'</span>] <span class="op">*</span> <span class="dv">3</span> <span class="op">+</span> [<span class="st">'Tubercules'</span>] <span class="op">*</span> <span class="dv">3</span> <span class="op">+</span> [<span class="st">'Maraîchage'</span>] <span class="op">*</span> <span class="dv">3</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'culture'</span>: [<span class="st">'Riz'</span>, <span class="st">'Maïs'</span>, <span class="st">'Mil'</span>, <span class="st">'Sorgho'</span>, <span class="st">'Niébé'</span>, <span class="st">'Arachide'</span>, <span class="st">'Soja'</span>,</span>
@@ -614,7 +939,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-6-output-1.png" width="722" height="758" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-10-output-1.png" width="722" height="758" class="figure-img"></p>
 <figcaption>Surfaces cultivées par famille de cultures</figcaption>
 </figure>
 </div>
@@ -623,7 +948,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-waterfall" class="level3">
 <h3 class="anchored" data-anchor-id="g-waterfall"><code>waterfall</code> — Cascade financière</h3>
-<div id="36375ca6" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="6">
+<p>Cascade : chaque barre part du total cumulé précédent et monte (valeur positive) ou descend (valeur négative).</p>
+<p><strong>Quand l’utiliser.</strong> Expliquer le passage d’une valeur de départ à une valeur finale : compte de résultat, bilan d’une exploitation, décomposition d’un écart.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par poste, dans l’ordre du cumul.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>poste</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>x</code> : libellé de l’étape</td>
+<td style="text-align: left;">Engrais</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>delta</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : variation (+ ou −)</td>
+<td style="text-align: left;">-220</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les étiquettes de catégories ou de périodes.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les valeurs incrémentielles (positives ou négatives).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>positive_color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur des barres pour les incréments positifs.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>negative_color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur des barres pour les incréments négatifs.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="3c7b2356" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'poste'</span>: [<span class="st">'CA'</span>,<span class="st">'Coût prod.'</span>,<span class="st">'Marge brute'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,<span class="st">'Marketing'</span>,<span class="st">'Résultat'</span>],</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'delta'</span>: [<span class="dv">500</span>, <span class="op">-</span><span class="dv">200</span>, <span class="dv">300</span>, <span class="op">-</span><span class="dv">60</span>, <span class="op">-</span><span class="dv">140</span>, <span class="op">-</span><span class="dv">40</span>, <span class="dv">60</span>],</span>
@@ -641,7 +1031,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-7-output-1.png" width="952" height="567" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-12-output-1.png" width="952" height="567" class="figure-img"></p>
 <figcaption>Compte de résultat simplifié</figcaption>
 </figure>
 </div>
@@ -650,8 +1040,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-ternary" class="level3">
 <h3 class="anchored" data-anchor-id="g-ternary"><code>ternary</code> — Diagramme ternaire</h3>
+<p>Diagramme ternaire : chaque point est une composition en trois parts de somme constante, placée dans un triangle.</p>
+<p><strong>Quand l’utiliser.</strong> Compositions à trois composantes : texture du sol (sable / limon / argile), parts de budget, composition chimique.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par échantillon.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>sable</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>a</code> : sommet bas gauche</td>
+<td style="text-align: left;">45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>limon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>b</code> : sommet bas droit</td>
+<td style="text-align: left;">35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>argile</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>c</code> : sommet haut</td>
+<td style="text-align: left;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>zone</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel)</td>
+<td style="text-align: left;">Plateau</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>a</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la première composante (sommet en bas à gauche).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>b</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la deuxième composante (sommet en bas à droite).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>c</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la troisième composante (sommet en haut).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>grid_step</code></td>
+<td style="text-align: left;"><code>0.1</code></td>
+<td style="text-align: left;">Pas de la grille (en fraction) ; 0.1 = lignes tous les 10 %.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.85</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>size</code></td>
+<td style="text-align: left;"><code>40</code></td>
+<td style="text-align: left;">Taille des points.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Pour des compositions en trois parts (pourcentages ou fractions), comme la texture du sol. Sommets : premier argument en bas à gauche, deuxième en bas à droite, troisième en haut.</p>
-<div id="de2943d8" class="cell" data-execution_count="7">
+<div id="2ee20f45" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">11</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sols <span class="op">=</span> pd.DataFrame({<span class="st">'zone'</span>: rng.choice([<span class="st">'bas-fond'</span>, <span class="st">'plateau'</span>], <span class="dv">40</span>)})</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'sable'</span>] <span class="op">=</span> np.where(sols[<span class="st">'zone'</span>] <span class="op">==</span> <span class="st">'plateau'</span>, rng.uniform(<span class="dv">55</span>, <span class="dv">85</span>, <span class="dv">40</span>), rng.uniform(<span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">40</span>))</span>
@@ -666,7 +1148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-8-output-1.png" width="660" height="606" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-14-output-1.png" width="660" height="606" class="figure-img"></p>
 <figcaption>Texture des sols de 40 parcelles</figcaption>
 </figure>
 </div>
@@ -675,7 +1157,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-sankey" class="level3">
 <h3 class="anchored" data-anchor-id="g-sankey"><code>sankey</code> — Diagramme de Sankey</h3>
-<div id="327d6277" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="8">
+<p>Diagramme de Sankey (matplotlib) : un flux principal qui se divise en entrées et sorties de largeur proportionnelle à leur valeur.</p>
+<p><strong>Quand l’utiliser.</strong> Bilans de flux simples : répartition d’une récolte (vente, stock, pertes), bilan énergétique ou financier.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par flux ; entrées positives, sorties négatives (la somme doit être nulle).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>flux</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>flows</code> : + entrée, − sortie</td>
+<td style="text-align: left;">-60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>etiquette</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom du flux</td>
+<td style="text-align: left;">Vente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>direction</code></td>
+<td style="text-align: left;">entier (−1, 0, 1)</td>
+<td style="text-align: left;"><code>orientations</code> (optionnel) : 1 = vers le haut, −1 = vers le bas, 0 = horizontal</td>
+<td style="text-align: left;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>flows</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les amplitudes de flux (positif = entrée, négatif = sortie).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec l’étiquette de chaque segment de flux.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>orientations</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne avec les orientations entières : 0 = droite, 1 = haut, –1 = bas.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>unit</code></td>
+<td style="text-align: left;"><code>''</code></td>
+<td style="text-align: left;">Chaîne d’unité ajoutée à chaque étiquette numérique (ex. ’ MW’).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>scale</code></td>
+<td style="text-align: left;"><code>0.01</code></td>
+<td style="text-align: left;">Facteur d’échelle global ; valeur plus petite = flèches plus larges.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="4a1a34d1" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'flux'</span>:       [<span class="dv">200</span>, <span class="op">-</span><span class="dv">80</span>,  <span class="op">-</span><span class="dv">50</span>, <span class="op">-</span><span class="dv">70</span>,   <span class="dv">80</span>,  <span class="op">-</span><span class="dv">30</span>, <span class="op">-</span><span class="dv">50</span>],</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'etiquette'</span>:  [<span class="st">'Revenus'</span>,<span class="st">'Coût matières'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,</span>
@@ -691,7 +1255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-9-output-1.png" width="950" height="566" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-16-output-1.png" width="950" height="566" class="figure-img"></p>
 <figcaption>Flux financiers simplifiés</figcaption>
 </figure>
 </div>
@@ -700,8 +1264,83 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-radial_bar" class="level3">
 <h3 class="anchored" data-anchor-id="g-radial_bar"><code>radial_bar</code> — Barres radiales</h3>
+<p>Barres radiales : un arc concentrique par élément, dont la longueur représente la valeur rapportée à un maximum (un tour complet).</p>
+<p><strong>Quand l’utiliser.</strong> Taux d’avancement ou d’atteinte d’objectifs de plusieurs indicateurs (en %), présentés de façon compacte.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par indicateur.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>activite</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom de l’arc</td>
+<td style="text-align: left;">Semis</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pct</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>values</code> : valeur (sur max_value)</td>
+<td style="text-align: left;">85</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>values</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>max_value</code></td>
+<td style="text-align: left;"><code>100</code></td>
+<td style="text-align: left;">Valeur correspondant à un tour complet (100 pour des pourcentages).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>width</code></td>
+<td style="text-align: left;"><code>0.12</code></td>
+<td style="text-align: left;">Épaisseur de chaque anneau.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>gap</code></td>
+<td style="text-align: left;"><code>0.04</code></td>
+<td style="text-align: left;">Espace entre les anneaux.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_values</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit les valeurs sur le graphique.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Un arc concentrique par indicateur, sa longueur rapportée à un tour complet.</p>
-<div id="9ef5f8f6" class="cell" data-execution_count="9">
+<div id="35fee741" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(avancement, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">6.5</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .radial_bar(<span class="st">'pct'</span>, labels<span class="op">=</span><span class="st">'activite'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Avancement du projet'</span>)</span>
@@ -710,7 +1349,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-10-output-1.png" width="578" height="530" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-18-output-1.png" width="578" height="530" class="figure-img"></p>
 <figcaption>Avancement des activités du projet</figcaption>
 </figure>
 </div>
@@ -719,8 +1358,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-progress_bar" class="level3">
 <h3 class="anchored" data-anchor-id="g-progress_bar"><code>progress_bar</code> — Barre de progression</h3>
+<p>Barres de progression : une barre pleine sur un rail clair, une par indicateur.</p>
+<p><strong>Quand l’utiliser.</strong> Suivi d’avancement (tâches, budget consommé, objectifs) dans un tableau de bord ou un rapport.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par indicateur (ou un seul nombre).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>activite</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom de la barre</td>
+<td style="text-align: left;">Récolte</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pct</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value</code> : avancement</td>
+<td style="text-align: left;">40</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Une colonne (une barre par ligne) ou un nombre (une seule barre).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>total</code></td>
+<td style="text-align: left;"><code>100</code></td>
+<td style="text-align: left;">Valeur correspondant à une barre pleine.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>height</code></td>
+<td style="text-align: left;"><code>0.5</code></td>
+<td style="text-align: left;">Épaisseur des barres.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une barre pleine sur un rail clair : un nombre, ou une colonne (une barre par ligne).</p>
-<div id="ef35d11b" class="cell" data-execution_count="10">
+<div id="e400fb8f" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(avancement, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .progress_bar(<span class="st">'pct'</span>, labels<span class="op">=</span><span class="st">'activite'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Objectifs atteints'</span>)</span>
@@ -729,7 +1438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="composition_files/figure-html/cell-11-output-1.png" width="762" height="259" class="figure-img"></p>
+<p><img src="composition_files/figure-html/cell-20-output-1.png" width="762" height="259" class="figure-img"></p>
 <figcaption>Avancement par activité</figcaption>
 </figure>
 </div>

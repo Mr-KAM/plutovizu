@@ -436,6 +436,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -545,8 +551,131 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Les coordonnées des villes sont réelles ; les <strong>valeurs</strong> (pluviométrie, tonnages) sont illustratives.</p>
 <section id="g-map_points" class="level3">
 <h3 class="anchored" data-anchor-id="g-map_points"><code>map_points</code> — Points sur une carte</h3>
+<p>Points sur une carte en longitude / latitude : colorés par une valeur ou un groupe, dimensionnés par une colonne (symboles proportionnels), nommés, sur un fond de carte.</p>
+<p><strong>Quand l’utiliser.</strong> Localiser des stations, parcelles, villages ou relevés et montrer une valeur par lieu (pluie, rendement, effectif).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par lieu (coordonnées WGS84 en degrés décimaux).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>ville</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> (optionnel) : nom affiché</td>
+<td style="text-align: left;">Kaolack</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lon</code> : longitude</td>
+<td style="text-align: left;">-16.07</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lat</code> : latitude</td>
+<td style="text-align: left;">14.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pluie</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value</code> / <code>size</code> (optionnels) : couleur, taille</td>
+<td style="text-align: left;">640</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des longitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des latitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne numérique qui colore les points (barre de couleur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>size</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne numérique qui dimensionne les points (symboles proportionnels).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>basemap</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute un fond de carte en ligne (option <code>map</code>, connexion Internet).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>sizes</code></td>
+<td style="text-align: left;"><code>(30, 500)</code></td>
+<td style="text-align: left;">Tailles minimale et maximale des symboles (points²).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.85</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>basemap_source</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Fournisseur de tuiles contextily ; <code>None</code> : Esri WorldGrayCanvas.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>size_legend</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute la légende des tailles.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Des points en longitude/latitude, colorés par une valeur (<code>value</code>) ou un groupe (<code>group</code>), dimensionnés par une colonne (<code>size</code>), nommés (<code>labels</code>).</p>
-<div id="ebd38ecf" class="cell" data-execution_count="2">
+<div id="59e08095" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, value<span class="op">=</span><span class="st">'pluie'</span>, size<span class="op">=</span><span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluviométrie annuelle (mm)'</span>)</span>
@@ -555,13 +684,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-3-output-1.png" width="830" height="662" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-4-output-1.png" width="830" height="662" class="figure-img"></p>
 <figcaption>Pluviométrie annuelle (valeurs illustratives)</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="b9735bfe" class="cell" data-execution_count="3">
+<div id="5340b8df" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, group<span class="op">=</span><span class="st">'zone'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Zones agro-écologiques (illustratives)'</span>)</span>
@@ -570,7 +699,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-4-output-1.png" width="849" height="614" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-5-output-1.png" width="849" height="614" class="figure-img"></p>
 <figcaption>Villes par zone</figcaption>
 </figure>
 </div>
@@ -579,8 +708,115 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-choropleth" class="level3">
 <h3 class="anchored" data-anchor-id="g-choropleth"><code>choropleth</code> — Carte de zones</h3>
+<p>Carte choroplèthe : chaque zone d’un GeoDataFrame (région, commune, parcelle) colorée selon une colonne continue ou catégorielle.</p>
+<p><strong>Quand l’utiliser.</strong> Cartographier un indicateur par unité spatiale : rendement par parcelle, densité par commune, type de sol par zone.</p>
+<p><strong>Données attendues</strong> : un GeoDataFrame, une ligne par zone, avec une colonne <code>geometry</code> (polygones) ; lire un fichier avec <code>geopandas.read_file(...)</code>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>parcelle</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> (optionnel) : nom écrit dans la zone</td>
+<td style="text-align: left;">P07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre ou texte</td>
+<td style="text-align: left;"><code>column</code> : valeur cartographiée</td>
+<td style="text-align: left;">3.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>geometry</code></td>
+<td style="text-align: left;">géométrie (Polygon)</td>
+<td style="text-align: left;">contour de la zone (colonne géométrique)</td>
+<td style="text-align: left;">POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>column</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne à cartographier.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>categorical</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Force une légende catégorielle (<code>True</code>) ou continue (<code>False</code>) ; <code>None</code> = selon le type de la colonne.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>legend</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche la légende ou la barre de couleur.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>basemap</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Ajoute un fond de carte en ligne (option <code>map</code>, connexion Internet).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>edgecolor</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur des contours. <code>None</code> : thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>basemap_source</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Fournisseur de tuiles contextily ; <code>None</code> : Esri WorldGrayCanvas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>scheme</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Discrétisation d’une colonne numérique : None (continu), ‘quantiles’, ‘equal’ (intervalles égaux) ou ‘natural’ (seuils naturels de Jenks).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>k</code></td>
+<td style="text-align: left;"><code>5</code></td>
+<td style="text-align: left;">Nombre de classes de la discrétisation.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Chaque zone d’un <code>GeoDataFrame</code> colorée selon une colonne : continue (barre de couleur) ou catégorielle (légende). Les zones se lisent avec <code>geopandas.read_file('zones.geojson')</code> (GeoJSON, shapefile, GeoPackage…). Ici, un parcellaire fictif construit avec shapely :</p>
-<div id="7467df9a" class="cell" data-execution_count="4">
+<div id="817def7e" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -601,13 +837,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-5-output-1.png" width="794" height="439" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-7-output-1.png" width="794" height="439" class="figure-img"></p>
 <figcaption>Rendement par parcelle</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="aa430aba" class="cell" data-execution_count="5">
+<div id="711eeeb7" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(parcelles, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .choropleth(<span class="st">'culture'</span>, labels<span class="op">=</span><span class="st">'parcelle'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Assolement'</span>)</span>
@@ -616,14 +852,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-6-output-1.png" width="854" height="480" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-8-output-1.png" width="854" height="480" class="figure-img"></p>
 <figcaption>Assolement : une couleur par culture</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Pour une colonne numérique, <code>scheme</code> regroupe les valeurs en <code>k</code> <strong>classes</strong> de couleur : <code>'quantiles'</code> (même nombre de zones par classe), <code>'equal'</code> (intervalles égaux) ou <code>'natural'</code> (seuils naturels de Jenks, qui placent les coupures entre les groupes de valeurs). Les bornes sont dans <code>chart.classes</code>.</p>
-<div id="d477d2cc" class="cell" data-execution_count="6">
+<div id="f61a93c6" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(parcelles, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .choropleth(<span class="st">'rendement'</span>, labels<span class="op">=</span><span class="st">'parcelle'</span>, scheme<span class="op">=</span><span class="st">'natural'</span>, k<span class="op">=</span><span class="dv">4</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par parcelle — 4 classes'</span>)</span>
@@ -636,7 +872,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-7-output-2.png" width="794" height="439" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-9-output-2.png" width="794" height="439" class="figure-img"></p>
 <figcaption>Rendement en 4 classes (seuils naturels)</figcaption>
 </figure>
 </div>
@@ -645,8 +881,143 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-flow_map" class="level3">
 <h3 class="anchored" data-anchor-id="g-flow_map"><code>flow_map</code> — Carte de flux</h3>
+<p>Carte de flux : une flèche courbe de l’origine vers la destination pour chaque ligne, d’épaisseur proportionnelle au volume.</p>
+<p><strong>Quand l’utiliser.</strong> Échanges commerciaux, approvisionnement des marchés, migrations, déplacements de troupeaux entre lieux.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par flux (origine → destination).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>ville</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>label_from</code> (optionnel) : nom de l’origine</td>
+<td style="text-align: left;">Kaolack</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lon_from</code> : longitude de l’origine</td>
+<td style="text-align: left;">-16.07</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lat_from</code> : latitude de l’origine</td>
+<td style="text-align: left;">14.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lon_dakar</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lon_to</code> : longitude de la destination</td>
+<td style="text-align: left;">-17.44</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>lat_dakar</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lat_to</code> : latitude de la destination</td>
+<td style="text-align: left;">14.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tonnes</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>weight</code> (optionnel) : épaisseur de la flèche</td>
+<td style="text-align: left;">1200</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>lon_from</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des longitudes d’origine.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat_from</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des latitudes d’origine.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>lon_to</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des longitudes de destination.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat_to</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des latitudes de destination.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>weight</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne du volume du flux (épaisseur des flèches).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>label_from</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des noms d’origine.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>label_to</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des noms de destination.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>basemap</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute un fond de carte en ligne (option <code>map</code>, connexion Internet).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>curvature</code></td>
+<td style="text-align: left;"><code>0.25</code></td>
+<td style="text-align: left;">Courbure des flèches (0 = droites).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur unique (nom, hexadécimal). <code>None</code> : couleur du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>max_width</code></td>
+<td style="text-align: left;"><code>8</code></td>
+<td style="text-align: left;">Épaisseur de la flèche la plus grosse.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>basemap_source</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Fournisseur de tuiles contextily ; <code>None</code> : Esri WorldGrayCanvas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une flèche courbe par ligne, de l’origine vers la destination, d’épaisseur proportionnelle au volume (<code>weight</code>).</p>
-<div id="d5704cfa" class="cell" data-execution_count="7">
+<div id="1e5c88bb" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dakar <span class="op">=</span> villes.set_index(<span class="st">'ville'</span>).loc[<span class="st">'Dakar'</span>]</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>flux <span class="op">=</span> (villes[villes[<span class="st">'ville'</span>].isin([<span class="st">'Saint-Louis'</span>, <span class="st">'Kaolack'</span>, <span class="st">'Tambacounda'</span>, <span class="st">'Kolda'</span>, <span class="st">'Ziguinchor'</span>])]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        .assign(vers<span class="op">=</span><span class="st">'Dakar'</span>, lon_dakar<span class="op">=</span>dakar[<span class="st">'lon'</span>], lat_dakar<span class="op">=</span>dakar[<span class="st">'lat'</span>],</span>
@@ -661,7 +1032,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-8-output-1.png" width="690" height="662" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-11-output-1.png" width="690" height="662" class="figure-img"></p>
 <figcaption>Flux de céréales vers Dakar (volumes illustratifs)</figcaption>
 </figure>
 </div>
@@ -670,8 +1041,108 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-density_map" class="level3">
 <h3 class="anchored" data-anchor-id="g-density_map"><code>density_map</code> — Carte de densité</h3>
+<p>Carte de densité (zones chaudes) : densité de noyau des points, éventuellement pondérée, en aplats sur le fond de carte.</p>
+<p><strong>Quand l’utiliser.</strong> Repérer les concentrations d’observations : signalements de ravageurs, cas, points d’eau, accidents.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par observation géolocalisée.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">-16.92</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">14.78</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des longitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des latitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>weight</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne optionnelle de poids (une observation qui compte plusieurs fois).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>bandwidth</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Lissage de la densité ; <code>None</code> = automatique.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>levels</code></td>
+<td style="text-align: left;"><code>8</code></td>
+<td style="text-align: left;">Nombre de niveaux (ou liste des seuils) des courbes de niveau.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.6</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_points</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Affiche aussi les points de mesure.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>colorbar</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche l’échelle de couleurs.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>basemap</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute un fond de carte en ligne (option <code>map</code>, connexion Internet).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>basemap_source</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Fournisseur de tuiles contextily ; <code>None</code> : Esri WorldGrayCanvas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Les zones où les points se concentrent : densité de noyau, éventuellement pondérée (<code>weight</code>), en aplats de densité relative sur le fond de carte.</p>
-<div id="0fe34420" class="cell" data-execution_count="8">
+<div id="0492e1a4" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(signalements, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .density_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, show_points<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Densité des signalements'</span>)</span>
@@ -682,7 +1153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-9-output-1.png" width="575" height="662" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-13-output-1.png" width="575" height="662" class="figure-img"></p>
 <figcaption>Foyers de signalements d’un ravageur (données fictives)</figcaption>
 </figure>
 </div>
@@ -691,8 +1162,125 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-field_map" class="level3">
 <h3 class="anchored" data-anchor-id="g-field_map"><code>field_map</code> — Carte interpolée et isolignes</h3>
+<p>Carte d’une grandeur interpolée entre des mesures ponctuelles : aplats et isolignes annotées (isohyètes, isothermes), à l’intérieur de l’enveloppe des stations.</p>
+<p><strong>Quand l’utiliser.</strong> Passer de mesures de stations à une surface continue : pluviométrie, nappe, teneur d’un élément.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par station de mesure.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>ville</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> (optionnel)</td>
+<td style="text-align: left;">Tambacounda</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">-13.67</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">13.77</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pluie</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>value</code> : grandeur interpolée</td>
+<td style="text-align: left;">850</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des longitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des latitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>value</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la grandeur mesurée à interpoler.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>levels</code></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">Nombre de niveaux (ou liste des seuils) des courbes de niveau.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.65</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>isolines</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute les isolignes annotées.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_points</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche aussi les points de mesure.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>colorbar</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche l’échelle de couleurs.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>basemap</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute un fond de carte en ligne (option <code>map</code>, connexion Internet).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>basemap_source</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Fournisseur de tuiles contextily ; <code>None</code> : Esri WorldGrayCanvas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une grandeur mesurée en quelques points (stations) interpolée sur la zone, avec ses isolignes annotées — ici des <strong>isohyètes</strong>. L’interpolation (linéaire, sur une triangulation des stations) ne couvre que l’intérieur de l’enveloppe des points.</p>
-<div id="efa04af4" class="cell" data-execution_count="9">
+<div id="a6c2d4af" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .field_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>, levels<span class="op">=</span><span class="dv">8</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluviométrie annuelle (mm)'</span>)</span>
@@ -701,7 +1289,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-10-output-1.png" width="830" height="662" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-15-output-1.png" width="830" height="662" class="figure-img"></p>
 <figcaption>Isohyètes à partir de 12 stations (valeurs illustratives)</figcaption>
 </figure>
 </div>
@@ -710,8 +1298,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-route_map" class="level3">
 <h3 class="anchored" data-anchor-id="g-route_map"><code>route_map</code> — Itinéraires et trajets</h3>
+<p>Itinéraires : points reliés dans l’ordre, une ligne par groupe, départ et arrivée marqués, flèches de sens.</p>
+<p><strong>Quand l’utiliser.</strong> Traces GPS, transhumance, tournées de collecte (par exemple l’ordre calculé par <code>tsp_route</code>), circuits de visites.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par point de passage.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>etape</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> (optionnel)</td>
+<td style="text-align: left;">Dahra</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">-15.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">15.35</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>jour</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>order</code> (optionnel) : ordre de passage</td>
+<td style="text-align: left;">12</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des longitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des latitudes (degrés décimaux, WGS84).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>order</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne qui ordonne les points (date, rang) ; <code>None</code> = ordre des lignes.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Nom de chaque étape.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>arrows</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute des flèches indiquant le sens du trajet.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>linewidth</code></td>
+<td style="text-align: left;"><code>2.2</code></td>
+<td style="text-align: left;">Épaisseur des lignes.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>basemap</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Ajoute un fond de carte en ligne (option <code>map</code>, connexion Internet).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>basemap_source</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Fournisseur de tuiles contextily ; <code>None</code> : Esri WorldGrayCanvas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Des points reliés dans l’ordre (<code>order</code> : date, étape…), une ligne par groupe ; départ ●, arrivée ■ et flèches de sens.</p>
-<div id="5026d277" class="cell" data-execution_count="10">
+<div id="45308356" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(Chart(transhumance, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .route_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, order<span class="op">=</span><span class="st">'jour'</span>, labels<span class="op">=</span><span class="st">'etape'</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Transhumance vers le sud-est'</span>)</span>
@@ -722,7 +1412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-11-output-1.png" width="533" height="758" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-17-output-1.png" width="533" height="758" class="figure-img"></p>
 <figcaption>Trajet de transhumance (fictif)</figcaption>
 </figure>
 </div>
@@ -774,7 +1464,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><code>loc</code> vaut <code>'upper left'</code>, <code>'upper right'</code>, <code>'lower left'</code> ou <code>'lower right'</code>. La barre d’échelle est juste en degrés (corrigée selon la latitude) comme en coordonnées projetées en mètres.</p>
-<div id="bf3dd904" class="cell" data-execution_count="11">
+<div id="224d9e5c" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">7.5</span>))</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, value<span class="op">=</span><span class="st">'pluie'</span>, size<span class="op">=</span><span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .north_arrow()</span>
@@ -786,7 +1476,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-12-output-1.png" width="833" height="710" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-18-output-1.png" width="833" height="710" class="figure-img"></p>
 <figcaption>Une carte complète : symboles proportionnels, flèche du nord, échelle, situation</figcaption>
 </figure>
 </div>

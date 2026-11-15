@@ -436,6 +436,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -526,7 +532,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-scatter3d" class="level3">
 <h3 class="anchored" data-anchor-id="g-scatter3d"><code>scatter3d</code> — Nuage de points 3D</h3>
-<div id="d9306cf8" class="cell" data-execution_count="2">
+<p>Nuage de points en trois dimensions, coloré par groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Explorer la relation entre trois variables numériques ; à réserver à l’exploration (la lecture précise en 3D est difficile).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>hauteur</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">118</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>jours_floraison</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">92</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;">4.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cycle</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel)</td>
+<td style="text-align: left;">Précoce</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la troisième dimension (hauteur, valeur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>size</code></td>
+<td style="text-align: left;"><code>30</code></td>
+<td style="text-align: left;">Taille des points.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.8</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="4e9003a4" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">6.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .scatter3d(<span class="st">'hauteur'</span>, <span class="st">'jours_floraison'</span>, <span class="st">'rendement'</span>, group<span class="op">=</span><span class="st">'cycle'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Caractères en 3D'</span>)</span>
@@ -534,7 +627,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="3d_files/figure-html/cell-3-output-1.png" width="520" height="536" class="figure-img"></p>
+<p><img src="3d_files/figure-html/cell-4-output-1.png" width="520" height="536" class="figure-img"></p>
 <figcaption>Trois caractères variétaux</figcaption>
 </figure>
 </div>
@@ -543,7 +636,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-line3d" class="level3">
 <h3 class="anchored" data-anchor-id="g-line3d"><code>line3d</code> — Courbe 3D</h3>
-<div id="274c03c1" class="cell" data-execution_count="3">
+<p>Courbe en trois dimensions (trajectoire), une par groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Trajectoires dans l’espace (vol, déplacement d’un animal, trajectoire d’état).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par position, dans l’ordre du parcours.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">1.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">-0.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>altitude</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;">25.6</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la troisième dimension (hauteur, valeur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="99dd1767" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">6</span> <span class="op">*</span> np.pi, <span class="dv">300</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>vol <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: np.cos(t) <span class="op">*</span> t, <span class="st">'y'</span>: np.sin(t) <span class="op">*</span> t, <span class="st">'altitude'</span>: <span class="dv">20</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> t})</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(Chart(vol, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">6.5</span>))</span>
@@ -553,7 +717,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="3d_files/figure-html/cell-4-output-1.png" width="514" height="541" class="figure-img"></p>
+<p><img src="3d_files/figure-html/cell-6-output-1.png" width="514" height="541" class="figure-img"></p>
 <figcaption>Trajectoire d’un drone de surveillance</figcaption>
 </figure>
 </div>
@@ -562,8 +726,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-surface" class="level3">
 <h3 class="anchored" data-anchor-id="g-surface"><code>surface</code> — Surface 3D</h3>
+<p>Surface 3D de z selon (x, y) : maillage plein ou fil de fer sur une grille, surface triangulée sur des points dispersés.</p>
+<p><strong>Quand l’utiliser.</strong> Surfaces de réponse (rendement selon deux facteurs), relief, fonctions de deux variables.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par point (x, y).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>azote</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>eau</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>z</code> : hauteur de la surface</td>
+<td style="text-align: left;">4.8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la troisième dimension (hauteur, valeur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>kind</code></td>
+<td style="text-align: left;"><code>'surface'</code></td>
+<td style="text-align: left;">‘surface’, ‘wireframe’ (fil de fer) ou ‘trisurf’ (points dispersés) ; choisi automatiquement si besoin.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>colorbar</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche l’échelle de couleurs.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Sur une grille régulière : <code>kind='surface'</code> ou <code>'wireframe'</code> ; sur des points dispersés, la surface est triangulée (<code>trisurf</code>) automatiquement.</p>
-<div id="e198d2d1" class="cell" data-execution_count="4">
+<div id="5a0a33d7" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .surface(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Surface de réponse'</span>)</span>
@@ -571,13 +816,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="3d_files/figure-html/cell-5-output-1.png" width="628" height="544" class="figure-img"></p>
+<p><img src="3d_files/figure-html/cell-8-output-1.png" width="628" height="544" class="figure-img"></p>
 <figcaption>Surface de réponse azote × irrigation</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="3b593998" class="cell" data-execution_count="5">
+<div id="0eb27bdc" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .surface(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>, kind<span class="op">=</span><span class="st">'wireframe'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Fil de fer'</span>)</span>
@@ -585,7 +830,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="3d_files/figure-html/cell-6-output-1.png" width="515" height="544" class="figure-img"></p>
+<p><img src="3d_files/figure-html/cell-9-output-1.png" width="515" height="544" class="figure-img"></p>
 <figcaption>Même surface en fil de fer</figcaption>
 </figure>
 </div>
@@ -594,7 +839,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-bar3d" class="level3">
 <h3 class="anchored" data-anchor-id="g-bar3d"><code>bar3d</code> — Barres 3D</h3>
-<div id="2db73d10" class="cell" data-execution_count="6">
+<p>Barres en 3D : une barre de hauteur z pour chaque couple (x, y), catégories acceptées.</p>
+<p><strong>Quand l’utiliser.</strong> Présenter un tableau croisé à deux facteurs (variété × dose) de façon visuelle ; pour une lecture précise, préférer <code>pivot_heatmap</code>.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par couple (x, y).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte ou nombre</td>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">IR-841</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>dose</code></td>
+<td style="text-align: left;">texte ou nombre</td>
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">60</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>z</code> : hauteur</td>
+<td style="text-align: left;">4.7</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la troisième dimension (hauteur, valeur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.9</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="518b2818" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>moyennes <span class="op">=</span> essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>], as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">'rendement'</span>].mean()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(Chart(moyennes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .bar3d(<span class="st">'variete'</span>, <span class="st">'dose'</span>, <span class="st">'rendement'</span>)</span>
@@ -603,7 +919,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="3d_files/figure-html/cell-7-output-1.png" width="510" height="536" class="figure-img"></p>
+<p><img src="3d_files/figure-html/cell-11-output-1.png" width="510" height="536" class="figure-img"></p>
 <figcaption>Rendement moyen par variété et par dose</figcaption>
 </figure>
 </div>

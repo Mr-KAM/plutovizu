@@ -436,6 +436,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -525,8 +531,91 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-pca_biplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-pca_biplot"><code>pca_biplot</code> — Analyse en composantes principales</h3>
+<p>Biplot d’analyse en composantes principales : les individus sur les deux premiers axes (points colorés par groupe) et les variables en flèches.</p>
+<p><strong>Quand l’utiliser.</strong> Résumer de nombreuses variables numériques corrélées en deux axes, voir quelles variables opposent les individus et quels individus se ressemblent.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu, des colonnes numériques.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;">identifiant (non utilisé dans le calcul)</td>
+<td style="text-align: left;">V07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>hauteur</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : variable de l’ACP</td>
+<td style="text-align: left;">118</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : variable de l’ACP</td>
+<td style="text-align: left;">4.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cycle</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : couleur des points</td>
+<td style="text-align: left;">Précoce</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>columns</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonnes numériques de l’ACP ; <code>None</code> = toutes les colonnes numériques.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de groupe (couleurs + légende).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>scale</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Centre-réduit les variables (indispensable si leurs unités diffèrent).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>arrows</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Dessine les variables en flèches.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.8</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.pca</code> : variance expliquée, coordonnées des individus et des variables.</p>
+<p><strong>Exemple</strong></p>
 <p>ACP normée : les individus sur les deux premiers axes, colorés par groupe, et les variables en flèches. Variance expliquée, coordonnées et contributions dans <code>chart.pca</code>.</p>
-<div id="cbf7a32b" class="cell" data-execution_count="2">
+<div id="6642cbd2" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">30</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>precocite <span class="op">=</span> rng.normal(size<span class="op">=</span>n)</span>
@@ -552,7 +641,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="multivarie_files/figure-html/cell-3-output-2.png" width="759" height="566" class="figure-img"></p>
+<p><img src="multivarie_files/figure-html/cell-4-output-2.png" width="759" height="566" class="figure-img"></p>
 <figcaption>ACP de cinq caractères agronomiques sur 30 variétés</figcaption>
 </figure>
 </div>
@@ -561,8 +650,99 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-dendrogram" class="level3">
 <h3 class="anchored" data-anchor-id="g-dendrogram"><code>dendrogram</code> — Classification hiérarchique</h3>
+<p>Dendrogramme de classification hiérarchique : les individus sont regroupés pas à pas, la hauteur des branches mesurant la distance entre groupes.</p>
+<p><strong>Quand l’utiliser.</strong> Former des groupes d’individus semblables (variétés, sites, clients) et choisir le nombre de groupes en coupant l’arbre.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu, des colonnes numériques.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom des feuilles</td>
+<td style="text-align: left;">V07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>hauteur</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : variable</td>
+<td style="text-align: left;">118</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : variable</td>
+<td style="text-align: left;">4.9</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des étiquettes (noms affichés).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>columns</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonnes numériques utilisées ; <code>None</code> = toutes.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>method</code></td>
+<td style="text-align: left;"><code>'ward'</code></td>
+<td style="text-align: left;">Méthode d’agrégation : ‘ward’, ‘average’, ‘complete’, ‘single’…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>metric</code></td>
+<td style="text-align: left;"><code>'euclidean'</code></td>
+<td style="text-align: left;">Distance entre individus : ‘euclidean’, ‘cityblock’, ‘correlation’…</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color_threshold</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Hauteur de coupe ; les branches sous ce seuil partagent une couleur.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>standardize</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Centre-réduit les variables avant le calcul des distances.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>orientation</code></td>
+<td style="text-align: left;"><code>'top'</code></td>
+<td style="text-align: left;">Sens de l’arbre : ‘top’, ‘bottom’, ‘left’ ou ‘right’.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>leaf_rotation</code></td>
+<td style="text-align: left;"><code>90</code></td>
+<td style="text-align: left;">Rotation des noms des feuilles (degrés).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Regroupe les individus selon leur ressemblance (méthode de Ward par défaut, variables centrées-réduites). <code>color_threshold</code> colore les groupes formés sous la hauteur de coupe, marquée par une ligne pointillée.</p>
-<div id="dc2331c1" class="cell" data-execution_count="3">
+<div id="06e4c16a" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .dendrogram(labels<span class="op">=</span><span class="st">'variete'</span>, color_threshold<span class="op">=</span><span class="dv">6</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Dendrogramme des variétés (Ward)'</span>)</span>
@@ -571,7 +751,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="multivarie_files/figure-html/cell-4-output-1.png" width="1047" height="472" class="figure-img"></p>
+<p><img src="multivarie_files/figure-html/cell-6-output-1.png" width="1047" height="472" class="figure-img"></p>
 <figcaption>Classification des variétés sur leurs caractères</figcaption>
 </figure>
 </div>
@@ -580,8 +760,94 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-clustermap" class="level3">
 <h3 class="anchored" data-anchor-id="g-clustermap"><code>clustermap</code> — Carte de chaleur classée</h3>
+<p>Carte de chaleur des données avec un dendrogramme sur les lignes et un sur les colonnes, réordonnées selon la classification (seaborn clustermap).</p>
+<p><strong>Quand l’utiliser.</strong> Voir à la fois les groupes d’individus et les groupes de variables, et ce qui les caractérise (profils d’expression, de traits, de sites).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu, des colonnes numériques.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>labels</code> : nom des lignes</td>
+<td style="text-align: left;">V07</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>hauteur</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : colonne de la matrice</td>
+<td style="text-align: left;">118</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>talles</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : colonne de la matrice</td>
+<td style="text-align: left;">14</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>columns</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonnes numériques ; <code>None</code> = toutes.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne nommant les lignes.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>standardize</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Centre-réduit chaque colonne (couleurs comparables entre variables).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Défaut ‘vlag’ si standardisé, sinon celle du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>method</code></td>
+<td style="text-align: left;"><code>'ward'</code></td>
+<td style="text-align: left;">Méthode d’agrégation de la classification (‘ward’, ‘average’…).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>figsize</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Taille de la figure créée par seaborn (pouces) ; <code>None</code> = celle du Chart.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>**kwargs</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Options supplémentaires transmises à la fonction sous-jacente (seaborn ou matplotlib).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs dendrogrammes. Les colonnes sont centrées-réduites par défaut (<code>standardize=True</code>).</p>
-<div id="73a76cbb" class="cell" data-execution_count="4">
+<div id="a634118a" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">9</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .clustermap(labels<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Clustermap des caractères variétaux'</span>)</span>
@@ -589,7 +855,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="multivarie_files/figure-html/cell-5-output-1.png" width="760" height="886" class="figure-img"></p>
+<p><img src="multivarie_files/figure-html/cell-8-output-1.png" width="760" height="886" class="figure-img"></p>
 <figcaption>Profils des variétés classés par ressemblance</figcaption>
 </figure>
 </div>

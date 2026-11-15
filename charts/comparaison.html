@@ -436,6 +436,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -533,7 +539,97 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-bar" class="level3">
 <h3 class="anchored" data-anchor-id="g-bar"><code>bar</code> — Barres</h3>
-<div id="eaea444d" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="2">
+<p>Barres verticales ou horizontales : une barre par catégorie, de hauteur égale à la valeur ; plusieurs colonnes <code>y</code> donnent des barres groupées ou empilées.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer des quantités entre catégories (régions, variétés, postes). Préférer les barres horizontales quand les libellés sont longs.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par catégorie (valeurs déjà agrégées).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>region</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>x</code> : catégorie (une barre)</td>
+<td style="text-align: left;">Nord</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ca</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : hauteur de la barre</td>
+<td style="text-align: left;">1250</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des étiquettes (vertical) ou des valeurs (horizontal).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des hauteurs (vertical) ou des étiquettes (horizontal).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>horizontal</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Tracer les barres horizontalement (barh).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>width</code></td>
+<td style="text-align: left;"><code>0.8</code></td>
+<td style="text-align: left;">Largeur des barres en fraction, 0–1.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.8</code></td>
+<td style="text-align: left;">Opacité, 0–1.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur de remplissage des barres.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>stacked</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Avec plusieurs colonnes y : les empiler au lieu de les grouper.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_values</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Écrit les valeurs sur le graphique.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>value_format</code></td>
+<td style="text-align: left;"><code>'{:,.0f}'</code></td>
+<td style="text-align: left;">Format des valeurs affichées (<code>{:,.0f}</code>, <code>{:.1%}</code>…).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="3922adc2" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'Île-de-France'</span>, <span class="st">'Auvergne-Rhône-Alpes'</span>, <span class="st">'PACA'</span>, <span class="st">'Occitanie'</span>, <span class="st">'Bretagne'</span>],</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ca'</span>:     [<span class="dv">980</span>, <span class="dv">620</span>, <span class="dv">430</span>, <span class="dv">380</span>, <span class="dv">270</span>],</span>
@@ -550,14 +646,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-3-output-1.png" width="952" height="567" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-4-output-1.png" width="952" height="567" class="figure-img"></p>
 <figcaption>Chiffre d’affaires par région</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Plusieurs colonnes <code>y</code> donnent des barres groupées, ou empilées avec <code>stacked=True</code> ; <code>show_values=True</code> écrit chaque valeur sur sa barre.</p>
-<div id="ee8068a1" class="cell" data-execution_count="3">
+<div id="7244cc24" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>production <span class="op">=</span> pd.DataFrame({<span class="st">'annee'</span>: [<span class="st">'2021'</span>, <span class="st">'2022'</span>, <span class="st">'2023'</span>, <span class="st">'2024'</span>],</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'Riz'</span>: [<span class="dv">420</span>, <span class="dv">455</span>, <span class="dv">390</span>, <span class="dv">480</span>], <span class="st">'Maïs'</span>: [<span class="dv">310</span>, <span class="dv">300</span>, <span class="dv">335</span>, <span class="dv">350</span>],</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'Mil'</span>: [<span class="dv">180</span>, <span class="dv">165</span>, <span class="dv">190</span>, <span class="dv">175</span>]})</span>
@@ -569,13 +665,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-4-output-1.png" width="856" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-5-output-1.png" width="856" height="422" class="figure-img"></p>
 <figcaption>Production par culture et par année (barres empilées)</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="235642a7" class="cell" data-execution_count="4">
+<div id="a2b4ceff" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(production, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .bar(<span class="st">'annee'</span>, [<span class="st">'Riz'</span>, <span class="st">'Maïs'</span>, <span class="st">'Mil'</span>], horizontal<span class="op">=</span><span class="va">True</span>, show_values<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Production (t) — barres groupées'</span>)</span>
@@ -584,7 +680,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-5-output-1.png" width="856" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-6-output-1.png" width="856" height="422" class="figure-img"></p>
 <figcaption>Même données, barres groupées horizontales</figcaption>
 </figure>
 </div>
@@ -593,8 +689,110 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-mean_bar" class="level3">
 <h3 class="anchored" data-anchor-id="g-mean_bar"><code>mean_bar</code> — Moyennes ± erreur</h3>
+<p>Barres des moyennes par groupe avec barres d’erreur, calculées à partir des données brutes ; points individuels et lettres du test de Tukey en option.</p>
+<p><strong>Quand l’utiliser.</strong> Présenter les résultats d’un essai (moyennes de traitements) et leurs différences significatives, comme dans un article ou un rapport d’expérimentation.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par unité expérimentale (répétition), données non agrégées.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>dose</code></td>
+<td style="text-align: left;">texte ou nombre</td>
+<td style="text-align: left;"><code>x</code> : traitement (une barre)</td>
+<td style="text-align: left;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : réponse mesurée</td>
+<td style="text-align: left;">4.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>hue</code> (optionnel) : second facteur, barres côte à côte</td>
+<td style="text-align: left;">IR-841</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Facteur (traitement, variété…).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Variable réponse.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>hue</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Second facteur → barres groupées.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>error</code></td>
+<td style="text-align: left;"><code>'se'</code></td>
+<td style="text-align: left;">Barre d’erreur : ‘se’ (erreur type), ‘sd’ (écart-type), ‘ci95’ (intervalle de confiance à 95 %) ou None.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>points</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Superpose les observations individuelles aux barres.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>letters</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Écrit les lettres du test de Tukey HSD au-dessus des barres (même lettre = pas de différence significative).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha_test</code></td>
+<td style="text-align: left;"><code>0.05</code></td>
+<td style="text-align: left;">Seuil de signification du test de Tukey.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>capsize</code></td>
+<td style="text-align: left;"><code>4</code></td>
+<td style="text-align: left;">Largeur des chapeaux des barres d’erreur (points).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.85</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Moyennes par traitement avec barres d’erreur : <code>error='se'</code> (erreur type, défaut), <code>'sd'</code> (écart-type) ou <code>'ci95'</code> (intervalle de confiance à 95 %). <code>hue</code> ajoute un second facteur, <code>points=True</code> superpose les observations.</p>
-<div id="8762eeca" class="cell" data-execution_count="5">
+<div id="c4de13c8" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement moyen ± erreur type'</span>)</span>
@@ -604,13 +802,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-6-output-1.png" width="951" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-8-output-1.png" width="951" height="422" class="figure-img"></p>
 <figcaption>Rendement moyen par dose et par variété</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="adf69faa" class="cell" data-execution_count="6">
+<div id="ee2898df" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'variete'</span>, <span class="st">'rendement'</span>, error<span class="op">=</span><span class="st">'ci95'</span>, points<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par variété'</span>)</span>
@@ -619,14 +817,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-7-output-1.png" width="759" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-9-output-1.png" width="759" height="422" class="figure-img"></p>
 <figcaption>Intervalle de confiance à 95 % et observations individuelles</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Avec <code>letters=True</code>, un test de Tukey HSD compare les moyennes : deux barres qui partagent une lettre ne diffèrent pas significativement (α = 5 % par défaut, réglable avec <code>alpha_test</code>). Avec <code>hue</code>, les comparaisons se font à l’intérieur de chaque niveau de <code>x</code>. Les lettres sont aussi dans <code>chart.tukey_letters</code>.</p>
-<div id="ff184482" class="cell" data-execution_count="7">
+<div id="4ea5de3d" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, letters<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par dose — lettres de Tukey'</span>)</span>
@@ -636,7 +834,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-8-output-1.png" width="951" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-10-output-1.png" width="951" height="422" class="figure-img"></p>
 <figcaption>Comparaison des variétés à chaque dose (test de Tukey)</figcaption>
 </figure>
 </div>
@@ -645,8 +843,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-errorbar" class="level3">
 <h3 class="anchored" data-anchor-id="g-errorbar"><code>errorbar</code> — Barres d’erreur</h3>
+<p>Points avec barres d’erreur verticales et/ou horizontales, éventuellement reliés par une ligne, une série par groupe.</p>
+<p><strong>Quand l’utiliser.</strong> Résumés déjà calculés (moyenne ± écart-type, estimation ± intervalle) le long d’un axe numérique ou ordonné : courbe dose-réponse, cinétique.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par point (données agrégées).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>dose</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>moyenne</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : valeur centrale</td>
+<td style="text-align: left;">4.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ecart_type</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>yerr</code> : demi-longueur de la barre</td>
+<td style="text-align: left;">0.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel)</td>
+<td style="text-align: left;">Nerica-4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>yerr</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne (ou constante) des erreurs verticales.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>xerr</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne (ou constante) des erreurs horizontales.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Une série (couleur) par groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>capsize</code></td>
+<td style="text-align: left;"><code>3</code></td>
+<td style="text-align: left;">Largeur des chapeaux des barres d’erreur (points).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>marker</code></td>
+<td style="text-align: left;"><code>'o'</code></td>
+<td style="text-align: left;">Symbole des points (<code>o</code>, <code>s</code>, <code>^</code>, <code>None</code>…).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>line</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Relie les points de chaque groupe par une ligne.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Des points avec leurs barres d’erreur (colonnes ou constantes), une série par groupe.</p>
-<div id="6b961fe8" class="cell" data-execution_count="8">
+<div id="94549735" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>resume <span class="op">=</span> (essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>], as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">'rendement'</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>          .agg(moyenne<span class="op">=</span><span class="st">'mean'</span>, ecart_type<span class="op">=</span><span class="st">'std'</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>(Chart(resume, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
@@ -658,7 +948,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-9-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-12-output-1.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Rendement moyen ± écart-type par dose</figcaption>
 </figure>
 </div>
@@ -667,8 +957,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-interaction" class="level3">
 <h3 class="anchored" data-anchor-id="g-interaction"><code>interaction</code> — Graphique d’interaction</h3>
+<p>Graphique d’interaction : réponse moyenne selon un facteur, une ligne par niveau d’un second facteur, avec barres d’erreur.</p>
+<p><strong>Quand l’utiliser.</strong> Lire une interaction entre deux facteurs (ANOVA à deux facteurs) : des lignes non parallèles indiquent que l’effet d’un facteur dépend de l’autre.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par unité expérimentale.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>dose</code></td>
+<td style="text-align: left;">texte ou nombre</td>
+<td style="text-align: left;"><code>x</code> : premier facteur (axe horizontal)</td>
+<td style="text-align: left;">120</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>trace</code> : second facteur (une ligne par niveau)</td>
+<td style="text-align: left;">Sahel-108</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>response</code> : variable réponse</td>
+<td style="text-align: left;">5.1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Facteur en abscisse (ex. dose d’azote).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>trace</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne du second facteur ; une ligne par niveau.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>response</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la variable réponse (moyennée par case).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>error</code></td>
+<td style="text-align: left;"><code>'se'</code></td>
+<td style="text-align: left;">Barres d’erreur : ‘se’, ‘sd’, ‘ci95’ ou None.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>marker</code></td>
+<td style="text-align: left;"><code>'o'</code></td>
+<td style="text-align: left;">Symbole des points (<code>o</code>, <code>s</code>, <code>^</code>, <code>None</code>…).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une ligne par niveau du second facteur : des lignes non parallèles suggèrent une interaction (à confirmer par une ANOVA à deux facteurs).</p>
-<div id="dc6c21ca" class="cell" data-execution_count="9">
+<div id="6d88f73c" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .interaction(<span class="st">'dose'</span>, <span class="st">'variete'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Interaction dose × variété'</span>)</span>
@@ -678,7 +1050,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-10-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-14-output-1.png" width="855" height="422" class="figure-img"></p>
 <figcaption>Interaction dose × variété</figcaption>
 </figure>
 </div>
@@ -687,7 +1059,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-pointplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-pointplot"><code>pointplot</code> — Moyennes reliées</h3>
-<div id="cf0eae53" class="cell" data-execution_count="10">
+<p>Moyennes par catégorie avec intervalle de confiance, reliées par des lignes (seaborn pointplot).</p>
+<p><strong>Quand l’utiliser.</strong> Comparer des moyennes entre catégories et groupes en mettant l’accent sur les tendances plutôt que sur les quantités.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par observation.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>dose</code></td>
+<td style="text-align: left;">texte ou nombre</td>
+<td style="text-align: left;"><code>x</code> : catégorie</td>
+<td style="text-align: left;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : valeur moyennée</td>
+<td style="text-align: left;">4.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>variete</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>hue</code> (optionnel)</td>
+<td style="text-align: left;">IR-841</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des catégories.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs (moyennées par seaborn).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>hue</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur par modalité.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>**kwargs</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Options supplémentaires transmises à la fonction sous-jacente (seaborn ou matplotlib).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="90a47098" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .pointplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, dodge<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Moyennes et IC 95 %'</span>)</span>
@@ -696,7 +1139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-11-output-1.png" width="855" height="374" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-16-output-1.png" width="855" height="374" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -704,7 +1147,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-countplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-countplot"><code>countplot</code> — Effectifs</h3>
-<div id="8f01a53d" class="cell" data-execution_count="11">
+<p>Barres des effectifs : le nombre de lignes de chaque catégorie.</p>
+<p><strong>Quand l’utiliser.</strong> Compter des observations par modalité (types de sol, réponses d’enquête) sans agréger soi-même.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par observation.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>zone</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>x</code> : catégorie comptée</td>
+<td style="text-align: left;">Plateau</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des catégories à compter.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>hue</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur par modalité.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>**kwargs</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Options supplémentaires transmises à la fonction sous-jacente (seaborn ou matplotlib).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="a5503f0e" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(sols, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .countplot(<span class="st">'zone'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Nombre de parcelles par zone'</span>)</span>
@@ -713,7 +1210,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-12-output-1.png" width="759" height="374" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-18-output-1.png" width="759" height="374" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -721,7 +1218,88 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-lollipop" class="level3">
 <h3 class="anchored" data-anchor-id="g-lollipop"><code>lollipop</code> — Lollipop groupé</h3>
-<div id="c0f403e3" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="12">
+<p>Sucettes groupées : une tige et une bulle par couple (x, groupe), la taille de la bulle suivant la valeur ; les groupes sont décalés pour ne pas se chevaucher.</p>
+<p><strong>Quand l’utiliser.</strong> Comparer des effectifs ou des totaux par période et par catégorie de façon plus légère qu’avec des barres groupées.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par observation (y est sommé par couple x × groupe).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>year</code></td>
+<td style="text-align: left;">nombre ou texte</td>
+<td style="text-align: left;"><code>x</code> : position</td>
+<td style="text-align: left;">2017</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>n</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : valeur (sommée)</td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>status</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> : couleur et décalage</td>
+<td style="text-align: left;">ouragan</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne pour l’axe x (ex. année).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne à agréger par somme (utilisée pour la hauteur et la taille de la bulle).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne définissant les groupes (une série de bulles par valeur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>colors</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Correspondance {valeur_groupe: chaîne_couleur}.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>order</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Ordre d’affichage des valeurs de groupe.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>shift_step</code></td>
+<td style="text-align: left;"><code>0.2</code></td>
+<td style="text-align: left;">Décalage horizontal entre groupes consécutifs.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="017c1fe6" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">7</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> np.repeat(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2024</span>), <span class="dv">2</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> [<span class="st">'ouragan'</span>, <span class="st">'dépression tropicale'</span>] <span class="op">*</span> <span class="dv">9</span></span>
@@ -742,7 +1320,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-13-output-1.png" width="952" height="566" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-20-output-1.png" width="952" height="566" class="figure-img"></p>
 <figcaption>Tempêtes tropicales par année et intensité</figcaption>
 </figure>
 </div>
@@ -751,7 +1329,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-dumbbell" class="level3">
 <h3 class="anchored" data-anchor-id="g-dumbbell"><code>dumbbell</code> — Haltère (avant/après)</h3>
-<div id="eeade73a" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="13">
+<p>Haltères : deux points reliés par un trait pour chaque catégorie (avant / après, A / B).</p>
+<p><strong>Quand l’utiliser.</strong> Montrer l’écart ou l’évolution entre deux mesures pour de nombreuses catégories (PIB 2020 et 2024, rendement avant et après un traitement).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par catégorie.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>pays</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>y</code> : catégorie (une ligne)</td>
+<td style="text-align: left;">Sénégal</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pib_2020</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x_start</code> : première mesure</td>
+<td style="text-align: left;">24.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pib_2024</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x_end</code> : seconde mesure</td>
+<td style="text-align: left;">31.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne avec les étiquettes de catégories (une ligne par haltère).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>x_start</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne pour la valeur gauche (départ / avant).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>x_end</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne pour la valeur droite (arrivée / après).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>color_start</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur du point pour la valeur de départ.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>color_end</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur du point pour la valeur d’arrivée.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>line_color</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Couleur du segment de connexion.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>markersize</code></td>
+<td style="text-align: left;"><code>80</code></td>
+<td style="text-align: left;">Aire du point en points².</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>linewidth</code></td>
+<td style="text-align: left;"><code>2.0</code></td>
+<td style="text-align: left;">Épaisseur du segment de connexion.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="9814406c" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pays'</span>:     [<span class="st">'France'</span>,<span class="st">'Allemagne'</span>,<span class="st">'Espagne'</span>,<span class="st">'Italie'</span>,<span class="st">'Portugal'</span>,<span class="st">'Pays-Bas'</span>],</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pib_2020'</span>: [<span class="dv">38000</span>, <span class="dv">46000</span>, <span class="dv">27000</span>, <span class="dv">31000</span>, <span class="dv">22000</span>, <span class="dv">52000</span>],</span>
@@ -770,7 +1439,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-14-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-22-output-1.png" width="951" height="566" class="figure-img"></p>
 <figcaption>Évolution du PIB par habitant 2020–2024</figcaption>
 </figure>
 </div>
@@ -779,7 +1448,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-radar" class="level3">
 <h3 class="anchored" data-anchor-id="g-radar"><code>radar</code> — Araignée</h3>
-<div id="e1c48c4a" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="14">
+<p>Radar (toile d’araignée) : chaque variable est un rayon, chaque profil un polygone ; avec <code>group</code>, un polygone par groupe (moyennes).</p>
+<p><strong>Quand l’utiliser.</strong> Comparer des profils multicritères (athlètes, variétés, sites) sur 3 à 10 variables de même échelle.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu, une colonne par critère.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>equipe</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : un polygone par groupe</td>
+<td style="text-align: left;">Équipe A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>vitesse</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : un rayon</td>
+<td style="text-align: left;">78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>endurance</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : un autre rayon</td>
+<td style="text-align: left;">65</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>columns</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonnes numériques utilisées comme rayons du radar.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne pour regrouper les lignes en polygones séparés.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.25</code></td>
+<td style="text-align: left;">Opacité du remplissage.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="de5f6875" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:    [<span class="st">'A'</span>,<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>,<span class="st">'C'</span>],</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'vitesse'</span>:   [<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">5</span>, <span class="dv">8</span>],</span>
@@ -798,7 +1539,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-15-output-1.png" width="579" height="562" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-24-output-1.png" width="579" height="562" class="figure-img"></p>
 <figcaption>Profil multidimensionnel de trois équipes</figcaption>
 </figure>
 </div>
@@ -807,7 +1548,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-parallel_coordinates" class="level3">
 <h3 class="anchored" data-anchor-id="g-parallel_coordinates"><code>parallel_coordinates</code> — Coordonnées parallèles</h3>
-<div id="590143dc" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="15">
+<p>Coordonnées parallèles : un axe vertical normalisé par variable, chaque individu étant une ligne brisée qui les traverse.</p>
+<p><strong>Quand l’utiliser.</strong> Explorer de nombreux individus sur plusieurs variables, repérer des groupes et des compromis (une variable haute quand une autre est basse).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu, une colonne par variable.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>marque</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : couleur</td>
+<td style="text-align: left;">Marque A</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>puissance</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : un axe</td>
+<td style="text-align: left;">110</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>prix</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>columns</code> : un autre axe</td>
+<td style="text-align: left;">23500</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>columns</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonnes numériques utilisées comme axes parallèles (normalisées vers [0, 1]).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne pour colorier les lignes par catégorie.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.4</code></td>
+<td style="text-align: left;">Opacité des lignes (plus bas = moins encombré avec beaucoup de lignes).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
+<div id="85fe1e54" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'puissance'</span>:    np.random.randint(<span class="dv">80</span>,  <span class="dv">300</span>, <span class="dv">60</span>),</span>
@@ -828,7 +1635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-16-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-26-output-1.png" width="951" height="566" class="figure-img"></p>
 <figcaption>Profils automobiles multi-variables</figcaption>
 </figure>
 </div>
@@ -837,8 +1644,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-polar" class="level3">
 <h3 class="anchored" data-anchor-id="g-polar"><code>polar</code> — Graphique polaire</h3>
+<p>Graphique polaire : barres (rose), ligne ou points disposés en cercle, selon un angle et une distance au centre.</p>
+<p><strong>Quand l’utiliser.</strong> Données circulaires : directions (rose des vents, orientation), mois ou heures de la journée, cycles.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par secteur (et par groupe).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>direction</code></td>
+<td style="text-align: left;">texte ou nombre (degrés)</td>
+<td style="text-align: left;"><code>theta</code> : angle ou catégorie</td>
+<td style="text-align: left;">NE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>frequence</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>r</code> : distance au centre</td>
+<td style="text-align: left;">12.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>vitesse</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : empilement des barres</td>
+<td style="text-align: left;">2-4 m/s</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>theta</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des angles (degrés ou radians) ou des catégories réparties sur le cercle.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>r</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des valeurs (distance au centre).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>kind</code></td>
+<td style="text-align: left;"><code>'bar'</code></td>
+<td style="text-align: left;">Type de tracé : ‘bar’ (rose), ‘line’ ou ‘scatter’.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne de regroupement : une couleur (et une entrée de légende) par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>degrees</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Les angles numériques sont en degrés (sinon en radians).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>compass</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Orientation boussole (0 = nord en haut, sens horaire).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>alpha</code></td>
+<td style="text-align: left;"><code>0.85</code></td>
+<td style="text-align: left;">Opacité, de 0 (transparent) à 1 (opaque).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Barres (rose), courbe ou points sur un axe polaire. Avec <code>group</code>, les barres s’empilent : c’est la rose des vents (<code>compass=True</code> met le nord en haut, sens horaire).</p>
-<div id="ea647191" class="cell" data-execution_count="16">
+<div id="c1757a56" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(Chart(rose, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    .polar(<span class="st">'direction'</span>, <span class="st">'frequence'</span>, group<span class="op">=</span><span class="st">'vitesse'</span>, compass<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rose des vents (</span><span class="sc">% d</span><span class="st">u temps)'</span>)</span>
@@ -847,7 +1746,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-17-output-1.png" width="667" height="610" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-28-output-1.png" width="667" height="610" class="figure-img"></p>
 <figcaption>Rose des vents de la saison</figcaption>
 </figure>
 </div>

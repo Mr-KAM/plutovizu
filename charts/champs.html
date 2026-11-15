@@ -436,6 +436,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/graphes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphes &amp; réseaux</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Seaborn</span></a>
   </div>
@@ -525,8 +531,109 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-contour" class="level3">
 <h3 class="anchored" data-anchor-id="g-contour"><code>contour</code> — Courbes de niveau</h3>
+<p>Courbes de niveau d’une grandeur z dans le plan (x, y) : sur une grille régulière, ou sur des points dispersés par triangulation.</p>
+<p><strong>Quand l’utiliser.</strong> Cartographier une variable mesurée sur une parcelle (pH, humidité), une surface de réponse (rendement selon azote × eau), un relief.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par point (x, y) ; grille régulière ou points dispersés.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code> : abscisse du point</td>
+<td style="text-align: left;">35.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : ordonnée du point</td>
+<td style="text-align: left;">12.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ph</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>z</code> : valeur mesurée</td>
+<td style="text-align: left;">6.4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la troisième dimension (hauteur, valeur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>filled</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Aplats de couleur entre les courbes (sinon seulement les lignes).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>levels</code></td>
+<td style="text-align: left;"><code>10</code></td>
+<td style="text-align: left;">Nombre de niveaux (ou liste des seuils) des courbes de niveau.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>show_points</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Affiche aussi les points de mesure.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_mesh</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Dessine la triangulation des points dispersés.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit la valeur sur les courbes de niveau.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>colorbar</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche l’échelle de couleurs.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Sur une grille régulière (<code>contourf</code>) ou, comme ici, sur des prélèvements dispersés : la surface est alors interpolée par triangulation (<code>tricontourf</code>). <code>show_points</code> et <code>show_mesh</code> montrent les points et le maillage.</p>
-<div id="33694887" class="cell" data-execution_count="2">
+<div id="3bbc9f37" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(champ, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .contour(<span class="st">'x'</span>, <span class="st">'y'</span>, <span class="st">'ph'</span>, show_points<span class="op">=</span><span class="va">True</span>, show_mesh<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Carte du pH de la parcelle'</span>)</span>
@@ -536,7 +643,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="champs_files/figure-html/cell-3-output-1.png" width="813" height="518" class="figure-img"></p>
+<p><img src="champs_files/figure-html/cell-4-output-1.png" width="813" height="518" class="figure-img"></p>
 <figcaption>pH du sol interpolé à partir de 60 prélèvements</figcaption>
 </figure>
 </div>
@@ -545,8 +652,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-mesh" class="level3">
 <h3 class="anchored" data-anchor-id="g-mesh"><code>mesh</code> — Grille colorée</h3>
+<p>Cellules colorées selon z : un rectangle par case d’une grille régulière, ou un triangle entre points dispersés.</p>
+<p><strong>Quand l’utiliser.</strong> Montrer une grandeur sur une grille sans lissage (résultats de simulation, rendements par placette, images).</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par point (x, y).</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>azote</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;">60</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>eau</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;">400</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rendement</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>z</code> : couleur de la cellule</td>
+<td style="text-align: left;">4.8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>z</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la troisième dimension (hauteur, valeur).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>colorbar</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche l’échelle de couleurs.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>show_points</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Affiche aussi les points de mesure.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Une cellule colorée par point d’une grille régulière (<code>pcolormesh</code>), ou des triangles colorés sur des points dispersés (<code>tripcolor</code>).</p>
-<div id="a2279350" class="cell" data-execution_count="3">
+<div id="ade4a41f" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .mesh(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement (t/ha)'</span>)</span>
@@ -556,7 +744,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="champs_files/figure-html/cell-4-output-1.png" width="804" height="470" class="figure-img"></p>
+<p><img src="champs_files/figure-html/cell-6-output-1.png" width="804" height="470" class="figure-img"></p>
 <figcaption>Rendement simulé selon l’azote et l’irrigation</figcaption>
 </figure>
 </div>
@@ -565,8 +753,105 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-vector_field" class="level3">
 <h3 class="anchored" data-anchor-id="g-vector_field"><code>vector_field</code> — Champ de vecteurs</h3>
+<p>Champ de vecteurs : en chaque point une flèche (direction et intensité), des barbules de vent ou des lignes de courant.</p>
+<p><strong>Quand l’utiliser.</strong> Vent, courants, écoulements, gradients : tout ce qui a une direction et une intensité en chaque lieu.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par point de la grille.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>lon</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>x</code> : position</td>
+<td style="text-align: left;">-16.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>lat</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>y</code> : position</td>
+<td style="text-align: left;">14.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>u</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>u</code> : composante est-ouest</td>
+<td style="text-align: left;">3.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>v</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>v</code> : composante nord-sud</td>
+<td style="text-align: left;">-1.1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe horizontal.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>y</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’axe vertical.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>u</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la composante horizontale (vers l’est / la droite).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>v</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la composante verticale (vers le nord / le haut).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>kind</code></td>
+<td style="text-align: left;"><code>'quiver'</code></td>
+<td style="text-align: left;">‘quiver’ (flèches), ‘barbs’ (barbules de vent) ou ‘stream’ (lignes de courant, grille régulière).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>cmap</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Palette de couleurs continue (nom matplotlib). <code>None</code> : celle du thème.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>density</code></td>
+<td style="text-align: left;"><code>1.2</code></td>
+<td style="text-align: left;">Densité des lignes de courant (<code>kind='stream'</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>colorbar</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Affiche l’échelle de couleurs.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exemple</strong></p>
 <p>Vent, écoulement, gradient : flèches (<code>quiver</code>), barbules de vent (<code>barbs</code>) ou lignes de courant (<code>stream</code>, grille régulière), colorées par l’intensité.</p>
-<div id="4817b715" class="cell" data-execution_count="4">
+<div id="e0133ff9" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .vector_field(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'u'</span>, <span class="st">'v'</span>, kind<span class="op">=</span><span class="st">'stream'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Vent autour d</span><span class="ch">\'</span><span class="st">une dépression'</span>)</span>
@@ -575,13 +860,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="champs_files/figure-html/cell-5-output-1.png" width="804" height="566" class="figure-img"></p>
+<p><img src="champs_files/figure-html/cell-8-output-1.png" width="804" height="566" class="figure-img"></p>
 <figcaption>Lignes de courant du vent</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="a462b689" class="cell" data-execution_count="5">
+<div id="4304774d" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .vector_field(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'u'</span>, <span class="st">'v'</span>, kind<span class="op">=</span><span class="st">'quiver'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Vent (flèches)'</span>)</span>
@@ -590,7 +875,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="champs_files/figure-html/cell-6-output-1.png" width="804" height="566" class="figure-img"></p>
+<p><img src="champs_files/figure-html/cell-9-output-1.png" width="804" height="566" class="figure-img"></p>
 <figcaption>Même champ en flèches</figcaption>
 </figure>
 </div>
