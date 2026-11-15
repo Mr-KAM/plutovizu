@@ -1,6 +1,6 @@
 ---
 title: "Map"
-subtitle: "Points, zones et flux géolocalisés, sur fond de carte."
+subtitle: "Points, zones, flux, densités, isolignes et trajets, avec flèche du nord, échelle et carte de situation."
 ---
 
 ```{python}
@@ -88,6 +88,21 @@ parcelles = gpd.GeoDataFrame(
     .show())
 ```
 
+Pour une colonne numérique, `scheme` regroupe les valeurs en `k` **classes** de couleur :
+`'quantiles'` (même nombre de zones par classe), `'equal'` (intervalles égaux) ou
+`'natural'` (seuils naturels de Jenks, qui placent les coupures entre les groupes de
+valeurs). Les bornes sont dans `chart.classes`.
+
+```{python}
+#| fig-cap: "Rendement en 4 classes (seuils naturels)"
+chart = (Chart(parcelles, figsize=(9, 5.5))
+    .choropleth('rendement', labels='parcelle', scheme='natural', k=4)
+    .title('Rendement par parcelle — 4 classes')
+    .tight_layout())
+print('Bornes des classes :', chart.classes.round(2))
+chart.show()
+```
+
 ### `flow_map` — Carte de flux {#g-flow_map}
 
 Une flèche courbe par ligne, de l'origine vers la destination, d'épaisseur proportionnelle
@@ -108,8 +123,83 @@ flux = (villes[villes['ville'].isin(['Saint-Louis', 'Kaolack', 'Tambacounda', 'K
     .show())
 ```
 
+### `density_map` — Carte de densité {#g-density_map}
+
+Les zones où les points se concentrent : densité de noyau, éventuellement pondérée
+(`weight`), en aplats de densité relative sur le fond de carte.
+
+```{python}
+#| fig-cap: "Foyers de signalements d'un ravageur (données fictives)"
+(Chart(signalements, figsize=(8, 7))
+    .density_map('lon', 'lat', show_points=True)
+    .title('Densité des signalements')
+    .north_arrow()
+    .scale_bar()
+    .tight_layout()
+    .show())
+```
+
+### `field_map` — Carte interpolée et isolignes {#g-field_map}
+
+Une grandeur mesurée en quelques points (stations) interpolée sur la zone, avec ses
+isolignes annotées — ici des **isohyètes**. L'interpolation (linéaire, sur une
+triangulation des stations) ne couvre que l'intérieur de l'enveloppe des points.
+
+```{python}
+#| fig-cap: "Isohyètes à partir de 12 stations (valeurs illustratives)"
+(Chart(villes, figsize=(9, 7))
+    .field_map('lon', 'lat', 'pluie', labels='ville', levels=8)
+    .title('Pluviométrie annuelle (mm)')
+    .tight_layout()
+    .show())
+```
+
+### `route_map` — Itinéraires et trajets {#g-route_map}
+
+Des points reliés dans l'ordre (`order` : date, étape…), une ligne par groupe ; départ ●,
+arrivée ■ et flèches de sens.
+
+```{python}
+#| fig-cap: "Trajet de transhumance (fictif)"
+(Chart(transhumance, figsize=(8, 8))
+    .route_map('lon', 'lat', order='jour', labels='etape')
+    .title('Transhumance vers le sud-est')
+    .north_arrow(loc='upper left')
+    .scale_bar()
+    .tight_layout()
+    .show())
+```
+
+## Éléments de carte
+
+Ils se chaînent après n'importe quelle carte :
+
+| Méthode | Élément | Coin par défaut |
+|---|---|---|
+| `north_arrow(loc=...)` | Flèche du nord | haut droite |
+| `scale_bar(length=None, loc=...)` | Barre d'échelle en km (m sous 1 km), longueur automatique | bas gauche |
+| `inset_map(zoom_out=6, loc=...)` | Carte de situation en médaillon | bas droite |
+| *(automatique)* | Légende des tailles de `map_points(size=...)` | haut gauche |
+| *(automatique)* | Graduations en degrés (17° O, 14° N) | — |
+
+`loc` vaut `'upper left'`, `'upper right'`, `'lower left'` ou `'lower right'`. La barre
+d'échelle est juste en degrés (corrigée selon la latitude) comme en coordonnées
+projetées en mètres.
+
+```{python}
+#| fig-cap: "Une carte complète : symboles proportionnels, flèche du nord, échelle, situation"
+(Chart(villes, figsize=(9, 7.5))
+    .map_points('lon', 'lat', value='pluie', size='pluie', labels='ville')
+    .north_arrow()
+    .scale_bar()
+    .inset_map(zoom_out=7)
+    .title('Pluviométrie annuelle (mm, illustrative)')
+    .tight_layout()
+    .show())
+```
+
 ::: {.callout-note}
-Pour une carte de **densité** ou un champ **interpolé** (pH, pluie…) en longitude/latitude,
-`hexbin`, `contour` et `mesh` acceptent aussi des coordonnées géographiques — voir
+Sans fond de carte, `hexbin`, `contour` et `mesh` acceptent aussi des coordonnées
+géographiques — voir
 [Champs](champs.qmd).
 :::

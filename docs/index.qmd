@@ -15,7 +15,7 @@ toc: false
   <a class="feature-card" href="gallery.html">
     <div class="feature-art"><i class="bi bi-bar-chart-line"></i></div>
     <span class="feature-title">Galerie</span>
-    <span class="feature-text">80 graphiques : tout le catalogue matplotlib, le climat, les sols, les cartes (map) et tout seaborn.</span>
+    <span class="feature-text">83 graphiques : tout le catalogue matplotlib, le climat, les sols, les cartes (map) et tout seaborn.</span>
   </a>
   <a class="feature-card" href="customization.html">
     <div class="feature-art"><i class="bi bi-palette"></i></div>
@@ -64,7 +64,7 @@ df = pd.DataFrame({'mois': list(range(1, 13)),
 | **Volumétrique** | `hexbin` |
 | **Planification & flux** | `gantt`, `calendar_heatmap`, `sankey` |
 | **Climat & sols** | `ombrothermic`, `walter_lieth`, `climogram`, `water_balance`, `degree_days`, `wind_rose`, `anomaly`, `climate_stripes`, `soil_texture`, `soil_profile`, `depth_profile` |
-| **Map** | `map_points`, `choropleth`, `flow_map` |
+| **Map** | `map_points`, `choropleth`, `flow_map`, `density_map`, `field_map`, `route_map` ; éléments : `north_arrow`, `scale_bar`, `inset_map` |
 | **Sciences & analyse** | `regression`, `mean_bar` (lettres de Tukey), `interaction`, `qqplot`, `pca_biplot`, `dendrogram`, `clustermap`, `ternary`, `soil_texture` |
 | **Analyse qualitative** | `word_cloud`, `word_frequency`, `likert`, `code_matrix` |
 | **Seaborn** | `seaborn(...)` pour tout seaborn, et `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot`, `pairplot`, `jointplot` |

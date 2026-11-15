@@ -373,6 +373,21 @@
   path: charts/map.html#g-flow_map
   image: images/vignettes/flow_map.png
   categories: ["Map"]
+- title: "Carte de densité"
+  description: "density_map() — Zones de concentration de points"
+  path: charts/map.html#g-density_map
+  image: images/vignettes/density_map.png
+  categories: ["Map"]
+- title: "Carte interpolée"
+  description: "field_map() — Isolignes à partir de stations"
+  path: charts/map.html#g-field_map
+  image: images/vignettes/field_map.png
+  categories: ["Map"]
+- title: "Itinéraires"
+  description: "route_map() — Trajets, transhumance, traces GPS"
+  path: charts/map.html#g-route_map
+  image: images/vignettes/route_map.png
+  categories: ["Map"]
 - title: "Nuage de mots"
   description: "word_cloud() — Thèmes dominants d'un texte"
   path: charts/qualitatif.html#g-word_cloud

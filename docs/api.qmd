@@ -744,17 +744,39 @@ Exemples dans la page [Map](charts/map.qmd). Option : `pip install plutovizu[map
 
 ```python
 .map_points(lon, lat, value=None, size=None, group=None, labels=None, basemap=True,
-            cmap=None, sizes=(30, 500), alpha=0.85, basemap_source=None)
+            cmap=None, sizes=(30, 500), alpha=0.85, basemap_source=None, size_legend=True)
 .choropleth(column, labels=None, cmap=None, categorical=None, legend=True,
-            basemap=False, edgecolor=None, basemap_source=None)   # data = GeoDataFrame
+            basemap=False, edgecolor=None, basemap_source=None,
+            scheme=None, k=5)                                     # data = GeoDataFrame
 .flow_map(lon_from, lat_from, lon_to, lat_to, weight=None, label_from=None, label_to=None,
           basemap=True, curvature=0.25, color=None, max_width=8, basemap_source=None)
+.density_map(lon, lat, weight=None, bandwidth=None, levels=8, cmap=None, alpha=0.6,
+             show_points=False, colorbar=True, basemap=True, basemap_source=None)
+.field_map(lon, lat, value, levels=10, cmap=None, alpha=0.65, isolines=True,
+           show_points=True, labels=None, colorbar=True, basemap=True, basemap_source=None)
+.route_map(lon, lat, group=None, order=None, labels=None, arrows=True, linewidth=2.2,
+           basemap=True, basemap_source=None)
+```
+
+Éléments de carte, à chaîner après une carte :
+
+```python
+.north_arrow(loc='upper right', size=0.08)
+.scale_bar(length=None, loc='lower left')          # km ; → chart.scale_length_km
+.inset_map(zoom_out=6.0, loc='lower right', size=0.3, basemap=True, basemap_source=None,
+           color=None)                              # → chart.inset_ax
 ```
 
 - Coordonnées en longitude/latitude (WGS84) pour `map_points` et `flow_map` ; rapport
   d'aspect corrigé selon la latitude.
 - `choropleth` demande un `GeoDataFrame` (geopandas) ; une colonne texte donne une carte
-  catégorielle.
+  catégorielle. `scheme` : classes `'quantiles'`, `'equal'` ou `'natural'` (Jenks) ; bornes
+  dans `chart.classes`.
+- `map_points(size=...)` ajoute une légende des tailles ; les axes sont gradués en degrés.
+- `density_map` : densité de noyau relative (0–1), pondérable ; `field_map` : interpolation
+  linéaire sur la triangulation des points, avec isolignes ; `route_map` : départ ●,
+  arrivée ■, flèches de sens.
+- `scale_bar` : longueur automatique (1, 2, 5 × 10ⁿ km), juste en degrés comme en mètres.
 - Fond de carte : Esri World Gray Canvas (thème clair) ou World Imagery (thème sombre), sans
   clé d'API ; `basemap_source` accepte un nom (`'Esri.WorldTopoMap'`) ou un fournisseur
   xyzservices. Sans contextily ou sans réseau : avertissement, carte sans fond.

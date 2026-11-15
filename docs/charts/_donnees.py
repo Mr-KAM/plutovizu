@@ -206,3 +206,17 @@ villes = pd.DataFrame({
     'pluie': [380, 480, 280, 330, 520, 640, 620, 820, 1050, 1350, 1200, 400],
     'zone': ['Ouest', 'Ouest', 'Nord', 'Nord', 'Centre', 'Centre', 'Centre', 'Est', 'Sud', 'Sud', 'Sud', 'Nord'],
 })
+
+# ── Signalements d'un ravageur autour de trois foyers FICTIFS
+rng = np.random.default_rng(2)
+_foyers = [(-16.07, 14.15, 120), (-15.6, 13.6, 60), (-16.2, 12.6, 80)]
+signalements = pd.DataFrame(np.vstack([np.c_[rng.normal(x, .18, n), rng.normal(y, .15, n)]
+                                       for x, y, n in _foyers]), columns=['lon', 'lat'])
+
+# ── Trajet de transhumance FICTIF (localités réelles, dates illustratives)
+transhumance = pd.DataFrame({
+    'etape': ['Podor', 'Linguère', 'Dahra', 'Kaffrine', 'Koungheul', 'Tambacounda'],
+    'lon': [-14.96, -15.12, -15.48, -15.55, -14.80, -13.67],
+    'lat': [16.65, 15.39, 15.35, 14.10, 13.98, 13.77],
+    'jour': [0, 9, 12, 25, 31, 44],
+})

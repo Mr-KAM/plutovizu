@@ -933,3 +933,94 @@ def test_flow_map(villes):
     widths = sorted(p.get_linewidth() for p in c.ax.patches)
     assert len(widths) == 2 and widths[-1] > widths[0]
     assert sorted(t.get_text() for t in c.ax.texts) == ['Dakar', 'Kaolack', 'Tambacounda']
+
+
+# ── map : nouveaux types et éléments de carte ───────────────────────────────
+
+def test_geo_ticks_in_degrees(villes):
+    c = Chart(villes).map_points('lon', 'lat', basemap=False)
+    fmt = c.ax.xaxis.get_major_formatter()
+    assert fmt(-17, 0) == '17° O' and c.ax.yaxis.get_major_formatter()(14, 0) == '14° N'
+
+
+def test_size_legend_with_group_legend(villes):
+    c = Chart(villes).map_points('lon', 'lat', group='zone', size='pluie', basemap=False)
+    legends = [a for a in c.ax.get_children() if isinstance(a, matplotlib.legend.Legend)]
+    titles = sorted(lg.get_title().get_text() for lg in legends)
+    assert titles == ['pluie', 'zone']                       # les deux légendes coexistent
+
+
+def test_class_breaks_schemes():
+    v = np.array([1, 2, 3, 10, 11, 12, 50, 51, 52], float)
+    nat = Chart._class_breaks(v, 3, 'natural')
+    assert nat[0] == 1 and nat[-1] == 52
+    assert 3 <= nat[1] < 10 and 12 <= nat[2] < 50            # coupures entre les groupes
+    assert Chart._class_breaks(v, 4, 'equal') == pytest.approx([1, 13.75, 26.5, 39.25, 52])
+    assert len(Chart._class_breaks(v, 3, 'quantiles')) == 4
+    with pytest.raises(ValueError):
+        Chart._class_breaks(v, 3, 'jenks')
+
+
+def test_choropleth_scheme_classes():
+    gpd = pytest.importorskip('geopandas')
+    from shapely.geometry import box
+    g = gpd.GeoDataFrame({'v': [1, 2, 3, 10, 11, 12, 50, 51, 52]},
+                         geometry=[box(i, 0, i + 1, 1) for i in range(9)], crs='EPSG:32628')
+    c = Chart(g).choropleth('v', scheme='natural', k=3)
+    assert len(c.classes) == 4
+    colors = {tuple(np.round(fc, 3)) for fc in c.ax.collections[0].get_facecolor()}
+    assert len(colors) == 3                                  # 3 classes → 3 couleurs
+
+
+def test_density_map_peak_on_cluster():
+    rng = np.random.default_rng(0)
+    d = pd.DataFrame({'lon': np.r_[rng.normal(-16, .05, 300), rng.uniform(-17, -13, 30)],
+                      'lat': np.r_[rng.normal(14, .05, 300), rng.uniform(12.5, 16, 30)]})
+    c = Chart(d).density_map('lon', 'lat', basemap=False)
+    X, Y, Z = c.density_grid
+    i = np.unravel_index(Z.argmax(), Z.shape)
+    assert abs(X[i] + 16) < 0.2 and abs(Y[i] - 14) < 0.2 and Z.max() == pytest.approx(1)
+
+
+def test_field_map(villes):
+    c = Chart(villes).field_map('lon', 'lat', 'pluie', labels='ville', basemap=False)
+    assert c.ax.collections and [t.get_text() for t in c.ax.texts if t.get_text() in set(villes['ville'])]
+
+
+def test_route_map_order_and_markers():
+    d = pd.DataFrame({'lon': [-15.0, -14.0, -16.0], 'lat': [15.0, 14.0, 16.0], 'etape': [2, 3, 1]})
+    c = Chart(d).route_map('lon', 'lat', order='etape', labels='etape', basemap=False)
+    line = c.ax.lines[0]
+    assert list(line.get_xdata()) == [-16.0, -15.0, -14.0]   # suit l'ordre des étapes
+
+
+def test_scale_bar_length_in_degrees(villes):
+    c = Chart(villes).map_points('lon', 'lat', basemap=False).scale_bar(length=100)
+    bar = [p for p in c.ax.patches if isinstance(p, matplotlib.patches.Rectangle)]
+    width_deg = sum(p.get_width() for p in bar)
+    lat0 = villes['lat'].mean()
+    assert width_deg * 111.32 * np.cos(np.radians(lat0)) == pytest.approx(100, rel=1e-6)
+    auto = Chart(villes).map_points('lon', 'lat', basemap=False).scale_bar()
+    assert auto.scale_length_km in {10, 20, 50, 100, 200}
+
+
+def test_scale_bar_in_meters_and_requires_map(df):
+    gpd = pytest.importorskip('geopandas')
+    from shapely.geometry import box
+    g = gpd.GeoDataFrame({'v': [1, 2]}, geometry=[box(0, 0, 500, 300), box(500, 0, 1000, 300)],
+                         crs='EPSG:32628')
+    c = Chart(g).choropleth('v').scale_bar()
+    assert c.scale_length_km in {0.1, 0.2}                    # ~ 1/5 de 1 km de large
+    with pytest.raises(ValueError, match='après une carte'):
+        Chart(df).scale_bar()
+
+
+def test_north_arrow_and_inset(villes):
+    c = (Chart(villes).map_points('lon', 'lat', basemap=False)
+         .north_arrow(loc='upper left').inset_map(zoom_out=5, basemap=False))
+    assert any(t.get_text() == 'N' for t in c.ax.texts)
+    (x0, x1) = c.ax.get_xlim()
+    (i0, i1) = c.inset_ax.get_xlim()
+    assert (i1 - i0) == pytest.approx((x1 - x0) * 5, rel=1e-6)
+    with pytest.raises(ValueError):
+        c.north_arrow(loc='centre')

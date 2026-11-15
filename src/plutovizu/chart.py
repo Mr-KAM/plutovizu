@@ -3530,17 +3530,33 @@ class Chart:
         return [pe.withStroke(linewidth=3, foreground=plt.rcParams['axes.facecolor'])]
 
     def _geo_frame(self, lons, lats, pad: float = 0.08) -> None:
-        """Cadre en longitude/latitude avec marge, et rapport d'aspect 1/cos(latitude)."""
+        """Cadre en longitude/latitude avec marge, rapport d'aspect 1/cos(latitude) et
+        graduations en degrés (17° O, 14° N). Mémorise le repère pour les éléments de carte."""
         lons, lats = np.asarray(lons, float), np.asarray(lats, float)
         dx = max(np.ptp(lons), 0.05) * pad
         dy = max(np.ptp(lats), 0.05) * pad
         self.ax.set_xlim(lons.min() - dx, lons.max() + dx)
         self.ax.set_ylim(lats.min() - dy, lats.max() + dy)
         self.ax.set_aspect(1 / np.cos(np.radians(lats.mean())))
+        self.ax.xaxis.set_major_locator(plt.MaxNLocator(5))   # libellés longs : peu de graduations
+        self.ax.yaxis.set_major_locator(plt.MaxNLocator(6))
+        self.ax.xaxis.set_major_formatter(
+            plt.FuncFormatter(lambda v, _: f"{abs(v):.4g}° {'E' if v >= 0 else 'O'}"))
+        self.ax.yaxis.set_major_formatter(
+            plt.FuncFormatter(lambda v, _: f"{abs(v):.4g}° {'N' if v >= 0 else 'S'}"))
         self.ax.set_xlabel('Longitude')
         self.ax.set_ylabel('Latitude')
+        self._geo = {'units': 'deg', 'lat0': float(lats.mean()), 'crs': 'EPSG:4326'}
 
-    def _basemap(self, crs: str = 'EPSG:4326', source=None) -> None:
+    def _require_geo(self, what: str) -> dict:
+        geo = getattr(self, '_geo', None)
+        if geo is None:
+            raise ValueError(f"{what} s'utilise après une carte (map_points, choropleth, "
+                             "density_map, field_map, route_map, flow_map)")
+        return geo
+
+    def _basemap(self, crs: str = 'EPSG:4326', source=None, ax=None,
+                 attribution: bool = True) -> None:
         """Fond de carte (contextily) ; sans contextily ou sans réseau : avertissement, pas d'erreur.
 
         Défaut : Esri World Gray Canvas (thème clair) ou Esri World Imagery (thème sombre),
@@ -3558,9 +3574,13 @@ class Chart:
         dark = sum(mcolors.to_rgb(plt.rcParams['axes.facecolor'])) / 3 < 0.5
         provider = source or (ctx.providers.Esri.WorldImagery if dark
                               else ctx.providers.Esri.WorldGrayCanvas)
+        ax = ax or self.ax
+        if ax is self.ax and getattr(self, '_geo', None) is not None:
+            self._geo['source'] = provider          # réutilisé par inset_map
         try:
-            ctx.add_basemap(self.ax, crs=crs, source=provider, attribution_size=6)
-            self.ax.grid(False)
+            ctx.add_basemap(ax, crs=crs, source=provider, attribution_size=6,
+                            attribution=None if attribution else False)
+            ax.grid(False)
         except Exception as exc:  # réseau absent, serveur de tuiles indisponible…
             warnings.warn(f"Fond de carte indisponible ({exc.__class__.__name__}) : carte sans fond",
                           stacklevel=3)
@@ -3569,23 +3589,28 @@ class Chart:
                    size: Optional[str] = None, group: Optional[str] = None,
                    labels: Optional[str] = None, basemap: bool = True,
                    cmap: Optional[str] = None, sizes: Tuple[float, float] = (30, 500),
-                   alpha: float = 0.85, basemap_source=None) -> 'Chart':
+                   alpha: float = 0.85, basemap_source=None,
+                   size_legend: bool = True) -> 'Chart':
         """
         EN: Points on a map (longitude/latitude, WGS84): colored by a value (colorbar) or a
-            group (legend), sized by a column, labeled, over a web basemap (contextily, optional).
+            group (legend), sized by a column (proportional symbols, with a size legend),
+            labeled, over a web basemap (contextily, optional).
         FR: Points sur une carte (longitude/latitude, WGS84) : colorés par une valeur (barre
-            de couleur) ou un groupe (légende), dimensionnés par une colonne, nommés, sur un
-            fond de carte web (contextily, optionnel).
+            de couleur) ou un groupe (légende), dimensionnés par une colonne (symboles
+            proportionnels, avec légende des tailles), nommés, sur un fond de carte web
+            (contextily, optionnel).
 
         Example / Exemple:
             chart.map_points('lon', 'lat', value='pluie', labels='station')
         """
         self.chart_type = 'map_points'
         d = self.data.dropna(subset=[lon, lat])
+        to_area = None
         if size:
             s = d[size].astype(float)
-            span = (s.max() - s.min()) or 1
-            area = sizes[0] + (s - s.min()) / span * (sizes[1] - sizes[0])
+            lo, span = s.min(), (s.max() - s.min()) or 1
+            to_area = lambda v: sizes[0] + (v - lo) / span * (sizes[1] - sizes[0])  # noqa: E731
+            area = to_area(s)
         else:
             area = pd.Series(sizes[0] * 2, index=d.index)
         edge = plt.rcParams['axes.facecolor']
@@ -3607,15 +3632,68 @@ class Chart:
                 self.ax.annotate(str(t), (x, y), xytext=(5, 5), textcoords='offset points',
                                  fontsize=8, color=plt.rcParams['text.color'],
                                  path_effects=self._halo(), zorder=4)
+        if size and size_legend:
+            self._size_legend(d[size].astype(float), to_area, title=size)
         self._geo_frame(d[lon], d[lat])
         if basemap:
             self._basemap(source=basemap_source)
         return self
 
+    def _size_legend(self, values: pd.Series, to_area, title: str, loc: str = 'upper left') -> None:
+        """Légende des symboles proportionnels : 3 valeurs arrondies (min, médiane, max)."""
+        nice = lambda v: float(f'{v:.2g}')  # noqa: E731
+        refs = sorted({nice(values.min()), nice(values.median()), nice(values.max())})
+        ink = plt.rcParams['text.color']
+        handles = [self.ax.scatter([], [], s=max(to_area(v), 4), facecolor='none', edgecolor=ink,
+                                   linewidth=1) for v in refs]
+        previous = self.ax.get_legend()
+        self.ax.legend(handles, [f'{v:,.4g}' for v in refs], title=title, loc=loc,
+                       labelspacing=1.3, borderpad=0.9, handletextpad=1.2, frameon=True,
+                       framealpha=0.85, facecolor=plt.rcParams['axes.facecolor'])
+        if previous is not None:
+            self.ax.add_artist(previous)
+
+    @staticmethod
+    def _class_breaks(values, k: int, scheme: str) -> np.ndarray:
+        """Bornes de k classes : 'quantiles', 'equal' (intervalles égaux) ou 'natural'
+        (seuils naturels de Jenks, programmation dynamique de Fisher)."""
+        x = np.sort(np.asarray(values, float)[~np.isnan(np.asarray(values, float))])
+        if scheme == 'quantiles':
+            edges = np.quantile(x, np.linspace(0, 1, k + 1))
+        elif scheme == 'equal':
+            edges = np.linspace(x[0], x[-1], k + 1)
+        elif scheme == 'natural':
+            if len(x) > 1000:  # échantillon régulier : même forme, calcul rapide
+                x = np.quantile(x, np.linspace(0, 1, 1000))
+            n, k = len(x), min(k, len(np.unique(x)))
+            s1 = np.concatenate([[0.0], np.cumsum(x)])
+            s2 = np.concatenate([[0.0], np.cumsum(x ** 2)])
+            D = np.full((k + 1, n), np.inf)
+            B = np.zeros((k + 1, n), dtype=int)
+            j = np.arange(n)
+            D[1] = s2[j + 1] - s1[j + 1] ** 2 / (j + 1)        # variance intra-classe x[0..j]
+            for c in range(2, k + 1):
+                for jj in range(c - 1, n):
+                    i = np.arange(c - 1, jj + 1)                 # début de la dernière classe
+                    m = jj - i + 1
+                    cost = (s2[jj + 1] - s2[i]) - (s1[jj + 1] - s1[i]) ** 2 / m
+                    total = D[c - 1, i - 1] + cost
+                    b = int(np.argmin(total))
+                    D[c, jj], B[c, jj] = total[b], i[b]
+            edges, jj = [x[-1]], n - 1
+            for c in range(k, 1, -1):
+                i = B[c, jj]
+                edges.append(x[i - 1])
+                jj = i - 1
+            edges = np.array(sorted(edges + [x[0]]))
+        else:
+            raise ValueError("scheme doit valoir 'quantiles', 'equal' ou 'natural'")
+        return np.unique(edges)
+
     def choropleth(self, column: str, labels: Optional[str] = None, cmap: Optional[str] = None,
                    categorical: Optional[bool] = None, legend: bool = True,
                    basemap: bool = False, edgecolor: Optional[str] = None,
-                   basemap_source=None) -> 'Chart':
+                   basemap_source=None, scheme: Optional[str] = None, k: int = 5) -> 'Chart':
         """
         EN: Choropleth map: each zone (region, plot…) of a GeoDataFrame colored by a column
             — continuous (colorbar) or categorical (legend). Needs geopandas
@@ -3625,9 +3703,18 @@ class Chart:
             Nécessite geopandas (pip install plutovizu[map]) ; lire les zones avec
             geopandas.read_file(...).
 
+        Args / Paramètres:
+            scheme (str, optional): EN: Discrete classes for a numeric column: 'quantiles',
+                'equal' (equal intervals) or 'natural' (Jenks natural breaks); class bounds in
+                self.classes. / FR: Classes de couleurs pour une colonne numérique :
+                'quantiles', 'equal' (intervalles égaux) ou 'natural' (seuils naturels de
+                Jenks) ; bornes dans self.classes.
+            k (int): EN/FR: Nombre de classes. Défaut 5.
+
         Example / Exemple:
             regions = geopandas.read_file('regions.geojson')
             Chart(regions).choropleth('rendement', labels='nom')
+            Chart(regions).choropleth('rendement', scheme='natural', k=4)
         """
         if not hasattr(self.data, 'geometry'):
             raise ValueError("choropleth demande un GeoDataFrame : geopandas.read_file('zones.geojson') "
@@ -3645,13 +3732,21 @@ class Chart:
                      legend_kwds={'title': column, 'loc': 'upper left', 'bbox_to_anchor': (1, 1)},
                      **common)
         else:
+            extra = {}
+            if scheme:
+                self.classes = self._class_breaks(gdf[column], k, scheme)
+                extra['norm'] = mcolors.BoundaryNorm(self.classes, ncolors=256)
             gdf.plot(cmap=cmap or plt.rcParams['image.cmap'],
-                     legend_kwds={'label': column, 'shrink': 0.7}, **common)
+                     legend_kwds={'label': column, 'shrink': 0.7}, **common, **extra)
         if labels:
             for geom, t in zip(gdf.geometry, gdf[labels]):
                 p = geom.representative_point()
                 self.ax.annotate(str(t), (p.x, p.y), ha='center', va='center', fontsize=8,
                                  color=plt.rcParams['text.color'], path_effects=self._halo())
+        x0, y0, x1, y1 = gdf.total_bounds
+        geographic = gdf.crs is None or gdf.crs.is_geographic
+        self._geo = {'units': 'deg' if geographic else 'm', 'lat0': (y0 + y1) / 2,
+                     'crs': gdf.crs.to_string() if gdf.crs else 'EPSG:4326'}
         self.ax.set_axis_off()
         if basemap:
             self._basemap(crs=gdf.crs.to_string() if gdf.crs else 'EPSG:4326',
@@ -3702,6 +3797,246 @@ class Chart:
         self._geo_frame(ends['lon'], ends['lat'], pad=0.15)
         if basemap:
             self._basemap(source=basemap_source)
+        return self
+
+    def density_map(self, lon: str, lat: str, weight: Optional[str] = None,
+                    bandwidth: Optional[float] = None, levels: int = 8,
+                    cmap: Optional[str] = None, alpha: float = 0.6, show_points: bool = False,
+                    colorbar: bool = True, basemap: bool = True, basemap_source=None) -> 'Chart':
+        """
+        EN: Density (hot-spot) map: kernel density of the points, optionally weighted,
+            drawn as filled contours of relative density (0–1) over the basemap.
+        FR: Carte de densité (zones chaudes) : densité de noyau des points, éventuellement
+            pondérée, en aplats de densité relative (0–1) sur le fond de carte.
+
+        Args / Paramètres:
+            weight (str, optional): EN/FR: Poids de chaque point (ex. effectif, surface).
+            bandwidth (float, optional): EN/FR: Lissage (méthode de scipy) ; défaut automatique.
+
+        Example / Exemple:
+            chart.density_map('lon', 'lat', weight='cas')     # foyers d'un ravageur
+        """
+        from scipy.stats import gaussian_kde
+        self.chart_type = 'density_map'
+        d = self.data.dropna(subset=[lon, lat])
+        self._geo_frame(d[lon], d[lat], pad=0.15)
+        (x0, x1), (y0, y1) = self.ax.get_xlim(), self.ax.get_ylim()
+        X, Y = np.meshgrid(np.linspace(x0, x1, 200), np.linspace(y0, y1, 200))
+        kde = gaussian_kde(np.vstack([d[lon], d[lat]]),
+                           weights=d[weight].to_numpy(float) if weight else None,
+                           bw_method=bandwidth)
+        Z = kde(np.vstack([X.ravel(), Y.ravel()])).reshape(X.shape)
+        Z = Z / Z.max()
+        filled = self.ax.contourf(X, Y, Z, levels=np.linspace(0.08, 1, levels + 1),
+                                  cmap=cmap or plt.rcParams['image.cmap'], alpha=alpha, zorder=2)
+        if show_points:
+            self.ax.scatter(d[lon], d[lat], s=6, color=plt.rcParams['text.color'], alpha=0.6, zorder=3)
+        if colorbar:
+            self._colorbar(filled, 'Densité relative')
+        self.ax.set_xlim(x0, x1)
+        self.ax.set_ylim(y0, y1)
+        self.density_grid = (X, Y, Z)
+        if basemap:
+            self._basemap(source=basemap_source)
+        return self
+
+    def field_map(self, lon: str, lat: str, value: str, levels: int = 10,
+                  cmap: Optional[str] = None, alpha: float = 0.65, isolines: bool = True,
+                  show_points: bool = True, labels: Optional[str] = None, colorbar: bool = True,
+                  basemap: bool = True, basemap_source=None) -> 'Chart':
+        """
+        EN: Interpolated field map from point measurements (stations): linear interpolation
+            on a triangulation of the points, filled classes and labeled isolines (e.g.
+            isohyets), over the basemap. Values exist only inside the hull of the points.
+        FR: Carte d'une grandeur interpolée à partir de mesures ponctuelles (stations) :
+            interpolation linéaire sur une triangulation des points, aplats et isolignes
+            annotées (ex. isohyètes), sur le fond de carte. Valeurs seulement à l'intérieur
+            de l'enveloppe des points.
+
+        Example / Exemple:
+            chart.field_map('lon', 'lat', 'pluie', labels='station')     # isohyètes
+        """
+        import matplotlib.tri as mtri
+        self.chart_type = 'field_map'
+        d = self.data.dropna(subset=[lon, lat, value])
+        tri = mtri.Triangulation(d[lon], d[lat])
+        self._geo_frame(d[lon], d[lat])
+        ink = plt.rcParams['text.color']
+        filled = self.ax.tricontourf(tri, d[value], levels=levels, alpha=alpha, zorder=2,
+                                     cmap=cmap or plt.rcParams['image.cmap'])
+        if isolines:
+            lines = self.ax.tricontour(tri, d[value], levels=filled.levels, colors=ink,
+                                       linewidths=0.6, alpha=0.8, zorder=3)
+            self.ax.clabel(lines, fontsize=7, fmt='%.4g')
+        if show_points:
+            self.ax.scatter(d[lon], d[lat], s=14, color=ink, zorder=4)
+        if labels:
+            for x, y, t in zip(d[lon], d[lat], d[labels]):
+                self.ax.annotate(str(t), (x, y), xytext=(4, 4), textcoords='offset points',
+                                 fontsize=7, color=ink, path_effects=self._halo(), zorder=5)
+        if colorbar:
+            self._colorbar(filled, value)
+        if basemap:
+            self._basemap(source=basemap_source)
+        return self
+
+    def route_map(self, lon: str, lat: str, group: Optional[str] = None,
+                  order: Optional[str] = None, labels: Optional[str] = None,
+                  arrows: bool = True, linewidth: float = 2.2, basemap: bool = True,
+                  basemap_source=None) -> 'Chart':
+        """
+        EN: Routes / tracks: points joined in order (one line per group — herd, vehicle,
+            GPS track), start ● and end ■ marked, arrows showing the direction.
+        FR: Itinéraires / trajets : points reliés dans l'ordre (une ligne par groupe —
+            troupeau, véhicule, trace GPS), départ ● et arrivée ■ marqués, flèches de sens.
+
+        Args / Paramètres:
+            order (str, optional): EN/FR: Colonne d'ordre (date, étape) ; défaut : ordre des lignes.
+            labels (str, optional): EN/FR: Nom de chaque étape.
+
+        Example / Exemple:
+            chart.route_map('lon', 'lat', group='troupeau', order='date', labels='etape')
+        """
+        self.chart_type = 'route_map'
+        d = self.data.dropna(subset=[lon, lat])
+        bg, ink = plt.rcParams['axes.facecolor'], plt.rcParams['text.color']
+        groups = d.groupby(group, sort=False) if group else [(None, d)]
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            sub = sub.sort_values(order) if order else sub
+            x, y = sub[lon].to_numpy(float), sub[lat].to_numpy(float)
+            self.ax.plot(x, y, color=c, linewidth=linewidth, label=name, zorder=3,
+                         solid_capstyle='round', solid_joinstyle='round')
+            self.ax.scatter(x[:1], y[:1], s=45, color=c, edgecolor=bg, linewidth=1, zorder=4)
+            self.ax.scatter(x[-1:], y[-1:], s=55, marker='s', color=c, edgecolor=bg,
+                            linewidth=1, zorder=4)
+            if arrows:
+                for k in range(len(x) - 1):   # tête de flèche au milieu de chaque tronçon
+                    xm, ym = (x[k] + x[k + 1]) / 2, (y[k] + y[k + 1]) / 2
+                    self.ax.annotate('', xy=(xm + 0.01 * (x[k + 1] - x[k]), ym + 0.01 * (y[k + 1] - y[k])),
+                                     xytext=(xm, ym), zorder=4,
+                                     arrowprops=dict(arrowstyle='-|>', color=c, lw=0,
+                                                     mutation_scale=14))
+            if labels:
+                for xi, yi, t in zip(x, y, sub[labels]):
+                    self.ax.annotate(str(t), (xi, yi), xytext=(5, 5), textcoords='offset points',
+                                     fontsize=7.5, color=ink, path_effects=self._halo(), zorder=5)
+        if group:
+            self.ax.legend(title=group)
+        self._geo_frame(d[lon], d[lat], pad=0.12)
+        if basemap:
+            self._basemap(source=basemap_source)
+        return self
+
+    # ── Éléments de carte : à chaîner après une carte
+
+    _CORNERS = {'upper left': (0.06, 0.84), 'upper right': (0.94, 0.84),
+                'lower left': (0.06, 0.08), 'lower right': (0.94, 0.08)}
+
+    def north_arrow(self, loc: str = 'upper right', size: float = 0.08) -> 'Chart':
+        """
+        EN: North arrow in a corner of the map ('upper right', 'upper left', 'lower right',
+            'lower left'). Assumes north is up (true for all plutovizu maps).
+        FR: Flèche du nord dans un coin de la carte ('upper right', 'upper left',
+            'lower right', 'lower left'). Suppose le nord en haut (vrai pour les cartes plutovizu).
+
+        Example / Exemple:
+            chart.map_points('lon', 'lat').north_arrow().scale_bar()
+        """
+        if loc not in self._CORNERS:
+            raise ValueError(f"loc doit valoir {list(self._CORNERS)}")
+        x, y = self._CORNERS[loc]
+        if 'upper' in loc:
+            y -= size
+        ink = plt.rcParams['text.color']
+        self.ax.annotate('', xy=(x, y + size), xytext=(x, y), xycoords='axes fraction',
+                         arrowprops=dict(arrowstyle='-|>,head_length=0.8,head_width=0.45',
+                                         color=ink, lw=2.2), zorder=7)
+        self.ax.text(x, y + size + 0.015, 'N', transform=self.ax.transAxes, ha='center',
+                     va='bottom', fontsize=12, fontweight='bold', color=ink,
+                     path_effects=self._halo(), zorder=7)
+        return self
+
+    def scale_bar(self, length: Optional[float] = None, loc: str = 'lower left') -> 'Chart':
+        """
+        EN: Scale bar in km (m below 1 km). Length chosen automatically (1, 2, 5 × 10ⁿ, about
+            a fifth of the map width) unless given. Correct in degrees (corrected for the
+            latitude) and in projected metric coordinates.
+        FR: Barre d'échelle en km (m sous 1 km). Longueur choisie automatiquement (1, 2, 5 × 10ⁿ,
+            environ un cinquième de la largeur) sauf si précisée. Juste en degrés (corrigée de
+            la latitude) comme en coordonnées projetées métriques.
+
+        Example / Exemple:
+            chart.choropleth('rendement').scale_bar(length=0.2)     # 200 m
+        """
+        from matplotlib.patches import Rectangle
+        geo = self._require_geo('scale_bar')
+        (x0, x1), (y0, y1) = self.ax.get_xlim(), self.ax.get_ylim()
+        km_per_unit = (111.32 * np.cos(np.radians(geo['lat0'])) if geo['units'] == 'deg' else 0.001)
+        if length is None:
+            target = (x1 - x0) * km_per_unit / 5
+            mag = 10 ** np.floor(np.log10(target))
+            length = max(m for m in (1, 2, 5, 10) if m * mag <= target) * mag
+        bar = length / km_per_unit
+        w, h = x1 - x0, y1 - y0
+        xs = x0 + 0.05 * w if 'left' in loc else x1 - 0.05 * w - bar
+        ys = y0 + 0.06 * h if 'lower' in loc else y1 - 0.1 * h
+        ink, bg = plt.rcParams['text.color'], plt.rcParams['axes.facecolor']
+        for k in range(2):
+            self.ax.add_patch(Rectangle((xs + k * bar / 2, ys), bar / 2, 0.014 * h, zorder=7,
+                                        facecolor=ink if k == 0 else bg, edgecolor=ink, lw=0.8))
+        label = f'{length:g} km' if length >= 1 else f'{length * 1000:g} m'
+        for xt, txt in ((xs, '0'), (xs + bar, label)):
+            self.ax.text(xt, ys + 0.03 * h, txt, ha='center', va='bottom', fontsize=8, color=ink,
+                         path_effects=self._halo(), zorder=7)
+        self.scale_length_km = float(length)
+        return self
+
+    def inset_map(self, zoom_out: float = 6.0, loc: str = 'lower right', size: float = 0.3,
+                  basemap: bool = True, basemap_source=None,
+                  color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Locator inset: a small map zoomed out `zoom_out` times around the map, with a
+            rectangle showing the mapped area.
+        FR: Carte de situation en médaillon : une petite carte `zoom_out` fois plus large
+            autour de la carte, avec un rectangle montrant la zone cartographiée.
+
+        Example / Exemple:
+            chart.map_points('lon', 'lat').inset_map(zoom_out=8, loc='lower right')
+        """
+        from matplotlib.patches import Rectangle
+        geo = self._require_geo('inset_map')
+        (x0, x1), (y0, y1) = self.ax.get_xlim(), self.ax.get_ylim()
+        cx, cy, w, h = (x0 + x1) / 2, (y0 + y1) / 2, x1 - x0, y1 - y0
+        pad = 0.02
+        boxes = {'upper left': [pad, 1 - size - pad, size, size],
+                 'upper right': [1 - size - pad, 1 - size - pad, size, size],
+                 'lower left': [pad, pad, size, size],
+                 'lower right': [1 - size - pad, pad, size, size]}
+        if loc not in boxes:
+            raise ValueError(f"loc doit valoir {list(boxes)}")
+        ins = self.ax.inset_axes(boxes[loc])
+        ex0, ex1 = cx - w * zoom_out / 2, cx + w * zoom_out / 2
+        ey0, ey1 = cy - h * zoom_out / 2, cy + h * zoom_out / 2
+        if geo['units'] == 'deg':
+            ex0, ex1, ey0, ey1 = max(ex0, -180), min(ex1, 180), max(ey0, -85), min(ey1, 85)
+            ins.set_aspect(1 / np.cos(np.radians(cy)))
+        else:
+            ins.set_aspect('equal')
+        ins.set_xlim(ex0, ex1)
+        ins.set_ylim(ey0, ey1)
+        ins.set_xticks([])
+        ins.set_yticks([])
+        ins.set_facecolor(plt.rcParams['axes.facecolor'])
+        for side in ins.spines.values():
+            side.set_visible(True)
+            side.set_color(plt.rcParams['text.color'])
+            side.set_linewidth(1)
+        ins.add_patch(Rectangle((x0, y0), w, h, fill=False, linewidth=1.6, zorder=5,
+                                edgecolor=color or self._palette()[1 % len(self._palette())]))
+        if basemap:
+            self._basemap(crs=geo['crs'], source=basemap_source or geo.get('source'),
+                          ax=ins, attribution=False)
+        self.inset_ax = ins
         return self
 
     # ──────────────────────────────────────── Qualitative analysis / Analyse qualitative

@@ -238,6 +238,12 @@ CATALOGUE = [
      lambda: C(parcelles).choropleth('rendement', legend=False)),
     ('flow_map', 'Carte de flux', CAR, 'Échanges entre lieux',
      lambda: C(flux_vignette, 3.6, 3).flow_map('lon', 'lat', 'lon2', 'lat2', weight='t')),
+    ('density_map', 'Carte de densité', CAR, 'Zones de concentration de points',
+     lambda: C(signalements, 3.6, 3).density_map('lon', 'lat', colorbar=False)),
+    ('field_map', 'Carte interpolée', CAR, 'Isolignes à partir de stations',
+     lambda: C(villes, 3.6, 3).field_map('lon', 'lat', 'pluie', colorbar=False, show_points=False)),
+    ('route_map', 'Itinéraires', CAR, 'Trajets, transhumance, traces GPS',
+     lambda: C(transhumance, 3.2, 3.2).route_map('lon', 'lat', order='jour')),
 
     ('word_cloud', 'Nuage de mots', QUA, "Thèmes dominants d'un texte",
      lambda: C(enquete).word_cloud('reponse', max_words=60)),
