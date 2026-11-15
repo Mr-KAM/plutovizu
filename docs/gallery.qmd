@@ -1,6 +1,6 @@
 ---
 title: "Galerie"
-subtitle: "Les 83 graphiques de plutovizu. Cliquez sur une carte pour voir l'exemple et son code."
+subtitle: "Les 104 graphiques de plutovizu. Cliquez sur une carte pour voir l'exemple et son code."
 toc: false
 listing:
   id: galerie
@@ -27,7 +27,9 @@ Les graphiques sont rangés par catégorie, chacune avec sa page d'exemples :
 [3D](charts/3d.qmd) ·
 [Climat & sols](charts/sciences.qmd) ·
 [Map](charts/map.qmd) ·
+[Écologie](charts/ecologie.qmd) ·
 [Qualitatif](charts/qualitatif.qmd) ·
+[Graphes & réseaux](charts/graphes.qmd) ·
 [Seaborn](charts/seaborn.qmd)
 
 Toutes les vignettes utilisent le thème `editorial`, le thème par défaut de cette

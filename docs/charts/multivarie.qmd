@@ -6,12 +6,20 @@ subtitle: "Résumer beaucoup de variables et regrouper les individus qui se ress
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `pca_biplot` — Analyse en composantes principales {#g-pca_biplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('pca_biplot')
+```
+
 
 ACP normée : les individus sur les deux premiers axes, colorés par groupe, et les variables
 en flèches. Variance expliquée, coordonnées et contributions dans `chart.pca`.
@@ -42,6 +50,13 @@ chart.show()
 
 ### `dendrogram` — Classification hiérarchique {#g-dendrogram}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('dendrogram')
+```
+
+
 Regroupe les individus selon leur ressemblance (méthode de Ward par défaut, variables
 centrées-réduites). `color_threshold` colore les groupes formés sous la hauteur de coupe,
 marquée par une ligne pointillée.
@@ -57,6 +72,13 @@ marquée par une ligne pointillée.
 
 
 ### `clustermap` — Carte de chaleur classée {#g-clustermap}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('clustermap')
+```
+
 
 Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs
 dendrogrammes. Les colonnes sont centrées-réduites par défaut (`standardize=True`).

@@ -6,12 +6,20 @@ subtitle: "Nuages, courbes, surfaces et barres en trois dimensions."
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `scatter3d` — Nuage de points 3D {#g-scatter3d}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('scatter3d')
+```
+
 
 ```{python}
 #| fig-cap: "Trois caractères variétaux"
@@ -25,6 +33,13 @@ le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 ### `line3d` — Courbe 3D {#g-line3d}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('line3d')
+```
+
+
+```{python}
 #| fig-cap: "Trajectoire d'un drone de surveillance"
 t = np.linspace(0, 6 * np.pi, 300)
 vol = pd.DataFrame({'x': np.cos(t) * t, 'y': np.sin(t) * t, 'altitude': 20 + 2 * t})
@@ -36,6 +51,13 @@ vol = pd.DataFrame({'x': np.cos(t) * t, 'y': np.sin(t) * t, 'altitude': 20 + 2 *
 
 
 ### `surface` — Surface 3D {#g-surface}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('surface')
+```
+
 
 Sur une grille régulière : `kind='surface'` ou `'wireframe'` ; sur des points dispersés,
 la surface est triangulée (`trisurf`) automatiquement.
@@ -58,6 +80,13 @@ la surface est triangulée (`trisurf`) automatiquement.
 
 
 ### `bar3d` — Barres 3D {#g-bar3d}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('bar3d')
+```
+
 
 ```{python}
 #| fig-cap: "Rendement moyen par variété et par dose"

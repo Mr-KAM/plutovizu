@@ -6,12 +6,20 @@ subtitle: "Réponses ouvertes, entretiens et questionnaires d'opinion."
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `word_cloud` — Nuage de mots {#g-word_cloud}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('word_cloud')
+```
+
 
 À partir d'une colonne de texte libre : les mots sont comptés en ignorant les mots vides
 français (`language='fr'`, ou `'en'`, `'fr+en'`). On peut ajouter ses propres mots à
@@ -38,6 +46,13 @@ with theme_context('prezi'):
 
 ### `word_frequency` — Fréquence des mots {#g-word_frequency}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('word_frequency')
+```
+
+
 Le complément chiffré du nuage : les mots (ou expressions) les plus cités, en barres.
 Les fréquences sont dans `chart.word_frequencies` ; la fonction `word_counts()` les
 calcule sans tracer.
@@ -53,6 +68,13 @@ calcule sans tracer.
 
 
 ### `likert` — Échelle de Likert {#g-likert}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('likert')
+```
+
 
 Une barre par question, centrée sur la réponse neutre : désaccord à gauche, accord à
 droite, en pourcentage. Les questions sont triées par accord net.
@@ -76,6 +98,13 @@ opinions = pd.DataFrame({q: rng.choice(echelle, 80, p=p) for q, p in {
 
 
 ### `code_matrix` — Matrice des codes {#g-code_matrix}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('code_matrix')
+```
+
 
 Pour le codage d'entretiens (comme dans NVivo ou Atlas.ti) : une ligne par segment codé,
 et la matrice montre combien de fois chaque code apparaît dans chaque entretien.

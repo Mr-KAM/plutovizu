@@ -63,10 +63,18 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `scatter3d`, `line3d`, `surface`, `bar3d` | Graphiques 3D |
 | `walter_lieth`, `climogram`, `water_balance`, `degree_days` | Climatogramme, climogramme, bilan hydrique, degrés-jours |
 | `wind_rose`, `anomaly`, `climate_stripes` | Rose des vents, anomalies, bandes climatiques |
-| `soil_profile`, `depth_profile` | Profil de sol, variable selon la profondeur |
+| `soil_profile`, `depth_profile`, `soil_properties` | Profil de sol, variable(s) selon la profondeur |
+| `retention_curve`, `grain_size_curve`, `exchange_complex` | Pédologie : courbe pF, granulométrie, complexe d'échange |
+| `infiltration_curve`, `isopleth` | Pédologie : infiltration (Philip, Horton), isoplèthes profondeur × temps |
 | `map_points`, `choropleth`, `flow_map` | Map : points, zones, flux (`pip install plutovizu[map]`) |
 | `density_map`, `field_map`, `route_map` | Map : densité, isolignes interpolées, itinéraires |
 | `north_arrow`, `scale_bar`, `inset_map` | Éléments de carte : flèche du nord, échelle, situation |
+| `glm_curve`, `response_curve`, `count_distribution`, `forest_plot` | Écologie : GLM (logistique, Poisson), réponse lissée, excès de zéros, effets |
+| `ordination` | Écologie : AFC, CCA, ACP, RDA (triplot sites, espèces, variables) |
+| `rank_abundance`, `accumulation`, `diversity` | Écologie : rang-abondance, accumulation / raréfaction, indices de diversité |
+| `network`, `arc_diagram` | Graphes : réseau, mouvements entre lieux |
+| `shortest_path`, `spanning_tree`, `max_flow` | Recherche opérationnelle : plus court chemin, arbre couvrant, flot maximal |
+| `critical_path`, `tsp_route` | Planification PERT / CPM, tournée du voyageur de commerce |
 | `word_cloud(text)` | Nuage de mots (réponses ouvertes, entretiens) |
 | `word_frequency(text, top, ngram)` | Mots ou expressions les plus cités |
 | `likert(columns, order)` | Échelle de Likert (barres divergentes) |
@@ -77,7 +85,9 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 `mean_bar(..., letters=True)` ajoute les lettres du test de Tukey HSD ;
 `texture_class(sable, limon, argile)` donne la classe USDA d'un sol.
 
-Liste complète des 83 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
+Liste complète des 104 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html) ;
+chaque graphique y a sa fiche : description, cas d'usage, structure du DataFrame attendu et
+paramètres, avant l'exemple.
 
 ## Thèmes
 
@@ -192,7 +202,7 @@ Chart.print_available_palettes(category='seaborn', limit=10)
 src/plutovizu/   code du package (chart.py : classe Chart, get_fonts)
 tests/           tests pytest
 docs/            documentation Quarto
-examples/        notebook de démonstration
+examples/        notebooks de démonstration, un par thème (voir examples/README.md)
 ```
 
 ```bash

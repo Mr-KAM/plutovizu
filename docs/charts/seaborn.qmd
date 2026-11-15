@@ -6,12 +6,20 @@ subtitle: "Tous les graphiques seaborn depuis plutovizu."
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `seaborn` — N'importe quel graphique seaborn {#g-seaborn}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('seaborn')
+```
+
 
 ```{python}
 #| fig-cap: "seaborn.violinplot via plutovizu"

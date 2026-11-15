@@ -6,6 +6,7 @@ subtitle: "Climatogrammes, bilan hydrique, degrés-jours, vent, profils et textu
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
@@ -13,7 +14,14 @@ le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `ombrothermic` — Diagramme ombrothermique {#g-ombrothermic}
 
-Le diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures
+```{python}
+#| echo: false
+#| output: asis
+fiche('ombrothermic')
+```
+
+
+Le diagramme ombrothermique de Bagnouls et Gaussen met en regard la courbe des températures
 et les barres de précipitations selon la convention **p = 2T**.
 Les zones où p < 2T sont des **périodes sèches**.
 
@@ -61,7 +69,32 @@ df = pd.DataFrame({
 ```
 
 
+#### Variante en deux courbes, périodes sèches hachurées
+
+Avec `kind='lines'`, les précipitations sont tracées en **courbe** (sur l'échelle P = 2T) et
+les **périodes sèches** — là où la courbe des pluies passe sous celle des températures —
+sont **hachurées** entre les deux courbes. Les hachures s'arrêtent exactement aux
+croisements. `hatch` change le motif (`'///'`, `'xx'`, `'...'`) ; les mois secs sont dans
+`chart.dry_months`.
+
+```{python}
+#| fig-cap: "Diagramme ombrothermique en courbes, saison sèche hachurée (station fictive)"
+chart = (Chart(station_b, figsize=(10, 5))
+    .ombrothermic('mois', 'temperature', 'pluie', kind='lines')
+    .title('Diagramme ombrothermique — Station B (fictive)')
+    .tight_layout())
+print('Mois secs :', chart.dry_months)
+chart.show()
+```
+
 ### `soil_texture` — Triangle des textures USDA {#g-soil_texture}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('soil_texture')
+```
+
 
 Les 12 classes de texture USDA tracées et nommées, avec les échantillons par-dessus.
 La classe de chaque échantillon est dans `chart.texture_classes` ; la fonction
@@ -87,6 +120,13 @@ guinéen) : les valeurs sont illustratives.
 
 ### `walter_lieth` — Climatogramme de Walter-Lieth {#g-walter_lieth}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('walter_lieth')
+```
+
+
 Le diagramme climatique de référence en écologie : 10 °C correspondent à 20 mm de pluie,
 l'échelle des pluies est comprimée au 1/10 au-delà de 100 mm (aplat bleu foncé). La saison
 humide est en bleu, la saison sèche en pointillés rouges, les mois de gel (`tmin` < 0)
@@ -104,6 +144,13 @@ chart.show()
 
 ### `climogram` — Climogramme (hythergramme) {#g-climogram}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('climogram')
+```
+
+
 Température et précipitations de chaque mois en un point, reliés en boucle : la forme de
 la boucle résume le climat, et plusieurs stations se comparent d'un coup d'œil.
 
@@ -117,6 +164,13 @@ la boucle résume le climat, et plusieurs stations se comparent d'un coup d'œil
 ```
 
 ### `water_balance` — Bilan hydrique {#g-water_balance}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('water_balance')
+```
+
 
 Précipitations face à l'évapotranspiration potentielle (ETP) : excédent en bleu, déficit
 en orange. Bilan mensuel dans `chart.water_table`, totaux dans `chart.water_summary`.
@@ -132,6 +186,13 @@ chart.show()
 ```
 
 ### `degree_days` — Degrés-jours de croissance {#g-degree_days}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('degree_days')
+```
+
 
 Somme des températures utiles à la culture : chaque jour apporte
 max(0, (Tmax + Tmin) / 2 − base), Tmax pouvant être plafonnée (`cap`). `stages` marque la
@@ -150,6 +211,13 @@ chart.show()
 
 ### `wind_rose` — Rose des vents {#g-wind_rose}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('wind_rose')
+```
+
+
 Directement à partir des observations : directions en degrés (0 = nord) regroupées en
 secteurs, vitesses en classes, fréquences en % des observations.
 
@@ -163,6 +231,13 @@ secteurs, vitesses en classes, fréquences en % des observations.
 ```
 
 ### `anomaly` — Anomalies {#g-anomaly}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('anomaly')
+```
+
 
 L'écart de chaque année à une référence : la moyenne, un nombre, ou la moyenne d'une
 période (`baseline=(1961, 1990)`), avec une moyenne glissante en option.
@@ -178,6 +253,13 @@ période (`baseline=(1961, 1990)`), avec une moyenne glissante en option.
 
 ### `climate_stripes` — Bandes climatiques {#g-climate_stripes}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('climate_stripes')
+```
+
+
 Une bande par année, du bleu (plus froid que la moyenne) au rouge (plus chaud), dans
 l'esprit des *warming stripes* d'Ed Hawkins.
 
@@ -191,6 +273,13 @@ l'esprit des *warming stripes* d'Ed Hawkins.
 ## Sol
 
 ### `soil_profile` — Profil de sol {#g-soil_profile}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('soil_profile')
+```
+
 
 Les horizons empilés selon la profondeur, une colonne par fosse. `color` accepte une
 colonne de couleurs, par exemple des notations Munsell converties en hexadécimal.
@@ -207,10 +296,169 @@ colonne de couleurs, par exemple des notations Munsell converties en hexadécima
 ### `depth_profile` — Variable selon la profondeur {#g-depth_profile}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('depth_profile')
+```
+
+
+```{python}
 #| fig-cap: "Humidité volumique du sol à deux dates"
 (Chart(profil_humidite, figsize=(6.5, 6))
     .depth_profile('profondeur', 'humidite', group='date')
     .labels('Humidité (%)', 'Profondeur (cm)')
+    .tight_layout()
+    .show())
+```
+
+### `soil_properties` — Profil multi-variables {#g-soil_properties}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('soil_properties')
+```
+
+
+Plusieurs propriétés côte à côte sur la même échelle de profondeur. Avec `bottom`, les
+valeurs sont tracées en **paliers** sur l'épaisseur de chaque horizon.
+
+```{python}
+#| fig-cap: "Propriétés de deux fosses par horizon (données fictives)"
+(Chart(proprietes, figsize=(10, 5.5))
+    .soil_properties('haut', ['pH', 'MO (%)', 'Argile (%)', 'CEC (cmol+/kg)'],
+                     bottom='bas', group='fosse')
+    .title('Propriétés des sols par horizon')
+    .show())
+```
+
+### `retention_curve` — Courbe de rétention d'eau (pF) {#g-retention_curve}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('retention_curve')
+```
+
+
+Teneur en eau selon la succion (pF = log₁₀ de la succion en cm d'eau). Les lignes marquent
+la **capacité au champ** (pF 2,5) et le **point de flétrissement** (pF 4,2) ; la
+**réserve utile** est l'eau retenue entre les deux. Le modèle de **van Genuchten** est
+ajusté sur les points (`fit=False` : simple interpolation). `unit='kPa'` ou `'cm'` si la
+succion n'est pas en pF.
+
+```{python}
+#| fig-cap: "Courbes pF de deux horizons (données fictives)"
+chart = (Chart(retention, figsize=(9, 5.5))
+    .retention_curve('pF', 'theta', group='horizon')
+    .labels('Teneur en eau volumique θ (m³/m³)')
+    .title('Courbes de rétention')
+    .tight_layout())
+chart.show()
+chart.retention.round(3)
+```
+
+Avec un seul échantillon, la réserve utile est surlignée :
+
+```{python}
+(Chart(retention[retention['horizon'] == 'A (limoneux)'], figsize=(9, 5.5))
+    .retention_curve('pF', 'theta')
+    .labels('Teneur en eau volumique θ (m³/m³)')
+    .title('Réserve utile de l\'horizon A')
+    .tight_layout()
+    .show())
+```
+
+### `grain_size_curve` — Courbe granulométrique cumulative {#g-grain_size_curve}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('grain_size_curve')
+```
+
+
+Pourcentage de particules plus fines qu'un diamètre (échelle log), avec les limites argile
+(2 µm), limon (50 µm), sable (2 mm). `chart.grain_size` donne D10, D30, D60, le coefficient
+d'uniformité **Cu = D60/D10** et de courbure **Cc = D30²/(D10·D60)** ; NaN quand le
+diamètre est hors des mesures. `limits` et `names` changent la classification.
+
+```{python}
+#| fig-cap: "Granulométrie de trois matériaux (données fictives)"
+chart = (Chart(granulo, figsize=(10, 5.5))
+    .grain_size_curve('diametre_mm', 'passant', group='echantillon')
+    .title('Courbes granulométriques')
+    .tight_layout())
+chart.show()
+chart.grain_size.round(4)
+```
+
+### `exchange_complex` — Complexe d'échange et saturation {#g-exchange_complex}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('exchange_complex')
+```
+
+
+Cations échangeables empilés par horizon (cmol+/kg), acidité échangeable hachurée, CEC
+marquée d'un trait. Le **taux de saturation V = S/T** (S = somme des bases, T = CEC, ou
+S + acidité sans `cec`) est écrit au bout des barres et stocké dans `chart.base_saturation`.
+
+```{python}
+#| fig-cap: "Complexe d'échange d'un sol lessivé (données fictives)"
+chart = (Chart(complexe, figsize=(9, 5))
+    .exchange_complex('horizon', ['Ca', 'Mg', 'K', 'Na'], acidity='H_Al', cec='CEC')
+    .title('Complexe d\'échange par horizon')
+    .tight_layout())
+chart.show()
+chart.base_saturation.round(1)
+```
+
+### `infiltration_curve` — Courbe d'infiltration {#g-infiltration_curve}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('infiltration_curve')
+```
+
+
+Infiltration cumulée d'un essai (double anneau, Beerkan…) avec un modèle ajusté :
+**Philip** I = S·√t + A·t (défaut) ou **Horton** I = fc·t + (f0 − fc)(1 − e^(−kt))/k.
+La vitesse d'infiltration, mesurée et modélisée, est sur l'axe de droite ; la ligne
+pointillée est la vitesse finale (A ou fc). Paramètres dans `chart.infiltration`.
+
+```{python}
+#| fig-cap: "Essai d'infiltration (données fictives)"
+chart = (Chart(infiltration, figsize=(10, 5.5))
+    .infiltration_curve('minutes', 'infiltration_mm', model='philip')
+    .title('Infiltration — modèle de Philip')
+    .tight_layout())
+chart.show()
+print({k: round(v, 3) if isinstance(v, float) else v for k, v in chart.infiltration.items()})
+```
+
+### `isopleth` — Diagramme des isoplèthes {#g-isopleth}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('isopleth')
+```
+
+
+Une variable du sol dans le plan **profondeur × temps** : on suit l'humectation et le
+dessèchement du profil au fil des saisons. Données en format long (une ligne par date et
+profondeur).
+
+```{python}
+#| fig-cap: "Humidité du sol (%) selon la date et la profondeur (données fictives)"
+(Chart(humidite_sol, figsize=(10, 5.5))
+    .isopleth('date', 'profondeur', 'humidite', cmap='Blues')
+    .labels('', 'Profondeur (cm)')
+    .title('Isoplèthes d\'humidité du sol')
     .tight_layout()
     .show())
 ```

@@ -65,10 +65,11 @@ flux_vignette = villes[villes['ville'].isin(['Saint-Louis', 'Kaolack', 'Tambacou
 
 EVO, DIS, COM, REL = 'Évolution', 'Distribution', 'Comparaison', 'Relation'
 MUL, CPO, CHA, D3 = 'Multivarié', 'Composition', 'Champs', '3D'
-SCI, QUA, SNS, CAR = 'Climat & sols', 'Qualitatif', 'Seaborn', 'Map'
+SCI, QUA, SNS, CAR, ECO = 'Climat & sols', 'Qualitatif', 'Seaborn', 'Map', 'Écologie'
+GRA = 'Graphes & réseaux'
 PAGE = {EVO: 'evolution', DIS: 'distribution', COM: 'comparaison', REL: 'relation',
         MUL: 'multivarie', CPO: 'composition', CHA: 'champs', D3: '3d', SCI: 'sciences',
-        QUA: 'qualitatif', SNS: 'seaborn', CAR: 'map'}
+        QUA: 'qualitatif', SNS: 'seaborn', CAR: 'map', ECO: 'ecologie', GRA: 'graphes'}
 
 # (méthode, titre de la carte, catégorie, usage, vignette)
 CATALOGUE = [
@@ -231,6 +232,18 @@ CATALOGUE = [
      lambda: C(horizons).soil_profile('haut', 'bas', 'horizon', profile='fosse', color='couleur')),
     ('depth_profile', 'Selon la profondeur', SCI, 'Humidité, matière organique…',
      lambda: C(profil_humidite, 3.2, 3).depth_profile('profondeur', 'humidite', group='date')),
+    ('soil_properties', 'Profil multi-variables', SCI, 'pH, MO, argile… par horizon',
+     lambda: C(proprietes).soil_properties('haut', ['pH', 'MO (%)', 'Argile (%)'], bottom='bas', group='fosse').tight_layout()),
+    ('retention_curve', 'Courbe pF', SCI, 'Rétention d\'eau, réserve utile',
+     lambda: C(retention).retention_curve('pF', 'theta', group='horizon')),
+    ('grain_size_curve', 'Courbe granulométrique', SCI, 'D10, D60, uniformité',
+     lambda: C(granulo).grain_size_curve('diametre_mm', 'passant', group='echantillon')),
+    ('exchange_complex', 'Complexe d\'échange', SCI, 'Cations, CEC, saturation',
+     lambda: C(complexe).exchange_complex('horizon', ['Ca', 'Mg', 'K', 'Na'], acidity='H_Al', cec='CEC')),
+    ('infiltration_curve', 'Infiltration', SCI, 'Modèles de Philip et Horton',
+     lambda: C(infiltration).infiltration_curve('minutes', 'infiltration_mm').tight_layout()),
+    ('isopleth', 'Isoplèthes', SCI, 'Profondeur × temps',
+     lambda: C(humidite_sol).isopleth('date', 'profondeur', 'humidite', cmap='Blues', contour_labels=False).tight_layout()),
 
     ('map_points', 'Points sur carte', CAR, 'Stations, parcelles géolocalisées',
      lambda: C(villes, 3.6, 3).map_points('lon', 'lat', value='pluie', size='pluie')),
@@ -245,6 +258,25 @@ CATALOGUE = [
     ('route_map', 'Itinéraires', CAR, 'Trajets, transhumance, traces GPS',
      lambda: C(transhumance, 3.2, 3.2).route_map('lon', 'lat', order='jour')),
 
+    ('glm_curve', 'Courbe de GLM', ECO, 'Présence/absence, comptages',
+     lambda: C(grenouille).glm_curve('nitrates', 'presence', show_stats=False)),
+    ('response_curve', 'Réponse lissée', ECO, 'Optimum le long d’un gradient',
+     lambda: C(communaute).response_curve('humidite', 'Typha', frac=0.4, n_boot=50)),
+    ('count_distribution', 'Excès de zéros', ECO, 'Comptages : Poisson ou binomiale négative',
+     lambda: C(comptages).count_distribution('individus')),
+    ('forest_plot', 'Forest plot', ECO, 'Effets estimés et intervalles',
+     lambda: C(effets).forest_plot('variable', 'odds_ratio', 'ic_bas', 'ic_haut', ref=1, log=True)),
+    ('ordination', 'Ordination (CCA)', ECO, 'AFC, CCA, ACP, RDA des communautés',
+     lambda: C(communaute, 3.6, 3.2).ordination(especes, env=['humidite', 'ph'], method='cca',
+                                                group='zone')),
+    ('rank_abundance', 'Rang-abondance', ECO, 'Dominance et équitabilité',
+     lambda: C(communaute.groupby('zone', sort=False)[especes].sum().reset_index())
+     .rank_abundance(especes, labels='zone')),
+    ('accumulation', 'Accumulation', ECO, 'Effort d’échantillonnage, Chao2',
+     lambda: C(communaute).accumulation(especes, n_perm=50)),
+    ('diversity', 'Diversité', ECO, 'Shannon, Simpson, Pielou par site',
+     lambda: C(communaute).diversity(especes, group='zone')),
+
     ('word_cloud', 'Nuage de mots', QUA, "Thèmes dominants d'un texte",
      lambda: C(enquete).word_cloud('reponse', max_words=60)),
     ('word_frequency', 'Fréquence des mots', QUA, 'Mots les plus cités',
@@ -253,6 +285,21 @@ CATALOGUE = [
      lambda: C(opinions, 4.5, 3).likert(list(opinions.columns), order=echelle, show_values=False)),
     ('code_matrix', 'Matrice des codes', QUA, "Codage d'entretiens",
      lambda: C(segments).code_matrix('entretien', 'code', annot=False)),
+
+    ('network', 'Réseau', GRA, 'Liens entre acteurs, échanges',
+     lambda: C(echanges).network('de', 'vers', weight='tonnes', directed=True)),
+    ('shortest_path', 'Plus court chemin', GRA, 'Itinéraire optimal (Dijkstra)',
+     lambda: C(pistes).shortest_path('de', 'vers', 'Dépôt', 'Tivaouane', weight='km', edge_labels=False)),
+    ('spanning_tree', 'Arbre couvrant minimal', GRA, 'Réseau le moins coûteux',
+     lambda: C(pistes).spanning_tree('de', 'vers', weight='km', edge_labels=False)),
+    ('max_flow', 'Flot maximal', GRA, 'Capacités, goulots',
+     lambda: C(adduction).max_flow('de', 'vers', 'capacite', 'Forage', 'Marché')),
+    ('critical_path', 'Chemin critique', GRA, 'Planning PERT / CPM',
+     lambda: C(projet).critical_path('tache', 'duree', 'avant').tight_layout()),
+    ('tsp_route', 'Tournée optimale', GRA, 'Voyageur de commerce',
+     lambda: C(collecte).tsp_route('x', 'y', labels='ferme', start='Laiterie')),
+    ('arc_diagram', 'Diagramme en arcs', GRA, 'Mouvements entre lieux',
+     lambda: C(transferts).arc_diagram('depart', 'arrivee', weight='tetes')),
 
     ('seaborn', 'Tout seaborn', SNS, "N'importe quel graphique seaborn",
      lambda: C(essai).seaborn('violinplot', x='variete', y='rendement', hue='variete', legend=False)),
@@ -266,9 +313,9 @@ def build():
     for name, title, cat, usage, make in CATALOGUE:
         with theme_context('editorial'):
             chart = make()
-            ax = chart.ax
-            if ax.get_legend() is not None and name not in ('polar', 'scatter3d'):
-                ax.get_legend().remove()
+            for ax in chart.fig.axes:  # tous les panneaux (soil_properties…)
+                if ax.get_legend() is not None and name not in ('polar', 'scatter3d'):
+                    ax.get_legend().remove()
             chart.fig.savefig(out / f'{name}.png', dpi=80)
         plt.close('all')
         items.append({'title': title, 'description': f'{name}() — {usage}',

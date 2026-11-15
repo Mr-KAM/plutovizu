@@ -1024,3 +1024,290 @@ def test_north_arrow_and_inset(villes):
     assert (i1 - i0) == pytest.approx((x1 - x0) * 5, rel=1e-6)
     with pytest.raises(ValueError):
         c.north_arrow(loc='centre')
+
+
+# ── écologie ────────────────────────────────────────────────────────────────
+
+from plutovizu import diversity_indices, glm_fit, ordinate
+from plutovizu.ecology import lowess, rarefaction, accumulation as accumulate
+
+
+@pytest.fixture
+def communaute():
+    """20 sites le long d'un gradient d'humidité, 8 espèces à réponse en cloche."""
+    rng = np.random.default_rng(4)
+    hum = np.linspace(10, 90, 20)
+    optima = np.linspace(15, 85, 8)
+    ab = rng.poisson(30 * np.exp(-((hum[:, None] - optima[None, :]) / 15) ** 2)) + (rng.random((20, 8)) < .1)
+    d = pd.DataFrame(ab, columns=[f'sp{i}' for i in range(8)])
+    d['humidite'] = hum
+    d['ph'] = 5 + rng.normal(0, .3, 20) + hum / 100
+    d['site'] = [f'S{i:02d}' for i in range(20)]
+    d['zone'] = np.where(hum < 50, 'sèche', 'humide')
+    return d
+
+
+SP = [f'sp{i}' for i in range(8)]
+
+
+def test_glm_fit_recovers_coefficients():
+    rng = np.random.default_rng(0)
+    x = rng.uniform(0, 8, 20000)
+    X = np.c_[np.ones_like(x), x]
+    y = (rng.random(len(x)) < 1 / (1 + np.exp(-(-3 + 0.8 * x)))).astype(float)
+    assert glm_fit(X, y, 'binomial')['coefs'] == pytest.approx([-3, 0.8], abs=0.1)
+    yp = rng.poisson(np.exp(0.5 + 0.3 * x))
+    assert glm_fit(X, yp, 'poisson')['coefs'] == pytest.approx([0.5, 0.3], abs=0.02)
+    with pytest.raises(ValueError):
+        glm_fit(X, yp, 'binomial')                       # réponse non 0/1
+
+
+def test_glm_curve_logistic_and_niche_optimum():
+    rng = np.random.default_rng(1)
+    x = rng.uniform(4, 9, 600)
+    p = 1 / (1 + np.exp(-(-2 + 3.5 * (x - 6.5) - 2.0 * (x - 6.5) ** 2)))
+    d = pd.DataFrame({'ph': x, 'presence': (rng.random(600) < p).astype(int)})
+    c = Chart(d).glm_curve('ph', 'presence')
+    assert 0 < c.glm['d2'] < 1 and len(c.glm['coefs_original']) == 2
+    niche = Chart(d).glm_curve('ph', 'presence', degree=2)
+    assert niche.glm['optimum'] == pytest.approx(6.5 + 3.5 / 4, abs=0.25)   # sommet de la parabole
+
+
+def test_glm_curve_poisson():
+    rng = np.random.default_rng(2)
+    x = rng.uniform(0, 5, 300)
+    d = pd.DataFrame({'cond': x, 'abondance': rng.poisson(np.exp(0.2 + 0.4 * x))})
+    c = Chart(d).glm_curve('cond', 'abondance', family='poisson')
+    assert c.glm['coefs_original'] == pytest.approx([0.2, 0.4], abs=0.15)
+
+
+def test_lowess_and_response_optimum():
+    x = np.linspace(0, 10, 200)
+    y = np.exp(-(x - 6.5) ** 2 / 4)
+    assert x[np.argmax(lowess(x, y, x, 0.3))] == pytest.approx(6.5, abs=0.1)
+    rng = np.random.default_rng(3)
+    d = pd.DataFrame({'alt': x, 'ab': 20 * y + rng.normal(0, 1, 200)})
+    c = Chart(d).response_curve('alt', 'ab', n_boot=30)
+    assert c.response['optimum'] == pytest.approx(6.5, abs=0.5)
+
+
+def test_count_distribution_detects_zero_inflation():
+    rng = np.random.default_rng(5)
+    v = np.where(rng.random(500) < 0.4, 0, rng.poisson(4, 500))
+    c = Chart(pd.DataFrame({'n': v})).count_distribution('n')
+    st = c.count_stats
+    assert st['zeros_observes'] > 3 * st['zeros_poisson'] and st['dispersion'] > 1.5
+    with pytest.raises(ValueError):
+        Chart(pd.DataFrame({'n': [1.5, 2]})).count_distribution('n')
+
+
+def test_forest_plot_significance_and_se():
+    d = pd.DataFrame({'var': ['a', 'b', 'c'], 'est': [0.8, 0.1, -0.5], 'se': [0.2, 0.2, 0.2]})
+    c = Chart(d).forest_plot('var', 'est', se='se')
+    assert c.forest_table['significatif'].tolist() == [True, False, True]
+    assert [t.get_text() for t in c.ax.get_yticklabels()] == ['c', 'b', 'a']   # 'a' en haut
+    o = pd.DataFrame({'v': ['x'], 'or': [2.0], 'lo': [1.2], 'hi': [3.1]})
+    assert Chart(o).forest_plot('v', 'or', 'lo', 'hi', ref=1, log=True).ax.get_xscale() == 'log'
+    with pytest.raises(ValueError):
+        Chart(d).forest_plot('var', 'est')
+
+
+def test_ordinate_invariants(communaute):
+    from scipy.stats import chi2_contingency
+    Y = communaute[SP].to_numpy(float)
+    ca = ordinate(Y, method='ca')
+    assert ca['eigenvalues'].sum() == pytest.approx(chi2_contingency(Y, correction=False)[0] / Y.sum())
+    X = communaute[['humidite', 'ph']].to_numpy()
+    rda = ordinate(Y, X, 'rda')
+    Yc = Y - Y.mean(0)
+    Xc = (X - X.mean(0)) / X.std(0)
+    fit = Xc @ np.linalg.lstsq(Xc, Yc, rcond=None)[0]
+    assert rda['constrained'] == pytest.approx((fit ** 2).sum() / (Yc ** 2).sum())
+    cca = ordinate(Y, X, 'cca')
+    assert 0 < cca['constrained'] < 1 and cca['env'].shape[0] == 2
+    assert abs(cca['env'][0, 0]) > 0.8               # l'humidité structure le 1er axe
+    with pytest.raises(ValueError):
+        ordinate(Y, method='rda')                     # rda sans variables
+
+
+def test_ordination_chart(communaute):
+    c = Chart(communaute).ordination(SP, env=['humidite', 'ph'], method='cca', labels='site', group='zone')
+    assert c.ax.get_xlabel().startswith('CCA1 (')
+    assert 'humidite' in [t.get_text() for t in c.ax.texts]
+    Chart(communaute).ordination(SP, method='ca')
+    Chart(communaute).ordination(SP, method='pca', scale=True)
+
+
+def test_diversity_indices_known_values():
+    t = diversity_indices(pd.DataFrame([[5, 5, 5, 5], [10, 0, 0, 0]]))
+    assert t.loc[0, 'shannon'] == pytest.approx(np.log(4)) and t.loc[0, 'simpson'] == pytest.approx(0.75)
+    assert t.loc[0, 'pielou'] == pytest.approx(1) and t.loc[1, 'shannon'] == 0 and t.loc[1, 'richesse'] == 1
+
+
+def test_rarefaction_and_accumulation_endpoints():
+    counts = np.array([10, 5, 3, 1, 1])
+    r = rarefaction(counts, [1, counts.sum()])
+    assert r == pytest.approx([1, 5])
+    rng = np.random.default_rng(6)
+    mean, sd, info = accumulate(rng.random((12, 20)) < .3)
+    assert mean[-1] == info['s_obs'] and np.all(np.diff(mean) >= 0) and info['chao2'] >= info['s_obs']
+
+
+def test_community_charts(communaute):
+    Chart(communaute).rank_abundance(SP, labels='site')
+    Chart(communaute).rank_abundance(SP, pooled=True)
+    a = Chart(communaute).accumulation(SP)
+    assert a.accumulation_stats['s_obs'] == 8
+    Chart(communaute.head(4)).accumulation(SP, kind='individuals', labels='site')
+    d = Chart(communaute).diversity(SP, labels='site')
+    assert list(d.diversity_table.columns[:2]) == ['site', 'richesse']
+    g = Chart(communaute).diversity(SP, group='zone', letters=True)
+    assert set(g.tukey_letters) == {'sèche', 'humide'}
+    with pytest.raises(ValueError):
+        Chart(communaute).diversity(SP, index='chao')
+
+
+# ── diagramme ombrothermique en courbes, périodes sèches hachurées ──────────
+
+def test_ombrothermic_lines_hatched_dry_periods(station):
+    c = Chart(station).ombrothermic('mois', 'temp', 'pluie', kind='lines')
+    expected = station.loc[station['pluie'] < 2 * station['temp'], 'mois'].tolist()
+    assert c.dry_months == expected
+    hatched = [col for col in c.ax.collections if col.get_hatch()]
+    assert hatched and hatched[0].get_label() == 'Période sèche'
+    precip_line = c.ax.lines[1].get_ydata()
+    assert precip_line == pytest.approx(station['pluie'] / 2)          # échelle P = 2T
+    assert c.ax2.get_ylim()[1] == pytest.approx(2 * c.ax.get_ylim()[1])  # axe droit en mm
+
+
+def test_ombrothermic_kind_validation(station):
+    with pytest.raises(ValueError):
+        Chart(station).ombrothermic('mois', 'temp', 'pluie', kind='aires')
+    Chart(station).ombrothermic('mois', 'temp', 'pluie')                 # défaut : barres
+
+
+# ──────────────────────────────── Pédologie
+
+def test_retention_curve_recovers_van_genuchten():
+    pf = np.array([0, 1, 1.5, 2, 2.5, 3, 3.5, 4.2])
+    theta = Chart._van_genuchten(10 ** pf, .08, .45, .02, 1.45)
+    c = Chart(pd.DataFrame({'pF': pf, 'theta': theta})).retention_curve('pF', 'theta')
+    r = c.retention.iloc[0]
+    assert r['alpha'] == pytest.approx(.02, rel=1e-3) and r['n'] == pytest.approx(1.45, rel=1e-3)
+    assert r['capacite_champ'] == pytest.approx(Chart._van_genuchten(10 ** 2.5, .08, .45, .02, 1.45))
+    assert r['reserve_utile'] == pytest.approx(r['capacite_champ'] - r['point_fletrissement'])
+    # kPa → pF : 10 kPa ≈ 102 cm ≈ pF 2,01 ; sans ajustement → interpolation
+    kpa = Chart(pd.DataFrame({'s': [1, 10, 100, 1500], 'w': [.4, .3, .2, .1]})).retention_curve(
+        's', 'w', unit='kPa', fit=False)
+    assert kpa.retention.iloc[0]['point_fletrissement'] == pytest.approx(.1, abs=.01)
+    with pytest.raises(ValueError):
+        Chart(pd.DataFrame({'s': [1], 'w': [1]})).retention_curve('s', 'w', unit='bar')
+
+
+def test_grain_size_curve_d_values():
+    d = pd.DataFrame({'d': [0.001, 0.01, 0.1, 1.0], 'p': [0, 10, 60, 100]})
+    g = Chart(d).grain_size_curve('d', 'p').grain_size.iloc[0]
+    assert g['D10'] == pytest.approx(0.01) and g['D60'] == pytest.approx(0.1)
+    assert g['Cu'] == pytest.approx(10)
+    assert np.isnan(Chart(d.iloc[2:]).grain_size_curve('d', 'p').grain_size.iloc[0]['D10'])
+
+
+def test_exchange_complex_base_saturation():
+    d = pd.DataFrame({'h': ['A', 'B'], 'Ca': [6, 3], 'Mg': [2, 1], 'acid': [2, 4], 'T': [10, 10]})
+    c = Chart(d).exchange_complex('h', ['Ca', 'Mg'], acidity='acid', cec='T')
+    assert c.base_saturation.tolist() == pytest.approx([80, 40])
+    c = Chart(d).exchange_complex('h', ['Ca', 'Mg'], acidity='acid')    # T = S + acidité
+    assert c.base_saturation.tolist() == pytest.approx([80, 50])
+
+
+@pytest.mark.parametrize('model', ['philip', 'horton'])
+def test_infiltration_curve_fits(model):
+    t = np.array([1, 2, 5, 10, 20, 30, 60, 90, 120], float)
+    cum = 6 * np.sqrt(t) + .4 * t if model == 'philip' else .8 * t + (4 - .8) * (1 - np.exp(-.15 * t)) / .15
+    c = Chart(pd.DataFrame({'t': t, 'I': cum})).infiltration_curve('t', 'I', model=model)
+    assert c.infiltration['final_rate'] == pytest.approx(.4 if model == 'philip' else .8, rel=1e-3)
+    with pytest.raises(ValueError):
+        Chart(pd.DataFrame({'t': t, 'I': cum})).infiltration_curve('t', 'I', model='kostiakov')
+
+
+def test_isopleth_dates_and_depth_down():
+    dates = pd.date_range('2025-01-01', periods=6, freq='MS')
+    d = pd.DataFrame([(dt, z, z + k) for k, dt in enumerate(dates) for z in (10, 30, 60)],
+                     columns=['date', 'prof', 'hum'])
+    c = Chart(d).isopleth('date', 'prof', 'hum')
+    lo, hi = c.ax.get_ylim()
+    assert lo > hi and len(c.fig.axes) == 2                            # profondeur vers le bas + barre de couleur
+
+
+def test_soil_properties_panels_and_steps():
+    d = pd.DataFrame({'haut': [0, 20], 'bas': [20, 50], 'pH': [6, 7], 'MO': [3, 1]})
+    c = Chart(d).soil_properties('haut', ['pH', 'MO'], bottom='bas').title('Profil')
+    assert len(c.axes) == 2 and c.ax is c.axes[0]
+    assert c.axes[0].lines[0].get_ydata().tolist() == [0, 20, 20, 50]   # paliers par horizon
+    assert c.axes[0].get_ylim()[0] > 50 and c.fig._suptitle.get_text() == 'Profil'
+
+
+# ──────────────────────────────── Graphes & réseaux
+
+@pytest.fixture
+def pistes():
+    return pd.DataFrame([('A', 'B', 4), ('A', 'C', 1), ('C', 'B', 2), ('B', 'D', 5), ('C', 'D', 8)],
+                        columns=['de', 'vers', 'km'])
+
+
+def test_shortest_path_dijkstra(pistes):
+    c = Chart(pistes).shortest_path('de', 'vers', 'A', 'D', weight='km')
+    assert c.path == ['A', 'C', 'B', 'D'] and c.path_length == 8
+    # orienté : D → A impossible
+    from plutovizu import shortest_path
+    with pytest.raises(ValueError):
+        shortest_path(pistes, 'de', 'vers', 'D', 'A', weight='km', directed=True)
+    with pytest.raises(ValueError):
+        shortest_path(pistes, 'de', 'vers', 'A', 'Z')
+
+
+def test_spanning_tree_total(pistes):
+    c = Chart(pistes).spanning_tree('de', 'vers', weight='km')
+    assert c.tree_weight == 8 and len(c.tree) == 3                   # 1 + 2 + 5
+
+
+def test_max_flow_value_and_conservation():
+    net = pd.DataFrame([('s', 'a', 3), ('s', 'b', 2), ('a', 'b', 1), ('a', 't', 2), ('b', 't', 3)],
+                       columns=['de', 'vers', 'cap'])
+    c = Chart(net).max_flow('de', 'vers', 'cap', 's', 't')
+    assert c.flow_value == 5
+    f = c.flow
+    assert (f['flux'] <= f['cap'] + 1e-9).all()
+    inflow_b = f.loc[f['vers'] == 'b', 'flux'].sum()
+    assert inflow_b == pytest.approx(f.loc[f['de'] == 'b', 'flux'].sum())   # conservation
+    dec = Chart(net.assign(cap=net['cap'] / 2)).max_flow('de', 'vers', 'cap', 's', 't')
+    assert dec.flow_value == pytest.approx(2.5)                            # capacités décimales
+
+
+def test_critical_path_schedule():
+    t = pd.DataFrame({'t': ['A', 'B', 'C', 'D'], 'd': [3, 2, 4, 1], 'p': ['', 'A', 'A', 'B; C']})
+    c = Chart(t).critical_path('t', 'd', 'p')
+    s = c.schedule
+    assert c.project_duration == 8
+    assert s['critique'].to_dict() == {'A': True, 'B': False, 'C': True, 'D': True}
+    assert s.at['B', 'marge'] == 2
+    with pytest.raises(ValueError):
+        Chart(pd.DataFrame({'t': ['A', 'B'], 'd': [1, 1], 'p': ['B', 'A']})).critical_path('t', 'd', 'p')
+
+
+def test_tsp_route_square():
+    pts = pd.DataFrame({'x': [0, 1, 0, 1], 'y': [0, 1, 1, 0], 'n': list('abcd')})
+    c = Chart(pts).tsp_route('x', 'y', labels='n', start='a')
+    assert c.tour_length == pytest.approx(4) and c.tour[0] == 'a'
+    assert c.tour_table['ordre'].tolist() == [1, 2, 3, 4]
+
+
+def test_network_and_arc_diagram(pistes):
+    c = Chart(pistes).network('de', 'vers', weight='km', layout='circular')
+    assert c.graph['degree'].to_dict() == {'A': 2, 'B': 3, 'C': 3, 'D': 2}
+    pos = {'A': (0, 0), 'B': (1, 0), 'C': (0, 1), 'D': (1, 1)}
+    assert Chart(pistes).network('de', 'vers', layout=pos).graph['positions'] == pos
+    a = Chart(pistes).arc_diagram('de', 'vers', weight='km', order=list('DCBA'))
+    assert len(a.ax.patches) == len(pistes)
+    with pytest.raises(ValueError):
+        Chart(pistes).arc_diagram('de', 'vers', order=['A'])

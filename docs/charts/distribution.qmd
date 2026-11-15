@@ -6,12 +6,20 @@ subtitle: "La forme d'une variable : dispersion, symétrie, valeurs extrêmes, n
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `histogram` — Histogramme {#g-histogram}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('histogram')
+```
+
 
 ```{python}
 #| fig-cap: "Distribution des salaires"
@@ -33,6 +41,13 @@ df = pd.DataFrame({'salaire': np.random.normal(42000, 9000, 800)})
 
 ### `bihistogram` — Histogrammes dos à dos {#g-bihistogram}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('bihistogram')
+```
+
+
 Deux groupes sur les mêmes classes, l'un vers le haut, l'autre vers le bas ;
 `horizontal=True` donne une pyramide des âges.
 
@@ -47,6 +62,13 @@ Deux groupes sur les mêmes classes, l'un vers le haut, l'autre vers le bas ;
 
 
 ### `boxplot` — Boîte à moustaches {#g-boxplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('boxplot')
+```
+
 
 ```{python}
 #| fig-cap: "Comparaison des notes par matière"
@@ -74,6 +96,13 @@ df = pd.DataFrame({
 ### `violin` — Violon {#g-violin}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('violin')
+```
+
+
+```{python}
 #| fig-cap: "Distribution des temps de trajet par ville"
 #| fig-width: 8
 #| fig-height: 4
@@ -97,6 +126,13 @@ df = pd.DataFrame({
 
 
 ### `ridgeline` — Crêtes superposées {#g-ridgeline}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('ridgeline')
+```
+
 
 ```{python}
 #| fig-cap: "Distribution des salaires par secteur"
@@ -125,6 +161,13 @@ df = pd.concat(dfs, ignore_index=True)
 ### `kde` — Densité lissée {#g-kde}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('kde')
+```
+
+
+```{python}
 (Chart(essai, figsize=(9, 4))
     .kde('rendement', hue='variete')
     .title('Densité du rendement')
@@ -136,6 +179,13 @@ df = pd.concat(dfs, ignore_index=True)
 ### `ecdf` — Fonction de répartition empirique {#g-ecdf}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('ecdf')
+```
+
+
+```{python}
 (Chart(essai, figsize=(9, 4))
     .ecdf('rendement', hue='variete')
     .title('Part des parcelles sous chaque rendement')
@@ -145,6 +195,13 @@ df = pd.concat(dfs, ignore_index=True)
 
 
 ### `strip` et `swarm` — Toutes les observations {#g-strip}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('strip')
+```
+
 
 `strip` disperse les points au hasard (rapide, même sur de gros effectifs) ; `swarm` les
 range sans chevauchement (plus lisible, pour quelques centaines de points au plus).
@@ -169,6 +226,13 @@ range sans chevauchement (plus lisible, pour quelques centaines de points au plu
 ### `boxen` — Boîte à moustaches étendue {#g-boxen}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('boxen')
+```
+
+
+```{python}
 (Chart(essai, figsize=(9, 4))
     .boxen('dose', 'rendement')
     .title('Rendement par dose (letter-value plot)')
@@ -178,6 +242,13 @@ range sans chevauchement (plus lisible, pour quelques centaines de points au plu
 
 
 ### `qqplot` — Diagramme quantile-quantile {#g-qqplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('qqplot')
+```
+
 
 Vérifie la normalité, par exemple des résidus d'un modèle : les points doivent suivre la droite.
 
@@ -194,6 +265,13 @@ essai['residus'] = essai['rendement'] - essai.groupby(['variete', 'dose'])['rend
 
 
 ### `hist2d` — Histogramme 2D {#g-hist2d}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('hist2d')
+```
+
 
 Les effectifs dans une grille de rectangles : la densité d'un grand nuage de points.
 

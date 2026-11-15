@@ -1,0 +1,244 @@
+---
+title: "Écologie"
+subtitle: "Courbes de réponse des modèles, ordination des communautés et diversité."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd). Retour à la
+[galerie](../gallery.qmd).
+
+::: {.callout-note}
+Les données de cette page sont **fictives** (une grenouille, une communauté végétale de
+zone humide…) et servent seulement à illustrer les graphiques. Les calculs (GLM, lissage,
+ordination, indices) sont aussi disponibles sans graphique dans `plutovizu.ecology`.
+:::
+
+## Modèles et courbes de réponse
+
+### `glm_curve` — Courbe d'un GLM {#g-glm_curve}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('glm_curve')
+```
+
+
+Régression **logistique** (`family='binomial'`, présence/absence → probabilité) ou de
+**Poisson** (`family='poisson'`, comptages), avec la bande de confiance à 95 % et les
+observations. L'encadré donne la part de déviance expliquée (D²), la p-value du test du
+rapport de vraisemblance et l'AIC ; tout est dans `chart.glm`.
+
+```{python}
+#| fig-cap: "Probabilité de présence d'une grenouille selon les nitrates (fictif)"
+chart = (Chart(grenouille, figsize=(9, 4.5))
+    .glm_curve('nitrates', 'presence')
+    .title('Présence selon la teneur en nitrates')
+    .labels(xlabel='Nitrates (mg/L)')
+    .tight_layout())
+print('Coefficients (échelle d\'origine) :', chart.glm['coefs_original'].round(3))
+chart.show()
+```
+
+Avec `degree=2`, la réponse peut être **en cloche** : l'espèce a un optimum le long du
+gradient (sa niche), marqué sur le graphique.
+
+```{python}
+#| fig-cap: "Niche d'une espèce le long d'un gradient de pH (fictif)"
+(Chart(niche, figsize=(9, 4.5))
+    .glm_curve('ph', 'presence', degree=2)
+    .title('Réponse en cloche : optimum de pH')
+    .tight_layout()
+    .show())
+```
+
+### `response_curve` — Réponse lissée {#g-response_curve}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('response_curve')
+```
+
+
+Une régression locale (LOWESS, dans l'esprit d'un GAM) suit la forme des données sans
+imposer de modèle ; la bande à 95 % vient d'un bootstrap. `frac` règle le lissage.
+
+```{python}
+#| fig-cap: "Abondance de Typha le long du gradient d'humidité"
+(Chart(communaute, figsize=(9, 4.5))
+    .response_curve('humidite', 'Typha', frac=0.4)
+    .title('Réponse de Typha à l\'humidité')
+    .labels(xlabel='Humidité du sol (%)', ylabel='Abondance')
+    .tight_layout()
+    .show())
+```
+
+### `count_distribution` — Excès de zéros et surdispersion {#g-count_distribution}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('count_distribution')
+```
+
+
+Les fréquences observées face à une loi de Poisson et à une loi binomiale négative de même
+moyenne. Beaucoup plus de zéros qu'attendu, ou une variance bien supérieure à la moyenne,
+orientent vers les modèles binomiaux négatifs, *zero-inflated* ou *hurdle*.
+
+```{python}
+#| fig-cap: "Nombre d'individus par piège"
+chart = (Chart(comptages, figsize=(9, 4.5))
+    .count_distribution('individus')
+    .title('Distribution des comptages')
+    .tight_layout())
+print(chart.count_stats)
+chart.show()
+```
+
+### `forest_plot` — Effets estimés {#g-forest_plot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('forest_plot')
+```
+
+
+Des estimations avec leurs intervalles : coefficients d'un modèle, odds ratios, effets
+aléatoires d'un modèle mixte, intervalles crédibles bayésiens. Les intervalles qui excluent
+la référence sont mis en évidence. Il se remplit avec les résultats de n'importe quel
+logiciel (R, statsmodels…) ; `se=` calcule l'intervalle à 95 % à partir de l'erreur type.
+
+```{python}
+#| fig-cap: "Odds ratios d'un modèle de présence (valeurs illustratives)"
+(Chart(effets, figsize=(9, 4))
+    .forest_plot('variable', 'odds_ratio', 'ic_bas', 'ic_haut', ref=1, log=True)
+    .title('Effet des variables sur la présence')
+    .labels(xlabel='Odds ratio (IC 95 %)')
+    .tight_layout()
+    .show())
+```
+
+## Ordination des communautés
+
+### `ordination` — AFC, CCA, ACP, RDA {#g-ordination}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('ordination')
+```
+
+
+Le triplot des communautés : sites (points), espèces (+) et variables environnementales
+(flèches). `method='ca'` pour l'AFC, `'cca'` pour l'analyse canonique des correspondances
+(réponses unimodales, en cloche), `'pca'` et `'rda'` (analyse de redondance, réponses
+linéaires). Les axes donnent la part d'inertie ; `chart.ord` contient valeurs propres et
+scores.
+
+```{python}
+#| fig-cap: "CCA de 30 placettes et 10 espèces, contrainte par l'humidité et le pH"
+(Chart(communaute, figsize=(9, 7))
+    .ordination(especes, env=['humidite', 'ph'], method='cca', group='zone')
+    .title('Analyse canonique des correspondances')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+#| fig-cap: "AFC du même tableau, sans contrainte"
+(Chart(communaute, figsize=(9, 7))
+    .ordination(especes, method='ca', group='zone', labels='placette')
+    .title('Analyse factorielle des correspondances')
+    .tight_layout()
+    .show())
+```
+
+## Diversité
+
+### `rank_abundance` — Courbe rang-abondance {#g-rank_abundance}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('rank_abundance')
+```
+
+
+Le diagramme de Whittaker : l'abondance relative de chaque espèce selon son rang. Une
+courbe raide signale quelques espèces dominantes, une courbe plate une communauté
+équilibrée.
+
+```{python}
+#| fig-cap: "Une courbe par zone (placettes regroupées)"
+par_zone = communaute.groupby('zone', sort=False)[especes].sum().reset_index()
+(Chart(par_zone, figsize=(9, 4.5))
+    .rank_abundance(especes, labels='zone')
+    .title('Courbes rang-abondance')
+    .tight_layout()
+    .show())
+```
+
+### `accumulation` — Accumulation et raréfaction {#g-accumulation}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('accumulation')
+```
+
+
+`kind='sites'` : la richesse cumulée quand on ajoute des placettes (ordre aléatoire,
+moyenne ± écart-type), avec l'estimateur **Chao2** de la richesse totale. Un plateau qui
+rejoint Chao2 indique un échantillonnage suffisant. `kind='individuals'` : la courbe de
+**raréfaction** de chaque site, pour comparer des richesses à effort égal.
+
+```{python}
+#| fig-cap: "Courbe d'accumulation des espèces"
+chart = (Chart(communaute, figsize=(9, 4.5))
+    .accumulation(especes)
+    .title('Effort d\'échantillonnage')
+    .tight_layout())
+print(chart.accumulation_stats)
+chart.show()
+```
+
+```{python}
+#| fig-cap: "Raréfaction de quatre placettes"
+(Chart(communaute.iloc[[3, 12, 18, 26]], figsize=(9, 4.5))
+    .accumulation(especes, kind='individuals', labels='placette')
+    .title('Courbes de raréfaction')
+    .tight_layout()
+    .show())
+```
+
+### `diversity` — Indices de diversité {#g-diversity}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('diversity')
+```
+
+
+Richesse, Shannon H', Simpson (1 − D), inverse de Simpson et équitabilité de Pielou, par
+site ; avec `group`, moyenne ± erreur type par groupe et lettres de Tukey. Tous les
+indices sont dans `chart.diversity_table` (et `diversity_indices()` les calcule sans
+tracer).
+
+```{python}
+#| fig-cap: "Shannon par zone, comparaisons de Tukey"
+chart = (Chart(communaute, figsize=(8, 4.5))
+    .diversity(especes, index='shannon', group='zone', letters=True)
+    .title('Diversité de Shannon par zone')
+    .tight_layout())
+chart.show()
+chart.diversity_table.head()
+```

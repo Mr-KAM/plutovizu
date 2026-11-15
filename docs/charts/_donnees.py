@@ -220,3 +220,122 @@ transhumance = pd.DataFrame({
     'lat': [16.65, 15.39, 15.35, 14.10, 13.98, 13.77],
     'jour': [0, 9, 12, 25, 31, 44],
 })
+
+# ── Écologie (données FICTIVES) ─────────────────────────────────────────────
+rng = np.random.default_rng(7)
+_nit = rng.uniform(0, 60, 250)
+grenouille = pd.DataFrame({'nitrates': _nit.round(1),
+                           'presence': (rng.random(250) < 1 / (1 + np.exp(-(2.2 - 0.09 * _nit)))).astype(int)})
+_ph = rng.uniform(4, 9, 400)
+niche = pd.DataFrame({'ph': _ph.round(2),
+                      'presence': (rng.random(400) < 1 / (1 + np.exp(-(1.5 - 1.6 * (_ph - 6.6) ** 2)))).astype(int)})
+# Communauté : 30 placettes × 10 espèces de zone humide, le long d'un gradient d'humidité
+_hum = np.sort(rng.uniform(5, 95, 30))
+especes = ['Carex', 'Juncus', 'Typha', 'Phragmites', 'Salix', 'Alnus', 'Iris', 'Mentha', 'Lythrum', 'Lemna']
+communaute = pd.DataFrame(rng.poisson(25 * np.exp(-((_hum[:, None] - np.linspace(10, 90, 10)[None, :]) / 14) ** 2)),
+                          columns=especes)
+communaute['humidite'] = _hum.round(1)
+communaute['ph'] = (6 + _hum / 60 + rng.normal(0, .25, 30)).round(2)
+communaute['placette'] = [f'P{i + 1:02d}' for i in range(30)]
+communaute['zone'] = pd.cut(_hum, [0, 35, 65, 100], labels=['sèche', 'intermédiaire', 'humide']).astype(str)
+# Comptages d'individus avec excès de zéros
+comptages = pd.DataFrame({'individus': np.where(rng.random(400) < .35, 0, rng.negative_binomial(3, .4, 400))})
+# Résultats d'un modèle (odds ratios et IC 95 %, illustratifs)
+effets = pd.DataFrame({'variable': ['Nitrates', 'Conductivité', 'Couvert végétal', 'Profondeur', 'Distance à la route'],
+                       'odds_ratio': [0.62, 0.85, 1.9, 1.15, 1.02],
+                       'ic_bas': [0.48, 0.66, 1.3, 0.92, 0.95], 'ic_haut': [0.80, 1.09, 2.8, 1.43, 1.10]})
+
+# ── Pédologie (données FICTIVES) ────────────────────────────────────────────
+_rp = np.random.default_rng(3)
+
+# Courbe pF : 2 horizons, van Genuchten + bruit
+_pf = np.array([0, 1, 1.5, 2, 2.5, 3, 3.5, 4.2])
+def _vg(h, tr, ts, a, n):
+    return tr + (ts - tr) / (1 + (a * h) ** n) ** (1 - 1 / n)
+retention = pd.concat([
+    pd.DataFrame({'horizon': nom, 'pF': _pf,
+                  'theta': _vg(10 ** _pf, *p) + _rp.normal(0, .004, _pf.size)})
+    for nom, p in [('A (limoneux)', (.08, .45, .02, 1.45)), ('Bt (argileux)', (.15, .50, .008, 1.25))]
+], ignore_index=True)
+
+# Granulométrie cumulative : 3 échantillons
+_d = np.array([0.001, 0.002, 0.005, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5])
+def _cum(d50, s):
+    from scipy.stats import norm
+    return 100 * norm.cdf((np.log10(_d) - np.log10(d50)) / s)
+granulo = pd.concat([pd.DataFrame({'echantillon': n, 'diametre_mm': _d, 'passant': _cum(m, s)})
+                     for n, m, s in [('Sable de dune', .25, .25), ('Limon', .03, .6), ('Argile', .004, .7)]],
+                    ignore_index=True)
+
+# Complexe d'échange
+complexe = pd.DataFrame({'horizon': ['A', 'E', 'Bt', 'C'],
+                         'Ca': [9.5, 4.1, 12.3, 14.0], 'Mg': [2.1, 1.0, 3.4, 3.9],
+                         'K': [0.6, 0.3, 0.5, 0.4], 'Na': [0.1, 0.1, 0.3, 0.4],
+                         'H_Al': [1.8, 2.6, 1.2, 0.3]})
+complexe['CEC'] = complexe[['Ca', 'Mg', 'K', 'Na', 'H_Al']].sum(axis=1) + [0.4, 0.2, 0.5, 0.1]
+
+# Infiltration (double anneau) : Philip S=6 mm/min½, A=0.4 mm/min
+_t = np.array([1, 2, 5, 10, 15, 20, 30, 45, 60, 90, 120])
+infiltration = pd.DataFrame({'minutes': _t,
+                             'infiltration_mm': 6 * np.sqrt(_t) + .4 * _t + _rp.normal(0, .6, _t.size)})
+
+# Isoplèthes : humidité selon date × profondeur
+_dates = pd.date_range('2025-01-01', periods=24, freq='SMS')
+_prof = np.arange(10, 110, 10)
+_jour = (_dates.dayofyear.to_numpy() / 365)[None, :]
+humidite_sol = pd.DataFrame(
+    [(dt, z, 30 - 12 * np.sin(2 * np.pi * (j - .15 - z / 400)) * np.exp(-z / 120))
+     for dt, j in zip(_dates, _jour[0]) for z in _prof],
+    columns=['date', 'profondeur', 'humidite'])
+
+# Propriétés par horizon, 2 fosses
+proprietes = pd.DataFrame({
+    'fosse': ['Fosse 1'] * 4 + ['Fosse 2'] * 4,
+    'haut': [0, 20, 45, 80] * 2, 'bas': [20, 45, 80, 120] * 2,
+    'pH': [6.2, 5.8, 6.4, 7.1, 5.4, 5.1, 5.6, 6.0],
+    'MO (%)': [3.8, 1.2, 0.6, 0.2, 5.1, 2.0, 0.8, 0.3],
+    'Argile (%)': [18, 15, 34, 28, 12, 11, 25, 22],
+    'CEC (cmol+/kg)': [14, 8, 19, 17, 11, 7, 14, 12]})
+
+# ── Graphes & réseaux (données FICTIVES) ────────────────────────────────────
+# Pistes entre villages (km) — réseau non orienté
+pistes = pd.DataFrame([
+    ('Dépôt', 'Keur Massar', 12), ('Dépôt', 'Ndiaye', 18), ('Keur Massar', 'Ndiaye', 7),
+    ('Keur Massar', 'Sangalkam', 15), ('Ndiaye', 'Bayakh', 11), ('Sangalkam', 'Bayakh', 9),
+    ('Sangalkam', 'Kayar', 21), ('Bayakh', 'Kayar', 14), ('Bayakh', 'Tivaouane', 26),
+    ('Kayar', 'Tivaouane', 17), ('Ndiaye', 'Pout', 20), ('Pout', 'Tivaouane', 24)],
+    columns=['de', 'vers', 'km'])
+
+# Réseau d'adduction d'eau (m³/h) — orienté, capacités
+adduction = pd.DataFrame([
+    ('Forage', 'Château A', 60), ('Forage', 'Château B', 45), ('Château A', 'Quartier 1', 30),
+    ('Château A', 'Château B', 15), ('Château B', 'Quartier 2', 40), ('Quartier 1', 'Marché', 25),
+    ('Quartier 2', 'Marché', 35), ('Château A', 'Quartier 2', 10)],
+    columns=['de', 'vers', 'capacite'])
+
+# Projet d'aménagement hydro-agricole (semaines)
+projet = pd.DataFrame({
+    'tache': ['Étude', 'Financement', 'Défrichage', 'Canaux', 'Pompe', 'Parcelles', 'Formation', 'Mise en eau'],
+    'duree': [4, 6, 3, 8, 5, 4, 3, 2],
+    'avant': ['', 'Étude', 'Étude', 'Défrichage, Financement', 'Financement', 'Défrichage',
+              'Financement', 'Canaux, Pompe, Parcelles']})
+
+# Tournée de collecte de lait (km, coordonnées locales)
+collecte = pd.DataFrame({
+    'ferme': ['Laiterie', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9'],
+    'x': [0, 4, 9, 12, 7, 2, -3, -6, -4, 6],
+    'y': [0, 5, 3, -2, -6, -8, -5, 1, 6, 10]})
+
+# Mouvements de troupeaux entre zones (têtes)
+transferts = pd.DataFrame([
+    ('Ferlo', 'Saloum', 420), ('Ferlo', 'Niayes', 150), ('Fleuve', 'Ferlo', 300),
+    ('Saloum', 'Casamance', 120), ('Niayes', 'Ferlo', 60), ('Saloum', 'Ferlo', 90),
+    ('Fleuve', 'Saloum', 80), ('Casamance', 'Saloum', 40)],
+    columns=['depart', 'arrivee', 'tetes'])
+
+# Échanges entre coopératives — réseau orienté pondéré
+echanges = pd.DataFrame([
+    ('Coop A', 'Coop B', 12), ('Coop B', 'Coop C', 5), ('Coop A', 'Coop C', 8),
+    ('Coop C', 'Coop D', 9), ('Coop D', 'Coop A', 3), ('Coop B', 'Coop E', 7),
+    ('Coop E', 'Coop D', 4), ('Coop C', 'Coop B', 2), ('Coop F', 'Coop A', 6), ('Coop F', 'Coop E', 3)],
+    columns=['de', 'vers', 'tonnes'])

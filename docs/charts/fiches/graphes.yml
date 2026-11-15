@@ -1,0 +1,160 @@
+# Fiches de la page « Graphes & réseaux »
+
+network:
+  desc: >-
+    Graphe de réseau tracé à partir d'une liste d'arêtes : nœuds dimensionnés selon leur
+    nombre de liens (degré), liens d'épaisseur proportionnelle au poids, flèches si le
+    réseau est orienté.
+  usage: >-
+    Visualiser des relations : échanges entre acteurs, filières, réseaux sociaux, pistes
+    entre villages, interactions entre espèces. Repérer les nœuds centraux et les
+    sous-groupes.
+  rows: une ligne par lien (arête) ; les nœuds sont déduits des deux premières colonnes
+  data:
+    - [de, texte, "`source` : nœud de départ", "Coop A"]
+    - [vers, texte, "`target` : nœud d'arrivée", "Coop B"]
+    - [tonnes, nombre, "`weight` (optionnel) : intensité du lien (> 0)", "12"]
+  params:
+    source: Colonne du nœud de départ de chaque lien.
+    target: Colonne du nœud d'arrivée de chaque lien.
+    weight: Colonne du poids des liens (épaisseur) ; valeurs strictement positives.
+    directed: Réseau orienté (flèches de la source vers la cible).
+    layout: "Placement des nœuds : 'spring' (forces), 'circular', ou un dictionnaire {nœud: (x, y)} (coordonnées réelles)."
+    node_size: "'degree' (taille selon le nombre de liens) ou une taille fixe (points²)."
+    labels: Écrit le nom des nœuds.
+    edge_labels: Écrit le poids sur chaque lien.
+    max_width: Épaisseur du lien le plus lourd.
+  returns: "`chart.graph` : nœuds, positions et degré de chaque nœud."
+
+arc_diagram:
+  desc: >-
+    Diagramme en arcs : les nœuds alignés sur une ligne, un arc par lien ; les mouvements
+    vers la droite passent au-dessus, ceux vers la gauche en dessous.
+  usage: >-
+    Lire le sens et l'intensité de mouvements entre lieux ordonnés (zones le long d'un
+    gradient, villes d'un axe) : transhumance, migrations, transferts.
+  rows: une ligne par mouvement (départ → arrivée)
+  data:
+    - [depart, texte, "`source` : lieu de départ", "Ferlo"]
+    - [arrivee, texte, "`target` : lieu d'arrivée", "Saloum"]
+    - [tetes, nombre, "`weight` (optionnel) : effectif déplacé", "420"]
+  params:
+    source: Colonne du lieu de départ.
+    target: Colonne du lieu d'arrivée.
+    weight: Colonne de l'intensité du mouvement (épaisseur de l'arc).
+    order: Liste des nœuds dans l'ordre d'affichage (ex. du nord au sud) ; `None` = ordre d'apparition.
+    max_width: Épaisseur de l'arc le plus lourd.
+    labels: Écrit le nom des nœuds.
+
+shortest_path:
+  desc: >-
+    Plus court chemin entre deux nœuds (algorithme de Dijkstra), mis en évidence sur le
+    réseau ; les autres liens sont estompés.
+  usage: >-
+    Recherche d'itinéraire : trajet le plus court ou le moins coûteux entre deux lieux
+    (pistes, réseau routier, logistique), chemin de moindre résistance.
+  rows: une ligne par lien ; le poids est une distance, un temps ou un coût (> 0)
+  data:
+    - [de, texte, "`source`", "Dépôt"]
+    - [vers, texte, "`target`", "Ndiaye"]
+    - [km, nombre, "`weight` (optionnel) : longueur du lien", "18"]
+  params:
+    source: Colonne d'une extrémité de chaque lien.
+    target: Colonne de l'autre extrémité.
+    start: Nœud de départ.
+    end: Nœud d'arrivée.
+    weight: Colonne des longueurs (distance, temps, coût) ; `None` = chaque lien compte 1.
+    directed: Liens à sens unique (de `source` vers `target`).
+    layout: "Placement des nœuds : 'spring', 'circular' ou {nœud: (x, y)}."
+    edge_labels: Écrit la longueur sur chaque lien.
+    color: Couleur du chemin ; `None` = couleur d'accent du thème.
+  returns: "`chart.path` (liste des nœuds), `chart.path_length` (longueur totale)."
+
+spanning_tree:
+  desc: >-
+    Arbre couvrant minimal : l'ensemble de liens le moins coûteux qui relie tous les nœuds,
+    en gras ; les liens non retenus en pointillés.
+  usage: >-
+    Concevoir un réseau au moindre coût : électrification de villages, canaux d'irrigation,
+    adduction d'eau, fibre, pistes à aménager.
+  rows: une ligne par lien possible, avec son coût (> 0)
+  data:
+    - [de, texte, "`source`", "Bayakh"]
+    - [vers, texte, "`target`", "Kayar"]
+    - [km, nombre, "`weight` : coût du lien", "14"]
+  params:
+    source: Colonne d'une extrémité de chaque lien.
+    target: Colonne de l'autre extrémité.
+    weight: Colonne du coût de chaque lien ; `None` = coûts égaux.
+    layout: "Placement des nœuds : 'spring', 'circular' ou {nœud: (x, y)}."
+    edge_labels: Écrit le coût sur chaque lien.
+    color: Couleur de l'arbre ; `None` = couleur d'accent du thème.
+  returns: "`chart.tree` (liens retenus), `chart.tree_weight` (coût total)."
+
+max_flow:
+  desc: >-
+    Flot maximal d'une source vers un puits dans un réseau orienté à capacités : épaisseur
+    des flèches selon le flux, étiquettes flux/capacité, liens saturés (goulots) en couleur
+    d'accent.
+  usage: >-
+    Dimensionner ou diagnostiquer un réseau : débit maximal d'adduction d'eau, capacité
+    d'une chaîne d'approvisionnement, trafic ; les liens saturés sont à renforcer en
+    priorité.
+  rows: une ligne par lien orienté, avec sa capacité (> 0)
+  data:
+    - [de, texte, "`source` : origine du lien", "Forage"]
+    - [vers, texte, "`target` : destination du lien", "Château A"]
+    - [capacite, nombre, "`capacity` : débit maximal du lien", "60"]
+  params:
+    source: Colonne de l'origine de chaque lien orienté.
+    target: Colonne de la destination de chaque lien.
+    capacity: Colonne des capacités (décimales arrondies au millième).
+    start: Nœud source (d'où part le flux).
+    end: Nœud puits (où arrive le flux).
+    layout: "Placement des nœuds : 'spring', 'circular' ou {nœud: (x, y)}."
+    max_width: Épaisseur du lien le plus chargé.
+    color: Couleur des liens saturés ; `None` = couleur d'accent du thème.
+  returns: "`chart.flow_value` (flot maximal), `chart.flow` (flux sur chaque lien)."
+
+critical_path:
+  desc: >-
+    Chemin critique (méthode CPM / PERT) en diagramme de Gantt : chaque tâche à sa date au
+    plus tôt, marge totale hachurée, tâches critiques (marge nulle) en couleur d'accent,
+    flèches de dépendance.
+  usage: >-
+    Planifier un projet (aménagement, campagne agricole, chantier) : durée minimale, tâches
+    qui ne peuvent prendre aucun retard, marges disponibles pour les autres.
+  rows: une ligne par tâche, avec sa durée et la liste de ses prédécesseurs
+  data:
+    - [tache, texte, "`task` : nom de la tâche", "Canaux"]
+    - [duree, nombre, "`duration` : durée (jours, semaines…)", "8"]
+    - [avant, "texte ou liste", "`predecessors` : tâches à finir avant, séparées par des virgules ('' si aucune)", "Défrichage, Financement"]
+  params:
+    task: Colonne des noms de tâches (uniques).
+    duration: Colonne des durées.
+    predecessors: Colonne des prédécesseurs (texte 'A, B', liste, ou vide).
+    show_float: Affiche la marge totale de chaque tâche (hachures).
+    color: Couleur des tâches critiques ; `None` = couleur d'accent du thème.
+  returns: "`chart.schedule` (dates au plus tôt / au plus tard, marges, tâches critiques), `chart.project_duration`."
+
+tsp_route:
+  desc: >-
+    Tournée du voyageur de commerce : le circuit le plus court passant une fois par chaque
+    point (heuristique du plus proche voisin améliorée par 2-opt), numéros de passage sur
+    les points.
+  usage: >-
+    Optimiser une tournée : collecte de lait, livraison d'intrants, visites de parcelles ou
+    de pièges. L'ordre obtenu peut être tracé sur un fond de carte avec `route_map`.
+  rows: "une ligne par point à visiter (coordonnées planes : km, mètres ; en degrés, la distance est approchée)"
+  data:
+    - [ferme, texte, "`labels` (optionnel) : nom du point", "F3"]
+    - [x, nombre, "`x` : abscisse", "12"]
+    - [y, nombre, "`y` : ordonnée", "-2"]
+  params:
+    x: Colonne des abscisses.
+    y: Colonne des ordonnées.
+    labels: Colonne des noms des points.
+    start: Point de départ (nom si `labels`, sinon numéro de ligne) ; `None` = premier point.
+    closed: Revient au point de départ (circuit fermé).
+    color: Couleur de la tournée ; `None` = thème.
+  returns: "`chart.tour` (ordre de visite), `chart.tour_length`, `chart.tour_table` (données triées + colonne `ordre`)."

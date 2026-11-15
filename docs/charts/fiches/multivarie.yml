@@ -1,0 +1,59 @@
+# Fiches de la page « Multivarié »
+
+pca_biplot:
+  desc: >-
+    Biplot d'analyse en composantes principales : les individus sur les deux premiers axes
+    (points colorés par groupe) et les variables en flèches.
+  usage: >-
+    Résumer de nombreuses variables numériques corrélées en deux axes, voir quelles
+    variables opposent les individus et quels individus se ressemblent.
+  rows: une ligne par individu, des colonnes numériques
+  data:
+    - [variete, texte, "identifiant (non utilisé dans le calcul)", "V07"]
+    - [hauteur, nombre, "`columns` : variable de l'ACP", "118"]
+    - [rendement, nombre, "`columns` : variable de l'ACP", "4.9"]
+    - [cycle, texte, "`group` (optionnel) : couleur des points", "Précoce"]
+  params:
+    columns: Colonnes numériques de l'ACP ; `None` = toutes les colonnes numériques.
+    scale: Centre-réduit les variables (indispensable si leurs unités diffèrent).
+    arrows: Dessine les variables en flèches.
+  returns: "`chart.pca` : variance expliquée, coordonnées des individus et des variables."
+
+dendrogram:
+  desc: >-
+    Dendrogramme de classification hiérarchique : les individus sont regroupés pas à pas,
+    la hauteur des branches mesurant la distance entre groupes.
+  usage: >-
+    Former des groupes d'individus semblables (variétés, sites, clients) et choisir le
+    nombre de groupes en coupant l'arbre.
+  rows: une ligne par individu, des colonnes numériques
+  data:
+    - [variete, texte, "`labels` : nom des feuilles", "V07"]
+    - [hauteur, nombre, "`columns` : variable", "118"]
+    - [rendement, nombre, "`columns` : variable", "4.9"]
+  params:
+    method: "Méthode d'agrégation : 'ward', 'average', 'complete', 'single'…"
+    metric: "Distance entre individus : 'euclidean', 'cityblock', 'correlation'…"
+    color_threshold: Hauteur de coupe ; les branches sous ce seuil partagent une couleur.
+    standardize: Centre-réduit les variables avant le calcul des distances.
+    orientation: "Sens de l'arbre : 'top', 'bottom', 'left' ou 'right'."
+    leaf_rotation: Rotation des noms des feuilles (degrés).
+    columns: Colonnes numériques utilisées ; `None` = toutes.
+
+clustermap:
+  desc: >-
+    Carte de chaleur des données avec un dendrogramme sur les lignes et un sur les colonnes,
+    réordonnées selon la classification (seaborn clustermap).
+  usage: >-
+    Voir à la fois les groupes d'individus et les groupes de variables, et ce qui les
+    caractérise (profils d'expression, de traits, de sites).
+  rows: une ligne par individu, des colonnes numériques
+  data:
+    - [variete, texte, "`labels` : nom des lignes", "V07"]
+    - [hauteur, nombre, "`columns` : colonne de la matrice", "118"]
+    - [talles, nombre, "`columns` : colonne de la matrice", "14"]
+  params:
+    columns: Colonnes numériques ; `None` = toutes.
+    standardize: Centre-réduit chaque colonne (couleurs comparables entre variables).
+    method: "Méthode d'agrégation de la classification ('ward', 'average'…)."
+    figsize: Taille de la figure créée par seaborn (pouces) ; `None` = celle du Chart.

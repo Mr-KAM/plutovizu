@@ -1,0 +1,170 @@
+# Fiches de la page « Comparaison »
+
+bar:
+  desc: >-
+    Barres verticales ou horizontales : une barre par catégorie, de hauteur égale à la
+    valeur ; plusieurs colonnes `y` donnent des barres groupées ou empilées.
+  usage: >-
+    Comparer des quantités entre catégories (régions, variétés, postes). Préférer les barres
+    horizontales quand les libellés sont longs.
+  rows: une ligne par catégorie (valeurs déjà agrégées)
+  data:
+    - [region, texte, "`x` : catégorie (une barre)", "Nord"]
+    - [ca, nombre, "`y` : hauteur de la barre", "1250"]
+
+mean_bar:
+  desc: >-
+    Barres des moyennes par groupe avec barres d'erreur, calculées à partir des données
+    brutes ; points individuels et lettres du test de Tukey en option.
+  usage: >-
+    Présenter les résultats d'un essai (moyennes de traitements) et leurs différences
+    significatives, comme dans un article ou un rapport d'expérimentation.
+  rows: une ligne par unité expérimentale (répétition), données non agrégées
+  data:
+    - [dose, "texte ou nombre", "`x` : traitement (une barre)", "60"]
+    - [rendement, nombre, "`y` : réponse mesurée", "4.7"]
+    - [variete, texte, "`hue` (optionnel) : second facteur, barres côte à côte", "IR-841"]
+  params:
+    error: >-
+      Barre d'erreur : 'se' (erreur type), 'sd' (écart-type), 'ci95' (intervalle de
+      confiance à 95 %) ou None.
+    points: Superpose les observations individuelles aux barres.
+    letters: >-
+      Écrit les lettres du test de Tukey HSD au-dessus des barres (même lettre = pas de
+      différence significative).
+    alpha_test: Seuil de signification du test de Tukey.
+    capsize: Largeur des chapeaux des barres d'erreur (points).
+
+errorbar:
+  desc: >-
+    Points avec barres d'erreur verticales et/ou horizontales, éventuellement reliés par une
+    ligne, une série par groupe.
+  usage: >-
+    Résumés déjà calculés (moyenne ± écart-type, estimation ± intervalle) le long d'un axe
+    numérique ou ordonné : courbe dose-réponse, cinétique.
+  rows: une ligne par point (données agrégées)
+  data:
+    - [dose, nombre, "`x`", "60"]
+    - [moyenne, nombre, "`y` : valeur centrale", "4.6"]
+    - [ecart_type, nombre, "`yerr` : demi-longueur de la barre", "0.4"]
+    - [variete, texte, "`group` (optionnel)", "Nerica-4"]
+  params:
+    yerr: Colonne (ou constante) des erreurs verticales.
+    xerr: Colonne (ou constante) des erreurs horizontales.
+    capsize: Largeur des chapeaux des barres d'erreur (points).
+    line: Relie les points de chaque groupe par une ligne.
+
+interaction:
+  desc: >-
+    Graphique d'interaction : réponse moyenne selon un facteur, une ligne par niveau d'un
+    second facteur, avec barres d'erreur.
+  usage: >-
+    Lire une interaction entre deux facteurs (ANOVA à deux facteurs) : des lignes non
+    parallèles indiquent que l'effet d'un facteur dépend de l'autre.
+  rows: une ligne par unité expérimentale
+  data:
+    - [dose, "texte ou nombre", "`x` : premier facteur (axe horizontal)", "120"]
+    - [variete, texte, "`trace` : second facteur (une ligne par niveau)", "Sahel-108"]
+    - [rendement, nombre, "`response` : variable réponse", "5.1"]
+  params:
+    trace: Colonne du second facteur ; une ligne par niveau.
+    response: Colonne de la variable réponse (moyennée par case).
+    error: "Barres d'erreur : 'se', 'sd', 'ci95' ou None."
+
+pointplot:
+  desc: >-
+    Moyennes par catégorie avec intervalle de confiance, reliées par des lignes (seaborn
+    pointplot).
+  usage: >-
+    Comparer des moyennes entre catégories et groupes en mettant l'accent sur les tendances
+    plutôt que sur les quantités.
+  rows: une ligne par observation
+  data:
+    - [dose, "texte ou nombre", "`x` : catégorie", "60"]
+    - [rendement, nombre, "`y` : valeur moyennée", "4.7"]
+    - [variete, texte, "`hue` (optionnel)", "IR-841"]
+  params:
+    x: Colonne des catégories.
+    y: Colonne des valeurs (moyennées par seaborn).
+
+countplot:
+  desc: "Barres des effectifs : le nombre de lignes de chaque catégorie."
+  usage: >-
+    Compter des observations par modalité (types de sol, réponses d'enquête) sans agréger
+    soi-même.
+  rows: une ligne par observation
+  data:
+    - [zone, texte, "`x` : catégorie comptée", "Plateau"]
+  params:
+    x: Colonne des catégories à compter.
+
+lollipop:
+  desc: >-
+    Sucettes groupées : une tige et une bulle par couple (x, groupe), la taille de la bulle
+    suivant la valeur ; les groupes sont décalés pour ne pas se chevaucher.
+  usage: >-
+    Comparer des effectifs ou des totaux par période et par catégorie de façon plus légère
+    qu'avec des barres groupées.
+  rows: une ligne par observation (y est sommé par couple x × groupe)
+  data:
+    - [year, "nombre ou texte", "`x` : position", "2017"]
+    - [n, nombre, "`y` : valeur (sommée)", "6"]
+    - [status, texte, "`group` : couleur et décalage", "ouragan"]
+
+dumbbell:
+  desc: >-
+    Haltères : deux points reliés par un trait pour chaque catégorie (avant / après, A /
+    B).
+  usage: >-
+    Montrer l'écart ou l'évolution entre deux mesures pour de nombreuses catégories (PIB
+    2020 et 2024, rendement avant et après un traitement).
+  rows: une ligne par catégorie
+  data:
+    - [pays, texte, "`y` : catégorie (une ligne)", "Sénégal"]
+    - [pib_2020, nombre, "`x_start` : première mesure", "24.5"]
+    - [pib_2024, nombre, "`x_end` : seconde mesure", "31.0"]
+
+radar:
+  desc: >-
+    Radar (toile d'araignée) : chaque variable est un rayon, chaque profil un polygone ; avec
+    `group`, un polygone par groupe (moyennes).
+  usage: >-
+    Comparer des profils multicritères (athlètes, variétés, sites) sur 3 à 10 variables de
+    même échelle.
+  rows: une ligne par individu, une colonne par critère
+  data:
+    - [equipe, texte, "`group` (optionnel) : un polygone par groupe", "Équipe A"]
+    - [vitesse, nombre, "`columns` : un rayon", "78"]
+    - [endurance, nombre, "`columns` : un autre rayon", "65"]
+
+parallel_coordinates:
+  desc: >-
+    Coordonnées parallèles : un axe vertical normalisé par variable, chaque individu étant
+    une ligne brisée qui les traverse.
+  usage: >-
+    Explorer de nombreux individus sur plusieurs variables, repérer des groupes et des
+    compromis (une variable haute quand une autre est basse).
+  rows: une ligne par individu, une colonne par variable
+  data:
+    - [marque, texte, "`group` (optionnel) : couleur", "Marque A"]
+    - [puissance, nombre, "`columns` : un axe", "110"]
+    - [prix, nombre, "`columns` : un autre axe", "23500"]
+
+polar:
+  desc: >-
+    Graphique polaire : barres (rose), ligne ou points disposés en cercle, selon un angle et
+    une distance au centre.
+  usage: >-
+    Données circulaires : directions (rose des vents, orientation), mois ou heures de la
+    journée, cycles.
+  rows: une ligne par secteur (et par groupe)
+  data:
+    - [direction, "texte ou nombre (degrés)", "`theta` : angle ou catégorie", "NE"]
+    - [frequence, nombre, "`r` : distance au centre", "12.5"]
+    - [vitesse, texte, "`group` (optionnel) : empilement des barres", "2-4 m/s"]
+  params:
+    theta: Colonne des angles (degrés ou radians) ou des catégories réparties sur le cercle.
+    r: Colonne des valeurs (distance au centre).
+    kind: "Type de tracé : 'bar' (rose), 'line' ou 'scatter'."
+    degrees: Les angles numériques sont en degrés (sinon en radians).
+    compass: Orientation boussole (0 = nord en haut, sens horaire).

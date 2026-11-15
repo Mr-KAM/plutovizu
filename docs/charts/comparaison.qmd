@@ -6,12 +6,20 @@ subtitle: "Comparer des groupes, des traitements ou des profils."
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `bar` — Barres {#g-bar}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('bar')
+```
+
 
 ```{python}
 #| fig-cap: "Chiffre d'affaires par région"
@@ -60,6 +68,13 @@ production = pd.DataFrame({'annee': ['2021', '2022', '2023', '2024'],
 
 ### `mean_bar` — Moyennes ± erreur {#g-mean_bar}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('mean_bar')
+```
+
+
 Moyennes par traitement avec barres d'erreur : `error='se'` (erreur type, défaut),
 `'sd'` (écart-type) ou `'ci95'` (intervalle de confiance à 95 %). `hue` ajoute un second
 facteur, `points=True` superpose les observations.
@@ -101,6 +116,13 @@ de `x`. Les lettres sont aussi dans `chart.tukey_letters`.
 
 ### `errorbar` — Barres d'erreur {#g-errorbar}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('errorbar')
+```
+
+
 Des points avec leurs barres d'erreur (colonnes ou constantes), une série par groupe.
 
 ```{python}
@@ -117,6 +139,13 @@ resume = (essai.groupby(['variete', 'dose'], as_index=False)['rendement']
 
 
 ### `interaction` — Graphique d'interaction {#g-interaction}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('interaction')
+```
+
 
 Une ligne par niveau du second facteur : des lignes non parallèles suggèrent une
 interaction (à confirmer par une ANOVA à deux facteurs).
@@ -135,6 +164,13 @@ interaction (à confirmer par une ANOVA à deux facteurs).
 ### `pointplot` — Moyennes reliées {#g-pointplot}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('pointplot')
+```
+
+
+```{python}
 (Chart(essai, figsize=(9, 4))
     .pointplot('dose', 'rendement', hue='variete', dodge=True)
     .title('Moyennes et IC 95 %')
@@ -146,6 +182,13 @@ interaction (à confirmer par une ANOVA à deux facteurs).
 ### `countplot` — Effectifs {#g-countplot}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('countplot')
+```
+
+
+```{python}
 (Chart(sols, figsize=(8, 4))
     .countplot('zone')
     .title('Nombre de parcelles par zone')
@@ -155,6 +198,13 @@ interaction (à confirmer par une ANOVA à deux facteurs).
 
 
 ### `lollipop` — Lollipop groupé {#g-lollipop}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('lollipop')
+```
+
 
 ```{python}
 #| fig-cap: "Tempêtes tropicales par année et intensité"
@@ -184,6 +234,13 @@ colors = {'ouragan': '#e63946', 'dépression tropicale': '#457b9d'}
 ### `dumbbell` — Haltère (avant/après) {#g-dumbbell}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('dumbbell')
+```
+
+
+```{python}
 #| fig-cap: "Évolution du PIB par habitant 2020–2024"
 #| fig-width: 9
 #| fig-height: 4
@@ -207,6 +264,13 @@ df = pd.DataFrame({
 
 
 ### `radar` — Araignée {#g-radar}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('radar')
+```
+
 
 ```{python}
 #| fig-cap: "Profil multidimensionnel de trois équipes"
@@ -234,6 +298,13 @@ df = pd.DataFrame({
 ### `parallel_coordinates` — Coordonnées parallèles {#g-parallel_coordinates}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('parallel_coordinates')
+```
+
+
+```{python}
 #| fig-cap: "Profils automobiles multi-variables"
 #| fig-width: 10
 #| fig-height: 5
@@ -259,6 +330,13 @@ df = pd.DataFrame({
 
 
 ### `polar` — Graphique polaire {#g-polar}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('polar')
+```
+
 
 Barres (rose), courbe ou points sur un axe polaire. Avec `group`, les barres s'empilent :
 c'est la rose des vents (`compass=True` met le nord en haut, sens horaire).

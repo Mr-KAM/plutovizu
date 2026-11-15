@@ -6,12 +6,20 @@ subtitle: "Le lien entre deux variables ou plus."
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `scatter` — Nuage de points {#g-scatter}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('scatter')
+```
+
 
 ```{python}
 #| fig-cap: "Corrélation température / ventes de glaces"
@@ -39,6 +47,13 @@ df = pd.DataFrame({
 
 ### `regression` — Régression et courbe de réponse {#g-regression}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('regression')
+```
+
+
 Ajustement polynomial avec bande de confiance à 95 %, équation et R²
 (et p-value pour un ajustement linéaire). Les résultats sont aussi disponibles dans
 `chart.regression_stats`.
@@ -56,6 +71,13 @@ Ajustement polynomial avec bande de confiance à 95 %, équation et R²
 
 ### `residplot` — Résidus d'une régression {#g-residplot}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('residplot')
+```
+
+
 Des résidus sans structure valident le modèle ; une courbe signale un mauvais degré.
 
 ```{python}
@@ -68,6 +90,13 @@ Des résidus sans structure valident le modèle ; une courbe signale un mauvais 
 
 
 ### `confidence_ellipse` — Ellipses de confiance {#g-confidence_ellipse}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('confidence_ellipse')
+```
+
 
 Un nuage de points avec une ellipse par groupe, couvrant 95 % de la population
 (loi normale bivariée ; réglable avec `level`).
@@ -83,6 +112,13 @@ Un nuage de points avec une ellipse par groupe, couvrant 95 % de la population
 
 
 ### `hexbin` — Pavage hexagonal {#g-hexbin}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('hexbin')
+```
+
 
 ```{python}
 #| fig-cap: "Densité âge / revenu sur 5 000 observations"
@@ -105,6 +141,13 @@ df = pd.DataFrame({
 
 
 ### `heatmap` — Carte de chaleur (corrélation) {#g-heatmap}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('heatmap')
+```
+
 
 ```{python}
 #| fig-cap: "Matrice de corrélation"
@@ -131,6 +174,13 @@ df['humidité'] = df['humidité'] - 0.6 * df['température'] + np.random.normal(
 
 ### `pivot_heatmap` — Tableau croisé coloré {#g-pivot_heatmap}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('pivot_heatmap')
+```
+
+
 Une valeur agrégée (moyenne par défaut) selon deux catégories, annotée et colorée.
 
 ```{python}
@@ -146,6 +196,13 @@ Une valeur agrégée (moyenne par défaut) selon deux catégories, annotée et c
 ### `jointplot` — Relation et distributions marginales {#g-jointplot}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('jointplot')
+```
+
+
+```{python}
 (Chart(essai)
     .jointplot('dose', 'rendement', kind='reg', height=5.5)
     .title('Rendement selon la dose')
@@ -154,6 +211,13 @@ Une valeur agrégée (moyenne par défaut) selon deux catégories, annotée et c
 
 
 ### `pairplot` — Matrice de nuages de points {#g-pairplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('pairplot')
+```
+
 
 ```{python}
 (Chart(caracteres)

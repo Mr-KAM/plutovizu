@@ -1,0 +1,99 @@
+# Fiches des pages « Champs » et « 3D »
+
+contour:
+  desc: >-
+    Courbes de niveau d'une grandeur z dans le plan (x, y) : sur une grille régulière, ou
+    sur des points dispersés par triangulation.
+  usage: >-
+    Cartographier une variable mesurée sur une parcelle (pH, humidité), une surface de
+    réponse (rendement selon azote × eau), un relief.
+  rows: une ligne par point (x, y) ; grille régulière ou points dispersés
+  data:
+    - [x, nombre, "`x` : abscisse du point", "35.0"]
+    - [y, nombre, "`y` : ordonnée du point", "12.5"]
+    - [ph, nombre, "`z` : valeur mesurée", "6.4"]
+  params:
+    filled: Aplats de couleur entre les courbes (sinon seulement les lignes).
+    show_mesh: Dessine la triangulation des points dispersés.
+    labels: Écrit la valeur sur les courbes de niveau.
+
+mesh:
+  desc: >-
+    Cellules colorées selon z : un rectangle par case d'une grille régulière, ou un triangle
+    entre points dispersés.
+  usage: >-
+    Montrer une grandeur sur une grille sans lissage (résultats de simulation, rendements
+    par placette, images).
+  rows: une ligne par point (x, y)
+  data:
+    - [azote, nombre, "`x`", "60"]
+    - [eau, nombre, "`y`", "400"]
+    - [rendement, nombre, "`z` : couleur de la cellule", "4.8"]
+
+vector_field:
+  desc: >-
+    Champ de vecteurs : en chaque point une flèche (direction et intensité), des barbules
+    de vent ou des lignes de courant.
+  usage: >-
+    Vent, courants, écoulements, gradients : tout ce qui a une direction et une intensité en
+    chaque lieu.
+  rows: une ligne par point de la grille
+  data:
+    - [lon, nombre, "`x` : position", "-16.5"]
+    - [lat, nombre, "`y` : position", "14.2"]
+    - [u, nombre, "`u` : composante est-ouest", "3.2"]
+    - [v, nombre, "`v` : composante nord-sud", "-1.1"]
+  params:
+    u: Colonne de la composante horizontale (vers l'est / la droite).
+    v: Colonne de la composante verticale (vers le nord / le haut).
+    kind: "'quiver' (flèches), 'barbs' (barbules de vent) ou 'stream' (lignes de courant, grille régulière)."
+    density: Densité des lignes de courant (`kind='stream'`).
+
+scatter3d:
+  desc: Nuage de points en trois dimensions, coloré par groupe.
+  usage: >-
+    Explorer la relation entre trois variables numériques ; à réserver à l'exploration
+    (la lecture précise en 3D est difficile).
+  rows: une ligne par individu
+  data:
+    - [hauteur, nombre, "`x`", "118"]
+    - [jours_floraison, nombre, "`y`", "92"]
+    - [rendement, nombre, "`z`", "4.9"]
+    - [cycle, texte, "`group` (optionnel)", "Précoce"]
+  params:
+    size: Taille des points.
+
+line3d:
+  desc: Courbe en trois dimensions (trajectoire), une par groupe.
+  usage: Trajectoires dans l'espace (vol, déplacement d'un animal, trajectoire d'état).
+  rows: une ligne par position, dans l'ordre du parcours
+  data:
+    - [x, nombre, "`x`", "1.2"]
+    - [y, nombre, "`y`", "-0.4"]
+    - [altitude, nombre, "`z`", "25.6"]
+
+surface:
+  desc: >-
+    Surface 3D de z selon (x, y) : maillage plein ou fil de fer sur une grille, surface
+    triangulée sur des points dispersés.
+  usage: >-
+    Surfaces de réponse (rendement selon deux facteurs), relief, fonctions de deux
+    variables.
+  rows: une ligne par point (x, y)
+  data:
+    - [azote, nombre, "`x`", "60"]
+    - [eau, nombre, "`y`", "400"]
+    - [rendement, nombre, "`z` : hauteur de la surface", "4.8"]
+  params:
+    kind: "'surface', 'wireframe' (fil de fer) ou 'trisurf' (points dispersés) ; choisi automatiquement si besoin."
+
+bar3d:
+  desc: "Barres en 3D : une barre de hauteur z pour chaque couple (x, y), catégories acceptées."
+  usage: >-
+    Présenter un tableau croisé à deux facteurs (variété × dose) de façon visuelle ; pour
+    une lecture précise, préférer `pivot_heatmap`.
+  rows: une ligne par couple (x, y)
+  data:
+    - [variete, "texte ou nombre", "`x`", "IR-841"]
+    - [dose, "texte ou nombre", "`y`", "60"]
+    - [rendement, nombre, "`z` : hauteur", "4.7"]

@@ -6,12 +6,20 @@ subtitle: "Les parts d'un total, et l'avancement vers un objectif."
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `pie` — Camembert {#g-pie}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('pie')
+```
+
 
 ```{python}
 #| fig-cap: "Parts de marché par segment"
@@ -34,6 +42,13 @@ df = pd.DataFrame({
 
 ### `donut` — Anneau {#g-donut}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('donut')
+```
+
+
 Un camembert évidé, avec un texte central ; avec `group`, deux anneaux imbriqués
 (groupes à l'intérieur, éléments à l'extérieur).
 
@@ -48,6 +63,13 @@ Un camembert évidé, avec un texte central ; avec `group`, deux anneaux imbriqu
 
 
 ### `treemap` — Carte arborescente {#g-treemap}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('treemap')
+```
+
 
 ```{python}
 #| fig-cap: "Budget par département"
@@ -68,6 +90,13 @@ df = pd.DataFrame({
 
 
 ### `circle_packing` — Cercles imbriqués {#g-circle_packing}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('circle_packing')
+```
+
 
 Un cercle par ligne, d'aire proportionnelle à la valeur (calcul par
 [circlify](https://github.com/elmotec/circlify)). Avec `group`, les cercles sont
@@ -94,6 +123,13 @@ cultures = pd.DataFrame({
 ### `waterfall` — Cascade financière {#g-waterfall}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('waterfall')
+```
+
+
+```{python}
 #| fig-cap: "Compte de résultat simplifié"
 #| fig-width: 9
 #| fig-height: 4
@@ -117,6 +153,13 @@ df = pd.DataFrame({
 
 ### `ternary` — Diagramme ternaire {#g-ternary}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('ternary')
+```
+
+
 Pour des compositions en trois parts (pourcentages ou fractions), comme la texture du sol.
 Sommets : premier argument en bas à gauche, deuxième en bas à droite, troisième en haut.
 
@@ -137,6 +180,13 @@ sols['limon'] = 100 - sols['sable'] - sols['argile']
 
 
 ### `sankey` — Diagramme de Sankey {#g-sankey}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('sankey')
+```
+
 
 ```{python}
 #| fig-cap: "Flux financiers simplifiés"
@@ -160,6 +210,13 @@ df = pd.DataFrame({
 
 ### `radial_bar` — Barres radiales {#g-radial_bar}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('radial_bar')
+```
+
+
 Un arc concentrique par indicateur, sa longueur rapportée à un tour complet.
 
 ```{python}
@@ -173,6 +230,13 @@ Un arc concentrique par indicateur, sa longueur rapportée à un tour complet.
 
 
 ### `progress_bar` — Barre de progression {#g-progress_bar}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('progress_bar')
+```
+
 
 Une barre pleine sur un rail clair : un nombre, ou une colonne (une barre par ligne).
 

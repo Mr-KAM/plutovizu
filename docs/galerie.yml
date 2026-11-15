@@ -358,6 +358,36 @@
   path: charts/sciences.html#g-depth_profile
   image: images/vignettes/depth_profile.png
   categories: ["Climat & sols"]
+- title: "Profil multi-variables"
+  description: "soil_properties() — pH, MO, argile… par horizon"
+  path: charts/sciences.html#g-soil_properties
+  image: images/vignettes/soil_properties.png
+  categories: ["Climat & sols"]
+- title: "Courbe pF"
+  description: "retention_curve() — Rétention d'eau, réserve utile"
+  path: charts/sciences.html#g-retention_curve
+  image: images/vignettes/retention_curve.png
+  categories: ["Climat & sols"]
+- title: "Courbe granulométrique"
+  description: "grain_size_curve() — D10, D60, uniformité"
+  path: charts/sciences.html#g-grain_size_curve
+  image: images/vignettes/grain_size_curve.png
+  categories: ["Climat & sols"]
+- title: "Complexe d'échange"
+  description: "exchange_complex() — Cations, CEC, saturation"
+  path: charts/sciences.html#g-exchange_complex
+  image: images/vignettes/exchange_complex.png
+  categories: ["Climat & sols"]
+- title: "Infiltration"
+  description: "infiltration_curve() — Modèles de Philip et Horton"
+  path: charts/sciences.html#g-infiltration_curve
+  image: images/vignettes/infiltration_curve.png
+  categories: ["Climat & sols"]
+- title: "Isoplèthes"
+  description: "isopleth() — Profondeur × temps"
+  path: charts/sciences.html#g-isopleth
+  image: images/vignettes/isopleth.png
+  categories: ["Climat & sols"]
 - title: "Points sur carte"
   description: "map_points() — Stations, parcelles géolocalisées"
   path: charts/map.html#g-map_points
@@ -388,6 +418,46 @@
   path: charts/map.html#g-route_map
   image: images/vignettes/route_map.png
   categories: ["Map"]
+- title: "Courbe de GLM"
+  description: "glm_curve() — Présence/absence, comptages"
+  path: charts/ecologie.html#g-glm_curve
+  image: images/vignettes/glm_curve.png
+  categories: ["Écologie"]
+- title: "Réponse lissée"
+  description: "response_curve() — Optimum le long d’un gradient"
+  path: charts/ecologie.html#g-response_curve
+  image: images/vignettes/response_curve.png
+  categories: ["Écologie"]
+- title: "Excès de zéros"
+  description: "count_distribution() — Comptages : Poisson ou binomiale négative"
+  path: charts/ecologie.html#g-count_distribution
+  image: images/vignettes/count_distribution.png
+  categories: ["Écologie"]
+- title: "Forest plot"
+  description: "forest_plot() — Effets estimés et intervalles"
+  path: charts/ecologie.html#g-forest_plot
+  image: images/vignettes/forest_plot.png
+  categories: ["Écologie"]
+- title: "Ordination (CCA)"
+  description: "ordination() — AFC, CCA, ACP, RDA des communautés"
+  path: charts/ecologie.html#g-ordination
+  image: images/vignettes/ordination.png
+  categories: ["Écologie"]
+- title: "Rang-abondance"
+  description: "rank_abundance() — Dominance et équitabilité"
+  path: charts/ecologie.html#g-rank_abundance
+  image: images/vignettes/rank_abundance.png
+  categories: ["Écologie"]
+- title: "Accumulation"
+  description: "accumulation() — Effort d’échantillonnage, Chao2"
+  path: charts/ecologie.html#g-accumulation
+  image: images/vignettes/accumulation.png
+  categories: ["Écologie"]
+- title: "Diversité"
+  description: "diversity() — Shannon, Simpson, Pielou par site"
+  path: charts/ecologie.html#g-diversity
+  image: images/vignettes/diversity.png
+  categories: ["Écologie"]
 - title: "Nuage de mots"
   description: "word_cloud() — Thèmes dominants d'un texte"
   path: charts/qualitatif.html#g-word_cloud
@@ -408,6 +478,41 @@
   path: charts/qualitatif.html#g-code_matrix
   image: images/vignettes/code_matrix.png
   categories: ["Qualitatif"]
+- title: "Réseau"
+  description: "network() — Liens entre acteurs, échanges"
+  path: charts/graphes.html#g-network
+  image: images/vignettes/network.png
+  categories: ["Graphes & réseaux"]
+- title: "Plus court chemin"
+  description: "shortest_path() — Itinéraire optimal (Dijkstra)"
+  path: charts/graphes.html#g-shortest_path
+  image: images/vignettes/shortest_path.png
+  categories: ["Graphes & réseaux"]
+- title: "Arbre couvrant minimal"
+  description: "spanning_tree() — Réseau le moins coûteux"
+  path: charts/graphes.html#g-spanning_tree
+  image: images/vignettes/spanning_tree.png
+  categories: ["Graphes & réseaux"]
+- title: "Flot maximal"
+  description: "max_flow() — Capacités, goulots"
+  path: charts/graphes.html#g-max_flow
+  image: images/vignettes/max_flow.png
+  categories: ["Graphes & réseaux"]
+- title: "Chemin critique"
+  description: "critical_path() — Planning PERT / CPM"
+  path: charts/graphes.html#g-critical_path
+  image: images/vignettes/critical_path.png
+  categories: ["Graphes & réseaux"]
+- title: "Tournée optimale"
+  description: "tsp_route() — Voyageur de commerce"
+  path: charts/graphes.html#g-tsp_route
+  image: images/vignettes/tsp_route.png
+  categories: ["Graphes & réseaux"]
+- title: "Diagramme en arcs"
+  description: "arc_diagram() — Mouvements entre lieux"
+  path: charts/graphes.html#g-arc_diagram
+  image: images/vignettes/arc_diagram.png
+  categories: ["Graphes & réseaux"]
 - title: "Tout seaborn"
   description: "seaborn() — N'importe quel graphique seaborn"
   path: charts/seaborn.html#g-seaborn

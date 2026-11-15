@@ -197,7 +197,7 @@ class Chart:
         Example / Exemple:
             chart.title('Ventes annuelles', fontsize=18, color='steelblue')
         """
-        if self.sns_grid is not None:  # figure seaborn à plusieurs panneaux : titre général
+        if self.sns_grid is not None or getattr(self, '_panels', False):  # plusieurs panneaux : titre général
             self.fig.suptitle(title, y=1.02, **_opts(fontsize=fontsize, fontweight=fontweight,
                                                      color=color))
             return self
@@ -1200,12 +1200,14 @@ class Chart:
     def ombrothermic(self, month_col: str, temperature_col: str, precipitation_col: str,
                      temp_color: str = 'tab:red', precip_color: str = 'tab:blue',
                      dry_period_color: str = 'red', dry_period_alpha: float = 0.2,
-                     show_threshold_line: bool = True, temp_scale_factor: float = 2.0) -> 'Chart':
+                     show_threshold_line: bool = True, temp_scale_factor: float = 2.0,
+                     kind: str = 'bars', hatch: str = '///',
+                     humid_fill: bool = True) -> 'Chart':
         """
-        EN: Draw an ombrothermic (Walter-Lieth) diagram showing monthly temperature
+        EN: Draw an ombrothermic (Bagnouls-Gaussen) diagram showing monthly temperature
             and precipitation on dual axes with the p = 2T scale convention.
             Dry periods (precipitation < 2 × temperature) are highlighted.
-        FR: Trace un diagramme ombrothermique (Walter-Lieth) montrant la température
+        FR: Trace un diagramme ombrothermique (Bagnouls et Gaussen) montrant la température
             mensuelle et les précipitations sur deux axes avec la convention d'échelle p = 2T.
             Les périodes sèches (précipitations < 2 × température) sont mises en évidence.
 
@@ -1241,9 +1243,26 @@ class Chart:
         Returns / Retourne:
             Chart: self
 
+            kind (str):
+                EN: 'bars' (precipitation bars, default) or 'lines' (two curves, dry periods
+                    hatched between the curves where P < factor × T).
+                FR: 'bars' (barres de précipitations, défaut) ou 'lines' (deux courbes,
+                    périodes sèches hachurées entre les courbes là où P < facteur × T).
+            hatch (str):
+                EN/FR: Motif des hachures (kind='lines') : '///', '\\\\\\\\', 'xx', '...'.
+            humid_fill (bool):
+                EN/FR: kind='lines' : colore légèrement la période humide. Défaut True.
+
         Example / Exemple:
             chart.ombrothermic('Mois', 'Température (°C)', 'Précipitations (mm)')
+            chart.ombrothermic('Mois', 'Température (°C)', 'Précipitations (mm)', kind='lines')
         """
+        if kind == 'lines':
+            return self._ombrothermic_lines(month_col, temperature_col, precipitation_col,
+                                            temp_color, precip_color, dry_period_color,
+                                            temp_scale_factor, hatch, humid_fill)
+        if kind != 'bars':
+            raise ValueError("kind doit valoir 'bars' ou 'lines'")
         self.chart_type = 'ombrothermic'
         self.ax.clear()
         self.ax.plot(self.data[month_col], self.data[temperature_col],
@@ -1291,6 +1310,46 @@ class Chart:
         lines2, labels2 = ax2.get_legend_handles_labels()
         self.ax.legend(lines1 + lines2, labels1 + labels2, loc='upper left')
         self.ax2 = ax2
+        return self
+
+    def _ombrothermic_lines(self, month_col, temperature_col, precipitation_col, temp_color,
+                            precip_color, dry_color, factor, hatch, humid_fill) -> 'Chart':
+        """Diagramme ombrothermique en deux courbes, périodes sèches hachurées (P < facteur × T)."""
+        self.chart_type = 'ombrothermic'
+        d = self.data
+        n = len(d)
+        pos = np.arange(n)
+        T = d[temperature_col].to_numpy(float)
+        P = d[precipitation_col].to_numpy(float)
+        Ps = P / factor                                  # pluie sur l'échelle des températures
+        # Interpolation fine : les hachures s'arrêtent exactement aux croisements des courbes
+        xf = np.linspace(0, n - 1, 600)
+        Tf, Pf = np.interp(xf, pos, T), np.interp(xf, pos, Ps)
+        self.ax.fill_between(xf, Pf, Tf, where=Tf > Pf, interpolate=True, facecolor='none',
+                             edgecolor=dry_color, hatch=hatch, linewidth=0, label='Période sèche')
+        if humid_fill:
+            self.ax.fill_between(xf, Tf, Pf, where=Pf >= Tf, interpolate=True, color=precip_color,
+                                 alpha=0.12, linewidth=0, label='Période humide')
+        self.ax.plot(pos, T, color=temp_color, marker='o', markersize=5, linewidth=2.2,
+                     label='Température')
+        self.ax.plot(pos, Ps, color=precip_color, marker='s', markersize=5, linewidth=2.2,
+                     label=f'Précipitations (P = {factor:g}T)')
+        low = min(0.0, T.min(), Ps.min())
+        high = max(T.max(), Ps.max()) * 1.12
+        self.ax.set_ylim(low, high)
+        self.ax.set_xlim(-0.3, n - 0.7)
+        self.ax.set_xticks(pos, d[month_col].astype(str).tolist())
+        self.ax.set_ylabel(f'Température ({temperature_col.split("(")[-1].replace(")", "")})',
+                           color=temp_color)
+        ax2 = self.ax.twinx()                            # même courbe lue en mm : facteur × °C
+        ax2.set_ylim(low * factor, high * factor)
+        ax2.set_ylabel(f'Précipitations ({precipitation_col.split("(")[-1].replace(")", "")})',
+                       color=precip_color)
+        ax2.grid(False)
+        ax2.spines['right'].set_visible(True)
+        self.ax.legend(loc='upper left', fontsize=8)
+        self.ax2 = ax2
+        self.dry_months = d.loc[P < factor * T, month_col].tolist()
         return self
 
     def print_ombrothermic_analysis(self, month_col: str, temperature_col: str,
@@ -3522,6 +3581,658 @@ class Chart:
             self.ax.legend(title=group)
         return self
 
+    @staticmethod
+    def _van_genuchten(h, theta_r, theta_s, alpha, n):
+        """Teneur en eau θ(h) de van Genuchten (h : succion en cm, m = 1 - 1/n)."""
+        return theta_r + (theta_s - theta_r) / (1 + (alpha * h) ** n) ** (1 - 1 / n)
+
+    def retention_curve(self, suction: str, water: str, group: Optional[str] = None,
+                        unit: str = 'pF', fit: bool = True, field_capacity: float = 2.5,
+                        wilting_point: float = 4.2) -> 'Chart':
+        """
+        EN: Soil water retention curve (pF curve): water content against suction (pF), with
+            field capacity, wilting point and available water between them. Optional van
+            Genuchten fit (scipy). `unit`: 'pF', 'kPa' or 'cm' (suction head).
+            Results in `chart.retention` (one row per group).
+        FR: Courbe de rétention d'eau (courbe pF) : teneur en eau selon la succion (pF), avec
+            capacité au champ, point de flétrissement et réserve utile entre les deux.
+            Ajustement de van Genuchten optionnel (scipy). `unit` : 'pF', 'kPa' ou 'cm'.
+            Résultats dans `chart.retention` (une ligne par groupe).
+
+        Example / Exemple:
+            chart.retention_curve('pF', 'theta', group='horizon')
+        """
+        from scipy.optimize import curve_fit
+        if unit not in ('pF', 'kPa', 'cm'):
+            raise ValueError("unit doit valoir 'pF', 'kPa' ou 'cm'")
+        self.chart_type = 'retention_curve'
+        groups = list(self.data.groupby(group, sort=False)) if group else [(None, self.data)]
+        rows = []
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            s = sub[suction].to_numpy(float)
+            pf = s if unit == 'pF' else np.log10(s * (10.197 if unit == 'kPa' else 1.0))
+            theta = sub[water].to_numpy(float)
+            order = np.argsort(pf)
+            pf, theta = pf[order], theta[order]
+            self.ax.plot(theta, pf, 'o', color=c, label=None if fit else name)
+            row = {'groupe': name}
+            params = None
+            if fit and len(pf) >= 4:
+                try:
+                    params, _ = curve_fit(self._van_genuchten, 10 ** pf, theta,
+                                          p0=[theta.min() * 0.5, theta.max(), 0.02, 1.5],
+                                          bounds=([0, 0, 1e-5, 1.01], [theta.min(), 1.5 * theta.max() + 1e-9, 10, 10]),
+                                          maxfev=20000)
+                except RuntimeError:
+                    warnings.warn(f"Ajustement de van Genuchten impossible ({name}) : interpolation utilisée")
+            if params is not None:
+                grid = np.linspace(min(pf.min(), 0), max(pf.max(), wilting_point), 200)
+                self.ax.plot(self._van_genuchten(10 ** grid, *params), grid, color=c, label=name)
+                fc, wp = (self._van_genuchten(10 ** p, *params) for p in (field_capacity, wilting_point))
+                row.update(theta_r=params[0], theta_s=params[1], alpha=params[2], n=params[3])
+            else:
+                if fit and len(pf) < 4:
+                    warnings.warn(f"Moins de 4 points ({name}) : pas d'ajustement, interpolation utilisée")
+                self.ax.plot(theta, pf, color=c, alpha=0.6)
+                fc, wp = (np.interp(p, pf, theta) for p in (field_capacity, wilting_point))
+            row.update(capacite_champ=fc, point_fletrissement=wp, reserve_utile=fc - wp)
+            rows.append(row)
+        self.retention = pd.DataFrame(rows)
+        if not group:
+            self.retention = self.retention.drop(columns='groupe')
+        ink = plt.rcParams['axes.labelcolor']
+        for p, txt in ((field_capacity, f'Capacité au champ (pF {field_capacity:g})'),
+                       (wilting_point, f'Point de flétrissement (pF {wilting_point:g})')):
+            self.ax.axhline(p, color=ink, ls='--', lw=0.8, alpha=0.7)
+            self.ax.annotate(txt, (1, p), xycoords=('axes fraction', 'data'), ha='right',
+                             va='bottom', fontsize=8, color=ink)
+        if not group:  # une seule courbe : la réserve utile est un intervalle lisible
+            r = self.retention.iloc[0]
+            self.ax.axvspan(r['point_fletrissement'], r['capacite_champ'],
+                            color=self._palette()[0], alpha=0.12, label='Réserve utile')
+            self.ax.legend()
+        else:
+            self.ax.legend(title=group)
+        self.ax.set_xlabel(water)
+        self.ax.set_ylabel('Succion (pF)')
+        return self
+
+    def grain_size_curve(self, diameter: str, passing: str, group: Optional[str] = None,
+                         limits: Tuple[float, ...] = (0.002, 0.05, 2.0),
+                         names: Tuple[str, ...] = ('Argile', 'Limon', 'Sable', 'Graviers')) -> 'Chart':
+        """
+        EN: Cumulative grain-size distribution: % passing (finer than) against particle
+            diameter (mm, log scale), with clay / silt / sand / gravel limits. D10, D30, D60,
+            uniformity Cu = D60/D10 and curvature Cc = D30²/(D10·D60) in `chart.grain_size`.
+        FR: Courbe granulométrique cumulative : % de passants (plus fins) selon le diamètre
+            (mm, échelle log), avec les limites argile / limon / sable / graviers. D10, D30, D60,
+            uniformité Cu = D60/D10 et courbure Cc = D30²/(D10·D60) dans `chart.grain_size`.
+
+        Example / Exemple:
+            chart.grain_size_curve('diametre', 'passant', group='echantillon')
+        """
+        self.chart_type = 'grain_size_curve'
+        groups = list(self.data.groupby(group, sort=False)) if group else [(None, self.data)]
+        rows = []
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            sub = sub.sort_values(diameter)
+            d, p = sub[diameter].to_numpy(float), sub[passing].to_numpy(float)
+            self.ax.plot(d, p, marker='o', ms=4, color=c, label=name)
+            # Dxx : interpolation en log(diamètre) ; hors des mesures → NaN
+            dx = {k: (10 ** np.interp(k, p, np.log10(d)) if p.min() <= k <= p.max() else np.nan)
+                  for k in (10, 30, 60)}
+            rows.append({'groupe': name, 'D10': dx[10], 'D30': dx[30], 'D60': dx[60],
+                         'Cu': dx[60] / dx[10], 'Cc': dx[30] ** 2 / (dx[10] * dx[60])})
+        self.grain_size = pd.DataFrame(rows)
+        if not group:
+            self.grain_size = self.grain_size.drop(columns='groupe')
+        self.ax.set_xscale('log')
+        self.ax.set_ylim(0, 100)
+        ink = plt.rcParams['axes.labelcolor']
+        lo, hi = self.ax.get_xlim()
+        bounds = [lo, *limits, hi]
+        for b in limits:
+            self.ax.axvline(b, color=ink, lw=0.8, ls='--', alpha=0.6)
+        for a, b, txt in zip(bounds, bounds[1:], names):
+            if b > lo and a < hi:
+                mid = np.sqrt(max(a, lo) * min(b, hi))
+                self.ax.text(mid, 1.01, txt, transform=self.ax.get_xaxis_transform(),
+                             ha='center', va='bottom', fontsize=9, color=ink)
+        self.ax.set_xlim(lo, hi)
+        self.ax.set_xlabel('Diamètre des particules (mm)')
+        self.ax.set_ylabel('Passants cumulés (%)')
+        if group:  # en bas à droite : zone vide d'une courbe cumulative
+            self.ax.legend(title=group, loc='lower right')
+        return self
+
+    def exchange_complex(self, horizon: str, cations: List[str], acidity: Optional[str] = None,
+                         cec: Optional[str] = None, show_saturation: bool = True) -> 'Chart':
+        """
+        EN: Exchange complex per horizon: exchangeable base cations (Ca, Mg, K, Na… in
+            cmol+/kg) stacked as horizontal bars, optional exchangeable acidity (hatched) and
+            CEC marker. Base saturation V = S/T (S = sum of bases, T = CEC, or S + acidity)
+            is written at the end of each bar and stored in `chart.base_saturation`.
+        FR: Complexe d'échange par horizon : cations basiques échangeables (Ca, Mg, K, Na… en
+            cmol+/kg) en barres horizontales empilées, acidité échangeable (hachurée) et CEC
+            optionnelles. Le taux de saturation V = S/T (S = somme des bases, T = CEC, ou
+            S + acidité) est écrit au bout de chaque barre et stocké dans `chart.base_saturation`.
+
+        Example / Exemple:
+            chart.exchange_complex('horizon', ['Ca', 'Mg', 'K', 'Na'], acidity='H_Al', cec='CEC')
+        """
+        self.chart_type = 'exchange_complex'
+        d = self.data
+        y = np.arange(len(d))
+        left = np.zeros(len(d))
+        for col, c in zip(cations, self._palette() * 10):
+            self.ax.barh(y, d[col], left=left, color=c, label=col)
+            left += d[col].to_numpy(float)
+        s = left.copy()
+        if acidity:
+            self.ax.barh(y, d[acidity], left=left, facecolor='none', hatch='///',
+                         edgecolor=plt.rcParams['axes.labelcolor'], lw=0.6, label=acidity)
+            left += d[acidity].to_numpy(float)
+        t = d[cec].to_numpy(float) if cec else (left if acidity else None)
+        if cec:
+            self.ax.scatter(t, y, marker='|', s=500, lw=2.5, zorder=3,
+                            color=plt.rcParams['axes.labelcolor'], label=f'{cec} (T)')
+        if t is not None:
+            self.base_saturation = pd.Series(100 * s / t, index=d[horizon].to_numpy(), name='V (%)')
+            if show_saturation:
+                for yi, xi, v in zip(y, np.maximum(left, t), self.base_saturation):
+                    self.ax.text(xi, yi, f'  V = {v:.0f} %', va='center', fontsize=9,
+                                 color=plt.rcParams['axes.labelcolor'])
+                self.ax.set_xlim(0, np.nanmax(np.maximum(left, t)) * 1.18)
+        self.ax.set_yticks(y, d[horizon].astype(str).tolist())
+        self.ax.invert_yaxis()  # horizon de surface en haut
+        self.ax.set_xlabel('cmol+/kg')
+        self.ax.grid(False, axis='y')
+        handles, labels = self.ax.get_legend_handles_labels()
+        if cec:  # la CEC (premier artiste ajouté en scatter) en fin de légende
+            k = labels.index(f'{cec} (T)')
+            handles.append(handles.pop(k))
+            labels.append(labels.pop(k))
+        self.ax.legend(handles, labels, ncol=min(len(labels), 6), loc='upper center',
+                       bbox_to_anchor=(0.5, -0.14), frameon=False)
+        return self
+
+    def infiltration_curve(self, time: str, cumulative: str, model: str = 'philip',
+                           show_rate: bool = True) -> 'Chart':
+        """
+        EN: Infiltration test: cumulative infiltration against time with a fitted model —
+            'philip' I = S·√t + A·t, or 'horton' I = fc·t + (f0 − fc)(1 − e^(−kt))/k — and the
+            infiltration rate on a right-hand axis. Parameters and final rate (A or fc, in
+            units of `cumulative` per unit of `time`) in `chart.infiltration`.
+        FR: Essai d'infiltration : infiltration cumulée selon le temps avec un modèle ajusté —
+            'philip' I = S·√t + A·t, ou 'horton' I = fc·t + (f0 − fc)(1 − e^(−kt))/k — et la
+            vitesse d'infiltration sur un axe de droite. Paramètres et vitesse finale (A ou fc,
+            en unités de `cumulative` par unité de `time`) dans `chart.infiltration`.
+
+        Example / Exemple:
+            chart.infiltration_curve('minutes', 'infiltration_mm', model='horton')
+        """
+        if model not in ('philip', 'horton'):
+            raise ValueError("model doit valoir 'philip' ou 'horton'")
+        self.chart_type = 'infiltration_curve'
+        d = self.data.sort_values(time)
+        t, cum = d[time].to_numpy(float), d[cumulative].to_numpy(float)
+        grid = np.linspace(0, t.max(), 300)
+        p = self._palette()
+        if model == 'philip':  # linéaire en (√t, t) : moindres carrés directs
+            (S, A), *_ = np.linalg.lstsq(np.column_stack([np.sqrt(t), t]), cum, rcond=None)
+            fit_cum = S * np.sqrt(grid) + A * grid
+            with np.errstate(divide='ignore'):
+                fit_rate = S / (2 * np.sqrt(grid)) + A
+            self.infiltration = {'model': 'philip', 'S': float(S), 'A': float(A), 'final_rate': float(A)}
+        else:
+            from scipy.optimize import curve_fit
+
+            def horton(tt, f0, fc, k):
+                return fc * tt + (f0 - fc) * (1 - np.exp(-k * tt)) / k
+            slope = np.gradient(cum, t)
+            (f0, fc, k), _ = curve_fit(horton, t, cum, p0=[slope[0], slope[-1], 1 / t.mean()],
+                                       bounds=([0, 0, 1e-6], [np.inf, np.inf, np.inf]), maxfev=20000)
+            fit_cum = horton(grid, f0, fc, k)
+            fit_rate = fc + (f0 - fc) * np.exp(-k * grid)
+            self.infiltration = {'model': 'horton', 'f0': float(f0), 'fc': float(fc), 'k': float(k), 'final_rate': float(fc)}
+        self.ax.plot(t, cum, 'o', color=p[0], label='Cumul mesuré')
+        self.ax.plot(grid, fit_cum, color=p[0], label=f'Modèle de {model.capitalize()}')
+        self.ax.set_xlabel(time)
+        self.ax.set_ylabel(cumulative)
+        self.ax.set_xlim(0, t.max() * 1.02)
+        self.ax.set_ylim(0, None)
+        handles, labels = self.ax.get_legend_handles_labels()
+        if show_rate:
+            c2 = p[1 % len(p)]
+            self.ax2 = self.ax.twinx()
+            self.ax2.grid(False)
+            mid = (t[1:] + t[:-1]) / 2
+            self.ax2.plot(mid, np.diff(cum) / np.diff(t), 's', ms=4, color=c2, alpha=0.7,
+                          label='Vitesse mesurée')
+            self.ax2.plot(grid[1:], fit_rate[1:], color=c2, ls='--', label='Vitesse modélisée')
+            self.ax2.axhline(self.infiltration['final_rate'], color=c2, lw=0.8, ls=':')
+            self.ax2.set_ylim(0, np.diff(cum)[0] / np.diff(t)[0] * 1.3)
+            self.ax2.set_ylabel(f'Vitesse ({cumulative} / {time})')
+            h2, l2 = self.ax2.get_legend_handles_labels()
+            handles, labels = handles + h2, labels + l2
+        self.ax.legend(handles, labels, loc='center right')
+        return self
+
+    def isopleth(self, time: str, depth: str, value: str, levels: int = 10,
+                 cmap: Optional[str] = None, contour_labels: bool = True) -> 'Chart':
+        """
+        EN: Isopleth diagram: a soil variable (moisture, temperature…) in the depth × time
+            plane, filled contours with depth increasing downward. Long-format data (one row
+            per date and depth); dates are allowed on the time axis.
+        FR: Diagramme des isoplèthes : une variable du sol (humidité, température…) dans le
+            plan profondeur × temps, en courbes de niveau remplies, profondeur vers le bas.
+            Données en format long (une ligne par date et profondeur) ; dates acceptées.
+
+        Example / Exemple:
+            chart.isopleth('date', 'profondeur', 'humidite')
+        """
+        import matplotlib.dates as mdates
+        self.chart_type = 'isopleth'
+        grid = self.data.pivot_table(index=depth, columns=time, values=value).sort_index()
+        x = grid.columns
+        is_date = pd.api.types.is_datetime64_any_dtype(x)
+        xs = mdates.date2num(x.to_pydatetime()) if is_date else x.to_numpy(float)
+        z = grid.to_numpy(float)
+        cs = self.ax.contourf(xs, grid.index.to_numpy(float), z, levels=levels, cmap=cmap)
+        if contour_labels:
+            lines = self.ax.contour(xs, grid.index.to_numpy(float), z, levels=cs.levels,
+                                    colors=plt.rcParams['axes.labelcolor'], linewidths=0.5, alpha=0.6)
+            self.ax.clabel(lines, fontsize=7, fmt='%g')
+        if is_date:
+            self.ax.xaxis.set_major_locator(mdates.AutoDateLocator(minticks=3, maxticks=7))
+            self.ax.xaxis.set_major_formatter(mdates.ConciseDateFormatter(self.ax.xaxis.get_major_locator()))
+        self.ax.invert_yaxis()
+        self.ax.grid(False)
+        self.fig.colorbar(cs, ax=self.ax, label=value)
+        self.ax.set_xlabel(time)
+        self.ax.set_ylabel(depth)
+        return self
+
+    def soil_properties(self, depth: str, columns: List[str], bottom: Optional[str] = None,
+                        group: Optional[str] = None, marker: str = 'o') -> 'Chart':
+        """
+        EN: Several soil properties side by side (pH, organic matter, clay, CEC…), one panel
+            per property, sharing a downward depth axis. With `bottom`, `depth` is the top of
+            each horizon and values are drawn as steps over the horizon thickness.
+            Panels in `chart.axes`.
+        FR: Plusieurs propriétés du sol côte à côte (pH, matière organique, argile, CEC…), un
+            panneau par propriété, sur un axe de profondeur commun orienté vers le bas. Avec
+            `bottom`, `depth` est le haut de chaque horizon et les valeurs sont tracées en
+            paliers sur l'épaisseur de l'horizon. Panneaux dans `chart.axes`.
+
+        Example / Exemple:
+            chart.soil_properties('haut', ['pH', 'MO', 'argile'], bottom='bas', group='fosse')
+        """
+        self.chart_type = 'soil_properties'
+        spec = self.ax.get_subplotspec()
+        self.ax.remove()
+        sub = spec.subgridspec(1, len(columns), wspace=0.08)
+        first = self.fig.add_subplot(sub[0, 0])
+        self.axes = [first] + [self.fig.add_subplot(sub[0, k], sharey=first)
+                               for k in range(1, len(columns))]
+        self.ax = first
+        self._panels = True
+        groups = list(self.data.groupby(group, sort=False)) if group else [(None, self.data)]
+        for ax, col in zip(self.axes, columns):
+            for (name, g), c in zip(groups, self._palette() * 10):
+                g = g.sort_values(depth)
+                if bottom:  # paliers : (v, haut) → (v, bas) pour chaque horizon
+                    ys = g[[depth, bottom]].to_numpy(float).ravel()
+                    xs = np.repeat(g[col].to_numpy(float), 2)
+                    ax.plot(xs, ys, color=c, label=name)
+                else:
+                    ax.plot(g[col], g[depth], marker=marker, color=c, label=name)
+            ax.xaxis.set_label_position('top')
+            ax.xaxis.tick_top()
+            ax.set_xlabel(col)
+            if ax is not first:
+                ax.tick_params(labelleft=False)
+        first.set_ylim(self.data[bottom or depth].max() * 1.03, 0)
+        first.set_ylabel('Profondeur (cm)')
+        if group:
+            self.axes[-1].legend(title=group)
+        return self
+
+    # ──────────────────────────────────────── Graphs & networks / Graphes & réseaux
+
+    def _graph_frame(self, source: str, target: str, weight: Optional[str], layout):
+        """Nœuds, indices des arêtes et positions (layout) du réseau de self.data."""
+        from . import graph as g
+        nodes, i, j = g._index(self.data, source, target)
+        return nodes, i, j, g.layout(nodes, i, j, layout)
+
+    def _draw_graph(self, nodes, pos, i, j, directed=False, node_size='degree', labels=True,
+                    widths=None, colors=None, styles=None, edge_text=None, node_colors=None):
+        """Dessine un réseau : arêtes (flèches si orienté), nœuds dimensionnés, étiquettes."""
+        ink = plt.rcParams['axes.labelcolor']
+        p = self._palette()
+        deg = np.bincount(np.concatenate([i, j]), minlength=len(nodes))
+        if node_size == 'degree':
+            sizes = 120 + 420 * deg / max(deg.max(), 1)
+        else:
+            sizes = np.full(len(nodes), float(node_size))
+        radius = np.sqrt(sizes) / 2                     # rayon des nœuds en points
+        pairs = set(zip(i, j))
+        n_e = len(i)
+        widths = np.full(n_e, 1.4) if widths is None else widths
+        colors = [ink] * n_e if colors is None else colors
+        styles = ['-'] * n_e if styles is None else styles
+        for k, (a, b) in enumerate(zip(i, j)):
+            curved = directed and (b, a) in pairs       # deux sens : arcs séparés
+            self.ax.annotate('', xy=pos[nodes[b]], xytext=pos[nodes[a]], zorder=1,
+                             arrowprops=dict(arrowstyle='-|>' if directed else '-',
+                                             color=colors[k], lw=widths[k], ls=styles[k],
+                                             shrinkA=radius[a], shrinkB=radius[b] + 1,
+                                             mutation_scale=10 + 2 * widths[k],
+                                             connectionstyle=f"arc3,rad={0.15 if curved else 0}"))
+            if edge_text is not None and edge_text[k] != '':
+                (xa, ya), (xb, yb) = pos[nodes[a]], pos[nodes[b]]
+                off = 0.08 if curved else 0.0
+                self.ax.text((xa + xb) / 2 + off * (yb - ya), (ya + yb) / 2 - off * (xb - xa),
+                             edge_text[k], ha='center', va='center', fontsize=8, color=ink,
+                             path_effects=self._halo(), zorder=2)
+        xy = np.array([pos[n] for n in nodes])
+        faces = node_colors or [p[0]] * len(nodes)
+        self.ax.scatter(xy[:, 0], xy[:, 1], s=sizes, c=faces, zorder=3,
+                        edgecolors=plt.rcParams['axes.facecolor'], linewidths=1.5)
+        if labels:  # sous le nœud, avec un halo : lisible quelle que soit la longueur du nom
+            for (x, y), n, r in zip(xy, nodes, radius):
+                self.ax.annotate(str(n), (x, y), xytext=(0, -r - 2), textcoords='offset points',
+                                 ha='center', va='top', fontsize=8, zorder=4,
+                                 path_effects=self._halo())
+        self.ax.margins(0.15)
+        self.ax.set_aspect('equal', adjustable='datalim')
+        self.ax.set_axis_off()
+        self.graph = {'nodes': nodes, 'positions': pos,
+                      'degree': pd.Series(deg, index=nodes, name='degre')}
+
+    @staticmethod
+    def _fmt(v) -> str:
+        return f'{v:g}' if isinstance(v, (int, float, np.number)) else str(v)
+
+    def network(self, source: str, target: str, weight: Optional[str] = None,
+                directed: bool = False, layout: Union[str, Dict] = 'spring',
+                node_size: Union[str, float] = 'degree', labels: bool = True,
+                edge_labels: bool = False, max_width: float = 6.0) -> 'Chart':
+        """
+        EN: Network graph from an edge list (one row per link): nodes sized by degree, edge
+            width proportional to `weight`, arrows if `directed`. `layout`: 'spring',
+            'circular' or {node: (x, y)} (e.g. real coordinates). Degrees in `chart.graph`.
+        FR: Graphe de réseau à partir d'une liste d'arêtes (une ligne par lien) : nœuds
+            dimensionnés selon leur degré, épaisseur des liens proportionnelle à `weight`,
+            flèches si `directed`. `layout` : 'spring', 'circular' ou {nœud: (x, y)}
+            (ex. coordonnées réelles). Degrés dans `chart.graph`.
+
+        Example / Exemple:
+            chart.network('de', 'vers', weight='echanges', directed=True)
+        """
+        self.chart_type = 'network'
+        nodes, i, j, pos = self._graph_frame(source, target, weight, layout)
+        w = self.data[weight].to_numpy(float) if weight else None
+        widths = 0.8 + (max_width - 0.8) * w / w.max() if weight else None
+        text = [self._fmt(v) for v in self.data[weight]] if (weight and edge_labels) else None
+        self._draw_graph(nodes, pos, i, j, directed, node_size, labels, widths=widths,
+                         edge_text=text)
+        return self
+
+    def shortest_path(self, source: str, target: str, start, end, weight: Optional[str] = None,
+                      directed: bool = False, layout: Union[str, Dict] = 'spring',
+                      edge_labels: bool = True, color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Shortest path (Dijkstra) between two nodes, highlighted on the network; the other
+            links are faded. Path in `chart.path`, length in `chart.path_length`.
+        FR: Plus court chemin (Dijkstra) entre deux nœuds, mis en évidence sur le réseau ; les
+            autres liens sont estompés. Chemin dans `chart.path`, longueur dans `chart.path_length`.
+
+        Example / Exemple:
+            chart.shortest_path('de', 'vers', 'Dakar', 'Kédougou', weight='km')
+        """
+        from . import graph as g
+        self.chart_type = 'shortest_path'
+        self.path, self.path_length = g.shortest_path(self.data, source, target, start, end,
+                                                      weight, directed)
+        nodes, i, j, pos = self._graph_frame(source, target, weight, layout)
+        p = self._palette()
+        hi = color or p[1 % len(p)]
+        steps = set(zip(self.path, self.path[1:]))
+        on = [(nodes[a], nodes[b]) in steps or (not directed and (nodes[b], nodes[a]) in steps)
+              for a, b in zip(i, j)]
+        ink = plt.rcParams['axes.labelcolor']
+        faded = mcolors.to_hex(mcolors.to_rgba(ink, 0.35), keep_alpha=True)
+        text = [self._fmt(v) for v in self.data[weight]] if (weight and edge_labels) else None
+        node_colors = [hi if n in self.path else p[0] for n in nodes]
+        self._draw_graph(nodes, pos, i, j, directed, 'degree', True,
+                         widths=np.where(on, 4.0, 1.0), colors=[hi if o else faded for o in on],
+                         edge_text=text, node_colors=node_colors)
+        self.ax.plot([], [], color=hi, lw=4, label=f'Plus court chemin : {self.path_length:g}')
+        self.ax.legend(loc='best')
+        return self
+
+    def spanning_tree(self, source: str, target: str, weight: Optional[str] = None,
+                      layout: Union[str, Dict] = 'spring', edge_labels: bool = True,
+                      color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Minimum spanning tree: the cheapest set of links connecting all nodes (network
+            design: pipes, cables, tracks). Tree links bold, others dashed. Tree in
+            `chart.tree`, total weight in `chart.tree_weight`.
+        FR: Arbre couvrant minimal : l'ensemble de liens le moins coûteux qui relie tous les
+            nœuds (conception de réseaux : canalisations, câbles, pistes). Liens de l'arbre en
+            gras, autres en pointillés. Arbre dans `chart.tree`, poids total dans `chart.tree_weight`.
+
+        Example / Exemple:
+            chart.spanning_tree('de', 'vers', weight='cout')
+        """
+        from . import graph as g
+        self.chart_type = 'spanning_tree'
+        self.tree, self.tree_weight = g.spanning_tree(self.data, source, target, weight)
+        nodes, i, j, pos = self._graph_frame(source, target, weight, layout)
+        hi = color or self._palette()[1 % len(self._palette())]
+        links = set(zip(self.tree[source], self.tree[target]))
+        on = [(nodes[a], nodes[b]) in links or (nodes[b], nodes[a]) in links for a, b in zip(i, j)]
+        ink = plt.rcParams['axes.labelcolor']
+        text = [self._fmt(v) for v in self.data[weight]] if (weight and edge_labels) else None
+        self._draw_graph(nodes, pos, i, j, False, 'degree', True,
+                         widths=np.where(on, 3.5, 1.0), colors=[hi if o else ink for o in on],
+                         styles=['-' if o else ':' for o in on], edge_text=text)
+        self.ax.plot([], [], color=hi, lw=3.5, label=f'Arbre couvrant : {self.tree_weight:g}')
+        self.ax.plot([], [], color=ink, lw=1, ls=':', label='Liens non retenus')
+        self.ax.legend(loc='best')
+        return self
+
+    def max_flow(self, source: str, target: str, capacity: str, start, end,
+                 layout: Union[str, Dict] = 'spring', max_width: float = 7.0,
+                 color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Maximum flow from `start` to `end` in a directed network with capacities (water,
+            traffic, supply). Arrow width ∝ flow, label flow/capacity; saturated links (flow =
+            capacity, the bottlenecks) in the accent color. Value in `chart.flow_value`,
+            flows per link in `chart.flow`.
+        FR: Flot maximal de `start` vers `end` dans un réseau orienté à capacités (eau, trafic,
+            approvisionnement). Épaisseur ∝ flux, étiquette flux/capacité ; liens saturés
+            (flux = capacité, les goulots d'étranglement) en couleur d'accent. Valeur dans
+            `chart.flow_value`, flux par lien dans `chart.flow`.
+
+        Example / Exemple:
+            chart.max_flow('de', 'vers', 'capacite', 'Forage', 'Village')
+        """
+        from . import graph as g
+        self.chart_type = 'max_flow'
+        self.flow_value, self.flow = g.max_flow(self.data, source, target, capacity, start, end)
+        nodes, i, j, pos = self._graph_frame(source, target, capacity, layout)
+        p = self._palette()
+        hi = color or p[1 % len(p)]
+        f, c = self.flow['flux'].to_numpy(float), self.data[capacity].to_numpy(float)
+        ink = plt.rcParams['axes.labelcolor']
+        full = np.isclose(f, c) & (f > 0)
+        colors = [hi if s else (p[0] if v > 0 else mcolors.to_hex(mcolors.to_rgba(ink, .35), keep_alpha=True))
+                  for s, v in zip(full, f)]
+        self._draw_graph(nodes, pos, i, j, True, 'degree', True,
+                         widths=0.8 + (max_width - 0.8) * f / max(f.max(), 1e-12), colors=colors,
+                         edge_text=[f'{self._fmt(a)}/{self._fmt(b)}' for a, b in zip(np.round(f, 3), c)],
+                         node_colors=[hi if n in (start, end) else p[0] for n in nodes])
+        self.ax.plot([], [], color=p[0], lw=3, label='Flux (flux/capacité)')
+        self.ax.plot([], [], color=hi, lw=3, label='Lien saturé')
+        self.ax.set_title(f'Flot maximal : {self.flow_value:g}', loc='right', fontsize=9)
+        self.ax.legend(loc='best')
+        return self
+
+    def critical_path(self, task: str, duration: str, predecessors: str,
+                      show_float: bool = True, color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Critical path (CPM / PERT) as a Gantt chart: each task from its earliest start,
+            total float hatched up to its latest finish, critical tasks (zero float) in the
+            accent color, dependency arrows. Schedule in `chart.schedule`, duration in
+            `chart.project_duration`.
+        FR: Chemin critique (CPM / PERT) en diagramme de Gantt : chaque tâche à sa date de
+            début au plus tôt, marge totale hachurée jusqu'à sa fin au plus tard, tâches
+            critiques (marge nulle) en couleur d'accent, flèches de dépendance. Planning dans
+            `chart.schedule`, durée dans `chart.project_duration`.
+
+        Example / Exemple:
+            chart.critical_path('tache', 'duree', 'avant')
+        """
+        from . import graph as g
+        self.chart_type = 'critical_path'
+        self.schedule, self.project_duration = g.critical_path(self.data, task, duration, predecessors)
+        s = self.schedule
+        p = self._palette()
+        hi = color or p[1 % len(p)]
+        ink = plt.rcParams['axes.labelcolor']
+        y = {n: k for k, n in enumerate(s.index)}
+        self.ax.barh(list(y.values()), s['duree'], left=s['debut_tot'], height=0.55,
+                     color=[hi if c else p[0] for c in s['critique']], zorder=2)
+        if show_float:
+            m = s[s['marge'] > 1e-9]
+            self.ax.barh([y[n] for n in m.index], m['marge'], left=m['fin_tot'], height=0.55,
+                         facecolor='none', edgecolor=ink, hatch='///', lw=0.6, zorder=2)
+        for n, row in s.iterrows():  # dépendance : flèche verticale depuis la fin du prédécesseur
+            for q in row['predecesseurs']:
+                xq, sign = s.at[q, 'fin_tot'], np.sign(y[n] - y[q])
+                self.ax.annotate('', xy=(xq, y[n] - 0.3 * sign), xytext=(xq, y[q] + 0.3 * sign),
+                                 zorder=1, arrowprops=dict(arrowstyle='-|>', color=ink, lw=0.7,
+                                                           alpha=0.6, shrinkA=0, shrinkB=0))
+                if row['debut_tot'] > xq + 1e-9:     # attente avant le début de la tâche
+                    self.ax.plot([xq, row['debut_tot']], [y[n] - 0.3 * sign] * 2, color=ink,
+                                 lw=0.7, ls=':', alpha=0.6, zorder=1)
+        self.ax.set_yticks(list(y.values()), list(y))
+        self.ax.invert_yaxis()
+        self.ax.axvline(self.project_duration, color=ink, ls='--', lw=0.8)
+        self.ax.set_xlabel(f'Temps ({duration})')
+        self.ax.grid(False, axis='y')
+        handles = [plt.Rectangle((0, 0), 1, 1, color=hi, label='Tâche critique'),
+                   plt.Rectangle((0, 0), 1, 1, color=p[0], label='Tâche non critique')]
+        if show_float:
+            handles.append(plt.Rectangle((0, 0), 1, 1, facecolor='none', edgecolor=ink,
+                                         hatch='///', label='Marge totale'))
+        self.ax.legend(handles=handles, loc='lower center', bbox_to_anchor=(0.5, 1.0),
+                       ncol=3, frameon=False)
+        self.ax.set_xlim(0, self.project_duration * 1.04)
+        return self
+
+    def tsp_route(self, x: str, y: str, labels: Optional[str] = None, start=None,
+                  closed: bool = True, color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Traveling salesman tour: shortest round trip visiting every point once (nearest
+            neighbour + 2-opt heuristic, Euclidean distance). Visit numbers on the points.
+            Order in `chart.tour` (labels or row indices), length in `chart.tour_length`;
+            column `ordre` added to `chart.tour_table` (usable with route_map).
+        FR: Tournée du voyageur de commerce : le plus court circuit passant une fois par
+            chaque point (heuristique plus proche voisin + 2-opt, distance euclidienne).
+            Numéros de passage sur les points. Ordre dans `chart.tour` (étiquettes ou indices),
+            longueur dans `chart.tour_length` ; colonne `ordre` dans `chart.tour_table`
+            (réutilisable avec route_map).
+
+        Example / Exemple:
+            chart.tsp_route('x', 'y', labels='client', start='Dépôt')
+        """
+        from . import graph as g
+        self.chart_type = 'tsp_route'
+        d = self.data.reset_index(drop=True)
+        names = d[labels].tolist() if labels else list(d.index)
+        s0 = names.index(start) if start is not None else 0
+        order, self.tour_length = g.tsp(d[[x, y]].to_numpy(float), s0, closed)
+        self.tour = [names[k] for k in order]
+        self.tour_table = d.iloc[order].assign(ordre=range(1, len(order) + 1))
+        p = self._palette()
+        c = color or p[0]
+        pts = d[[x, y]].to_numpy(float)[order + ([order[0]] if closed else [])]
+        for (xa, ya), (xb, yb) in zip(pts, pts[1:]):
+            self.ax.annotate('', xy=(xb, yb), xytext=(xa, ya), zorder=1,
+                             arrowprops=dict(arrowstyle='-|>', color=c, lw=1.8,
+                                             shrinkA=7, shrinkB=7, mutation_scale=12))
+        self.ax.scatter(d[x], d[y], s=60, color=c, zorder=2,
+                        edgecolors=plt.rcParams['axes.facecolor'])
+        self.ax.scatter(*pts[0], s=160, marker='s', color=p[1 % len(p)], zorder=3, label='Départ')
+        for rank, k in enumerate(order, 1):
+            txt = f'{rank}. {names[k]}' if labels else str(rank)
+            self.ax.annotate(txt, (d.at[k, x], d.at[k, y]), xytext=(6, 6), textcoords='offset points',
+                             fontsize=8, path_effects=self._halo(), zorder=4)
+        self.ax.plot([], [], color=c, lw=1.8, label=f'Tournée : {self.tour_length:.4g}')
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.ax.legend(loc='best')
+        return self
+
+    def arc_diagram(self, source: str, target: str, weight: Optional[str] = None,
+                    order: Optional[List] = None, max_width: float = 8.0,
+                    labels: bool = True) -> 'Chart':
+        """
+        EN: Arc diagram: nodes aligned on a line, one arc per link, width ∝ `weight`. Links
+            going right are drawn above, links going left below — the direction of movements
+            (migrations, transfers between sites) reads at a glance. `order`: node order.
+        FR: Diagramme en arcs : nœuds alignés sur une ligne, un arc par lien, épaisseur ∝
+            `weight`. Les liens vers la droite passent au-dessus, ceux vers la gauche en
+            dessous — le sens des mouvements (migrations, transferts entre sites) se lit d'un
+            coup d'œil. `order` : ordre des nœuds.
+
+        Example / Exemple:
+            chart.arc_diagram('depart', 'arrivee', weight='effectif')
+        """
+        from matplotlib.patches import Arc
+        from . import graph as g
+        self.chart_type = 'arc_diagram'
+        nodes, i, j = g._index(self.data, source, target)
+        if order is not None:
+            missing = set(nodes) - set(order)
+            if missing:
+                raise ValueError(f'order ne contient pas : {sorted(map(str, missing))}')
+            nodes = [n for n in order if n in set(nodes)]
+            idx = {n: k for k, n in enumerate(nodes)}
+            i = self.data[source].map(idx).to_numpy()
+            j = self.data[target].map(idx).to_numpy()
+        w = self.data[weight].to_numpy(float) if weight else np.ones(len(i))
+        widths = 0.8 + (max_width - 0.8) * w / w.max()
+        p = self._palette()
+        top = 0.0
+        for a, b, lw in zip(i, j, widths):
+            span = abs(b - a)
+            up = b > a
+            self.ax.add_patch(Arc(((a + b) / 2, 0), span, span, theta1=0 if up else 180,
+                                  theta2=180 if up else 360, lw=lw, alpha=0.7,
+                                  color=p[0] if up else p[1 % len(p)]))
+            top = max(top, span / 2)
+        deg = np.bincount(np.concatenate([i, j]), minlength=len(nodes))
+        self.ax.scatter(range(len(nodes)), np.zeros(len(nodes)), s=40 + 160 * deg / deg.max(),
+                        color=plt.rcParams['axes.labelcolor'], zorder=3)
+        if labels:
+            for k, n in enumerate(nodes):
+                self.ax.annotate(str(n), (k, 0), xytext=(0, -9), textcoords='offset points',
+                                 ha='center', va='top', fontsize=8, path_effects=self._halo(),
+                                 zorder=4)
+        self.ax.set_xlim(-0.7, len(nodes) - 0.3)
+        self.ax.set_ylim(-top * 1.1 - 0.5, top * 1.1 + 0.5)
+        self.ax.set_aspect('equal')
+        self.ax.set_axis_off()
+        self.ax.plot([], [], color=p[0], lw=3, label='Vers la droite (au-dessus)')
+        self.ax.plot([], [], color=p[1 % len(p)], lw=3, label='Vers la gauche (en dessous)')
+        self.ax.legend(loc='upper left', frameon=False)
+        return self
+
     # ──────────────────────────────────────── Map / Cartes
 
     def _halo(self):
@@ -4037,6 +4748,414 @@ class Chart:
             self._basemap(crs=geo['crs'], source=basemap_source or geo.get('source'),
                           ax=ins, attribution=False)
         self.inset_ax = ins
+        return self
+
+    # ──────────────────────────────────────── Ecology / Écologie
+    # Calculs dans plutovizu.ecology (GLM, lissage, ordination, diversité) ; ici le tracé.
+
+    @staticmethod
+    def _plain_log_axis(axis) -> None:
+        """Axe logarithmique en nombres simples (0.5, 1, 2, 5, 10…) au lieu de 5×10⁻¹."""
+        axis.set_major_locator(matplotlib.ticker.LogLocator(base=10, subs=(1.0, 2.0, 5.0)))
+        axis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{v:g}'))
+        axis.set_minor_formatter(matplotlib.ticker.NullFormatter())
+
+    def glm_curve(self, x: str, y: str, family: str = 'binomial', degree: int = 1,
+                  ci: bool = True, jitter: float = 0.03, color: Optional[str] = None,
+                  show_stats: bool = True) -> 'Chart':
+        """
+        EN: GLM response curve with its 95 % confidence band: 'binomial' (presence /
+            absence → sigmoid probability) or 'poisson' (counts). degree=2 fits a bell-shaped
+            (unimodal) response and marks its optimum. Results in self.glm.
+        FR: Courbe de réponse d'un GLM avec sa bande de confiance à 95 % : 'binomial'
+            (présence / absence → probabilité en sigmoïde) ou 'poisson' (comptages).
+            degree=2 ajuste une réponse en cloche (unimodale) et marque son optimum.
+            Résultats dans self.glm.
+
+        Example / Exemple:
+            chart.glm_curve('nitrates', 'presence')                    # régression logistique
+            chart.glm_curve('ph', 'presence', degree=2)                # niche : optimum de pH
+            chart.glm_curve('conductivite', 'abondance', family='poisson')
+        """
+        from .ecology import _inv_link, glm_fit
+        self.chart_type = 'glm_curve'
+        d = self.data[[x, y]].dropna()
+        xv, yv = d[x].to_numpy(float), d[y].to_numpy(float)
+        m, s = xv.mean(), xv.std() or 1.0
+        design = lambda v: np.vander((np.asarray(v, float) - m) / s, degree + 1, increasing=True)  # noqa: E731
+        fit = glm_fit(design(xv), yv, family)
+        c = color or self._palette()[0]
+        jit = np.random.default_rng(0).uniform(-jitter, jitter, len(yv)) if family == 'binomial' else 0
+        self.ax.scatter(xv, yv + jit, s=18, color=plt.rcParams['text.color'], alpha=0.35,
+                        linewidth=0, label='Observations')
+        xs = np.linspace(xv.min(), xv.max(), 300)
+        G = design(xs)
+        eta = G @ fit['coefs']
+        self.ax.plot(xs, _inv_link(eta, family), color=c, linewidth=2.4, label='Modèle')
+        if ci:
+            se = np.sqrt(np.einsum('ij,jk,ik->i', G, fit['cov'], G))
+            self.ax.fill_between(xs, _inv_link(eta - 1.96 * se, family),
+                                 _inv_link(eta + 1.96 * se, family), color=c, alpha=0.2,
+                                 linewidth=0, label='IC 95 %')
+        fit['optimum'] = None
+        if degree == 2 and fit['coefs'][2] < 0:
+            opt = m + s * (-fit['coefs'][1] / (2 * fit['coefs'][2]))
+            if xv.min() <= opt <= xv.max():
+                fit['optimum'] = float(opt)
+                self.ax.axvline(opt, color=c, linestyle='--', linewidth=1)
+                self.ax.annotate(f'Optimum ≈ {opt:.3g}', (opt, 0.86),
+                                 xycoords=('data', 'axes fraction'), xytext=(5, 0),
+                                 textcoords='offset points', fontsize=8.5, color=c,
+                                 path_effects=self._halo())
+        if degree == 1:   # coefficients sur l'échelle d'origine de x
+            fit['coefs_original'] = np.array([fit['coefs'][0] - fit['coefs'][1] * m / s,
+                                              fit['coefs'][1] / s])
+        if show_stats:
+            self.ax.text(0.02, 0.97, f"D² = {fit['d2']:.2f}   p = {fit['p_value']:.2g}\n"
+                         f"AIC = {fit['aic']:.1f}   n = {fit['n']}", transform=self.ax.transAxes,
+                         va='top', fontsize=8.5, bbox=dict(boxstyle='round,pad=0.35',
+                         fc=plt.rcParams['axes.facecolor'], ec=plt.rcParams['grid.color'], alpha=0.9))
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(f'Probabilité de {y}' if family == 'binomial' else y)
+        self.ax.legend(loc='center right' if family == 'binomial' else 'upper left', fontsize=8)
+        self.glm = fit
+        return self
+
+    def response_curve(self, x: str, y: str, frac: float = 0.5, ci: bool = True,
+                       n_boot: int = 200, color: Optional[str] = None,
+                       show_optimum: bool = True, random_state: int = 0) -> 'Chart':
+        """
+        EN: Smoothed response of a species (or any variable) along a gradient — local
+            regression (LOWESS, GAM-like) with a bootstrap 95 % band; the ecological
+            optimum (maximum of the curve) is marked. Results in self.response.
+        FR: Réponse lissée d'une espèce (ou de toute variable) le long d'un gradient —
+            régression locale (LOWESS, dans l'esprit d'un GAM) avec bande à 95 % par
+            bootstrap ; l'optimum écologique (maximum de la courbe) est marqué.
+            Résultats dans self.response.
+
+        Args / Paramètres:
+            frac (float): EN/FR: Part des points utilisée pour chaque estimation locale
+                (plus grand = plus lisse). Défaut 0.5.
+
+        Example / Exemple:
+            chart.response_curve('altitude', 'abondance')
+        """
+        from .ecology import lowess
+        self.chart_type = 'response_curve'
+        d = self.data[[x, y]].dropna()
+        xv, yv = d[x].to_numpy(float), d[y].to_numpy(float)
+        xs = np.linspace(xv.min(), xv.max(), 200)
+        smooth = lowess(xv, yv, xs, frac)
+        c = color or self._palette()[0]
+        self.ax.scatter(xv, yv, s=18, color=plt.rcParams['text.color'], alpha=0.35, linewidth=0)
+        if ci:
+            rng = np.random.default_rng(random_state)
+            boots = np.array([lowess(xv[i], yv[i], xs, frac)
+                              for i in (rng.integers(0, len(xv), len(xv)) for _ in range(n_boot))])
+            lo, hi = np.nanpercentile(boots, [2.5, 97.5], axis=0)
+            self.ax.fill_between(xs, lo, hi, color=c, alpha=0.2, linewidth=0, label='IC 95 % (bootstrap)')
+        self.ax.plot(xs, smooth, color=c, linewidth=2.4, label='Réponse lissée')
+        opt = float(xs[np.argmax(smooth)])
+        if show_optimum:
+            self.ax.axvline(opt, color=c, linestyle='--', linewidth=1)
+            self.ax.annotate(f'Optimum ≈ {opt:.3g}', (opt, smooth.max()), xytext=(6, 6),
+                             textcoords='offset points', fontsize=8, color=c)
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.ax.legend(fontsize=8)
+        self.response = {'x': xs, 'smooth': smooth, 'optimum': opt, 'max': float(smooth.max())}
+        return self
+
+    def count_distribution(self, column: str, max_count: Optional[int] = None,
+                           color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Observed count frequencies against those expected under a Poisson law and a
+            negative binomial law (method of moments): reveals excess zeros and
+            overdispersion (variance > mean). Statistics in self.count_stats.
+        FR: Fréquences des comptages observés face à celles attendues sous une loi de
+            Poisson et une loi binomiale négative (méthode des moments) : révèle l'excès de
+            zéros et la surdispersion (variance > moyenne). Statistiques dans self.count_stats.
+
+        Example / Exemple:
+            chart.count_distribution('nb_individus')
+        """
+        from scipy import stats
+        self.chart_type = 'count_distribution'
+        v = self.data[column].dropna().to_numpy()
+        if (v < 0).any() or not np.allclose(v, np.round(v)):
+            raise ValueError("count_distribution attend des comptages entiers positifs ou nuls")
+        v = v.astype(int)
+        mean, var = v.mean(), v.var(ddof=1)
+        top = max_count if max_count is not None else int(np.percentile(v, 99)) + 1
+        k = np.arange(top + 1)
+        observed = np.array([(v == i).sum() for i in k]) / len(v)
+        poisson = stats.poisson.pmf(k, mean)
+        palette = self._palette()
+        self.ax.bar(k, observed, color=color or palette[0], alpha=0.75, label='Observé')
+        self.ax.plot(k, poisson, 'o-', color=palette[1 % len(palette)], markersize=4,
+                     label=f'Poisson (moyenne {mean:.2g})')
+        negbin = None
+        if var > mean:
+            r_, p_ = mean ** 2 / (var - mean), mean / var
+            negbin = stats.nbinom.pmf(k, r_, p_)
+            self.ax.plot(k, negbin, 's--', color=palette[2 % len(palette)], markersize=4,
+                         label='Binomiale négative')
+        self.ax.set_xlabel(column)
+        self.ax.set_ylabel('Fréquence')
+        self.ax.legend(fontsize=8)
+        self.count_stats = {'moyenne': float(mean), 'variance': float(var),
+                            'dispersion': float(var / mean) if mean > 0 else np.nan,
+                            'zeros_observes': float(observed[0]),
+                            'zeros_poisson': float(poisson[0]),
+                            'zeros_binneg': float(negbin[0]) if negbin is not None else None}
+        st = self.count_stats
+        self.ax.text(0.98, 0.97, f"Variance / moyenne = {st['dispersion']:.2f}\n"
+                     f"Zéros : {st['zeros_observes']:.0%} observés, {st['zeros_poisson']:.0%} attendus (Poisson)",
+                     transform=self.ax.transAxes, ha='right', va='top', fontsize=8.5,
+                     bbox=dict(boxstyle='round,pad=0.35', fc=plt.rcParams['axes.facecolor'],
+                               ec=plt.rcParams['grid.color'], alpha=0.9))
+        return self
+
+    def forest_plot(self, label: str, estimate: str, lower: Optional[str] = None,
+                    upper: Optional[str] = None, se: Optional[str] = None,
+                    group: Optional[str] = None, ref: float = 0.0, log: bool = False,
+                    sort: bool = False) -> 'Chart':
+        """
+        EN: Forest plot of estimates with their intervals (model coefficients, random
+            effects "caterpillar", odds ratios, Bayesian credible intervals…). Give lower and
+            upper, or se (95 % interval = estimate ± 1.96 se). Intervals that exclude `ref`
+            are highlighted. log=True for ratios (ref=1).
+        FR: Forest plot d'estimations avec leurs intervalles (coefficients d'un modèle,
+            effets aléatoires en « chenille », odds ratios, intervalles crédibles bayésiens…).
+            Donner lower et upper, ou se (intervalle à 95 % = estimation ± 1,96 se). Les
+            intervalles qui excluent `ref` sont mis en évidence. log=True pour des rapports (ref=1).
+
+        Example / Exemple:
+            chart.forest_plot('variable', 'odds_ratio', 'ic_bas', 'ic_haut', ref=1, log=True)
+        """
+        self.chart_type = 'forest_plot'
+        d = self.data.copy()
+        if lower is None or upper is None:
+            if se is None:
+                raise ValueError("Donner lower et upper, ou se")
+            d['_lo'], d['_hi'] = d[estimate] - 1.96 * d[se], d[estimate] + 1.96 * d[se]
+            lower, upper = '_lo', '_hi'
+        if sort:
+            d = d.sort_values(estimate)
+        d = d.iloc[::-1]                           # premier élément en haut
+        pos = np.arange(len(d))
+        significant = (d[lower] > ref) | (d[upper] < ref)
+        muted = mcolors.to_rgba(plt.rcParams['axes.labelcolor'], 0.55)
+        palette = self._palette()
+        if group:
+            levels = list(pd.unique(self.data[group]))
+            colors = [palette[levels.index(g) % len(palette)] for g in d[group]]
+        else:
+            colors = [palette[0] if s else muted for s in significant]
+        self.ax.hlines(pos, d[lower], d[upper], colors=colors, linewidth=2)
+        self.ax.scatter(d[estimate], pos, color=colors, s=45, zorder=3, edgecolor=plt.rcParams['axes.facecolor'])
+        self.ax.axvline(ref, color=plt.rcParams['axes.labelcolor'], linestyle='--', linewidth=1)
+        if log:
+            self.ax.set_xscale('log')
+            self._plain_log_axis(self.ax.xaxis)
+        self.ax.set_yticks(pos, d[label].astype(str).tolist())
+        self.ax.set_xlabel(estimate)
+        self.ax.grid(False, axis='y')
+        if group:
+            self.ax.legend([plt.Line2D([], [], color=palette[i % len(palette)], marker='o', linewidth=2)
+                            for i in range(len(levels))], levels, title=group, fontsize=8)
+        self.forest_table = d.iloc[::-1].assign(significatif=significant.iloc[::-1].to_numpy())
+        return self
+
+    def ordination(self, species: List[str], env: Optional[List[str]] = None, method: str = 'ca',
+                   labels: Optional[str] = None, group: Optional[str] = None,
+                   show_species: bool = True, axes: Tuple[int, int] = (1, 2),
+                   scale: bool = False) -> 'Chart':
+        """
+        EN: Community ordination triplot: sites (points), species (+) and environmental
+            variables (arrows). 'ca' (correspondence analysis), 'cca' (canonical
+            correspondence, unimodal responses), 'pca', 'rda' (redundancy, linear
+            responses). Axis labels give the % of total inertia. Results in self.ord.
+        FR: Triplot d'ordination de communautés : sites (points), espèces (+) et variables
+            environnementales (flèches). 'ca' (AFC), 'cca' (analyse canonique des
+            correspondances, réponses unimodales), 'pca', 'rda' (analyse de redondance,
+            réponses linéaires). Les axes indiquent le % d'inertie totale. Résultats dans self.ord.
+
+        Args / Paramètres:
+            species (List[str]): EN/FR: Colonnes d'abondance (une par espèce, une ligne par site).
+            env (List[str], optional): EN/FR: Variables environnementales (obligatoires pour cca, rda).
+            labels / group (str, optional): EN/FR: Nom des sites / groupe (couleurs).
+            scale (bool): EN/FR: pca/rda : centre-réduit les espèces. Défaut False.
+
+        Example / Exemple:
+            chart.ordination(especes, env=['humidite', 'ph'], method='cca', group='zone')
+        """
+        from .ecology import ordinate
+        self.chart_type = 'ordination'
+        res = ordinate(self.data[species].to_numpy(float),
+                       self.data[env].to_numpy(float) if env else None, method, scale)
+        a, b = axes[0] - 1, axes[1] - 1
+        if res['sites'].shape[1] <= b:
+            raise ValueError("Pas assez d'axes : ajouter des variables (env) ou des espèces")
+        S = res['sites'][:, [a, b]]
+        palette = self._palette()
+        edge = plt.rcParams['axes.facecolor']
+        if group:
+            for (name, idx), c in zip(self.data.groupby(group, sort=False).groups.items(), palette * 10):
+                pos = self.data.index.get_indexer(idx)
+                self.ax.scatter(S[pos, 0], S[pos, 1], s=40, color=c, edgecolor=edge, label=name, zorder=3)
+            self.ax.legend(title=group, fontsize=8)
+        else:
+            self.ax.scatter(S[:, 0], S[:, 1], s=40, color=palette[0], edgecolor=edge, zorder=3)
+        if labels:
+            for (xx, yy), t in zip(S, self.data[labels]):
+                self.ax.annotate(str(t), (xx, yy), xytext=(3, 3), textcoords='offset points', fontsize=7,
+                                 color=plt.rcParams['axes.labelcolor'])
+        reach = np.abs(S).max() or 1
+        if show_species:
+            sp = res['species'][:, [a, b]]
+            sp = sp * (0.9 * reach / (np.abs(sp).max() or 1))
+            col = palette[1 % len(palette)]
+            self.ax.scatter(sp[:, 0], sp[:, 1], marker='+', s=60, color=col, zorder=4)
+            for (xx, yy), t in zip(sp, species):
+                self.ax.annotate(t, (xx, yy), xytext=(3, -3), textcoords='offset points',
+                                 fontsize=7.5, fontstyle='italic', color=col, va='top', zorder=4)
+        if res['env'] is not None:
+            ev = res['env'][:, [a, b]] * 0.95 * reach
+            ink = plt.rcParams['text.color']
+            for (xx, yy), t in zip(ev, env):
+                self.ax.annotate('', xy=(xx, yy), xytext=(0, 0),
+                                 arrowprops=dict(arrowstyle='->', color=ink, lw=1.4), zorder=5)
+                self.ax.annotate(t, (xx * 1.08, yy * 1.08), ha='center', va='center', fontsize=8.5,
+                                 fontweight='bold', color=ink, path_effects=self._halo(), zorder=5)
+        for line in (self.ax.axhline, self.ax.axvline):
+            line(0, color=plt.rcParams['grid.color'], linewidth=1, zorder=0)
+        name = method.upper()
+        ex = res['explained']
+        self.ax.set_xlabel(f'{name}{axes[0]} ({ex[a]:.1%})')
+        self.ax.set_ylabel(f'{name}{axes[1]} ({ex[b]:.1%})')
+        if method in ('cca', 'rda'):
+            self.ax.text(0.02, 0.02, f"Inertie contrainte : {res['constrained']:.1%}",
+                         transform=self.ax.transAxes, fontsize=8.5, va='bottom',
+                         color=plt.rcParams['text.color'])
+        self.ax.margins(0.12)
+        self.ord = res
+        return self
+
+    def rank_abundance(self, species: List[str], labels: Optional[str] = None,
+                       pooled: bool = False, log: bool = True, marker: str = 'o') -> 'Chart':
+        """
+        EN: Rank-abundance (Whittaker) curve: relative abundance of each species against its
+            rank, one curve per site (or all sites pooled). A steep curve = a few dominant
+            species; a flat curve = an even community.
+        FR: Courbe rang-abondance (diagramme de Whittaker) : abondance relative de chaque
+            espèce selon son rang, une courbe par site (ou sites regroupés). Courbe raide =
+            quelques espèces dominantes ; courbe plate = communauté équilibrée.
+
+        Example / Exemple:
+            chart.rank_abundance(especes, labels='site')
+        """
+        self.chart_type = 'rank_abundance'
+        A = self.data[species]
+        rows = [('Tous les sites', A.sum())] if pooled else \
+            [((self.data[labels].iloc[i] if labels else A.index[i]), A.iloc[i]) for i in range(len(A))]
+        for (name, ab), c in zip(rows, self._palette() * 10):
+            ab = ab[ab > 0].sort_values(ascending=False)
+            rel = 100 * ab / ab.sum()
+            self.ax.plot(np.arange(1, len(rel) + 1), rel.to_numpy(), marker=marker, markersize=4,
+                         color=c, label=str(name))
+        if log:
+            self.ax.set_yscale('log')
+            self._plain_log_axis(self.ax.yaxis)
+        self.ax.set_xlabel("Rang de l'espèce")
+        self.ax.set_ylabel('Abondance relative (%)')
+        if len(rows) <= 12:
+            self.ax.legend(fontsize=8)
+        return self
+
+    def accumulation(self, species: List[str], kind: str = 'sites', labels: Optional[str] = None,
+                     n_perm: int = 100, color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Species accumulation: kind='sites' — richness as sites are added (random order,
+            mean ± sd over permutations) with the Chao2 estimate of total richness;
+            kind='individuals' — rarefaction curve of each site (expected richness for n
+            individuals). A curve reaching a plateau means sampling is sufficient.
+        FR: Accumulation des espèces : kind='sites' — richesse quand on ajoute des sites (ordre
+            aléatoire, moyenne ± écart-type sur des permutations) avec l'estimateur Chao2 de la
+            richesse totale ; kind='individuals' — courbe de raréfaction de chaque site
+            (richesse attendue pour n individus). Un plateau = échantillonnage suffisant.
+
+        Example / Exemple:
+            chart.accumulation(especes)                              # effort d'échantillonnage
+            chart.accumulation(especes, kind='individuals', labels='site')
+        """
+        from .ecology import accumulation as accumulate, rarefaction
+        self.chart_type = 'accumulation'
+        A = self.data[species]
+        palette = self._palette()
+        if kind == 'sites':
+            mean, sd, info = accumulate(A.to_numpy(), n_perm=n_perm)
+            n = np.arange(1, len(mean) + 1)
+            c = color or palette[0]
+            self.ax.fill_between(n, mean - sd, mean + sd, color=c, alpha=0.2, linewidth=0, label='± écart-type')
+            self.ax.plot(n, mean, color=c, marker='o', markersize=4, label='Richesse cumulée')
+            self.ax.axhline(info['chao2'], color=plt.rcParams['axes.labelcolor'], linestyle='--', linewidth=1,
+                            label=f"Chao2 ≈ {info['chao2']:.1f} espèces")
+            self.ax.set_xlabel('Nombre de sites')
+            self.accumulation_stats = info
+        elif kind == 'individuals':
+            for i, c in zip(range(len(A)), palette * 10):
+                counts = A.iloc[i].to_numpy(float)
+                N = int(counts.sum())
+                sizes = np.unique(np.linspace(1, N, min(N, 60)).astype(int))
+                self.ax.plot(sizes, rarefaction(counts, sizes), color=c,
+                             label=str(self.data[labels].iloc[i] if labels else A.index[i]))
+            self.ax.set_xlabel("Nombre d'individus")
+        else:
+            raise ValueError("kind doit valoir 'sites' ou 'individuals'")
+        self.ax.set_ylabel("Nombre d'espèces")
+        if kind == 'sites' or len(A) <= 12:
+            self.ax.legend(fontsize=8)
+        return self
+
+    def diversity(self, species: List[str], index: str = 'shannon', labels: Optional[str] = None,
+                  group: Optional[str] = None, letters: bool = False,
+                  color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Diversity index per site — 'richesse', 'shannon', 'simpson', 'inv_simpson' or
+            'pielou' — as bars; with group, mean ± SE per group (Tukey letters optional).
+            All indices for all sites in self.diversity_table.
+        FR: Indice de diversité par site — 'richesse', 'shannon', 'simpson', 'inv_simpson' ou
+            'pielou' — en barres ; avec group, moyenne ± erreur type par groupe (lettres de
+            Tukey en option). Tous les indices de tous les sites dans self.diversity_table.
+
+        Example / Exemple:
+            chart.diversity(especes, index='shannon', group='zone', letters=True)
+        """
+        from .ecology import diversity_indices
+        self.chart_type = 'diversity'
+        table = diversity_indices(self.data[species])
+        if index not in table.columns:
+            raise ValueError(f"index doit valoir {list(table.columns)}")
+        if labels:
+            table.insert(0, labels, self.data[labels].to_numpy())
+        if group:
+            table[group] = self.data[group].to_numpy()
+            original, self.data = self.data, table
+            try:
+                self.mean_bar(group, index, letters=letters)
+            finally:
+                self.data = original
+        else:
+            names = table[labels].astype(str) if labels else table.index.astype(str)
+            self.ax.bar(names, table[index], color=color or self._palette()[0], alpha=0.85)
+            self.ax.set_xlabel(labels or 'site')
+            self.ax.tick_params(axis='x', rotation=45)
+        nice = {'richesse': 'Richesse spécifique', 'shannon': "Indice de Shannon H'",
+                'simpson': 'Indice de Simpson (1 − D)', 'inv_simpson': 'Inverse de Simpson (1/D)',
+                'pielou': 'Équitabilité de Pielou J'}
+        self.ax.set_ylabel(nice[index])
+        self.diversity_table = table
         return self
 
     # ──────────────────────────────────────── Qualitative analysis / Analyse qualitative

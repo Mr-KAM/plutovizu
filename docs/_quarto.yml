@@ -46,7 +46,9 @@ website:
           - charts/3d.qmd
           - charts/sciences.qmd
           - charts/map.qmd
+          - charts/ecologie.qmd
           - charts/qualitatif.qmd
+          - charts/graphes.qmd
           - charts/seaborn.qmd
       - section: "Mise en forme"
         contents:

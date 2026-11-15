@@ -1,0 +1,137 @@
+# Fiches de la page « Composition »
+
+pie:
+  desc: "Camembert : chaque part est un secteur d'angle proportionnel à sa valeur."
+  usage: >-
+    Montrer la répartition d'un total en peu de parts (2 à 6). Au-delà, ou pour comparer
+    des valeurs proches, préférer des barres.
+  rows: une ligne par part
+  data:
+    - [segment, texte, "`labels` : nom de la part", "Entreprises"]
+    - [part, nombre, "`column` : taille de la part", "35"]
+  params:
+    column: Colonne des valeurs (tailles des parts).
+
+donut:
+  desc: >-
+    Anneau : un camembert évidé, avec un texte au centre ; avec `group`, deux anneaux
+    imbriqués (groupes à l'intérieur, éléments à l'extérieur).
+  usage: >-
+    Répartition d'un total avec un chiffre clé au centre, ou composition hiérarchique à deux
+    niveaux (famille de cultures → culture).
+  rows: une ligne par élément
+  data:
+    - [culture, texte, "`labels` : nom de l'élément", "Mil"]
+    - [surface, nombre, "`values` : taille", "420"]
+    - [famille, texte, "`group` (optionnel) : anneau intérieur", "Céréales"]
+  params:
+    values: Colonne des valeurs (taille de chaque secteur).
+    hole: Taille du trou central, en fraction du rayon (0 = camembert).
+    center_text: Texte écrit au centre de l'anneau (total, titre…).
+
+treemap:
+  desc: >-
+    Carte arborescente : des rectangles juxtaposés d'aire proportionnelle à la valeur
+    (paquet `squarify`).
+  usage: >-
+    Comparer les parts de nombreux éléments d'un total (budgets, surfaces, ventes) dans un
+    espace compact.
+  rows: une ligne par élément
+  data:
+    - [departement, texte, "`labels` : nom du rectangle", "R&D"]
+    - [budget, nombre, "`values` : aire du rectangle", "420"]
+
+circle_packing:
+  desc: >-
+    Cercles imbriqués (circlify) : un cercle par élément, d'aire proportionnelle à la
+    valeur, regroupés dans le cercle de leur groupe.
+  usage: >-
+    Composition hiérarchique (familles → cultures, régions → communes) quand l'aspect visuel
+    compte plus que la lecture précise des valeurs.
+  rows: une ligne par élément (feuille de la hiérarchie)
+  data:
+    - [culture, texte, "`labels` : nom du cercle", "Arachide"]
+    - [surface, nombre, "`values` : aire du cercle", "380"]
+    - [famille, texte, "`group` (optionnel) : cercle englobant", "Légumineuses"]
+  params:
+    values: Colonne des valeurs (aire de chaque cercle).
+    group: Colonne (ou liste de colonnes pour plusieurs niveaux) des groupes englobants.
+    show_labels: Écrit le nom des éléments dans les cercles.
+    min_label_radius: Rayon minimal (en fraction du cercle principal) pour écrire une étiquette.
+
+waterfall:
+  desc: >-
+    Cascade : chaque barre part du total cumulé précédent et monte (valeur positive) ou
+    descend (valeur négative).
+  usage: >-
+    Expliquer le passage d'une valeur de départ à une valeur finale : compte de résultat,
+    bilan d'une exploitation, décomposition d'un écart.
+  rows: une ligne par poste, dans l'ordre du cumul
+  data:
+    - [poste, texte, "`x` : libellé de l'étape", "Engrais"]
+    - [delta, nombre, "`y` : variation (+ ou −)", "-220"]
+
+ternary:
+  desc: >-
+    Diagramme ternaire : chaque point est une composition en trois parts de somme constante,
+    placée dans un triangle.
+  usage: >-
+    Compositions à trois composantes : texture du sol (sable / limon / argile), parts de
+    budget, composition chimique.
+  rows: une ligne par échantillon
+  data:
+    - [sable, nombre, "`a` : sommet bas gauche", "45"]
+    - [limon, nombre, "`b` : sommet bas droit", "35"]
+    - [argile, nombre, "`c` : sommet haut", "20"]
+    - [zone, texte, "`group` (optionnel)", "Plateau"]
+  params:
+    a: Colonne de la première composante (sommet en bas à gauche).
+    b: Colonne de la deuxième composante (sommet en bas à droite).
+    c: Colonne de la troisième composante (sommet en haut).
+    grid_step: Pas de la grille (en fraction) ; 0.1 = lignes tous les 10 %.
+    size: Taille des points.
+
+sankey:
+  desc: >-
+    Diagramme de Sankey (matplotlib) : un flux principal qui se divise en entrées et sorties
+    de largeur proportionnelle à leur valeur.
+  usage: >-
+    Bilans de flux simples : répartition d'une récolte (vente, stock, pertes), bilan
+    énergétique ou financier.
+  rows: une ligne par flux ; entrées positives, sorties négatives (la somme doit être nulle)
+  data:
+    - [flux, nombre, "`flows` : + entrée, − sortie", "-60"]
+    - [etiquette, texte, "`labels` : nom du flux", "Vente"]
+    - [direction, "entier (−1, 0, 1)", "`orientations` (optionnel) : 1 = vers le haut, −1 = vers le bas, 0 = horizontal", "0"]
+
+radial_bar:
+  desc: >-
+    Barres radiales : un arc concentrique par élément, dont la longueur représente la valeur
+    rapportée à un maximum (un tour complet).
+  usage: >-
+    Taux d'avancement ou d'atteinte d'objectifs de plusieurs indicateurs (en %), présentés
+    de façon compacte.
+  rows: une ligne par indicateur
+  data:
+    - [activite, texte, "`labels` : nom de l'arc", "Semis"]
+    - [pct, nombre, "`values` : valeur (sur max_value)", "85"]
+  params:
+    values: Colonne des valeurs.
+    max_value: Valeur correspondant à un tour complet (100 pour des pourcentages).
+    width: Épaisseur de chaque anneau.
+    gap: Espace entre les anneaux.
+
+progress_bar:
+  desc: >-
+    Barres de progression : une barre pleine sur un rail clair, une par indicateur.
+  usage: >-
+    Suivi d'avancement (tâches, budget consommé, objectifs) dans un tableau de bord ou un
+    rapport.
+  rows: une ligne par indicateur (ou un seul nombre)
+  data:
+    - [activite, texte, "`labels` : nom de la barre", "Récolte"]
+    - [pct, nombre, "`value` : avancement", "40"]
+  params:
+    value: Une colonne (une barre par ligne) ou un nombre (une seule barre).
+    total: Valeur correspondant à une barre pleine.
+    height: Épaisseur des barres.

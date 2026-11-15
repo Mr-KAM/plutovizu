@@ -254,14 +254,21 @@ chart.lollipop('year', 'n', 'status',
               temp_color: str = 'tab:red', precip_color: str = 'tab:blue',
               dry_period_color: str = 'red', dry_period_alpha: float = 0.2,
               show_threshold_line: bool = True,
-              temp_scale_factor: float = 2.0) -> Chart
+              temp_scale_factor: float = 2.0, kind: str = 'bars',
+              hatch: str = '///', humid_fill: bool = True) -> Chart
 ```
 
-Diagramme ombrothermique Walter-Lieth (convention **p = 2T**).
-Les zones où précipitations < `temp_scale_factor` × température sont surlignées comme périodes sèches.
+Diagramme ombrothermique de Bagnouls et Gaussen (convention **P = 2T**). Les périodes où
+précipitations < `temp_scale_factor` × température sont des périodes sèches.
+
+- `kind='bars'` (défaut) : barres de précipitations, périodes sèches surlignées.
+- `kind='lines'` : deux courbes, périodes sèches **hachurées** entre les courbes (`hatch`
+  règle le motif), période humide légèrement colorée (`humid_fill`). Mois secs :
+  `chart.dry_months`.
 
 ```python
 chart.ombrothermic('mois', 'Température (°C)', 'Précipitations (mm)')
+chart.ombrothermic('mois', 'Température (°C)', 'Précipitations (mm)', kind='lines')
 ```
 
 ### `print_ombrothermic_analysis`
@@ -728,6 +735,16 @@ Exemples dans la page [Climat & sols](charts/sciences.qmd). Les couleurs convent
 .climate_stripes(x, value, cmap='RdBu_r', show_years=True)
 .soil_profile(top, bottom, horizon, profile=None, color=None, width=0.6, show_labels=True)
 .depth_profile(depth, value, group=None, marker='o')
+.soil_properties(depth, columns, bottom=None, group=None, marker='o')  # → chart.axes
+.retention_curve(suction, water, group=None, unit='pF', fit=True,
+                 field_capacity=2.5, wilting_point=4.2)            # → chart.retention
+.grain_size_curve(diameter, passing, group=None, limits=(0.002, 0.05, 2.0),
+                  names=('Argile', 'Limon', 'Sable', 'Graviers'))  # → chart.grain_size
+.exchange_complex(horizon, cations, acidity=None, cec=None,
+                  show_saturation=True)                            # → chart.base_saturation
+.infiltration_curve(time, cumulative, model='philip', show_rate=True)
+                                                                   # → chart.infiltration, chart.ax2
+.isopleth(time, depth, value, levels=10, cmap=None, contour_labels=True)
 ```
 
 - `walter_lieth` : 10 °C ↔ 20 mm, pluies comprimées au 1/10 au-delà de 100 mm ;
@@ -735,6 +752,12 @@ Exemples dans la page [Climat & sols](charts/sciences.qmd). Les couleurs convent
 - `degree_days` : DJ = max(0, (min(Tmax, cap) + Tmin) / 2 − base) ; `stages` = {stade: DJ}.
 - `anomaly` : `baseline` = moyenne (défaut), nombre, ou période `(début, fin)` de `x`.
 - `wind_rose` : directions en degrés (0 = nord), vitesses regroupées selon `speed_bins`.
+- `retention_curve` : ajustement de van Genuchten θ(h) = θr + (θs − θr) / (1 + (αh)ⁿ)^(1−1/n)
+  (h en cm, scipy) ; `unit` = 'pF', 'kPa' ou 'cm' ; réserve utile = θ(pF 2,5) − θ(pF 4,2).
+- `grain_size_curve` : diamètres en mm ; Cu = D60/D10, Cc = D30²/(D10·D60).
+- `exchange_complex` : V = S/T, T = `cec` ou S + `acidity`.
+- `infiltration_curve` : `model='philip'` (I = S√t + At) ou `'horton'` ; vitesse finale = A ou fc.
+- `soil_properties` : avec `bottom`, `depth` est le haut de l'horizon (tracé en paliers).
 
 ---
 
@@ -780,6 +803,100 @@ Exemples dans la page [Map](charts/map.qmd). Option : `pip install plutovizu[map
 - Fond de carte : Esri World Gray Canvas (thème clair) ou World Imagery (thème sombre), sans
   clé d'API ; `basemap_source` accepte un nom (`'Esri.WorldTopoMap'`) ou un fournisseur
   xyzservices. Sans contextily ou sans réseau : avertissement, carte sans fond.
+
+---
+
+## Écologie
+
+Exemples dans la page [Écologie](charts/ecologie.qmd). Calculs utilisables sans graphique :
+`from plutovizu import glm_fit, ordinate, diversity_indices` (et `plutovizu.ecology`).
+
+```python
+.glm_curve(x, y, family='binomial', degree=1, ci=True, jitter=0.03, color=None,
+           show_stats=True)                                   # → chart.glm
+.response_curve(x, y, frac=0.5, ci=True, n_boot=200, color=None, show_optimum=True,
+                random_state=0)                               # → chart.response
+.count_distribution(column, max_count=None, color=None)      # → chart.count_stats
+.forest_plot(label, estimate, lower=None, upper=None, se=None, group=None, ref=0.0,
+             log=False, sort=False)                           # → chart.forest_table
+.ordination(species, env=None, method='ca', labels=None, group=None, show_species=True,
+            axes=(1, 2), scale=False)                         # → chart.ord
+.rank_abundance(species, labels=None, pooled=False, log=True, marker='o')
+.accumulation(species, kind='sites', labels=None, n_perm=100, color=None)
+                                                              # → chart.accumulation_stats
+.diversity(species, index='shannon', labels=None, group=None, letters=False, color=None)
+                                                              # → chart.diversity_table
+```
+
+- `glm_curve` : GLM à lien canonique (logit, log) ajusté par moindres carrés pondérés
+  itératifs ; `degree=2` → réponse en cloche et optimum. `chart.glm` : coefficients, erreurs
+  types, déviances, D², AIC, p-value (rapport de vraisemblance).
+- `response_curve` : LOWESS (noyau tricube), bande à 95 % par bootstrap, optimum.
+- `count_distribution` : lois de Poisson et binomiale négative (méthode des moments) de même
+  moyenne ; rapport variance / moyenne et part de zéros.
+- `forest_plot` : `lower`/`upper`, ou `se` (± 1,96 se) ; `log=True` et `ref=1` pour des
+  rapports.
+- `ordination` : `species` = colonnes d'abondance (une ligne par site), `env` = variables
+  environnementales (obligatoires pour `'cca'` et `'rda'`). Échelle symétrique ; les
+  espèces et les flèches sont remises à l'échelle des sites pour la lisibilité.
+- `accumulation` : `kind='sites'` (permutations, Chao2) ou `'individuals'` (raréfaction de
+  Hurlbert par site).
+- `diversity` : `index` parmi `'richesse'`, `'shannon'` (log népérien), `'simpson'`
+  (1 − Σp²), `'inv_simpson'`, `'pielou'`.
+
+### Fonctions de calcul (sans graphique)
+
+```python
+from plutovizu import glm_fit, ordinate, diversity_indices
+
+glm_fit(X, y, family='binomial')        # X avec colonne d'intercept → dict (coefs, se, d2, aic, p_value…)
+ordinate(Y, X=None, method='ca')        # 'ca', 'cca', 'pca', 'rda' → dict (eigenvalues, explained, sites…)
+diversity_indices(table)                # DataFrame sites × espèces → richesse, shannon, simpson…
+```
+
+Le module `plutovizu.ecology` contient aussi `lowess`, `rarefaction` et `accumulation`.
+
+---
+
+## Graphes & réseaux
+
+Exemples dans la page [Graphes & réseaux](charts/graphes.qmd). Données : une **liste
+d'arêtes** (une ligne par lien). Poids et capacités strictement positifs.
+
+```python
+.network(source, target, weight=None, directed=False, layout='spring',
+         node_size='degree', labels=True, edge_labels=False, max_width=6.0)  # → chart.graph
+.arc_diagram(source, target, weight=None, order=None, max_width=8.0, labels=True)
+.shortest_path(source, target, start, end, weight=None, directed=False,
+               layout='spring', edge_labels=True, color=None)     # → chart.path, path_length
+.spanning_tree(source, target, weight=None, layout='spring',
+               edge_labels=True, color=None)                      # → chart.tree, tree_weight
+.max_flow(source, target, capacity, start, end, layout='spring',
+          max_width=7.0, color=None)                              # → chart.flow, flow_value
+.critical_path(task, duration, predecessors, show_float=True,
+               color=None)                                        # → chart.schedule, project_duration
+.tsp_route(x, y, labels=None, start=None, closed=True, color=None)
+                                                                  # → chart.tour, tour_length, tour_table
+```
+
+- `layout` : `'spring'` (forces), `'circular'` ou un dictionnaire `{nœud: (x, y)}`
+  (coordonnées réelles).
+- `critical_path` : `predecessors` contient des textes `'A, B'` (ou `;`), des listes, ou
+  une valeur vide ; une dépendance circulaire lève une erreur.
+- `tsp_route` : heuristique plus proche voisin + 2-opt, distance euclidienne ; l'ordre
+  (`chart.tour_table`) se trace sur un fond de carte avec `route_map(order='ordre')`.
+
+### Fonctions de calcul (sans graphique)
+
+```python
+from plutovizu import shortest_path, spanning_tree, max_flow, critical_path, tsp
+
+chemin, longueur = shortest_path(aretes, 'de', 'vers', 'A', 'D', weight='km')
+arbre, cout = spanning_tree(aretes, 'de', 'vers', weight='km')
+valeur, flux = max_flow(aretes, 'de', 'vers', 'capacite', 'Source', 'Puits')
+planning, duree = critical_path(taches, 'tache', 'duree', 'avant')
+ordre, longueur = tsp(points[['x', 'y']].to_numpy(), start=0)
+```
 
 ---
 

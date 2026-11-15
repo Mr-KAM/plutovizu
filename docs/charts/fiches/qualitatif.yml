@@ -1,0 +1,92 @@
+# Fiches des pages « Qualitatif » et « Seaborn »
+
+word_cloud:
+  desc: >-
+    Nuage de mots : les mots les plus fréquents d'un texte, de taille proportionnelle à leur
+    fréquence ; mots vides français retirés.
+  usage: >-
+    Premier aperçu de réponses ouvertes, d'entretiens ou de commentaires. Pour comparer
+    précisément les fréquences, compléter par `word_frequency`.
+  rows: "une ligne par réponse (colonne de texte) — ou une ligne par mot avec son poids"
+  data:
+    - [reponse, texte, "`text` : texte libre analysé", "Les semences arrivent trop tard"]
+  params:
+    text: Colonne de texte dont on compte les mots.
+    words: Colonne de mots déjà comptés (avec `weights`), à la place de `text`.
+    weights: Colonne des poids (fréquences) des mots de `words`.
+    max_words: Nombre maximal de mots affichés.
+    language: Langue des mots vides retirés ('fr' ou 'en').
+    stopwords: Mots supplémentaires à ignorer (liste).
+    min_length: Longueur minimale des mots retenus.
+    ngram: Taille des expressions comptées (1 = mots, 2 = paires de mots…).
+    shape: "Forme du nuage : 'rectangle' ou 'circle'."
+    colormap: Palette continue des mots ; `None` = couleurs du thème.
+  returns: "`chart.word_frequencies` : fréquence de chaque mot."
+
+word_frequency:
+  desc: >-
+    Barres horizontales des mots (ou expressions) les plus fréquents d'une colonne de texte.
+  usage: >-
+    Quantifier les thèmes qui reviennent dans des réponses ouvertes ; le complément chiffré
+    du nuage de mots.
+  rows: une ligne par réponse
+  data:
+    - [reponse, texte, "`text` : texte libre analysé", "Manque d'eau en saison sèche"]
+  params:
+    text: Colonne de texte.
+    top: Nombre de mots affichés.
+    ngram: Taille des expressions comptées (1 = mots, 2 = paires de mots…).
+    language: Langue des mots vides retirés ('fr' ou 'en').
+    stopwords: Mots supplémentaires à ignorer.
+    min_length: Longueur minimale des mots retenus.
+
+likert:
+  desc: >-
+    Barres empilées divergentes : une barre par question, centrée sur la réponse neutre,
+    désaccord à gauche, accord à droite (en %).
+  usage: >-
+    Présenter les résultats d'un questionnaire à échelle de Likert (satisfaction, accord,
+    fréquence) et comparer les questions.
+  rows: une ligne par répondant, une colonne par question (réponses en texte)
+  data:
+    - [Q1, texte, "`columns` : une question", "D'accord"]
+    - [Q2, texte, "`columns` : autre question", "Neutre"]
+  params:
+    order: Liste des modalités, de la plus négative à la plus positive.
+    sort: Trie les questions par niveau d'accord.
+    min_label: Pourcentage sous lequel la valeur n'est pas écrite.
+  returns: "`chart.likert_table` : pourcentages par question et modalité."
+
+code_matrix:
+  desc: >-
+    Matrice des codes : nombre de fois où chaque code (thème) apparaît dans chaque cas
+    (entretien, document, groupe), en carte de chaleur.
+  usage: >-
+    Analyse qualitative codée (type NVivo / Atlas.ti) : comparer les thèmes abordés par
+    chaque entretien ou catégorie d'acteurs.
+  rows: une ligne par segment codé
+  data:
+    - [entretien, texte, "`case` : cas (ligne de la matrice)", "E04"]
+    - [code, texte, "`code` : thème (colonne de la matrice)", "Accès au crédit"]
+  params:
+    case: Colonne des cas (entretiens, documents).
+    code: Colonne des codes attribués aux segments.
+    normalize: Pourcentages par cas au lieu des effectifs.
+    annot: Écrit les valeurs dans les cases.
+  returns: "`chart.code_table` : le tableau cas × codes."
+
+seaborn:
+  desc: >-
+    Accès à toutes les fonctions de seaborn avec les données, le thème et le chaînage du
+    Chart : les fonctions « axes » dessinent sur le graphique, les fonctions « figure »
+    (pairplot, catplot…) créent leur propre grille.
+  usage: >-
+    Utiliser un graphique seaborn qui n'a pas de méthode dédiée (violinplot, swarmplot,
+    lineplot avec intervalle, displot…), tout en gardant le thème et `.title()`, `.save()`.
+  rows: "le format attendu par la fonction seaborn choisie, en général le format long (une ligne par observation)"
+  data:
+    - [variete, texte, "`x` : catégorie", "Nerica-4"]
+    - [rendement, nombre, "`y` : valeur", "5.3"]
+  params:
+    name: Nom de la fonction seaborn, ex. 'violinplot', 'swarmplot', 'lineplot', 'displot'.
+    kwargs: Arguments de la fonction seaborn (`x=`, `y=`, `hue=`, `inner=`…) ; `data` est fourni automatiquement.

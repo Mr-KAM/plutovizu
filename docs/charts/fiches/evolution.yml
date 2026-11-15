@@ -1,0 +1,166 @@
+# Fiches de la page « Évolution dans le temps » (lues par _fiches.py)
+
+line:
+  desc: >-
+    Courbe reliant des valeurs successives : une ligne par colonne `y`, sur un axe x commun
+    (dates, mois, années, doses…).
+  usage: >-
+    Suivre l'évolution d'une ou plusieurs grandeurs dans le temps ou le long d'un gradient
+    ordonné, repérer tendances, saisonnalités et ruptures. À éviter pour des catégories sans
+    ordre (préférer `bar`).
+  rows: une ligne par pas de temps (format large, une colonne par série)
+  data:
+    - [mois, "nombre, date ou texte ordonné", "`x` : position sur l'axe horizontal", "3"]
+    - [ventes, nombre, "`y` : une série (une colonne = une courbe)", "18"]
+    - [coûts, nombre, "`y` : autre série, passée dans une liste", "12"]
+  params:
+    y: Une colonne ou une liste de colonnes ; une courbe (et une entrée de légende) par colonne.
+
+area:
+  desc: >-
+    Courbes dont la surface sous la ligne est remplie ; avec `stacked=True`, les séries
+    s'empilent et le haut de la pile donne le total.
+  usage: >-
+    Montrer un volume qui évolue (production, écoutes, surfaces) et, en mode empilé, la
+    contribution de chaque composante au total au fil du temps.
+  rows: une ligne par pas de temps, une colonne par série
+  data:
+    - [annee, "nombre ou date", "`x` : temps", "2015"]
+    - [rock, nombre, "`y` : première série (aire)", "35"]
+    - [pop, nombre, "`y` : autre série", "28"]
+  params:
+    y: Une colonne ou une liste de colonnes ; une aire par colonne.
+    stacked: Empile les séries (le haut de la pile = total) au lieu de les superposer.
+
+streamgraph:
+  desc: >-
+    Aires empilées autour d'une ligne de base centrée et ondulante : un « flux » organique
+    dont l'épaisseur totale varie dans le temps.
+  usage: >-
+    Raconter l'évolution de la composition d'un total sur une longue période (genres,
+    espèces, produits) quand la forme générale compte plus que les valeurs exactes.
+  rows: une ligne par pas de temps, une colonne par composante
+  data:
+    - [annee, "nombre ou date", "`x` : temps", "2010"]
+    - [rock, nombre, "`y` : épaisseur d'une composante", "35"]
+    - [jazz, nombre, "`y` : autre composante", "8"]
+  params:
+    y: Liste des colonnes à empiler (une couche par colonne).
+
+step:
+  desc: >-
+    Courbe en escalier : la valeur reste constante entre deux points puis change d'un coup.
+  usage: >-
+    Grandeurs qui varient par paliers : cumuls (pluie cumulée), tarifs, stocks, niveaux
+    réglementaires, effectifs entre deux comptages.
+  rows: une ligne par point de changement
+  data:
+    - [jour, "nombre ou date", "`x` : instant du changement", "2024-07-15"]
+    - [pluie_cumulee, nombre, "`y` : valeur du palier", "182.5"]
+  params:
+    where: >-
+      Position de la marche : 'pre' (avant le point), 'post' (après le point, valeur
+      valable jusqu'au point suivant) ou 'mid' (à mi-chemin).
+    fill: Remplit la surface sous l'escalier.
+
+stem:
+  desc: >-
+    Diagramme en bâtons : un trait vertical de la ligne de base à chaque valeur, terminé par
+    un point.
+  usage: >-
+    Valeurs ponctuelles et discrètes dans le temps (pluies journalières, événements comptés,
+    signaux échantillonnés), quand relier les points par une ligne serait trompeur.
+  rows: une ligne par observation
+  data:
+    - [jour, "nombre ou date", "`x` : position du bâton", "2024-08-03"]
+    - [pluie, nombre, "`y` : hauteur du bâton", "24.0"]
+  params:
+    baseline: Niveau de départ des bâtons (0 par défaut).
+
+band:
+  desc: >-
+    Bande colorée entre une limite basse et une limite haute, avec éventuellement une courbe
+    centrale.
+  usage: >-
+    Montrer une plage de variation (Tmin–Tmax), un intervalle de confiance ou de prévision,
+    une enveloppe min–max autour d'une moyenne.
+  rows: une ligne par pas de temps
+  data:
+    - [jour, "nombre ou date", "`x` : temps", "2024-06-01"]
+    - [tmin, nombre, "`low` : bord inférieur", "24.1"]
+    - [tmax, nombre, "`high` : bord supérieur", "35.8"]
+    - [tmoy, nombre, "`y` (optionnel) : courbe centrale", "29.9"]
+  params:
+    low: Colonne du bord inférieur de la bande.
+    high: Colonne du bord supérieur de la bande.
+    y: Colonne optionnelle tracée en courbe au milieu de la bande (moyenne, médiane…).
+    label: Texte de la bande dans la légende.
+
+bump:
+  desc: >-
+    Graphique de classement : le rang de chaque élément à chaque période, relié par des
+    lignes ; le rang 1 est en haut.
+  usage: >-
+    Comparer l'évolution des positions relatives (classement d'équipes, de cultures, de
+    pays) quand l'ordre compte plus que les valeurs.
+  rows: une ligne par élément et par période (format long)
+  data:
+    - [saison, "nombre ou texte ordonné", "`x` : période", "2021"]
+    - [classement, entier, "`y` : rang (1 = premier)", "3"]
+    - [equipe, texte, "`group` : élément classé (une ligne par élément)", "Lyon"]
+
+timeline:
+  desc: >-
+    Frise chronologique : chaque événement est une tige posée sur un axe des dates, avec son
+    libellé, alterné dessus/dessous.
+  usage: >-
+    Présenter les étapes d'un projet, d'une campagne agricole, d'une histoire ; repérer les
+    intervalles entre événements datés.
+  rows: une ligne par événement
+  data:
+    - [date, date, "`date` : moment de l'événement", "2024-06-20"]
+    - [etape, texte, "`label` : libellé affiché", "Semis"]
+  params:
+    date: Colonne des dates (ou nombres) des événements.
+    label: Colonne des libellés affichés au bout des tiges.
+    levels: Hauteurs des tiges (liste) ; `None` = hauteurs alternées automatiques.
+
+eventplot:
+  desc: >-
+    Diagramme d'événements : un petit trait par occurrence, une rangée par groupe.
+  usage: >-
+    Comparer la répartition dans le temps d'événements répétés : dates de floraison par
+    variété, passages d'animaux, pannes, arrivées.
+  rows: une ligne par événement
+  data:
+    - [date, "date ou nombre", "`time` : instant de l'événement", "2024-09-12"]
+    - [variete, texte, "`group` (optionnel) : une rangée par groupe", "Sahel-108"]
+  params:
+    time: Colonne des instants (dates ou nombres).
+    linelength: Hauteur de chaque trait, en fraction de l'écart entre rangées.
+
+calendar_heatmap:
+  desc: >-
+    Calendrier coloré : une case par jour, semaines en colonnes et jours de la semaine en
+    lignes (style GitHub).
+  usage: >-
+    Repérer des rythmes hebdomadaires et saisonniers dans une activité quotidienne
+    (observations, ventes, pluies, contributions).
+  rows: une ligne par jour
+  data:
+    - [date, date, "`date_col` : jour", "2024-03-14"]
+    - [commits, nombre, "`value_col` : intensité de la case", "5"]
+
+gantt:
+  desc: >-
+    Diagramme de Gantt : une barre horizontale par tâche, de sa date de début à sa date de
+    fin, colorée par groupe.
+  usage: >-
+    Planifier et suivre un projet, un calendrier cultural ou une campagne de terrain. Pour
+    calculer le chemin critique à partir des durées et dépendances, voir `critical_path`.
+  rows: une ligne par tâche
+  data:
+    - [tache, texte, "`task` : nom de la tâche (une barre)", "Semis"]
+    - [debut, date, "`start` : début", "2024-06-20"]
+    - [fin, date, "`end` : fin", "2024-07-05"]
+    - [equipe, texte, "`group` (optionnel) : couleur", "Terrain"]

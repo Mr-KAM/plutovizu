@@ -6,12 +6,20 @@ subtitle: "Une grandeur répartie dans l'espace : grilles régulières ou prél�
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `contour` — Courbes de niveau {#g-contour}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('contour')
+```
+
 
 Sur une grille régulière (`contourf`) ou, comme ici, sur des prélèvements dispersés : la
 surface est alors interpolée par triangulation (`tricontourf`). `show_points` et
@@ -30,6 +38,13 @@ surface est alors interpolée par triangulation (`tricontourf`). `show_points` e
 
 ### `mesh` — Grille colorée {#g-mesh}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('mesh')
+```
+
+
 Une cellule colorée par point d'une grille régulière (`pcolormesh`), ou des triangles
 colorés sur des points dispersés (`tripcolor`).
 
@@ -45,6 +60,13 @@ colorés sur des points dispersés (`tripcolor`).
 
 
 ### `vector_field` — Champ de vecteurs {#g-vector_field}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('vector_field')
+```
+
 
 Vent, écoulement, gradient : flèches (`quiver`), barbules de vent (`barbs`) ou lignes de
 courant (`stream`, grille régulière), colorées par l'intensité.

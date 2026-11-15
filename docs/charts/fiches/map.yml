@@ -1,0 +1,115 @@
+# Fiches de la page « Map » (option : pip install plutovizu[map])
+
+map_points:
+  desc: >-
+    Points sur une carte en longitude / latitude : colorés par une valeur ou un groupe,
+    dimensionnés par une colonne (symboles proportionnels), nommés, sur un fond de carte.
+  usage: >-
+    Localiser des stations, parcelles, villages ou relevés et montrer une valeur par lieu
+    (pluie, rendement, effectif).
+  rows: une ligne par lieu (coordonnées WGS84 en degrés décimaux)
+  data:
+    - [ville, texte, "`labels` (optionnel) : nom affiché", "Kaolack"]
+    - [lon, nombre, "`lon` : longitude", "-16.07"]
+    - [lat, nombre, "`lat` : latitude", "14.15"]
+    - [pluie, nombre, "`value` / `size` (optionnels) : couleur, taille", "640"]
+  params:
+    value: Colonne numérique qui colore les points (barre de couleur).
+    size: Colonne numérique qui dimensionne les points (symboles proportionnels).
+    sizes: Tailles minimale et maximale des symboles (points²).
+    size_legend: Ajoute la légende des tailles.
+
+choropleth:
+  desc: >-
+    Carte choroplèthe : chaque zone d'un GeoDataFrame (région, commune, parcelle) colorée
+    selon une colonne continue ou catégorielle.
+  usage: >-
+    Cartographier un indicateur par unité spatiale : rendement par parcelle, densité par
+    commune, type de sol par zone.
+  rows: une ligne par zone, avec une colonne `geometry` (polygones) ; lire un fichier avec `geopandas.read_file(...)`
+  geo: true
+  data:
+    - [parcelle, texte, "`labels` (optionnel) : nom écrit dans la zone", "P07"]
+    - [rendement, "nombre ou texte", "`column` : valeur cartographiée", "3.4"]
+    - [geometry, "géométrie (Polygon)", "contour de la zone (colonne géométrique)", "POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0))"]
+  params:
+    column: Colonne à cartographier.
+    categorical: Force une légende catégorielle (`True`) ou continue (`False`) ; `None` = selon le type de la colonne.
+    legend: Affiche la légende ou la barre de couleur.
+    scheme: "Discrétisation d'une colonne numérique : None (continu), 'quantiles', 'equal' (intervalles égaux) ou 'natural' (seuils naturels de Jenks)."
+    k: Nombre de classes de la discrétisation.
+
+flow_map:
+  desc: >-
+    Carte de flux : une flèche courbe de l'origine vers la destination pour chaque ligne,
+    d'épaisseur proportionnelle au volume.
+  usage: >-
+    Échanges commerciaux, approvisionnement des marchés, migrations, déplacements de
+    troupeaux entre lieux.
+  rows: une ligne par flux (origine → destination)
+  data:
+    - [ville, texte, "`label_from` (optionnel) : nom de l'origine", "Kaolack"]
+    - [lon, nombre, "`lon_from` : longitude de l'origine", "-16.07"]
+    - [lat, nombre, "`lat_from` : latitude de l'origine", "14.15"]
+    - [lon_dakar, nombre, "`lon_to` : longitude de la destination", "-17.44"]
+    - [lat_dakar, nombre, "`lat_to` : latitude de la destination", "14.69"]
+    - [tonnes, nombre, "`weight` (optionnel) : épaisseur de la flèche", "1200"]
+  params:
+    lon_from: Colonne des longitudes d'origine.
+    lat_from: Colonne des latitudes d'origine.
+    lon_to: Colonne des longitudes de destination.
+    lat_to: Colonne des latitudes de destination.
+    weight: Colonne du volume du flux (épaisseur des flèches).
+    label_from: Colonne des noms d'origine.
+    label_to: Colonne des noms de destination.
+    curvature: Courbure des flèches (0 = droites).
+    max_width: Épaisseur de la flèche la plus grosse.
+
+density_map:
+  desc: >-
+    Carte de densité (zones chaudes) : densité de noyau des points, éventuellement pondérée,
+    en aplats sur le fond de carte.
+  usage: >-
+    Repérer les concentrations d'observations : signalements de ravageurs, cas, points
+    d'eau, accidents.
+  rows: une ligne par observation géolocalisée
+  data:
+    - [lon, nombre, "`lon`", "-16.92"]
+    - [lat, nombre, "`lat`", "14.78"]
+  params:
+    weight: Colonne optionnelle de poids (une observation qui compte plusieurs fois).
+    bandwidth: Lissage de la densité ; `None` = automatique.
+
+field_map:
+  desc: >-
+    Carte d'une grandeur interpolée entre des mesures ponctuelles : aplats et isolignes
+    annotées (isohyètes, isothermes), à l'intérieur de l'enveloppe des stations.
+  usage: >-
+    Passer de mesures de stations à une surface continue : pluviométrie, nappe, teneur
+    d'un élément.
+  rows: une ligne par station de mesure
+  data:
+    - [ville, texte, "`labels` (optionnel)", "Tambacounda"]
+    - [lon, nombre, "`lon`", "-13.67"]
+    - [lat, nombre, "`lat`", "13.77"]
+    - [pluie, nombre, "`value` : grandeur interpolée", "850"]
+  params:
+    value: Colonne de la grandeur mesurée à interpoler.
+    isolines: Ajoute les isolignes annotées.
+
+route_map:
+  desc: >-
+    Itinéraires : points reliés dans l'ordre, une ligne par groupe, départ et arrivée
+    marqués, flèches de sens.
+  usage: >-
+    Traces GPS, transhumance, tournées de collecte (par exemple l'ordre calculé par
+    `tsp_route`), circuits de visites.
+  rows: une ligne par point de passage
+  data:
+    - [etape, texte, "`labels` (optionnel)", "Dahra"]
+    - [lon, nombre, "`lon`", "-15.48"]
+    - [lat, nombre, "`lat`", "15.35"]
+    - [jour, nombre, "`order` (optionnel) : ordre de passage", "12"]
+  params:
+    order: Colonne qui ordonne les points (date, rang) ; `None` = ordre des lignes.
+    arrows: Ajoute des flèches indiquant le sens du trajet.

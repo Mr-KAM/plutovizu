@@ -1,0 +1,146 @@
+# Fiches de la page « Distribution »
+
+histogram:
+  desc: >-
+    Histogramme : les valeurs d'une colonne réparties en classes, la hauteur de chaque barre
+    donnant l'effectif (ou la densité) de la classe.
+  usage: >-
+    Première exploration d'une variable numérique : forme de la distribution (symétrie,
+    asymétrie, modes), étendue, valeurs extrêmes.
+  rows: une ligne par observation
+  data:
+    - [salaire, nombre, "`column` : variable étudiée", "2350"]
+
+bihistogram:
+  desc: >-
+    Deux histogrammes dos à dos, aux mêmes classes : un groupe vers le haut (ou la droite),
+    l'autre vers le bas (ou la gauche).
+  usage: >-
+    Comparer la distribution d'une variable entre deux groupes ; avec `horizontal=True`,
+    pyramide des âges (hommes / femmes).
+  rows: une ligne par observation, avec une colonne à exactement deux modalités
+  data:
+    - [age, nombre, "`column` : variable répartie en classes", "34"]
+    - [sexe, texte, "`group` : deux modalités", "Femme"]
+  params:
+    column: Colonne numérique à répartir en classes.
+    group: Colonne à deux modalités (la première vers le haut / la gauche).
+    bins: Nombre de classes ou liste des bornes (ex. `range(0, 95, 5)`).
+    horizontal: Barres horizontales, groupes de part et d'autre d'un axe vertical (pyramide des âges).
+
+boxplot:
+  desc: >-
+    Boîtes à moustaches : médiane, quartiles (la boîte contient 50 % des valeurs),
+    moustaches et valeurs atypiques, une boîte par colonne.
+  usage: >-
+    Comparer rapidement plusieurs distributions (position, dispersion, asymétrie) et repérer
+    les valeurs aberrantes.
+  rows: une ligne par observation, une colonne par variable à comparer (format large)
+  data:
+    - [maths, nombre, "`columns` : première boîte", "14.5"]
+    - [français, nombre, "`columns` : deuxième boîte", "12.0"]
+
+violin:
+  desc: >-
+    Violons : la densité estimée de chaque colonne, en miroir ; plus le violon est large,
+    plus les valeurs y sont nombreuses.
+  usage: >-
+    Comparer des distributions en montrant leur forme complète (bimodalité, asymétrie), ce
+    qu'une boîte à moustaches cache.
+  rows: une ligne par observation, une colonne par variable
+  data:
+    - [Paris, nombre, "`columns` : premier violon", "21.4"]
+    - [Lyon, nombre, "`columns` : deuxième violon", "18.2"]
+
+ridgeline:
+  desc: >-
+    Courbes de densité empilées et qui se chevauchent légèrement, une par groupe (« joy
+    plot »).
+  usage: >-
+    Comparer la distribution d'une variable entre de nombreux groupes (secteurs, mois,
+    sites), là où des violons côte à côte deviennent illisibles.
+  rows: une ligne par observation (format long)
+  data:
+    - [salaire, nombre, "`value_col` : variable dont on trace la densité", "2890"]
+    - [secteur, texte, "`group_col` : une crête par groupe", "Santé"]
+
+kde:
+  desc: Densité lissée (estimation par noyau) d'une variable, une courbe par groupe.
+  usage: >-
+    Comparer la forme de distributions continues entre groupes sans dépendre du choix des
+    classes d'un histogramme.
+  rows: une ligne par observation
+  data:
+    - [rendement, nombre, "`x` : variable", "4.8"]
+    - [variete, texte, "`hue` (optionnel) : une courbe par groupe", "Nerica-4"]
+  params:
+    x: Colonne numérique dont on estime la densité.
+
+ecdf:
+  desc: >-
+    Fonction de répartition empirique : pour chaque valeur, la proportion des observations
+    inférieures ou égales.
+  usage: >-
+    Comparer des distributions sans lissage ni classes ; lire directement médianes,
+    quantiles et proportions sous un seuil.
+  rows: une ligne par observation
+  data:
+    - [rendement, nombre, "`x` : variable", "4.8"]
+    - [variete, texte, "`hue` (optionnel) : une courbe par groupe", "IR-841"]
+  params:
+    x: Colonne numérique.
+
+strip:
+  desc: Chaque observation en point, regroupée par catégorie, avec un léger décalage aléatoire.
+  usage: >-
+    Petits échantillons : montrer toutes les valeurs individuelles (répétitions d'un essai)
+    plutôt qu'un résumé.
+  rows: une ligne par observation
+  data:
+    - [variete, texte, "`x` : catégorie", "Sahel-108"]
+    - [rendement, nombre, "`y` : valeur", "4.2"]
+  params:
+    x: Colonne des catégories.
+    y: Colonne des valeurs.
+
+boxen:
+  desc: >-
+    Boîte à moustaches étendue (letter-value plot) : des boîtes emboîtées pour des quantiles
+    de plus en plus extrêmes.
+  usage: >-
+    Grands échantillons (des milliers de valeurs) où une boîte classique signale trop de
+    points atypiques et cache la forme des queues.
+  rows: une ligne par observation
+  data:
+    - [dose, "texte ou nombre", "`x` : catégorie", "60"]
+    - [rendement, nombre, "`y` : valeur", "4.9"]
+  params:
+    x: Colonne des catégories.
+    y: Colonne des valeurs.
+
+qqplot:
+  desc: >-
+    Diagramme quantile-quantile : quantiles observés contre quantiles d'une loi normale. Des
+    points alignés sur la droite indiquent une distribution normale.
+  usage: >-
+    Vérifier l'hypothèse de normalité, notamment celle des résidus d'une ANOVA ou d'une
+    régression, avant un test paramétrique.
+  rows: une ligne par observation
+  data:
+    - [residus, nombre, "`column` : valeurs à tester", "-0.31"]
+  params:
+    column: Colonne numérique dont on teste la normalité (souvent des résidus).
+
+hist2d:
+  desc: >-
+    Histogramme à deux dimensions : le plan (x, y) découpé en rectangles colorés selon le
+    nombre de points qu'ils contiennent.
+  usage: >-
+    Relation entre deux variables pour de très nombreux points, quand un nuage de points
+    sature. Voir aussi `hexbin`.
+  rows: une ligne par observation
+  data:
+    - [temperature, nombre, "`x`", "27.4"]
+    - [humidite, nombre, "`y`", "64"]
+  params:
+    bins: Nombre de classes par axe (ou liste [nx, ny]).

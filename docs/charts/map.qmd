@@ -6,6 +6,7 @@ subtitle: "Points, zones, flux, densités, isolignes et trajets, avec flèche du
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd). Retour à la
@@ -31,6 +32,13 @@ illustratives.
 
 ### `map_points` — Points sur une carte {#g-map_points}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('map_points')
+```
+
+
 Des points en longitude/latitude, colorés par une valeur (`value`) ou un groupe (`group`),
 dimensionnés par une colonne (`size`), nommés (`labels`).
 
@@ -53,6 +61,13 @@ dimensionnés par une colonne (`size`), nommés (`labels`).
 ```
 
 ### `choropleth` — Carte de zones {#g-choropleth}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('choropleth')
+```
+
 
 Chaque zone d'un `GeoDataFrame` colorée selon une colonne : continue (barre de couleur)
 ou catégorielle (légende). Les zones se lisent avec `geopandas.read_file('zones.geojson')`
@@ -105,6 +120,13 @@ chart.show()
 
 ### `flow_map` — Carte de flux {#g-flow_map}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('flow_map')
+```
+
+
 Une flèche courbe par ligne, de l'origine vers la destination, d'épaisseur proportionnelle
 au volume (`weight`).
 
@@ -125,6 +147,13 @@ flux = (villes[villes['ville'].isin(['Saint-Louis', 'Kaolack', 'Tambacounda', 'K
 
 ### `density_map` — Carte de densité {#g-density_map}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('density_map')
+```
+
+
 Les zones où les points se concentrent : densité de noyau, éventuellement pondérée
 (`weight`), en aplats de densité relative sur le fond de carte.
 
@@ -141,6 +170,13 @@ Les zones où les points se concentrent : densité de noyau, éventuellement pon
 
 ### `field_map` — Carte interpolée et isolignes {#g-field_map}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('field_map')
+```
+
+
 Une grandeur mesurée en quelques points (stations) interpolée sur la zone, avec ses
 isolignes annotées — ici des **isohyètes**. L'interpolation (linéaire, sur une
 triangulation des stations) ne couvre que l'intérieur de l'enveloppe des points.
@@ -155,6 +191,13 @@ triangulation des stations) ne couvre que l'intérieur de l'enveloppe des points
 ```
 
 ### `route_map` — Itinéraires et trajets {#g-route_map}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('route_map')
+```
+
 
 Des points reliés dans l'ordre (`order` : date, étape…), une ligne par groupe ; départ ●,
 arrivée ■ et flèches de sens.

@@ -1,0 +1,172 @@
+---
+title: "Graphes & réseaux"
+subtitle: "Réseaux, mouvements, optimisation et recherche opérationnelle : plus court chemin, arbre couvrant, flot maximal, chemin critique, tournées."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd). Retour à la
+[galerie](../gallery.qmd).
+
+::: {.callout-note}
+Un réseau se décrit par une **liste d'arêtes** : un DataFrame avec une ligne par lien
+(colonne source, colonne cible, et souvent un poids : distance, coût, capacité, effectif).
+Les calculs reposent sur `scipy.sparse.csgraph` et sont aussi disponibles sans graphique :
+`from plutovizu import shortest_path, spanning_tree, max_flow, critical_path, tsp`.
+Les données de cette page sont **fictives**.
+:::
+
+## Réseaux et mouvements
+
+### `network` — Graphe de réseau {#g-network}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('network')
+```
+
+
+```{python}
+#| fig-cap: "Échanges de céréales entre coopératives (tonnes, fictif)"
+chart = (Chart(echanges, figsize=(9, 6.5))
+    .network('de', 'vers', weight='tonnes', directed=True, edge_labels=True)
+    .title('Échanges entre coopératives (t)')
+    .tight_layout())
+chart.show()
+chart.graph['degree'].sort_values(ascending=False)
+```
+
+Avec des coordonnées réelles, `layout` reçoit un dictionnaire {nœud: (x, y)} :
+
+```{python}
+positions = {'Dépôt': (0, 0), 'Keur Massar': (3, 2), 'Ndiaye': (4, -1), 'Sangalkam': (7, 3),
+             'Bayakh': (8, 0), 'Kayar': (11, 3), 'Pout': (7, -4), 'Tivaouane': (12, -2)}
+(Chart(pistes, figsize=(9, 5))
+    .network('de', 'vers', weight='km', layout=positions, edge_labels=True)
+    .title('Pistes rurales (km)')
+    .tight_layout()
+    .show())
+```
+
+### `arc_diagram` — Diagramme en arcs {#g-arc_diagram}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('arc_diagram')
+```
+
+
+```{python}
+#| fig-cap: "Transferts de troupeaux entre zones agro-pastorales (têtes, fictif)"
+(Chart(transferts, figsize=(10, 5.5))
+    .arc_diagram('depart', 'arrivee', weight='tetes',
+                 order=['Fleuve', 'Ferlo', 'Niayes', 'Saloum', 'Casamance'])
+    .title('Mouvements de troupeaux')
+    .tight_layout()
+    .show())
+```
+
+## Optimisation et recherche opérationnelle
+
+### `shortest_path` — Plus court chemin {#g-shortest_path}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('shortest_path')
+```
+
+
+```{python}
+#| fig-cap: "Itinéraire le plus court du dépôt à Tivaouane (km, fictif)"
+chart = (Chart(pistes, figsize=(9, 6.5))
+    .shortest_path('de', 'vers', 'Dépôt', 'Tivaouane', weight='km')
+    .title('Plus court chemin (Dijkstra)')
+    .tight_layout())
+chart.show()
+print(' → '.join(chart.path), '|', chart.path_length, 'km')
+```
+
+### `spanning_tree` — Arbre couvrant minimal {#g-spanning_tree}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('spanning_tree')
+```
+
+
+```{python}
+#| fig-cap: "Électrifier tous les villages au moindre coût (km de ligne, fictif)"
+chart = (Chart(pistes, figsize=(9, 6.5))
+    .spanning_tree('de', 'vers', weight='km')
+    .title('Réseau électrique minimal')
+    .tight_layout())
+chart.show()
+chart.tree
+```
+
+### `max_flow` — Flot maximal {#g-max_flow}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('max_flow')
+```
+
+
+```{python}
+#| fig-cap: "Débit maximal du forage au marché (m³/h, fictif)"
+chart = (Chart(adduction, figsize=(9, 6.5))
+    .max_flow('de', 'vers', 'capacite', 'Forage', 'Marché')
+    .title("Réseau d'adduction d'eau")
+    .tight_layout())
+chart.show()
+chart.flow
+```
+
+### `critical_path` — Chemin critique (PERT / CPM) {#g-critical_path}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('critical_path')
+```
+
+
+```{python}
+#| fig-cap: "Planning d'un aménagement hydro-agricole (semaines, fictif)"
+chart = (Chart(projet, figsize=(10, 5.5))
+    .critical_path('tache', 'duree', 'avant')
+    .title('Chemin critique du projet')
+    .tight_layout())
+chart.show()
+print('Durée du projet :', chart.project_duration, 'semaines')
+chart.schedule.drop(columns='predecesseurs')
+```
+
+### `tsp_route` — Tournée optimale (voyageur de commerce) {#g-tsp_route}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('tsp_route')
+```
+
+
+```{python}
+#| fig-cap: "Tournée de collecte de lait (km, fictif)"
+chart = (Chart(collecte, figsize=(9, 6.5))
+    .tsp_route('x', 'y', labels='ferme', start='Laiterie')
+    .labels('x (km)', 'y (km)')
+    .title('Tournée de collecte')
+    .tight_layout())
+chart.show()
+print(' → '.join(chart.tour), '| longueur :', round(chart.tour_length, 1), 'km')
+```

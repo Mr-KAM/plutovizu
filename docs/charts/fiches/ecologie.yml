@@ -1,0 +1,148 @@
+# Fiches de la page « Écologie »
+
+glm_curve:
+  desc: >-
+    Courbe de réponse d'un modèle linéaire généralisé avec sa bande de confiance à 95 % :
+    logistique (présence / absence → probabilité) ou de Poisson (comptages) ; `degree=2`
+    donne une réponse en cloche et son optimum.
+  usage: >-
+    Relier la présence ou l'abondance d'une espèce à une variable du milieu (nitrates, pH,
+    altitude) et visualiser le modèle ajusté avec les observations.
+  rows: une ligne par relevé
+  data:
+    - [nitrates, nombre, "`x` : variable explicative", "23.4"]
+    - [presence, "entier (0/1) ou comptage", "`y` : réponse", "1"]
+  params:
+    family: "'binomial' (présence / absence, proportion) ou 'poisson' (comptages)."
+    degree: Degré du polynôme en x (2 = réponse unimodale en cloche, avec optimum).
+    ci: Affiche la bande de confiance à 95 %.
+    jitter: Décalage vertical aléatoire des observations 0/1, pour les rendre visibles.
+    show_stats: Écrit D² (déviance expliquée), la p-value et l'AIC.
+  returns: "`chart.glm` : coefficients, D², p-value, AIC, optimum."
+
+response_curve:
+  desc: >-
+    Réponse lissée d'une espèce le long d'un gradient (régression locale LOWESS) avec une
+    bande à 95 % par bootstrap ; l'optimum écologique est marqué.
+  usage: >-
+    Décrire la niche d'une espèce sans imposer de forme au modèle : optimum, amplitude,
+    réponse asymétrique.
+  rows: une ligne par relevé (site)
+  data:
+    - [humidite, nombre, "`x` : gradient", "62.5"]
+    - [Typha, nombre, "`y` : abondance de l'espèce", "18"]
+  params:
+    frac: Part des données utilisée pour chaque lissage local (0–1) ; plus grand = plus lisse.
+    ci: Ajoute la bande de confiance à 95 % (bootstrap).
+    n_boot: Nombre de rééchantillonnages bootstrap pour la bande.
+    show_optimum: Marque l'optimum (maximum de la courbe).
+  returns: "`chart.response` : courbe lissée et optimum."
+
+count_distribution:
+  desc: >-
+    Fréquences des comptages observés face à celles attendues sous une loi de Poisson et une
+    loi binomiale négative.
+  usage: >-
+    Avant de modéliser des comptages : détecter l'excès de zéros et la surdispersion
+    (variance > moyenne) qui invalident un modèle de Poisson.
+  rows: une ligne par unité d'échantillonnage
+  data:
+    - [individus, "entier ≥ 0", "`column` : comptage", "3"]
+  params:
+    column: Colonne des comptages (entiers positifs ou nuls).
+    max_count: Plus grand comptage affiché ; `None` = automatique.
+  returns: "`chart.count_stats` : moyenne, variance, % de zéros observés et attendus."
+
+forest_plot:
+  desc: >-
+    Forest plot : chaque estimation avec son intervalle, alignées sur une ligne de
+    référence ; les intervalles qui excluent la référence sont mis en évidence.
+  usage: >-
+    Présenter les coefficients d'un modèle, des odds ratios, une méta-analyse, des effets
+    aléatoires ou des intervalles crédibles bayésiens.
+  rows: une ligne par estimation
+  data:
+    - [variable, texte, "`label` : nom de l'estimation", "Nitrates"]
+    - [odds_ratio, nombre, "`estimate` : valeur estimée", "0.62"]
+    - [ic_bas, nombre, "`lower` : borne basse", "0.48"]
+    - [ic_haut, nombre, "`upper` : borne haute", "0.80"]
+  params:
+    label: Colonne des noms des estimations.
+    estimate: Colonne des valeurs estimées.
+    lower: Colonne de la borne basse de l'intervalle.
+    upper: Colonne de la borne haute de l'intervalle.
+    se: Colonne d'erreurs types, à la place de lower / upper (intervalle = estimation ± 1,96 se).
+    ref: Valeur de référence (0 pour des coefficients, 1 pour des rapports).
+    log: Échelle logarithmique, pour des rapports (odds ratios, risques relatifs).
+    sort: Trie les estimations par valeur.
+
+ordination:
+  desc: >-
+    Triplot d'ordination de communautés : sites (points), espèces (+) et variables du milieu
+    (flèches), par AFC, ACC, ACP ou ARD ; les axes donnent le % d'inertie.
+  usage: >-
+    Résumer la composition de nombreux relevés et la relier aux gradients du milieu (CCA
+    pour des réponses unimodales, RDA pour des réponses linéaires).
+  rows: une ligne par site, une colonne par espèce (abondances) et par variable du milieu
+  data:
+    - [placette, texte, "`labels` (optionnel)", "P12"]
+    - [Carex, nombre, "`species` : abondance d'une espèce", "14"]
+    - [Typha, nombre, "`species` : abondance d'une autre espèce", "0"]
+    - [humidite, nombre, "`env` (optionnel) : variable du milieu", "62.5"]
+    - [zone, texte, "`group` (optionnel) : couleur des sites", "humide"]
+  params:
+    env: Liste des variables du milieu (flèches ; contraintes pour 'cca' et 'rda').
+    method: "'ca' (AFC), 'cca' (canonique des correspondances), 'pca' (ACP) ou 'rda' (redondance)."
+    show_species: Affiche les espèces (+ et noms).
+    axes: Axes représentés, ex. (1, 2) ou (1, 3).
+    scale: Centre-réduit les abondances (ACP / ARD).
+  returns: "`chart.ord` : coordonnées, valeurs propres, inertie expliquée."
+
+rank_abundance:
+  desc: >-
+    Courbe rang-abondance (diagramme de Whittaker) : abondance relative de chaque espèce
+    selon son rang, une courbe par site ou par groupe.
+  usage: >-
+    Comparer la structure des communautés : une courbe raide = quelques espèces dominantes,
+    une courbe plate = communauté équilibrée.
+  rows: une ligne par site (ou groupe), une colonne par espèce
+  data:
+    - [zone, texte, "`labels` (optionnel) : nom de la courbe", "sèche"]
+    - [Carex, nombre, "`species` : abondance", "125"]
+    - [Juncus, nombre, "`species` : abondance", "48"]
+  params:
+    pooled: Additionne tous les sites en une seule courbe.
+    log: Axe des abondances en échelle logarithmique.
+
+accumulation:
+  desc: >-
+    Courbe d'accumulation : richesse en espèces quand on ajoute des sites (moyenne ±
+    écart-type, estimateur Chao2), ou courbes de raréfaction par site.
+  usage: >-
+    Juger si l'effort d'échantillonnage est suffisant (plateau) et estimer la richesse
+    totale ; comparer des sites à effort égal.
+  rows: une ligne par site, une colonne par espèce (abondances ou 0/1)
+  data:
+    - [Carex, nombre, "`species` : abondance", "14"]
+    - [Lemna, nombre, "`species` : abondance", "0"]
+  params:
+    kind: "'sites' (accumulation en ajoutant des sites) ou 'individuals' (raréfaction de chaque site)."
+    n_perm: Nombre de permutations de l'ordre des sites.
+  returns: "`chart.accumulation_stats` : richesse observée et estimée (Chao2)."
+
+diversity:
+  desc: >-
+    Indice de diversité par site en barres, ou moyenne ± erreur type par groupe avec lettres
+    de Tukey.
+  usage: >-
+    Comparer la diversité entre sites, habitats ou traitements (richesse, Shannon, Simpson,
+    équitabilité de Pielou).
+  rows: une ligne par site, une colonne par espèce
+  data:
+    - [placette, texte, "`labels` (optionnel)", "P03"]
+    - [Carex, nombre, "`species` : abondance", "14"]
+    - [zone, texte, "`group` (optionnel) : moyenne par groupe", "intermédiaire"]
+  params:
+    index: "'richesse', 'shannon', 'simpson', 'inv_simpson' ou 'pielou'."
+    letters: Lettres du test de Tukey entre groupes (avec `group`).
+  returns: "`chart.diversity_table` : tous les indices de tous les sites."

@@ -1,0 +1,133 @@
+# Fiches de la page « Relation »
+
+scatter:
+  desc: "Nuage de points : chaque ligne est un point placé selon deux variables numériques."
+  usage: >-
+    Explorer la relation entre deux variables (sens, forme, force), repérer des groupes et
+    des valeurs atypiques.
+  rows: une ligne par individu
+  data:
+    - [temperature, nombre, "`x`", "28.5"]
+    - [ventes, nombre, "`y`", "312"]
+  params:
+    size: Taille des points (nombre).
+
+regression:
+  desc: >-
+    Nuage de points avec une droite ou une courbe polynomiale ajustée, sa bande de confiance
+    à 95 %, l'équation et le R².
+  usage: >-
+    Quantifier une relation (courbe dose-réponse, étalonnage) et présenter l'ajustement
+    avec sa qualité.
+  rows: une ligne par observation
+  data:
+    - [dose, nombre, "`x` : variable explicative", "90"]
+    - [rendement, nombre, "`y` : variable réponse", "5.2"]
+  params:
+    order: Degré du polynôme (1 = droite, 2 = parabole…).
+    ci: Affiche la bande de confiance à 95 % de la courbe.
+    show_equation: Écrit l'équation, le R² (et la p-value si linéaire) sur le graphique.
+  returns: "`chart.regression_stats` : coefficients, R², p-value."
+
+residplot:
+  desc: >-
+    Résidus d'une régression polynomiale en fonction de x : ils doivent se répartir sans
+    structure autour de zéro.
+  usage: >-
+    Vérifier un ajustement : une forme (courbe, entonnoir) dans les résidus signale un
+    modèle inadapté ou une variance non constante.
+  rows: une ligne par observation
+  data:
+    - [dose, nombre, "`x`", "90"]
+    - [rendement, nombre, "`y`", "5.2"]
+  params:
+    order: Degré du polynôme ajusté avant de calculer les résidus.
+
+confidence_ellipse:
+  desc: >-
+    Nuage de points avec une ellipse de confiance par groupe, qui couvre une proportion
+    donnée de la population (loi normale à deux dimensions).
+  usage: >-
+    Comparer la position et la dispersion de groupes dans un plan (variétés, espèces,
+    traitements), par exemple sur les axes d'une ACP.
+  rows: une ligne par individu
+  data:
+    - [jours_floraison, nombre, "`x`", "92"]
+    - [hauteur, nombre, "`y`", "118"]
+    - [cycle, texte, "`group` (optionnel) : une ellipse par groupe", "Précoce"]
+  params:
+    level: Proportion de la population couverte par l'ellipse (0.95 = 95 %).
+
+hexbin:
+  desc: >-
+    Pavage hexagonal : le plan est découpé en hexagones colorés selon le nombre de points
+    qu'ils contiennent.
+  usage: >-
+    Relation entre deux variables pour des milliers de points, quand un nuage de points
+    devient une tache.
+  rows: une ligne par observation
+  data:
+    - [age, nombre, "`x`", "42"]
+    - [revenu, nombre, "`y`", "31500"]
+
+heatmap:
+  desc: >-
+    Matrice des corrélations de Pearson entre toutes les colonnes numériques, en cases
+    colorées de −1 à +1.
+  usage: >-
+    Repérer d'un coup d'œil les variables liées entre elles avant une analyse multivariée ou
+    une régression.
+  rows: une ligne par individu ; toutes les colonnes numériques sont utilisées
+  data:
+    - [age, nombre, "variable numérique", "42"]
+    - [revenu, nombre, "variable numérique", "31500"]
+    - [anciennete, nombre, "variable numérique", "12"]
+
+pivot_heatmap:
+  desc: >-
+    Tableau croisé coloré : une valeur agrégée (moyenne, somme…) pour chaque couple de deux
+    catégories, avec les nombres dans les cases.
+  usage: >-
+    Résultats d'essais multi-sites ou multi-facteurs (rendement moyen par variété × dose),
+    ventes par mois × produit.
+  rows: une ligne par observation (agrégée automatiquement)
+  data:
+    - [dose, "texte ou nombre", "`x` : colonnes du tableau", "60"]
+    - [variete, texte, "`y` : lignes du tableau", "IR-841"]
+    - [rendement, nombre, "`value` : valeur agrégée", "4.7"]
+  params:
+    value: Colonne agrégée dans chaque case.
+    aggfunc: "Fonction d'agrégation : 'mean', 'sum', 'median', 'count'…"
+    annot: Écrit la valeur dans chaque case.
+    fmt: Format des nombres écrits (`.1f` = une décimale).
+  returns: "`chart.pivot_table` : le tableau croisé."
+
+jointplot:
+  desc: >-
+    Nuage de points (ou densité, régression, hexagones) avec la distribution de chaque
+    variable dans les marges (seaborn jointplot).
+  usage: >-
+    Étudier une relation entre deux variables en gardant un œil sur leurs distributions
+    individuelles.
+  rows: une ligne par observation
+  data:
+    - [dose, nombre, "`x`", "90"]
+    - [rendement, nombre, "`y`", "5.2"]
+  params:
+    kind: "Type du panneau central : 'scatter', 'kde', 'hist', 'hex', 'reg' ou 'resid'."
+
+pairplot:
+  desc: >-
+    Matrice de graphiques : un nuage de points pour chaque paire de variables et la
+    distribution de chaque variable sur la diagonale.
+  usage: >-
+    Exploration initiale d'un jeu de données à plusieurs variables numériques, coloré par
+    groupe.
+  rows: une ligne par individu
+  data:
+    - [hauteur, nombre, "`vars` : variable", "118"]
+    - [rendement, nombre, "`vars` : variable", "4.9"]
+    - [cycle, texte, "`hue` (optionnel)", "Tardif"]
+  params:
+    vars: Liste des colonnes numériques à croiser ; `None` = toutes.
+    corner: N'affiche que le triangle inférieur (pas de doublons).

@@ -1,0 +1,332 @@
+# Fiches de la page « Climat & sols »
+
+ombrothermic:
+  desc: >-
+    Diagramme ombrothermique de Bagnouls et Gaussen : températures et précipitations
+    mensuelles sur deux axes à l'échelle P = 2T ; un mois est sec quand P < 2T. En barres
+    (défaut) ou en deux courbes avec la saison sèche hachurée (`kind='lines'`).
+  usage: >-
+    Caractériser le climat d'une station, délimiter la saison sèche et la saison des pluies
+    pour raisonner un calendrier cultural.
+  rows: une ligne par mois (12 lignes), dans l'ordre du calendrier
+  data:
+    - [mois, texte, "`month_col` : nom du mois", "Jan"]
+    - [temp, nombre, "`temperature_col` : température moyenne (°C)", "24.3"]
+    - [precip, nombre, "`precipitation_col` : précipitations (mm)", "3"]
+  params:
+    hatch: "Motif des hachures de la saison sèche (`kind='lines'`) : '///', 'xx', '...'."
+    humid_fill: Colore légèrement la saison humide (`kind='lines'`).
+    kind: "'bars' (barres de pluie) ou 'lines' (deux courbes, saison sèche hachurée)."
+  returns: "`chart.dry_months` (mode 'lines') : la liste des mois secs."
+
+soil_texture:
+  desc: >-
+    Triangle des textures USDA : les 12 classes texturales tracées et nommées, et les
+    échantillons placés selon leurs teneurs en sable, limon et argile.
+  usage: >-
+    Classer des échantillons de sol par texture et comparer des sites ou des horizons.
+  rows: une ligne par échantillon ; sable + limon + argile = 100
+  data:
+    - [sable, nombre, "`sand` : % de sable", "45"]
+    - [limon, nombre, "`silt` : % de limon", "35"]
+    - [argile, nombre, "`clay` : % d'argile", "20"]
+    - [zone, texte, "`group` (optionnel)", "Bas-fond"]
+  params:
+    sand: Colonne des teneurs en sable (%).
+    silt: Colonne des teneurs en limon (%).
+    clay: Colonne des teneurs en argile (%).
+    show_classes: Trace et nomme les 12 classes texturales.
+  returns: "`chart.texture_classes` : la classe USDA de chaque échantillon."
+
+walter_lieth:
+  desc: >-
+    Climatogramme de Walter et Lieth : 10 °C correspondent à 20 mm, échelle des pluies
+    comprimée au-delà de 100 mm, saison humide en bleu, saison sèche pointillée, mois de gel
+    sous l'axe.
+  usage: >-
+    Comparer des climats selon la convention internationale des écologues, avec un résumé
+    (températures et pluie annuelles) dans l'en-tête.
+  rows: une ligne par mois (12 lignes)
+  data:
+    - [mois, texte, "`month` : nom du mois", "Juil"]
+    - [temperature, nombre, "`temp` : température moyenne (°C)", "28.1"]
+    - [pluie, nombre, "`precip` : précipitations (mm)", "142"]
+    - [tmin, nombre, "`tmin` (optionnel) : minimum (°C), pour les mois de gel", "21.4"]
+  params:
+    month: Colonne des mois.
+    temp: Colonne des températures moyennes mensuelles (°C).
+    precip: Colonne des précipitations mensuelles (mm).
+    tmin: Colonne optionnelle des températures minimales ; tmin < 0 marque un mois de gel.
+    station: Nom de la station écrit dans l'en-tête.
+    temp_color: Couleur de la courbe des températures.
+    precip_color: Couleur de la courbe des précipitations.
+  returns: "`chart.climate_summary` : moyennes et totaux annuels."
+
+climogram:
+  desc: >-
+    Climogramme (hythergramme) : chaque mois est un point (précipitations, température),
+    reliés en boucle fermée ; une boucle par station.
+  usage: >-
+    Comparer d'un coup d'œil le régime climatique de plusieurs stations (forme et position
+    des boucles).
+  rows: une ligne par mois et par station
+  data:
+    - [station, texte, "`group` (optionnel) : une boucle par station", "Station A"]
+    - [mois, texte, "`month` (optionnel) : étiquette des points", "Août"]
+    - [pluie, nombre, "`precip` : précipitations (mm)", "235"]
+    - [temperature, nombre, "`temp` : température (°C)", "28.3"]
+  params:
+    precip: Colonne des précipitations (axe horizontal).
+    temp: Colonne des températures (axe vertical).
+    month: Colonne des mois, écrits à côté des points.
+
+water_balance:
+  desc: >-
+    Bilan hydrique simplifié : précipitations face à l'évapotranspiration potentielle ;
+    excédent (P > ETP) et déficit (P < ETP) colorés.
+  usage: >-
+    Repérer les mois de recharge et de déficit en eau, raisonner l'irrigation et le choix
+    des cycles culturaux.
+  rows: une ligne par mois
+  data:
+    - [mois, texte, "`month`", "Sept"]
+    - [pluie, nombre, "`precip` : précipitations (mm)", "155"]
+    - [etp, nombre, "`etp` : évapotranspiration potentielle (mm)", "130"]
+  params:
+    month: Colonne des mois.
+    precip: Colonne des précipitations (mm).
+    etp: Colonne de l'évapotranspiration potentielle (mm).
+    show_bars: Ajoute les barres de précipitations.
+    surplus_color: Couleur de l'excédent (P > ETP).
+    deficit_color: Couleur du déficit (P < ETP).
+  returns: "`chart.water_table` (bilan mensuel), `chart.water_summary` (totaux)."
+
+degree_days:
+  desc: >-
+    Degrés-jours de croissance cumulés, DJ = max(0, (Tmax + Tmin) / 2 − base), avec la date
+    d'atteinte de chaque stade.
+  usage: >-
+    Prévoir les stades de développement d'une culture (floraison, maturité) ou d'un
+    ravageur à partir des températures journalières.
+  rows: une ligne par jour
+  data:
+    - [jour, date, "`date`", "2024-07-15"]
+    - [tmin, nombre, "`tmin` : minimum du jour (°C)", "23.8"]
+    - [tmax, nombre, "`tmax` : maximum du jour (°C)", "33.1"]
+  params:
+    date: Colonne des dates (une ligne par jour).
+    tmin: Colonne des températures minimales journalières (°C).
+    tmax: Colonne des températures maximales journalières (°C).
+    base: Température de base sous laquelle la plante ne se développe pas (°C).
+    cap: Plafond appliqué à Tmax (°C) ; `None` = pas de plafond.
+    stages: "Dictionnaire {stade: DJ requis}, ex. {'Floraison': 1250}."
+  returns: "`chart.gdd` (série journalière), `chart.stage_dates` (date de chaque stade)."
+
+wind_rose:
+  desc: >-
+    Rose des vents à partir des observations brutes : directions regroupées en secteurs,
+    vitesses en classes, en % des observations.
+  usage: >-
+    Connaître les vents dominants d'un site : implantation de brise-vent, d'éoliennes,
+    orientation de bâtiments, dispersion de traitements.
+  rows: une ligne par observation (direction et vitesse)
+  data:
+    - [direction, nombre, "`direction` : degrés (0 = nord, 90 = est)", "315"]
+    - [vitesse, nombre, "`speed` : vitesse", "4.2"]
+  params:
+    direction: Colonne des directions d'où vient le vent, en degrés (0 = nord).
+    speed: Colonne des vitesses.
+    sectors: Nombre de secteurs de direction (8, 16…).
+    speed_bins: Bornes des classes de vitesse ; `None` = automatique.
+    unit: Unité des vitesses affichée dans la légende.
+  returns: "`chart.wind_table` : fréquences par secteur et classe de vitesse."
+
+anomaly:
+  desc: >-
+    Barres d'anomalies : l'écart de chaque valeur à une référence (moyenne, nombre ou
+    période de référence), avec une moyenne glissante en option.
+  usage: >-
+    Mettre en évidence les années chaudes ou sèches, une tendance climatique, un écart à
+    une normale.
+  rows: une ligne par période (année)
+  data:
+    - [annee, nombre, "`x` : période", "1998"]
+    - [temperature, nombre, "`value` : valeur comparée à la référence", "27.9"]
+  params:
+    value: Colonne des valeurs.
+    baseline: "Référence : `None` (moyenne), un nombre, ou une période (début, fin) de x, ex. (1961, 1990)."
+    window: Largeur de la moyenne glissante ; `None` = pas de moyenne glissante.
+    pos_color: Couleur des anomalies positives.
+    neg_color: Couleur des anomalies négatives.
+  returns: "`chart.anomalies` : les écarts."
+
+climate_stripes:
+  desc: >-
+    Bandes climatiques (« warming stripes ») : une bande verticale par année, colorée selon
+    l'écart à la moyenne, du bleu (froid) au rouge (chaud).
+  usage: >-
+    Communiquer une tendance de long terme de façon immédiate, sans chiffres.
+  rows: une ligne par année
+  data:
+    - [annee, nombre, "`x`", "2010"]
+    - [temperature, nombre, "`value`", "28.4"]
+  params:
+    value: Colonne des valeurs (ex. température moyenne annuelle).
+    show_years: Affiche quelques années sous les bandes.
+
+soil_profile:
+  desc: >-
+    Profil de sol : les horizons empilés selon la profondeur (vers le bas), une colonne par
+    fosse, colorés par horizon ou par leur couleur réelle.
+  usage: >-
+    Décrire et comparer des fosses pédologiques (toposéquence, parcelles), illustrer un
+    rapport de description des sols.
+  rows: une ligne par horizon
+  data:
+    - [fosse, texte, "`profile` (optionnel) : une colonne par fosse", "Plateau"]
+    - [horizon, texte, "`horizon` : nom de l'horizon", "Bt"]
+    - [haut, nombre, "`top` : profondeur du haut (cm)", "18"]
+    - [bas, nombre, "`bottom` : profondeur du bas (cm)", "70"]
+    - [couleur, "texte (couleur)", "`color` (optionnel) : couleur réelle (hex)", "#a0522d"]
+  params:
+    top: Colonne de la profondeur du haut de l'horizon (cm).
+    bottom: Colonne de la profondeur du bas de l'horizon (cm).
+    horizon: Colonne du nom de l'horizon (écrit dans le rectangle).
+    profile: Colonne du nom de la fosse ; une colonne par fosse.
+    color: Colonne de couleurs (hexadécimal, ex. Munsell converti) ; `None` = couleurs du thème.
+    width: Largeur de chaque colonne de profil.
+    show_labels: Écrit le nom des horizons.
+
+depth_profile:
+  desc: >-
+    Une variable selon la profondeur : profondeur sur l'axe vertical, orientée vers le bas,
+    une courbe par groupe.
+  usage: >-
+    Profils d'humidité, de matière organique, de température ou de densité d'un sol ;
+    comparer des dates ou des sites.
+  rows: une ligne par profondeur mesurée (et par groupe)
+  data:
+    - [profondeur, nombre, "`depth` : profondeur (cm)", "30"]
+    - [humidite, nombre, "`value` : variable mesurée", "21.5"]
+    - [date, texte, "`group` (optionnel) : une courbe par groupe", "15 août"]
+  params:
+    depth: Colonne des profondeurs (axe vertical, vers le bas).
+    value: Colonne de la variable mesurée (axe horizontal, lu en haut).
+
+soil_properties:
+  desc: >-
+    Profil multi-variables : plusieurs propriétés côte à côte, un panneau par propriété, sur
+    une échelle de profondeur commune ; en paliers par horizon avec `bottom`.
+  usage: >-
+    Synthèse analytique d'une ou plusieurs fosses (pH, matière organique, argile, CEC) pour
+    lire les discontinuités entre horizons.
+  rows: une ligne par horizon (ou par profondeur mesurée) et par fosse
+  data:
+    - [fosse, texte, "`group` (optionnel) : une courbe par fosse", "Fosse 1"]
+    - [haut, nombre, "`depth` : haut de l'horizon (cm), ou profondeur du point", "20"]
+    - [bas, nombre, "`bottom` (optionnel) : bas de l'horizon (cm)", "45"]
+    - [pH, nombre, "`columns` : un panneau par propriété", "5.8"]
+    - [MO (%), nombre, "`columns` : autre propriété", "1.2"]
+  params:
+    depth: Colonne de la profondeur (haut de l'horizon si `bottom` est donné).
+    columns: Liste des propriétés ; un panneau par colonne.
+    bottom: Colonne du bas de l'horizon ; valeurs tracées en paliers d'épaisseur de l'horizon.
+
+retention_curve:
+  desc: >-
+    Courbe de rétention d'eau (courbe pF) : teneur en eau selon la succion, capacité au
+    champ (pF 2,5), point de flétrissement (pF 4,2) et réserve utile, ajustement de van
+    Genuchten.
+  usage: >-
+    Caractériser les propriétés hydriques d'un sol ou d'un horizon, calculer la réserve
+    utile pour le pilotage de l'irrigation.
+  rows: une ligne par mesure (succion, teneur en eau) et par échantillon
+  data:
+    - [horizon, texte, "`group` (optionnel) : une courbe par échantillon", "Bt (argileux)"]
+    - [pF, nombre, "`suction` : succion (pF, kPa ou cm selon `unit`)", "2.5"]
+    - [theta, nombre, "`water` : teneur en eau (m³/m³ ou %)", "0.238"]
+  params:
+    suction: Colonne de la succion.
+    water: Colonne de la teneur en eau.
+    unit: "Unité de la succion : 'pF' (log10 de cm d'eau), 'kPa' ou 'cm'."
+    fit: Ajuste le modèle de van Genuchten (au moins 4 points) ; sinon interpolation linéaire.
+    field_capacity: pF de la capacité au champ (2.5 ; 2.0 est aussi utilisé).
+    wilting_point: pF du point de flétrissement permanent (4.2).
+  returns: "`chart.retention` : θr, θs, α, n, capacité au champ, point de flétrissement, réserve utile."
+
+grain_size_curve:
+  desc: >-
+    Courbe granulométrique cumulative : pourcentage de particules plus fines qu'un diamètre
+    (échelle log), avec les limites argile / limon / sable / graviers.
+  usage: >-
+    Analyse granulométrique d'un sol ou d'un matériau : comparer des échantillons, calculer
+    D10, D60 et le coefficient d'uniformité (géotechnique, drainage, filtres).
+  rows: une ligne par tamis (diamètre, % passant) et par échantillon
+  data:
+    - [echantillon, texte, "`group` (optionnel) : une courbe par échantillon", "Limon"]
+    - [diametre_mm, nombre, "`diameter` : diamètre (mm)", "0.05"]
+    - [passant, nombre, "`passing` : % de passants cumulés", "64"]
+  params:
+    diameter: Colonne des diamètres (mm).
+    passing: Colonne des pourcentages cumulés de particules plus fines.
+    limits: Diamètres (mm) séparant les classes ; défaut 2 µm, 50 µm, 2 mm.
+    names: Noms des classes, un de plus que de limites.
+  returns: "`chart.grain_size` : D10, D30, D60, Cu, Cc."
+
+exchange_complex:
+  desc: >-
+    Complexe d'échange par horizon : cations échangeables empilés (cmol+/kg), acidité
+    hachurée, CEC marquée d'un trait et taux de saturation V = S/T.
+  usage: >-
+    Diagnostiquer la fertilité chimique d'un profil : réserve en bases, désaturation,
+    besoin de chaulage.
+  rows: une ligne par horizon, de la surface vers la profondeur
+  data:
+    - [horizon, texte, "`horizon` : nom de la barre", "A"]
+    - [Ca, nombre, "`cations` : calcium échangeable (cmol+/kg)", "9.5"]
+    - [Mg, nombre, "`cations` : magnésium échangeable", "2.1"]
+    - [H_Al, nombre, "`acidity` (optionnel) : acidité échangeable", "1.8"]
+    - [CEC, nombre, "`cec` (optionnel) : capacité d'échange", "14.5"]
+  params:
+    horizon: Colonne des noms d'horizons (une barre par ligne, surface en haut).
+    cations: Liste des colonnes de cations basiques (Ca, Mg, K, Na…) en cmol+/kg.
+    acidity: Colonne de l'acidité échangeable (H + Al), hachurée.
+    cec: Colonne de la CEC (T) ; sans elle, T = somme des bases + acidité.
+    show_saturation: Écrit le taux de saturation V au bout des barres.
+  returns: "`chart.base_saturation` : V (%) par horizon."
+
+infiltration_curve:
+  desc: >-
+    Courbe d'infiltration : infiltration cumulée d'un essai au cours du temps avec un modèle
+    ajusté (Philip ou Horton) et la vitesse d'infiltration sur l'axe de droite.
+  usage: >-
+    Exploiter un essai au double anneau ou Beerkan : vitesse d'infiltration finale
+    (perméabilité), comparaison de pratiques culturales, risque de ruissellement.
+  rows: une ligne par lecture (temps, cumul)
+  data:
+    - [minutes, nombre, "`time` : temps écoulé", "15"]
+    - [infiltration_mm, nombre, "`cumulative` : lame infiltrée cumulée", "29.2"]
+  params:
+    time: Colonne du temps écoulé depuis le début de l'essai.
+    cumulative: Colonne de l'infiltration cumulée.
+    model: "'philip' (I = S·√t + A·t) ou 'horton' (vitesse décroissant exponentiellement vers fc)."
+    show_rate: Ajoute la vitesse d'infiltration mesurée et modélisée sur un axe de droite.
+  returns: "`chart.infiltration` : paramètres du modèle et vitesse finale."
+
+isopleth:
+  desc: >-
+    Diagramme des isoplèthes : une variable du sol dans le plan temps × profondeur, en
+    courbes de niveau remplies, profondeur vers le bas.
+  usage: >-
+    Suivre l'humectation et le dessèchement d'un profil au fil des saisons, la propagation
+    de la chaleur, d'un front de salinité.
+  rows: une ligne par date et par profondeur (format long)
+  data:
+    - [date, "date ou nombre", "`time` : date de mesure", "2025-03-01"]
+    - [profondeur, nombre, "`depth` : profondeur (cm)", "40"]
+    - [humidite, nombre, "`value` : variable mesurée", "27.3"]
+  params:
+    time: Colonne des dates (ou instants numériques).
+    depth: Colonne des profondeurs (axe vertical, vers le bas).
+    value: Colonne de la variable cartographiée.
+    contour_labels: Ajoute des isolignes annotées.

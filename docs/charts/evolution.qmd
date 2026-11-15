@@ -6,12 +6,20 @@ subtitle: "Séries temporelles, calendriers et événements datés."
 ```{python}
 #| include: false
 exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
 ```
 
 Tous les exemples utilisent le thème [`editorial`](../themes.qmd) ; chaque graphique suit
 le thème actif (`set_theme(...)`). Retour à la [galerie](../gallery.qmd).
 
 ### `line` — Courbe {#g-line}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('line')
+```
+
 
 ```{python}
 #| fig-cap: "Évolution mensuelle de trois indicateurs"
@@ -40,6 +48,13 @@ df = pd.DataFrame({
 ### `area` — Aire (empilée) {#g-area}
 
 ```{python}
+#| echo: false
+#| output: asis
+fiche('area')
+```
+
+
+```{python}
 #| fig-cap: "Répartition des genres musicaux dans les écoutes"
 #| fig-width: 9
 #| fig-height: 4
@@ -63,6 +78,13 @@ df = pd.DataFrame({
 
 
 ### `streamgraph` — Flux temporel {#g-streamgraph}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('streamgraph')
+```
+
 
 ```{python}
 #| fig-cap: "Évolution des genres musicaux dans les écoutes"
@@ -92,6 +114,13 @@ df['classique'] = df['classique'].clip(lower=1)
 
 ### `step` — Courbe en escalier {#g-step}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('step')
+```
+
+
 Valeur constante entre deux mesures (stocks, niveaux, tarifs) — `where` place la marche.
 
 ```{python}
@@ -107,6 +136,13 @@ meteo['pluie_cumulee'] = meteo['pluie'].cumsum()
 
 ### `stem` — Diagramme en bâtons {#g-stem}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('stem')
+```
+
+
 Un trait par observation depuis une ligne de base : idéal pour des événements ponctuels.
 
 ```{python}
@@ -120,6 +156,13 @@ Un trait par observation depuis une ligne de base : idéal pour des événements
 
 
 ### `band` — Bande entre deux courbes {#g-band}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('band')
+```
+
 
 Une bande colorée entre deux colonnes (minimum–maximum, intervalle de confiance), avec
 une courbe centrale optionnelle.
@@ -135,6 +178,13 @@ une courbe centrale optionnelle.
 
 
 ### `bump` — Évolution de classement {#g-bump}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('bump')
+```
+
 
 ```{python}
 #| fig-cap: "Classement Ligue 1 sur 5 saisons"
@@ -160,6 +210,13 @@ df = pd.DataFrame({
 
 ### `timeline` — Frise chronologique {#g-timeline}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('timeline')
+```
+
+
 Des événements datés, chacun avec sa tige et son libellé, alternés au-dessus et au-dessous.
 
 ```{python}
@@ -174,6 +231,13 @@ Des événements datés, chacun avec sa tige et son libellé, alternés au-dessu
 
 ### `eventplot` — Événements par groupe {#g-eventplot}
 
+```{python}
+#| echo: false
+#| output: asis
+fiche('eventplot')
+```
+
+
 Un trait par événement, une ligne par groupe : dates d'observation, stades phénologiques…
 
 ```{python}
@@ -187,6 +251,13 @@ Un trait par événement, une ligne par groupe : dates d'observation, stades ph�
 
 
 ### `calendar_heatmap` — Calendrier de contributions {#g-calendar_heatmap}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('calendar_heatmap')
+```
+
 
 ```{python}
 #| fig-cap: "Commits GitHub 2024"
@@ -209,6 +280,13 @@ df = pd.DataFrame({'date': dates, 'commits': commits})
 
 
 ### `gantt` — Diagramme de Gantt {#g-gantt}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('gantt')
+```
+
 
 ```{python}
 #| fig-cap: "Planning projet Q1 2024"
