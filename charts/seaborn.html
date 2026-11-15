@@ -70,6 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <link href="../themes.html" rel="next">
 <link href="../charts/graphes.html" rel="prev">
+<link href="../logo/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -80,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e6d2fa73a8f243c306158d271675ca8d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c6a5137008f702cd413e0ae0585052da.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,6 +111,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<meta property="og:title" content="Seaborn – plutovizu">
+<meta property="og:description" content="Tous les graphiques seaborn depuis plutovizu.">
+<meta property="og:image" content="https://Mr-KAM.github.io/plutovizu/charts/logo/open-graph-1200x630.png">
+<meta property="og:site_name" content="plutovizu">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -279,8 +284,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">plutovizu</span>
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../logo/plutovizu-horizontal-fond-clair.svg" alt="" class="navbar-logo light-content">
+    <img src="../logo/plutovizu-horizontal-fond-sombre.svg" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Recherche"></div>
@@ -584,7 +590,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="727f570a" class="cell" data-execution_count="3">
+<div id="0a926878" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .seaborn(<span class="st">'violinplot'</span>, x<span class="op">=</span><span class="st">'variete'</span>, y<span class="op">=</span><span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, inner<span class="op">=</span><span class="st">'quart'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Distribution du rendement par variété'</span>)</span>
@@ -600,7 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Les fonctions seaborn « figure » (<code>relplot</code>, <code>displot</code>, <code>catplot</code>, <code>lmplot</code>, <code>pairplot</code>, <code>jointplot</code>, <code>clustermap</code>) créent une grille de panneaux : <code>title()</code> devient le titre général et la grille est disponible dans <code>chart.sns_grid</code>.</p>
-<div id="6cf326df" class="cell" data-execution_count="4">
+<div id="1180bcfd" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .seaborn(<span class="st">'relplot'</span>, x<span class="op">=</span><span class="st">'dose'</span>, y<span class="op">=</span><span class="st">'rendement'</span>, col<span class="op">=</span><span class="st">'variete'</span>, kind<span class="op">=</span><span class="st">'line'</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>             marker<span class="op">=</span><span class="st">'o'</span>, height<span class="op">=</span><span class="fl">3.2</span>, aspect<span class="op">=</span><span class="dv">1</span>)</span>

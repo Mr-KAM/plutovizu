@@ -88,7 +88,7 @@
     "href": "index.html",
     "title": "plutovizu",
     "section": "",
-    "text": "Démarrage rapide\n    Installez plutovizu avec pip ou uv et tracez votre premier graphique en quelques minutes.\n  \n  \n    \n    Galerie\n    104 graphiques : catalogue matplotlib, écologie, climat, sols, cartes (map), graphes et réseaux, et tout seaborn. Chacun a sa fiche : usage, données attendues, paramètres.\n  \n  \n    \n    Personnalisation\n    Palettes, dégradés, polices et styles pour adapter chaque graphique à votre charte.\n  \n  \n    \n    Référence API\n    Toutes les méthodes de Chart, leurs paramètres et des exemples d'usage.",
+    "text": "Des graphiques matplotlib élégants à partir de vos DataFrames pandas, en une seule chaîne d'appels.",
     "crumbs": [
       "Documentation",
       "Prise en main",

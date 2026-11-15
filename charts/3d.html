@@ -70,6 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <link href="../charts/sciences.html" rel="next">
 <link href="../charts/champs.html" rel="prev">
+<link href="../logo/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -80,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e6d2fa73a8f243c306158d271675ca8d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c6a5137008f702cd413e0ae0585052da.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,6 +111,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<meta property="og:title" content="3D – plutovizu">
+<meta property="og:description" content="Nuages, courbes, surfaces et barres en trois dimensions.">
+<meta property="og:image" content="https://Mr-KAM.github.io/plutovizu/charts/logo/open-graph-1200x630.png">
+<meta property="og:site_name" content="plutovizu">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -279,8 +284,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">plutovizu</span>
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../logo/plutovizu-horizontal-fond-clair.svg" alt="" class="navbar-logo light-content">
+    <img src="../logo/plutovizu-horizontal-fond-sombre.svg" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Recherche"></div>
@@ -619,7 +625,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="4e9003a4" class="cell" data-execution_count="3">
+<div id="55c832a9" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">6.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .scatter3d(<span class="st">'hauteur'</span>, <span class="st">'jours_floraison'</span>, <span class="st">'rendement'</span>, group<span class="op">=</span><span class="st">'cycle'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Caractères en 3D'</span>)</span>
@@ -707,7 +713,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="99dd1767" class="cell" data-execution_count="5">
+<div id="569eb223" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">6</span> <span class="op">*</span> np.pi, <span class="dv">300</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>vol <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: np.cos(t) <span class="op">*</span> t, <span class="st">'y'</span>: np.sin(t) <span class="op">*</span> t, <span class="st">'altitude'</span>: <span class="dv">20</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> t})</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(Chart(vol, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">6.5</span>))</span>
@@ -808,7 +814,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Sur une grille régulière : <code>kind='surface'</code> ou <code>'wireframe'</code> ; sur des points dispersés, la surface est triangulée (<code>trisurf</code>) automatiquement.</p>
-<div id="5a0a33d7" class="cell" data-execution_count="7">
+<div id="22d74d4f" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .surface(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Surface de réponse'</span>)</span>
@@ -822,7 +828,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="0eb27bdc" class="cell" data-execution_count="8">
+<div id="a6c2fecf" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .surface(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>, kind<span class="op">=</span><span class="st">'wireframe'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Fil de fer'</span>)</span>
@@ -910,7 +916,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="518b2818" class="cell" data-execution_count="10">
+<div id="f47221f9" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>moyennes <span class="op">=</span> essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>], as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">'rendement'</span>].mean()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(Chart(moyennes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .bar3d(<span class="st">'variete'</span>, <span class="st">'dose'</span>, <span class="st">'rendement'</span>)</span>

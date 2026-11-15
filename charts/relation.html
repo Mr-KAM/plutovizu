@@ -70,6 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <link href="../charts/multivarie.html" rel="next">
 <link href="../charts/comparaison.html" rel="prev">
+<link href="../logo/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -80,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e6d2fa73a8f243c306158d271675ca8d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c6a5137008f702cd413e0ae0585052da.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,6 +111,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<meta property="og:title" content="Relations – plutovizu">
+<meta property="og:description" content="Le lien entre deux variables ou plus.">
+<meta property="og:image" content="https://Mr-KAM.github.io/plutovizu/charts/logo/open-graph-1200x630.png">
+<meta property="og:site_name" content="plutovizu">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -279,8 +284,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">plutovizu</span>
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../logo/plutovizu-horizontal-fond-clair.svg" alt="" class="navbar-logo light-content">
+    <img src="../logo/plutovizu-horizontal-fond-sombre.svg" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Recherche"></div>
@@ -612,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="ad51474f" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
+<div id="c6bb4f71" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">10</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">200</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>temp <span class="op">=</span> np.random.normal(<span class="dv">22</span>, <span class="dv">8</span>, n)</span>
@@ -723,7 +729,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.regression_stats</code> : coefficients, R², p-value.</p>
 <p><strong>Exemple</strong></p>
 <p>Ajustement polynomial avec bande de confiance à 95 %, équation et R² (et p-value pour un ajustement linéaire). Les résultats sont aussi disponibles dans <code>chart.regression_stats</code>.</p>
-<div id="97960026" class="cell" data-execution_count="5">
+<div id="c783ce74" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .regression(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, order<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Courbe de réponse à l'azote"</span>)</span>
@@ -808,7 +814,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Des résidus sans structure valident le modèle ; une courbe signale un mauvais degré.</p>
-<div id="08e17429" class="cell" data-execution_count="7">
+<div id="eb3448cc" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .residplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, order<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Résidus d'un ajustement linéaire : la courbure appelle un degré 2"</span>)</span>
@@ -918,7 +924,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Un nuage de points avec une ellipse par groupe, couvrant 95 % de la population (loi normale bivariée ; réglable avec <code>level</code>).</p>
-<div id="04193013" class="cell" data-execution_count="9">
+<div id="d311a701" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .confidence_ellipse(<span class="st">'jours_floraison'</span>, <span class="st">'hauteur'</span>, group<span class="op">=</span><span class="st">'cycle'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Ellipses de confiance à 95 %'</span>)</span>
@@ -1006,7 +1012,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="f1364fa9" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="11">
+<div id="b759ed31" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'age'</span>:    np.random.normal(<span class="dv">40</span>, <span class="dv">12</span>, <span class="dv">5000</span>),</span>
@@ -1097,7 +1103,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="b9edb481" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="13">
+<div id="220a7edf" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">5</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'température'</span>: np.random.normal(<span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">100</span>),</span>
@@ -1213,7 +1219,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.pivot_table</code> : le tableau croisé.</p>
 <p><strong>Exemple</strong></p>
 <p>Une valeur agrégée (moyenne par défaut) selon deux catégories, annotée et colorée.</p>
-<div id="cda66198" class="cell" data-execution_count="15">
+<div id="3a3f2b36" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .pivot_heatmap(<span class="st">'dose'</span>, <span class="st">'variete'</span>, <span class="st">'rendement'</span>, fmt<span class="op">=</span><span class="st">'.2f'</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement moyen (t/ha)'</span>)</span>
@@ -1301,7 +1307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="529c7ea9" class="cell" data-execution_count="17">
+<div id="0c6a300d" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .jointplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, kind<span class="op">=</span><span class="st">'reg'</span>, height<span class="op">=</span><span class="fl">5.5</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement selon la dose'</span>)</span>
@@ -1388,7 +1394,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="b2267d95" class="cell" data-execution_count="19">
+<div id="c5b5955f" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .pairplot(<span class="bu">vars</span><span class="op">=</span>[<span class="st">'hauteur'</span>, <span class="st">'jours_floraison'</span>, <span class="st">'talles'</span>, <span class="st">'rendement'</span>],</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>              hue<span class="op">=</span><span class="st">'cycle'</span>, corner<span class="op">=</span><span class="va">True</span>, height<span class="op">=</span><span class="dv">2</span>)</span>

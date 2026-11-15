@@ -70,6 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <link href="../charts/graphes.html" rel="next">
 <link href="../charts/ecologie.html" rel="prev">
+<link href="../logo/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -80,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e6d2fa73a8f243c306158d271675ca8d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c6a5137008f702cd413e0ae0585052da.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,6 +111,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<meta property="og:title" content="Analyse qualitative – plutovizu">
+<meta property="og:description" content="Réponses ouvertes, entretiens et questionnaires d’opinion.">
+<meta property="og:image" content="https://Mr-KAM.github.io/plutovizu/charts/logo/open-graph-1200x630.png">
+<meta property="og:site_name" content="plutovizu">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -279,8 +284,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">plutovizu</span>
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../logo/plutovizu-horizontal-fond-clair.svg" alt="" class="navbar-logo light-content">
+    <img src="../logo/plutovizu-horizontal-fond-sombre.svg" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Recherche"></div>
@@ -634,7 +640,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.word_frequencies</code> : fréquence de chaque mot.</p>
 <p><strong>Exemple</strong></p>
 <p>À partir d’une colonne de texte libre : les mots sont comptés en ignorant les mots vides français (<code>language='fr'</code>, ou <code>'en'</code>, <code>'fr+en'</code>). On peut ajouter ses propres mots à ignorer (<code>stopwords=[...]</code>), compter des expressions (<code>ngram=2</code>), ou fournir directement des fréquences (<code>words=</code>, <code>weights=</code>). Couleurs et police suivent le thème.</p>
-<div id="df5d9c62" class="cell" data-execution_count="3">
+<div id="9fc6cff5" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(enquete, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .word_cloud(<span class="st">'reponse'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Difficultés citées par les producteurs'</span>)</span>
@@ -648,7 +654,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="a242a6ae" class="cell" data-execution_count="4">
+<div id="e241f827" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'prezi'</span>):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    (Chart(enquete, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        .word_cloud(<span class="st">'reponse'</span>, ngram<span class="op">=</span><span class="dv">2</span>, shape<span class="op">=</span><span class="st">'circle'</span>)</span>
@@ -752,7 +758,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Le complément chiffré du nuage : les mots (ou expressions) les plus cités, en barres. Les fréquences sont dans <code>chart.word_frequencies</code> ; la fonction <code>word_counts()</code> les calcule sans tracer.</p>
-<div id="cb91ffc9" class="cell" data-execution_count="6">
+<div id="cd3a69d1" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(enquete, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .word_frequency(<span class="st">'reponse'</span>, top<span class="op">=</span><span class="dv">12</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Mots les plus cités'</span>)</span>
@@ -852,7 +858,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.likert_table</code> : pourcentages par question et modalité.</p>
 <p><strong>Exemple</strong></p>
 <p>Une barre par question, centrée sur la réponse neutre : désaccord à gauche, accord à droite, en pourcentage. Les questions sont triées par accord net.</p>
-<div id="46253dcc" class="cell" data-execution_count="8">
+<div id="3489bffb" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>echelle <span class="op">=</span> [<span class="st">'Pas du tout d’accord'</span>, <span class="st">'Pas d’accord'</span>, <span class="st">'Neutre'</span>, <span class="st">'D’accord'</span>, <span class="st">'Tout à fait d’accord'</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>opinions <span class="op">=</span> pd.DataFrame({q: rng.choice(echelle, <span class="dv">80</span>, p<span class="op">=</span>p) <span class="cf">for</span> q, p <span class="kw">in</span> {</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'La formation était utile'</span>:      [<span class="fl">.05</span>, <span class="fl">.10</span>, <span class="fl">.15</span>, <span class="fl">.40</span>, <span class="fl">.30</span>],</span>
@@ -956,7 +962,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.code_table</code> : le tableau cas × codes.</p>
 <p><strong>Exemple</strong></p>
 <p>Pour le codage d’entretiens (comme dans NVivo ou Atlas.ti) : une ligne par segment codé, et la matrice montre combien de fois chaque code apparaît dans chaque entretien. <code>normalize=True</code> donne la part de chaque code dans l’entretien.</p>
-<div id="26ddc89c" class="cell" data-execution_count="10">
+<div id="f3cc6dcc" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>segments <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'entretien'</span>: rng.choice([<span class="ss">f'Entretien </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>)], <span class="dv">120</span>),</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'code'</span>: rng.choice([<span class="st">'Eau'</span>, <span class="st">'Prix'</span>, <span class="st">'Crédit'</span>, <span class="st">'Semences'</span>, <span class="st">'Formation'</span>, <span class="st">'Marché'</span>], <span class="dv">120</span>,</span>

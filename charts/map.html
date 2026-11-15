@@ -70,6 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <link href="../charts/ecologie.html" rel="next">
 <link href="../charts/sciences.html" rel="prev">
+<link href="../logo/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -80,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e6d2fa73a8f243c306158d271675ca8d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c6a5137008f702cd413e0ae0585052da.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -110,6 +111,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
 
+<meta property="og:title" content="Map – plutovizu">
+<meta property="og:description" content="Points, zones, flux, densités, isolignes et trajets, avec flèche du nord, échelle et carte de situation.">
+<meta property="og:image" content="https://Mr-KAM.github.io/plutovizu/charts/logo/open-graph-1200x630.png">
+<meta property="og:site_name" content="plutovizu">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -279,8 +284,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">plutovizu</span>
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../logo/plutovizu-horizontal-fond-clair.svg" alt="" class="navbar-logo light-content">
+    <img src="../logo/plutovizu-horizontal-fond-sombre.svg" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Recherche"></div>
@@ -675,7 +681,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Des points en longitude/latitude, colorés par une valeur (<code>value</code>) ou un groupe (<code>group</code>), dimensionnés par une colonne (<code>size</code>), nommés (<code>labels</code>).</p>
-<div id="59e08095" class="cell" data-execution_count="3">
+<div id="2d5360ff" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, value<span class="op">=</span><span class="st">'pluie'</span>, size<span class="op">=</span><span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluviométrie annuelle (mm)'</span>)</span>
@@ -690,7 +696,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="5340b8df" class="cell" data-execution_count="4">
+<div id="bcada348" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, group<span class="op">=</span><span class="st">'zone'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Zones agro-écologiques (illustratives)'</span>)</span>
@@ -816,7 +822,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Chaque zone d’un <code>GeoDataFrame</code> colorée selon une colonne : continue (barre de couleur) ou catégorielle (légende). Les zones se lisent avec <code>geopandas.read_file('zones.geojson')</code> (GeoJSON, shapefile, GeoPackage…). Ici, un parcellaire fictif construit avec shapely :</p>
-<div id="817def7e" class="cell" data-execution_count="6">
+<div id="74344bbc" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -843,7 +849,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="711eeeb7" class="cell" data-execution_count="7">
+<div id="33a3cb28" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(parcelles, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .choropleth(<span class="st">'culture'</span>, labels<span class="op">=</span><span class="st">'parcelle'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Assolement'</span>)</span>
@@ -859,7 +865,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Pour une colonne numérique, <code>scheme</code> regroupe les valeurs en <code>k</code> <strong>classes</strong> de couleur : <code>'quantiles'</code> (même nombre de zones par classe), <code>'equal'</code> (intervalles égaux) ou <code>'natural'</code> (seuils naturels de Jenks, qui placent les coupures entre les groupes de valeurs). Les bornes sont dans <code>chart.classes</code>.</p>
-<div id="f61a93c6" class="cell" data-execution_count="8">
+<div id="5c598e04" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(parcelles, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .choropleth(<span class="st">'rendement'</span>, labels<span class="op">=</span><span class="st">'parcelle'</span>, scheme<span class="op">=</span><span class="st">'natural'</span>, k<span class="op">=</span><span class="dv">4</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par parcelle — 4 classes'</span>)</span>
@@ -1017,7 +1023,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Une flèche courbe par ligne, de l’origine vers la destination, d’épaisseur proportionnelle au volume (<code>weight</code>).</p>
-<div id="1e5c88bb" class="cell" data-execution_count="10">
+<div id="2d652d9f" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dakar <span class="op">=</span> villes.set_index(<span class="st">'ville'</span>).loc[<span class="st">'Dakar'</span>]</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>flux <span class="op">=</span> (villes[villes[<span class="st">'ville'</span>].isin([<span class="st">'Saint-Louis'</span>, <span class="st">'Kaolack'</span>, <span class="st">'Tambacounda'</span>, <span class="st">'Kolda'</span>, <span class="st">'Ziguinchor'</span>])]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        .assign(vers<span class="op">=</span><span class="st">'Dakar'</span>, lon_dakar<span class="op">=</span>dakar[<span class="st">'lon'</span>], lat_dakar<span class="op">=</span>dakar[<span class="st">'lat'</span>],</span>
@@ -1142,7 +1148,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Les zones où les points se concentrent : densité de noyau, éventuellement pondérée (<code>weight</code>), en aplats de densité relative sur le fond de carte.</p>
-<div id="0492e1a4" class="cell" data-execution_count="12">
+<div id="e792631e" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(signalements, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .density_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, show_points<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Densité des signalements'</span>)</span>
@@ -1280,7 +1286,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Une grandeur mesurée en quelques points (stations) interpolée sur la zone, avec ses isolignes annotées — ici des <strong>isohyètes</strong>. L’interpolation (linéaire, sur une triangulation des stations) ne couvre que l’intérieur de l’enveloppe des points.</p>
-<div id="a6c2d4af" class="cell" data-execution_count="14">
+<div id="7d27ddc2" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .field_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>, levels<span class="op">=</span><span class="dv">8</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluviométrie annuelle (mm)'</span>)</span>
@@ -1401,7 +1407,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Des points reliés dans l’ordre (<code>order</code> : date, étape…), une ligne par groupe ; départ ●, arrivée ■ et flèches de sens.</p>
-<div id="45308356" class="cell" data-execution_count="16">
+<div id="3cffca80" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(Chart(transhumance, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .route_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, order<span class="op">=</span><span class="st">'jour'</span>, labels<span class="op">=</span><span class="st">'etape'</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Transhumance vers le sud-est'</span>)</span>
@@ -1464,7 +1470,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><code>loc</code> vaut <code>'upper left'</code>, <code>'upper right'</code>, <code>'lower left'</code> ou <code>'lower right'</code>. La barre d’échelle est juste en degrés (corrigée selon la latitude) comme en coordonnées projetées en mètres.</p>
-<div id="224d9e5c" class="cell" data-execution_count="17">
+<div id="39256382" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">7.5</span>))</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, value<span class="op">=</span><span class="st">'pluie'</span>, size<span class="op">=</span><span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .north_arrow()</span>

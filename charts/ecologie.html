@@ -70,6 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <link href="../charts/qualitatif.html" rel="next">
 <link href="../charts/map.html" rel="prev">
+<link href="../logo/favicon.svg" rel="icon" type="image/svg+xml">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -80,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-e6d2fa73a8f243c306158d271675ca8d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c6a5137008f702cd413e0ae0585052da.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -113,6 +114,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
+<meta property="og:title" content="Écologie – plutovizu">
+<meta property="og:description" content="Courbes de réponse des modèles, ordination des communautés et diversité.">
+<meta property="og:image" content="https://Mr-KAM.github.io/plutovizu/charts/logo/open-graph-1200x630.png">
+<meta property="og:site_name" content="plutovizu">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-dark"><script id="quarto-html-before-body" type="application/javascript">
@@ -282,8 +287,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">plutovizu</span>
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../logo/plutovizu-horizontal-fond-clair.svg" alt="" class="navbar-logo light-content">
+    <img src="../logo/plutovizu-horizontal-fond-sombre.svg" alt="" class="navbar-logo dark-content">
     </a>
   </div>
             <div id="quarto-search" class="" title="Recherche"></div>
@@ -650,7 +656,7 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.glm</code> : coefficients, D², p-value, AIC, optimum.</p>
 <p><strong>Exemple</strong></p>
 <p>Régression <strong>logistique</strong> (<code>family='binomial'</code>, présence/absence → probabilité) ou de <strong>Poisson</strong> (<code>family='poisson'</code>, comptages), avec la bande de confiance à 95 % et les observations. L’encadré donne la part de déviance expliquée (D²), la p-value du test du rapport de vraisemblance et l’AIC ; tout est dans <code>chart.glm</code>.</p>
-<div id="99830cb9" class="cell" data-execution_count="3">
+<div id="ab086f70" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(grenouille, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .glm_curve(<span class="st">'nitrates'</span>, <span class="st">'presence'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Présence selon la teneur en nitrates'</span>)</span>
@@ -671,7 +677,7 @@ Note
 </div>
 </div>
 <p>Avec <code>degree=2</code>, la réponse peut être <strong>en cloche</strong> : l’espèce a un optimum le long du gradient (sa niche), marqué sur le graphique.</p>
-<div id="f3f1ee4f" class="cell" data-execution_count="4">
+<div id="a56884b8" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(niche, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .glm_curve(<span class="st">'ph'</span>, <span class="st">'presence'</span>, degree<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Réponse en cloche : optimum de pH'</span>)</span>
@@ -776,7 +782,7 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.response</code> : courbe lissée et optimum.</p>
 <p><strong>Exemple</strong></p>
 <p>Une régression locale (LOWESS, dans l’esprit d’un GAM) suit la forme des données sans imposer de modèle ; la bande à 95 % vient d’un bootstrap. <code>frac</code> règle le lissage.</p>
-<div id="d30e2339" class="cell" data-execution_count="6">
+<div id="3d133e51" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .response_curve(<span class="st">'humidite'</span>, <span class="st">'Typha'</span>, frac<span class="op">=</span><span class="fl">0.4</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Réponse de Typha à l</span><span class="ch">\'</span><span class="st">humidité'</span>)</span>
@@ -851,7 +857,7 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.count_stats</code> : moyenne, variance, % de zéros observés et attendus.</p>
 <p><strong>Exemple</strong></p>
 <p>Les fréquences observées face à une loi de Poisson et à une loi binomiale négative de même moyenne. Beaucoup plus de zéros qu’attendu, ou une variance bien supérieure à la moyenne, orientent vers les modèles binomiaux négatifs, <em>zero-inflated</em> ou <em>hurdle</em>.</p>
-<div id="eb1f8a2e" class="cell" data-execution_count="8">
+<div id="68025e60" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(comptages, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .count_distribution(<span class="st">'individus'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Distribution des comptages'</span>)</span>
@@ -976,7 +982,7 @@ Note
 </table>
 <p><strong>Exemple</strong></p>
 <p>Des estimations avec leurs intervalles : coefficients d’un modèle, odds ratios, effets aléatoires d’un modèle mixte, intervalles crédibles bayésiens. Les intervalles qui excluent la référence sont mis en évidence. Il se remplit avec les résultats de n’importe quel logiciel (R, statsmodels…) ; <code>se=</code> calcule l’intervalle à 95 % à partir de l’erreur type.</p>
-<div id="a77de058" class="cell" data-execution_count="10">
+<div id="dd88c1a9" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(Chart(effets, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .forest_plot(<span class="st">'variable'</span>, <span class="st">'odds_ratio'</span>, <span class="st">'ic_bas'</span>, <span class="st">'ic_haut'</span>, ref<span class="op">=</span><span class="dv">1</span>, log<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Effet des variables sur la présence'</span>)</span>
@@ -1103,7 +1109,7 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.ord</code> : coordonnées, valeurs propres, inertie expliquée.</p>
 <p><strong>Exemple</strong></p>
 <p>Le triplot des communautés : sites (points), espèces (+) et variables environnementales (flèches). <code>method='ca'</code> pour l’AFC, <code>'cca'</code> pour l’analyse canonique des correspondances (réponses unimodales, en cloche), <code>'pca'</code> et <code>'rda'</code> (analyse de redondance, réponses linéaires). Les axes donnent la part d’inertie ; <code>chart.ord</code> contient valeurs propres et scores.</p>
-<div id="63d7b3f0" class="cell" data-execution_count="12">
+<div id="28047763" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .ordination(especes, env<span class="op">=</span>[<span class="st">'humidite'</span>, <span class="st">'ph'</span>], method<span class="op">=</span><span class="st">'cca'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Analyse canonique des correspondances'</span>)</span>
@@ -1118,7 +1124,7 @@ Note
 </div>
 </div>
 </div>
-<div id="f5c9f7ab" class="cell" data-execution_count="13">
+<div id="091f1a7a" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .ordination(especes, method<span class="op">=</span><span class="st">'ca'</span>, group<span class="op">=</span><span class="st">'zone'</span>, labels<span class="op">=</span><span class="st">'placette'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Analyse factorielle des correspondances'</span>)</span>
@@ -1216,7 +1222,7 @@ Note
 </table>
 <p><strong>Exemple</strong></p>
 <p>Le diagramme de Whittaker : l’abondance relative de chaque espèce selon son rang. Une courbe raide signale quelques espèces dominantes, une courbe plate une communauté équilibrée.</p>
-<div id="404e1eb5" class="cell" data-execution_count="15">
+<div id="519903be" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>par_zone <span class="op">=</span> communaute.groupby(<span class="st">'zone'</span>, sort<span class="op">=</span><span class="va">False</span>)[especes].<span class="bu">sum</span>().reset_index()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>(Chart(par_zone, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .rank_abundance(especes, labels<span class="op">=</span><span class="st">'zone'</span>)</span>
@@ -1307,7 +1313,7 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.accumulation_stats</code> : richesse observée et estimée (Chao2).</p>
 <p><strong>Exemple</strong></p>
 <p><code>kind='sites'</code> : la richesse cumulée quand on ajoute des placettes (ordre aléatoire, moyenne ± écart-type), avec l’estimateur <strong>Chao2</strong> de la richesse totale. Un plateau qui rejoint Chao2 indique un échantillonnage suffisant. <code>kind='individuals'</code> : la courbe de <strong>raréfaction</strong> de chaque site, pour comparer des richesses à effort égal.</p>
-<div id="3cce9f3b" class="cell" data-execution_count="17">
+<div id="ca55747d" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(communaute, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .accumulation(especes)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Effort d</span><span class="ch">\'</span><span class="st">échantillonnage'</span>)</span>
@@ -1326,7 +1332,7 @@ Note
 </div>
 </div>
 </div>
-<div id="30975a85" class="cell" data-execution_count="18">
+<div id="783b8226" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(Chart(communaute.iloc[[<span class="dv">3</span>, <span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">26</span>]], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    .accumulation(especes, kind<span class="op">=</span><span class="st">'individuals'</span>, labels<span class="op">=</span><span class="st">'placette'</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes de raréfaction'</span>)</span>
@@ -1433,7 +1439,7 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.diversity_table</code> : tous les indices de tous les sites.</p>
 <p><strong>Exemple</strong></p>
 <p>Richesse, Shannon H’, Simpson (1 − D), inverse de Simpson et équitabilité de Pielou, par site ; avec <code>group</code>, moyenne ± erreur type par groupe et lettres de Tukey. Tous les indices sont dans <code>chart.diversity_table</code> (et <code>diversity_indices()</code> les calcule sans tracer).</p>
-<div id="c76f27ac" class="cell" data-execution_count="20">
+<div id="85e611c1" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(communaute, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    .diversity(especes, index<span class="op">=</span><span class="st">'shannon'</span>, group<span class="op">=</span><span class="st">'zone'</span>, letters<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Diversité de Shannon par zone'</span>)</span>
