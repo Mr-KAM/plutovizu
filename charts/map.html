@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../charts/qualitatif.html" rel="next">
+<link href="../charts/ecologie.html" rel="next">
 <link href="../charts/sciences.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -424,6 +424,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../charts/ecologie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Écologie</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../charts/qualitatif.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Analyse qualitative</span></a>
   </div>
@@ -489,6 +495,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#g-map_points" id="toc-g-map_points" class="nav-link active" data-scroll-target="#g-map_points"><code>map_points</code> — Points sur une carte</a></li>
   <li><a href="#g-choropleth" id="toc-g-choropleth" class="nav-link" data-scroll-target="#g-choropleth"><code>choropleth</code> — Carte de zones</a></li>
   <li><a href="#g-flow_map" id="toc-g-flow_map" class="nav-link" data-scroll-target="#g-flow_map"><code>flow_map</code> — Carte de flux</a></li>
+  <li><a href="#g-density_map" id="toc-g-density_map" class="nav-link" data-scroll-target="#g-density_map"><code>density_map</code> — Carte de densité</a></li>
+  <li><a href="#g-field_map" id="toc-g-field_map" class="nav-link" data-scroll-target="#g-field_map"><code>field_map</code> — Carte interpolée et isolignes</a></li>
+  <li><a href="#g-route_map" id="toc-g-route_map" class="nav-link" data-scroll-target="#g-route_map"><code>route_map</code> — Itinéraires et trajets</a></li>
+  <li><a href="#éléments-de-carte" id="toc-éléments-de-carte" class="nav-link" data-scroll-target="#éléments-de-carte">Éléments de carte</a></li>
   </ul>
 </nav>
     </div>
@@ -499,7 +509,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../gallery.html">Graphiques</a></li><li class="breadcrumb-item"><a href="../charts/map.html">Map</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Map</h1>
-<p class="subtitle lead">Points, zones et flux géolocalisés, sur fond de carte.</p>
+<p class="subtitle lead">Points, zones, flux, densités, isolignes et trajets, avec flèche du nord, échelle et carte de situation.</p>
 </div>
 
 
@@ -536,7 +546,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-map_points" class="level3">
 <h3 class="anchored" data-anchor-id="g-map_points"><code>map_points</code> — Points sur une carte</h3>
 <p>Des points en longitude/latitude, colorés par une valeur (<code>value</code>) ou un groupe (<code>group</code>), dimensionnés par une colonne (<code>size</code>), nommés (<code>labels</code>).</p>
-<div id="5b11829a" class="cell" data-execution_count="2">
+<div id="ebd38ecf" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, value<span class="op">=</span><span class="st">'pluie'</span>, size<span class="op">=</span><span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluviométrie annuelle (mm)'</span>)</span>
@@ -545,13 +555,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-3-output-1.png" width="828" height="662" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-3-output-1.png" width="830" height="662" class="figure-img"></p>
 <figcaption>Pluviométrie annuelle (valeurs illustratives)</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="98de3adc" class="cell" data-execution_count="3">
+<div id="b9735bfe" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, group<span class="op">=</span><span class="st">'zone'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Zones agro-écologiques (illustratives)'</span>)</span>
@@ -560,7 +570,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-4-output-1.png" width="848" height="626" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-4-output-1.png" width="849" height="614" class="figure-img"></p>
 <figcaption>Villes par zone</figcaption>
 </figure>
 </div>
@@ -570,7 +580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-choropleth" class="level3">
 <h3 class="anchored" data-anchor-id="g-choropleth"><code>choropleth</code> — Carte de zones</h3>
 <p>Chaque zone d’un <code>GeoDataFrame</code> colorée selon une colonne : continue (barre de couleur) ou catégorielle (légende). Les zones se lisent avec <code>geopandas.read_file('zones.geojson')</code> (GeoJSON, shapefile, GeoPackage…). Ici, un parcellaire fictif construit avec shapely :</p>
-<div id="b04ecbe0" class="cell" data-execution_count="4">
+<div id="7467df9a" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> shapely.geometry <span class="im">import</span> box</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -597,7 +607,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="96ee8c4c" class="cell" data-execution_count="5">
+<div id="aa430aba" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(parcelles, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .choropleth(<span class="st">'culture'</span>, labels<span class="op">=</span><span class="st">'parcelle'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Assolement'</span>)</span>
@@ -612,27 +622,172 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p>Pour une colonne numérique, <code>scheme</code> regroupe les valeurs en <code>k</code> <strong>classes</strong> de couleur : <code>'quantiles'</code> (même nombre de zones par classe), <code>'equal'</code> (intervalles égaux) ou <code>'natural'</code> (seuils naturels de Jenks, qui placent les coupures entre les groupes de valeurs). Les bornes sont dans <code>chart.classes</code>.</p>
+<div id="d477d2cc" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(parcelles, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .choropleth(<span class="st">'rendement'</span>, labels<span class="op">=</span><span class="st">'parcelle'</span>, scheme<span class="op">=</span><span class="st">'natural'</span>, k<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par parcelle — 4 classes'</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Bornes des classes :'</span>, chart.classes.<span class="bu">round</span>(<span class="dv">2</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bornes des classes : [2.2 2.7 3.  3.5]</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="map_files/figure-html/cell-7-output-2.png" width="794" height="439" class="figure-img"></p>
+<figcaption>Rendement en 4 classes (seuils naturels)</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="g-flow_map" class="level3">
 <h3 class="anchored" data-anchor-id="g-flow_map"><code>flow_map</code> — Carte de flux</h3>
 <p>Une flèche courbe par ligne, de l’origine vers la destination, d’épaisseur proportionnelle au volume (<code>weight</code>).</p>
-<div id="94e64e2b" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dakar <span class="op">=</span> villes.set_index(<span class="st">'ville'</span>).loc[<span class="st">'Dakar'</span>]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>flux <span class="op">=</span> (villes[villes[<span class="st">'ville'</span>].isin([<span class="st">'Saint-Louis'</span>, <span class="st">'Kaolack'</span>, <span class="st">'Tambacounda'</span>, <span class="st">'Kolda'</span>, <span class="st">'Ziguinchor'</span>])]</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        .assign(vers<span class="op">=</span><span class="st">'Dakar'</span>, lon_dakar<span class="op">=</span>dakar[<span class="st">'lon'</span>], lat_dakar<span class="op">=</span>dakar[<span class="st">'lat'</span>],</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                tonnes<span class="op">=</span>[<span class="dv">400</span>, <span class="dv">1200</span>, <span class="dv">300</span>, <span class="dv">650</span>, <span class="dv">500</span>]))</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>(Chart(flux, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    .flow_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'lon_dakar'</span>, <span class="st">'lat_dakar'</span>, weight<span class="op">=</span><span class="st">'tonnes'</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>              label_from<span class="op">=</span><span class="st">'ville'</span>, label_to<span class="op">=</span><span class="st">'vers'</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Flux de céréales vers Dakar (t)'</span>)</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d5704cfa" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dakar <span class="op">=</span> villes.set_index(<span class="st">'ville'</span>).loc[<span class="st">'Dakar'</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>flux <span class="op">=</span> (villes[villes[<span class="st">'ville'</span>].isin([<span class="st">'Saint-Louis'</span>, <span class="st">'Kaolack'</span>, <span class="st">'Tambacounda'</span>, <span class="st">'Kolda'</span>, <span class="st">'Ziguinchor'</span>])]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        .assign(vers<span class="op">=</span><span class="st">'Dakar'</span>, lon_dakar<span class="op">=</span>dakar[<span class="st">'lon'</span>], lat_dakar<span class="op">=</span>dakar[<span class="st">'lat'</span>],</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                tonnes<span class="op">=</span>[<span class="dv">400</span>, <span class="dv">1200</span>, <span class="dv">300</span>, <span class="dv">650</span>, <span class="dv">500</span>]))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>(Chart(flux, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    .flow_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'lon_dakar'</span>, <span class="st">'lat_dakar'</span>, weight<span class="op">=</span><span class="st">'tonnes'</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>              label_from<span class="op">=</span><span class="st">'ville'</span>, label_to<span class="op">=</span><span class="st">'vers'</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Flux de céréales vers Dakar (t)'</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="map_files/figure-html/cell-7-output-1.png" width="673" height="662" class="figure-img"></p>
+<p><img src="map_files/figure-html/cell-8-output-1.png" width="690" height="662" class="figure-img"></p>
 <figcaption>Flux de céréales vers Dakar (volumes illustratifs)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-density_map" class="level3">
+<h3 class="anchored" data-anchor-id="g-density_map"><code>density_map</code> — Carte de densité</h3>
+<p>Les zones où les points se concentrent : densité de noyau, éventuellement pondérée (<code>weight</code>), en aplats de densité relative sur le fond de carte.</p>
+<div id="0fe34420" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(signalements, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .density_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, show_points<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Densité des signalements'</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .north_arrow()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    .scale_bar()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="map_files/figure-html/cell-9-output-1.png" width="575" height="662" class="figure-img"></p>
+<figcaption>Foyers de signalements d’un ravageur (données fictives)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-field_map" class="level3">
+<h3 class="anchored" data-anchor-id="g-field_map"><code>field_map</code> — Carte interpolée et isolignes</h3>
+<p>Une grandeur mesurée en quelques points (stations) interpolée sur la zone, avec ses isolignes annotées — ici des <strong>isohyètes</strong>. L’interpolation (linéaire, sur une triangulation des stations) ne couvre que l’intérieur de l’enveloppe des points.</p>
+<div id="efa04af4" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">7</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .field_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>, levels<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluviométrie annuelle (mm)'</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="map_files/figure-html/cell-10-output-1.png" width="830" height="662" class="figure-img"></p>
+<figcaption>Isohyètes à partir de 12 stations (valeurs illustratives)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-route_map" class="level3">
+<h3 class="anchored" data-anchor-id="g-route_map"><code>route_map</code> — Itinéraires et trajets</h3>
+<p>Des points reliés dans l’ordre (<code>order</code> : date, étape…), une ligne par groupe ; départ ●, arrivée ■ et flèches de sens.</p>
+<div id="5026d277" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(Chart(transhumance, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .route_map(<span class="st">'lon'</span>, <span class="st">'lat'</span>, order<span class="op">=</span><span class="st">'jour'</span>, labels<span class="op">=</span><span class="st">'etape'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Transhumance vers le sud-est'</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    .north_arrow(loc<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    .scale_bar()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="map_files/figure-html/cell-11-output-1.png" width="533" height="758" class="figure-img"></p>
+<figcaption>Trajet de transhumance (fictif)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="éléments-de-carte" class="level2">
+<h2 class="anchored" data-anchor-id="éléments-de-carte">Éléments de carte</h2>
+<p>Ils se chaînent après n’importe quelle carte :</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Méthode</th>
+<th>Élément</th>
+<th>Coin par défaut</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>north_arrow(loc=...)</code></td>
+<td>Flèche du nord</td>
+<td>haut droite</td>
+</tr>
+<tr class="even">
+<td><code>scale_bar(length=None, loc=...)</code></td>
+<td>Barre d’échelle en km (m sous 1 km), longueur automatique</td>
+<td>bas gauche</td>
+</tr>
+<tr class="odd">
+<td><code>inset_map(zoom_out=6, loc=...)</code></td>
+<td>Carte de situation en médaillon</td>
+<td>bas droite</td>
+</tr>
+<tr class="even">
+<td><em>(automatique)</em></td>
+<td>Légende des tailles de <code>map_points(size=...)</code></td>
+<td>haut gauche</td>
+</tr>
+<tr class="odd">
+<td><em>(automatique)</em></td>
+<td>Graduations en degrés (17° O, 14° N)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><code>loc</code> vaut <code>'upper left'</code>, <code>'upper right'</code>, <code>'lower left'</code> ou <code>'lower right'</code>. La barre d’échelle est juste en degrés (corrigée selon la latitude) comme en coordonnées projetées en mètres.</p>
+<div id="bf3dd904" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(Chart(villes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">7.5</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    .map_points(<span class="st">'lon'</span>, <span class="st">'lat'</span>, value<span class="op">=</span><span class="st">'pluie'</span>, size<span class="op">=</span><span class="st">'pluie'</span>, labels<span class="op">=</span><span class="st">'ville'</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .north_arrow()</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    .scale_bar()</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    .inset_map(zoom_out<span class="op">=</span><span class="dv">7</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluviométrie annuelle (mm, illustrative)'</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="map_files/figure-html/cell-12-output-1.png" width="833" height="710" class="figure-img"></p>
+<figcaption>Une carte complète : symboles proportionnels, flèche du nord, échelle, situation</figcaption>
 </figure>
 </div>
 </div>
@@ -647,7 +802,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Pour une carte de <strong>densité</strong> ou un champ <strong>interpolé</strong> (pH, pluie…) en longitude/latitude, <code>hexbin</code>, <code>contour</code> et <code>mesh</code> acceptent aussi des coordonnées géographiques — voir <a href="../charts/champs.html">Champs</a>.</p>
+<p>Sans fond de carte, <code>hexbin</code>, <code>contour</code> et <code>mesh</code> acceptent aussi des coordonnées géographiques — voir <a href="../charts/champs.html">Champs</a>.</p>
 </div>
 </div>
 
@@ -1075,8 +1230,8 @@ Note
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../charts/qualitatif.html" class="pagination-link" aria-label="Analyse qualitative">
-        <span class="nav-page-text">Analyse qualitative</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../charts/ecologie.html" class="pagination-link" aria-label="Écologie">
+        <span class="nav-page-text">Écologie</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
