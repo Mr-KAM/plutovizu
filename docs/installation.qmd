@@ -68,6 +68,14 @@ Les dépendances suivantes sont installées automatiquement :
 | `circlify` | ≥ 0.16.0 | Cercles imbriqués (`circle_packing`) |
 | `wordcloud` | ≥ 1.9.6 | Nuage de mots (`word_cloud`) |
 
+### Dépendance optionnelle : map
+
+Les cartes (`map_points`, `choropleth`, `flow_map`) utilisent geopandas et contextily :
+
+```bash
+pip install plutovizu[map]
+```
+
 ### Dépendance optionnelle : morethemes
 
 Les 16 thèmes de [morethemes](https://github.com/y-sunflower/morethemes) (`wsj`, `economist`,

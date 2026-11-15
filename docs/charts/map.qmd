@@ -1,0 +1,115 @@
+---
+title: "Map"
+subtitle: "Points, zones et flux géolocalisés, sur fond de carte."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+```
+
+Tous les exemples utilisent le thème [`editorial`](../themes.qmd). Retour à la
+[galerie](../gallery.qmd).
+
+::: {.callout-tip}
+## Installation
+Les cartes utilisent l'option `map` (geopandas pour les zones, contextily pour les fonds
+de carte) :
+
+```bash
+pip install plutovizu[map]
+```
+
+Sans cette option, `map_points` et `flow_map` fonctionnent sans fond de carte. Le fond par
+défaut (Esri World Gray Canvas, ou l'imagerie satellite en thème sombre) ne demande pas de
+clé d'API ; `basemap_source='Esri.WorldTopoMap'` en choisit un autre. Sans réseau, la
+carte est tracée sans fond, avec un avertissement.
+:::
+
+Les coordonnées des villes sont réelles ; les **valeurs** (pluviométrie, tonnages) sont
+illustratives.
+
+### `map_points` — Points sur une carte {#g-map_points}
+
+Des points en longitude/latitude, colorés par une valeur (`value`) ou un groupe (`group`),
+dimensionnés par une colonne (`size`), nommés (`labels`).
+
+```{python}
+#| fig-cap: "Pluviométrie annuelle (valeurs illustratives)"
+(Chart(villes, figsize=(9, 7))
+    .map_points('lon', 'lat', value='pluie', size='pluie', labels='ville')
+    .title('Pluviométrie annuelle (mm)')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+#| fig-cap: "Villes par zone"
+(Chart(villes, figsize=(9, 7))
+    .map_points('lon', 'lat', group='zone', labels='ville')
+    .title('Zones agro-écologiques (illustratives)')
+    .tight_layout()
+    .show())
+```
+
+### `choropleth` — Carte de zones {#g-choropleth}
+
+Chaque zone d'un `GeoDataFrame` colorée selon une colonne : continue (barre de couleur)
+ou catégorielle (légende). Les zones se lisent avec `geopandas.read_file('zones.geojson')`
+(GeoJSON, shapefile, GeoPackage…). Ici, un parcellaire fictif construit avec shapely :
+
+```{python}
+#| fig-cap: "Rendement par parcelle"
+import geopandas as gpd
+from shapely.geometry import box
+
+rng = np.random.default_rng(1)
+parcelles = gpd.GeoDataFrame(
+    {'parcelle': [f'P{i + 1}' for i in range(20)],
+     'rendement': (3 + rng.normal(0, 0.6, 20)).round(1),
+     'culture': rng.choice(['Riz', 'Maïs', 'Mil', 'Arachide'], 20)},
+    geometry=[box(x * 110, y * 80, x * 110 + 100, y * 80 + 70)
+              for y in range(4) for x in range(5)],
+    crs='EPSG:32628')   # coordonnées en mètres (UTM 28N)
+
+(Chart(parcelles, figsize=(9, 5.5))
+    .choropleth('rendement', labels='parcelle')
+    .title('Rendement par parcelle (t/ha)')
+    .tight_layout()
+    .show())
+```
+
+```{python}
+#| fig-cap: "Assolement : une couleur par culture"
+(Chart(parcelles, figsize=(9, 5.5))
+    .choropleth('culture', labels='parcelle')
+    .title('Assolement')
+    .tight_layout()
+    .show())
+```
+
+### `flow_map` — Carte de flux {#g-flow_map}
+
+Une flèche courbe par ligne, de l'origine vers la destination, d'épaisseur proportionnelle
+au volume (`weight`).
+
+```{python}
+#| fig-cap: "Flux de céréales vers Dakar (volumes illustratifs)"
+dakar = villes.set_index('ville').loc['Dakar']
+flux = (villes[villes['ville'].isin(['Saint-Louis', 'Kaolack', 'Tambacounda', 'Kolda', 'Ziguinchor'])]
+        .assign(vers='Dakar', lon_dakar=dakar['lon'], lat_dakar=dakar['lat'],
+                tonnes=[400, 1200, 300, 650, 500]))
+
+(Chart(flux, figsize=(9, 7))
+    .flow_map('lon', 'lat', 'lon_dakar', 'lat_dakar', weight='tonnes',
+              label_from='ville', label_to='vers')
+    .title('Flux de céréales vers Dakar (t)')
+    .tight_layout()
+    .show())
+```
+
+::: {.callout-note}
+Pour une carte de **densité** ou un champ **interpolé** (pH, pluie…) en longitude/latitude,
+`hexbin`, `contour` et `mesh` acceptent aussi des coordonnées géographiques — voir
+[Champs](champs.qmd).
+:::

@@ -269,20 +269,20 @@
   image: images/vignettes/progress_bar.png
   categories: ["Composition"]
 - title: "Courbes de niveau"
-  description: "contour() — Cartes, prélèvements dispersés"
+  description: "contour() — Courbes sur grille ou prélèvements"
   path: charts/champs.html#g-contour
   image: images/vignettes/contour.png
-  categories: ["Champs & cartes"]
+  categories: ["Champs"]
 - title: "Grille colorée"
   description: "mesh() — Valeur par cellule (pcolormesh)"
   path: charts/champs.html#g-mesh
   image: images/vignettes/mesh.png
-  categories: ["Champs & cartes"]
+  categories: ["Champs"]
 - title: "Champ de vecteurs"
   description: "vector_field() — Vent, écoulement (flèches, lignes)"
   path: charts/champs.html#g-vector_field
   image: images/vignettes/vector_field.png
-  categories: ["Champs & cartes"]
+  categories: ["Champs"]
 - title: "Nuage 3D"
   description: "scatter3d() — Trois variables"
   path: charts/3d.html#g-scatter3d
@@ -313,6 +313,66 @@
   path: charts/sciences.html#g-soil_texture
   image: images/vignettes/soil_texture.png
   categories: ["Climat & sols"]
+- title: "Walter-Lieth"
+  description: "walter_lieth() — Climatogramme de référence"
+  path: charts/sciences.html#g-walter_lieth
+  image: images/vignettes/walter_lieth.png
+  categories: ["Climat & sols"]
+- title: "Climogramme"
+  description: "climogram() — Comparer des climats"
+  path: charts/sciences.html#g-climogram
+  image: images/vignettes/climogram.png
+  categories: ["Climat & sols"]
+- title: "Bilan hydrique"
+  description: "water_balance() — Excédent et déficit P – ETP"
+  path: charts/sciences.html#g-water_balance
+  image: images/vignettes/water_balance.png
+  categories: ["Climat & sols"]
+- title: "Degrés-jours"
+  description: "degree_days() — Somme des températures, stades"
+  path: charts/sciences.html#g-degree_days
+  image: images/vignettes/degree_days.png
+  categories: ["Climat & sols"]
+- title: "Rose des vents"
+  description: "wind_rose() — Direction et vitesse du vent"
+  path: charts/sciences.html#g-wind_rose
+  image: images/vignettes/wind_rose.png
+  categories: ["Climat & sols"]
+- title: "Anomalies"
+  description: "anomaly() — Écart à une normale"
+  path: charts/sciences.html#g-anomaly
+  image: images/vignettes/anomaly.png
+  categories: ["Climat & sols"]
+- title: "Bandes climatiques"
+  description: "climate_stripes() — Une couleur par année"
+  path: charts/sciences.html#g-climate_stripes
+  image: images/vignettes/climate_stripes.png
+  categories: ["Climat & sols"]
+- title: "Profil de sol"
+  description: "soil_profile() — Horizons selon la profondeur"
+  path: charts/sciences.html#g-soil_profile
+  image: images/vignettes/soil_profile.png
+  categories: ["Climat & sols"]
+- title: "Selon la profondeur"
+  description: "depth_profile() — Humidité, matière organique…"
+  path: charts/sciences.html#g-depth_profile
+  image: images/vignettes/depth_profile.png
+  categories: ["Climat & sols"]
+- title: "Points sur carte"
+  description: "map_points() — Stations, parcelles géolocalisées"
+  path: charts/map.html#g-map_points
+  image: images/vignettes/map_points.png
+  categories: ["Map"]
+- title: "Carte de zones"
+  description: "choropleth() — Régions, parcelles colorées"
+  path: charts/map.html#g-choropleth
+  image: images/vignettes/choropleth.png
+  categories: ["Map"]
+- title: "Carte de flux"
+  description: "flow_map() — Échanges entre lieux"
+  path: charts/map.html#g-flow_map
+  image: images/vignettes/flow_map.png
+  categories: ["Map"]
 - title: "Nuage de mots"
   description: "word_cloud() — Thèmes dominants d'un texte"
   path: charts/qualitatif.html#g-word_cloud

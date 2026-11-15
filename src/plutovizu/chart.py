@@ -1497,10 +1497,10 @@ class Chart:
                 EN: Categorical column defining groups (one ridge per unique value).
                 FR: Colonne catégorielle définissant les groupes (une crête par valeur unique).
             overlap (float):
-                EN: Vertical spacing between ridge baselines.
-                    Higher values increase overlap. Default 1.5.
-                FR: Espacement vertical entre les lignes de base des crêtes.
-                    Des valeurs plus élevées augmentent le chevauchement. Défaut 1.5.
+                EN: Height of the tallest ridge, in rows (1 = touches the row above).
+                    Densities share one scale, whatever the units of value_col. Default 1.5.
+                FR: Hauteur de la plus haute crête, en lignes (1 = touche la ligne du dessus).
+                    Toutes les densités partagent une échelle, quelles que soient les unités. Défaut 1.5.
             alpha (float):
                 EN: Fill opacity. Default 0.7.
                 FR: Opacité du remplissage. Défaut 0.7.
@@ -1513,20 +1513,36 @@ class Chart:
         """
         from scipy.stats import gaussian_kde
         self.chart_type = 'ridgeline'
-        groups = list(self.data[group_col].unique())
-        x_range = np.linspace(self.data[value_col].min(),
-                              self.data[value_col].max(), 300)
+        groups = list(self.data[group_col].dropna().unique())
+        values = self.data[value_col].dropna()
+        pad = 0.05 * (values.max() - values.min())
+        x_range = np.linspace(values.min() - pad, values.max() + pad, 300)
+        densities = {}
+        for g in groups:
+            vals = self.data.loc[self.data[group_col] == g, value_col].dropna().values
+            if len(vals) >= 2 and np.ptp(vals) > 0:
+                densities[g] = gaussian_kde(vals)(x_range)
+        if not densities:
+            raise ValueError("ridgeline demande au moins un groupe d'au moins 2 valeurs distinctes")
+        # Densités brutes en unités de value_col (ex. 4e-5 par € pour des salaires) :
+        # même échelle pour toutes, la plus haute crête montant à `overlap` lignes.
+        scale = overlap / max(d.max() for d in densities.values())
+        palette = self._palette()
+        edge = plt.rcParams['axes.facecolor']
+        n = len(groups)
         for i, g in enumerate(groups):
-            vals = self.data[self.data[group_col] == g][value_col].dropna().values
-            if len(vals) < 2:
+            if g not in densities:
                 continue
-            density = gaussian_kde(vals)(x_range)
-            offset = i * overlap
-            self.ax.fill_between(x_range, offset, density + offset,
-                                 alpha=alpha, label=str(g))
-            self.ax.plot(x_range, density + offset, color='white', linewidth=0.8)
-        self.ax.set_yticks(np.arange(len(groups)) * overlap)
-        self.ax.set_yticklabels(groups)
+            offset = n - 1 - i                      # premier groupe en haut
+            curve = densities[g] * scale + offset
+            z = 2 * i                               # chaque crête passe devant celle du dessus
+            self.ax.fill_between(x_range, offset, curve, alpha=alpha, linewidth=0,
+                                 color=palette[i % len(palette)], label=str(g), zorder=z)
+            self.ax.plot(x_range, curve, color=edge, linewidth=1, zorder=z + 1)
+        self.ax.set_yticks(np.arange(n)[::-1], [str(g) for g in groups])
+        self.ax.set_ylim(-0.2, n - 1 + overlap + 0.2)
+        self.ax.set_xlabel(value_col)
+        self.ax.grid(False, axis='y')
         return self
 
     def treemap(self, values: str, labels: Optional[str] = None,
@@ -3167,6 +3183,525 @@ class Chart:
             self.ax.spines[side].set_visible(False)
         if names == ['']:
             self.ax.spines['left'].set_visible(False)
+        return self
+
+    # ──────────────────────────────────────── Climate & soil / Climat & sols
+    # Couleurs conventionnelles par défaut (température rouge, pluie bleue) : elles portent
+    # le sens du graphique ; chacune reste réglable.
+
+    def walter_lieth(self, month: str, temp: str, precip: str, tmin: Optional[str] = None,
+                     station: Optional[str] = None, temp_color: str = '#d1495b',
+                     precip_color: str = '#2e86de') -> 'Chart':
+        """
+        EN: Walter–Lieth climate diagram: 10 °C ↔ 20 mm, precipitation scale compressed
+            1:10 above 100 mm (solid fill); humid season shaded blue, arid season dotted
+            red; frost months (tmin < 0) marked below the axis. Summary in self.climate_summary.
+        FR: Climatogramme de Walter-Lieth : 10 °C ↔ 20 mm, échelle des pluies comprimée au
+            1/10 au-delà de 100 mm (aplat) ; saison humide en bleu, saison sèche pointillée
+            en rouge ; mois de gel (tmin < 0) sous l'axe. Résumé dans self.climate_summary.
+
+        Example / Exemple:
+            chart.walter_lieth('mois', 'temperature', 'pluie', station='Station A — 350 m')
+        """
+        self.chart_type = 'walter_lieth'
+        d = self.data
+        n = len(d)
+        pos = np.arange(n)
+        T = d[temp].to_numpy(float)
+        P = d[precip].to_numpy(float)
+        to_y = lambda p: np.where(p <= 100, p / 2, 50 + (p - 100) / 20)  # noqa: E731
+        Py = to_y(P)
+        xf = np.linspace(0, n - 1, 400)
+        Tf, Pf = np.interp(xf, pos, T), np.interp(xf, pos, Py)
+        self.ax.fill_between(xf, Tf, np.minimum(Pf, 50), where=Pf >= Tf, interpolate=True,
+                             color=precip_color, alpha=0.25, linewidth=0, label='Saison humide')
+        self.ax.fill_between(xf, Pf, Tf, where=Tf > Pf, interpolate=True, facecolor='none',
+                             edgecolor=temp_color, hatch='...', linewidth=0, label='Saison sèche')
+        self.ax.fill_between(xf, 50, Pf, where=Pf > 50, interpolate=True, color=precip_color,
+                             alpha=0.85, linewidth=0, label='Pluie > 100 mm (1/10)')
+        self.ax.plot(pos, T, color=temp_color, linewidth=2, label='Température')
+        self.ax.plot(pos, Py, color=precip_color, linewidth=2, label='Précipitations')
+        low = min(0.0, np.floor(T.min() / 10) * 10)
+        high = max(50.0, np.ceil(max(T.max(), Py.max()) / 10) * 10)
+        self.ax.set_ylim(low, high)
+        self.ax.set_xlim(0, n - 1)
+        self.ax.set_xticks(pos, d[month].astype(str).tolist())
+        self.ax.set_ylabel('Température (°C)', color=temp_color)
+        ax2 = self.ax.twinx()
+        ax2.set_ylim(low, high)
+        ticks = [y for y in np.arange(0, high + 1, 10) if y >= 0]
+        labels = [f'{y * 2:.0f}' if y <= 50 else f'{100 + (y - 50) * 20:.0f}' for y in ticks]
+        ax2.set_yticks(ticks, labels)
+        ax2.set_ylabel('Précipitations (mm)', color=precip_color)
+        ax2.grid(False)
+        ax2.spines['right'].set_visible(True)
+        if tmin is not None:
+            frost = d[tmin].to_numpy(float) < 0
+            for k in np.flatnonzero(frost):
+                self.ax.axvspan(k - 0.5, k + 0.5, ymin=0, ymax=0.03, color='#5dade2')
+        self.ax.text(0.99, 1.02, f'{T.mean():.1f} °C   {P.sum():.0f} mm', transform=self.ax.transAxes,
+                     ha='right', va='bottom', fontsize=10, color=plt.rcParams['text.color'])
+        if station:
+            self.ax.text(0.01, 1.02, station, transform=self.ax.transAxes, ha='left', va='bottom',
+                         fontsize=10, color=plt.rcParams['text.color'])
+        self.ax.legend(loc='upper left', fontsize=8)
+        self.ax2 = ax2
+        self.climate_summary = {'t_moyenne': float(T.mean()), 'p_totale': float(P.sum()),
+                                'mois_secs': d.loc[2 * T > P, month].tolist()}
+        return self
+
+    def climogram(self, precip: str, temp: str, month: Optional[str] = None,
+                  group: Optional[str] = None, labels: bool = True) -> 'Chart':
+        """
+        EN: Climograph (hythergraph): monthly temperature against precipitation, joined into
+            a closed loop — one loop per station to compare climates.
+        FR: Climogramme (hythergramme) : température mensuelle selon les précipitations,
+            points reliés en boucle fermée — une boucle par station pour comparer des climats.
+
+        Example / Exemple:
+            chart.climogram('pluie', 'temperature', month='mois', group='station')
+        """
+        self.chart_type = 'climogram'
+        groups = self.data.groupby(group, sort=False) if group else [(None, self.data)]
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            x = np.append(sub[precip].to_numpy(float), sub[precip].iloc[0])
+            y = np.append(sub[temp].to_numpy(float), sub[temp].iloc[0])
+            self.ax.plot(x, y, marker='o', markersize=5, color=c, label=name)
+            if labels and month:
+                for xm, ym, m in zip(sub[precip], sub[temp], sub[month]):
+                    self.ax.annotate(str(m), (xm, ym), xytext=(4, 4), textcoords='offset points',
+                                     fontsize=7, color=c)
+        self.ax.set_xlabel('Précipitations (mm)')
+        self.ax.set_ylabel('Température (°C)')
+        if group:
+            self.ax.legend(title=group)
+        return self
+
+    def water_balance(self, month: str, precip: str, etp: str, show_bars: bool = True,
+                      surplus_color: str = '#2e86de', deficit_color: str = '#e67e22') -> 'Chart':
+        """
+        EN: Simplified water balance: precipitation against potential evapotranspiration
+            (PET), surplus (P > PET) and deficit (P < PET) shaded. Table in self.water_table.
+        FR: Bilan hydrique simplifié : précipitations face à l'évapotranspiration potentielle
+            (ETP), excédent (P > ETP) et déficit (P < ETP) colorés. Tableau dans self.water_table.
+
+        Example / Exemple:
+            chart.water_balance('mois', 'pluie', 'etp')
+        """
+        self.chart_type = 'water_balance'
+        d = self.data
+        n = len(d)
+        pos = np.arange(n)
+        P, E = d[precip].to_numpy(float), d[etp].to_numpy(float)
+        if show_bars:
+            self.ax.bar(pos, P, width=0.6, color=surplus_color, alpha=0.2, label='Précipitations')
+        xf = np.linspace(0, n - 1, 400)
+        Pf, Ef = np.interp(xf, pos, P), np.interp(xf, pos, E)
+        self.ax.fill_between(xf, Ef, Pf, where=Pf >= Ef, interpolate=True, color=surplus_color,
+                             alpha=0.35, linewidth=0, label='Excédent')
+        self.ax.fill_between(xf, Pf, Ef, where=Ef > Pf, interpolate=True, color=deficit_color,
+                             alpha=0.35, linewidth=0, label='Déficit')
+        self.ax.plot(pos, P, color=surplus_color, marker='o', markersize=4, label='P')
+        self.ax.plot(pos, E, color=deficit_color, marker='o', markersize=4, label='ETP')
+        self.ax.set_xticks(pos, d[month].astype(str).tolist())
+        self.ax.set_ylabel('mm')
+        self.ax.legend(fontsize=8, ncol=3)
+        bilan = P - E
+        self.water_table = pd.DataFrame({month: d[month].to_numpy(), 'P': P, 'ETP': E,
+                                         'bilan': bilan})
+        self.water_summary = {'excedent': float(bilan[bilan > 0].sum()),
+                              'deficit': float(-bilan[bilan < 0].sum())}
+        return self
+
+    def degree_days(self, date: str, tmin: str, tmax: str, base: float = 10.0,
+                    cap: Optional[float] = None, stages: Optional[Dict[str, float]] = None,
+                    color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Cumulative growing degree days, GDD = max(0, (Tmax + Tmin) / 2 − base), with
+            Tmax capped at `cap`; `stages` {name: GDD} marks the date each stage is reached.
+            Daily series in self.gdd, stage dates in self.stage_dates.
+        FR: Degrés-jours de croissance cumulés, DJ = max(0, (Tmax + Tmin) / 2 − base), Tmax
+            plafonnée à `cap` ; `stages` {nom: DJ} marque la date d'atteinte de chaque stade.
+            Série journalière dans self.gdd, dates des stades dans self.stage_dates.
+
+        Example / Exemple:
+            chart.degree_days('jour', 'tmin', 'tmax', base=10, stages={'Floraison': 900})
+        """
+        self.chart_type = 'degree_days'
+        d = self.data[[date, tmin, tmax]].dropna().sort_values(date)
+        hi = d[tmax].clip(upper=cap) if cap is not None else d[tmax]
+        daily = ((hi + d[tmin]) / 2 - base).clip(lower=0)
+        cumul = daily.cumsum()
+        c = color or self._palette()[0]
+        self.ax.plot(d[date], cumul, color=c, linewidth=2.2)
+        self.ax.fill_between(d[date], 0, cumul, color=c, alpha=0.12, linewidth=0)
+        self.stage_dates = {}
+        ink = plt.rcParams['text.color']
+        for name, threshold in (stages or {}).items():
+            reached = d.loc[cumul >= threshold, date]
+            when = reached.iloc[0] if len(reached) else None
+            self.stage_dates[name] = when
+            self.ax.axhline(threshold, color=plt.rcParams['axes.labelcolor'], linewidth=0.8,
+                            linestyle='--', alpha=0.6)
+            if when is not None:
+                self.ax.scatter([when], [threshold], color=c, zorder=3, s=30)
+                label = f'{name}\n{when:%d/%m}' if hasattr(when, 'strftime') else f'{name}\n{when}'
+                self.ax.annotate(label, (when, threshold), xytext=(-6, 6), textcoords='offset points',
+                                 ha='right', va='bottom', fontsize=8, color=ink)
+        self.ax.set_ylabel(f'Degrés-jours cumulés (base {base:g} °C)')
+        self.ax.set_xlabel(date)
+        self._concise_dates(date)
+        self.gdd = pd.DataFrame({date: d[date].to_numpy(), 'dj': daily.to_numpy(),
+                                 'dj_cumules': cumul.to_numpy()})
+        return self
+
+    def wind_rose(self, direction: str, speed: str, sectors: int = 16,
+                  speed_bins: Optional[List[float]] = None, unit: str = 'm/s',
+                  cmap: Optional[str] = None) -> 'Chart':
+        """
+        EN: Wind rose from raw observations: directions (degrees, 0 = north) grouped into
+            `sectors`, speeds into classes, bars stacked in % of observations. Table in
+            self.wind_table.
+        FR: Rose des vents à partir des observations brutes : directions (degrés, 0 = nord)
+            regroupées en `sectors` secteurs, vitesses en classes, barres empilées en % des
+            observations. Tableau dans self.wind_table.
+
+        Example / Exemple:
+            chart.wind_rose('direction', 'vitesse', speed_bins=[0, 2, 4, 6, 10])
+        """
+        self.chart_type = 'wind_rose'
+        d = self.data[[direction, speed]].dropna()
+        width = 360 / sectors
+        sector = (((d[direction] % 360) + width / 2) // width % sectors).astype(int)
+        bins = list(speed_bins) if speed_bins else [0, 2, 4, 6, 8]
+        edges = bins + [np.inf]
+        names = [f'{a:g}–{b:g}' for a, b in zip(bins[:-1], bins[1:])] + [f'≥ {bins[-1]:g}']
+        classes = pd.cut(d[speed], edges, right=False, labels=names)
+        table = (pd.crosstab(sector, classes, normalize='all') * 100).reindex(
+            index=range(sectors), columns=names, fill_value=0)
+        ax = self._replace_axes(projection='polar')
+        ax.set_theta_zero_location('N')
+        ax.set_theta_direction(-1)
+        theta = np.radians(np.arange(sectors) * width)
+        colors = plt.get_cmap(cmap or plt.rcParams['image.cmap'])(np.linspace(0.25, 0.95, len(names)))
+        bottom = np.zeros(sectors)
+        for name, c in zip(names, colors):
+            ax.bar(theta, table[name], width=np.radians(width) * 0.92, bottom=bottom, color=c,
+                   edgecolor=plt.rcParams['axes.facecolor'], linewidth=0.6, label=name)
+            bottom += table[name].to_numpy()
+        ax.set_xticks(np.radians(np.arange(0, 360, 45)), ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'])
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{v:.0f} %'))
+        ax.legend(title=f'Vitesse ({unit})', loc='upper left', bbox_to_anchor=(1.08, 1.0), fontsize=8)
+        self.wind_table = table
+        return self
+
+    def anomaly(self, x: str, value: str, baseline: Optional[Union[float, Tuple]] = None,
+                window: Optional[int] = None, pos_color: str = '#d6604d',
+                neg_color: str = '#4393c3') -> 'Chart':
+        """
+        EN: Anomaly bars: departure of each value from a reference — the mean (default),
+            a number, or the mean over a period (start, end) of x. Optional rolling mean.
+        FR: Barres d'anomalies : écart de chaque valeur à une référence — la moyenne (défaut),
+            un nombre, ou la moyenne sur une période (début, fin) de x. Moyenne glissante en option.
+
+        Example / Exemple:
+            chart.anomaly('annee', 'temperature', baseline=(1961, 1990), window=10)
+        """
+        self.chart_type = 'anomaly'
+        d = self.data[[x, value]].dropna()
+        if baseline is None:
+            ref = d[value].mean()
+        elif isinstance(baseline, tuple):
+            ref = d.loc[d[x].between(*baseline), value].mean()
+        else:
+            ref = float(baseline)
+        an = d[value] - ref
+        self.ax.bar(d[x], an, color=np.where(an >= 0, pos_color, neg_color), width=0.8)
+        self.ax.axhline(0, color=plt.rcParams['axes.labelcolor'], linewidth=1)
+        if window:
+            self.ax.plot(d[x], an.rolling(window, center=True, min_periods=1).mean(),
+                         color=plt.rcParams['text.color'], linewidth=2,
+                         label=f'Moyenne glissante ({window})')
+            self.ax.legend()
+        self.ax.set_ylabel(f'Écart à la référence ({value})')
+        self.ax.set_xlabel(x)
+        self.anomalies = pd.Series(an.to_numpy(), index=d[x].to_numpy(), name='anomalie')
+        self.anomaly_reference = float(ref)
+        return self
+
+    def climate_stripes(self, x: str, value: str, cmap: str = 'RdBu_r',
+                        show_years: bool = True) -> 'Chart':
+        """
+        EN: Climate stripes: one vertical stripe per period (year), colored by the departure
+            from the mean on a diverging scale (cold blue → warm red).
+        FR: Bandes climatiques : une bande verticale par période (année), colorée selon
+            l'écart à la moyenne sur une échelle divergente (bleu froid → rouge chaud).
+
+        Example / Exemple:
+            chart.climate_stripes('annee', 'temperature')
+        """
+        self.chart_type = 'climate_stripes'
+        d = self.data[[x, value]].dropna()
+        an = (d[value] - d[value].mean()).to_numpy()
+        lim = np.abs(an).max() or 1
+        colors = plt.get_cmap(cmap)(mcolors.Normalize(-lim, lim)(an))
+        pos = np.arange(len(d))
+        self.ax.bar(pos, 1, width=1.0, color=colors, linewidth=0)
+        self.ax.set_xlim(-0.5, len(d) - 0.5)
+        self.ax.set_ylim(0, 1)
+        self.ax.yaxis.set_visible(False)
+        for side in self.ax.spines.values():
+            side.set_visible(False)
+        self.ax.grid(False)
+        if show_years:
+            step = max(1, len(d) // 8)
+            self.ax.set_xticks(pos[::step], d[x].iloc[::step].astype(str).tolist())
+        else:
+            self.ax.xaxis.set_visible(False)
+        return self
+
+    def soil_profile(self, top: str, bottom: str, horizon: str, profile: Optional[str] = None,
+                     color: Optional[str] = None, width: float = 0.6,
+                     show_labels: bool = True) -> 'Chart':
+        """
+        EN: Soil profile diagram: horizons stacked by depth (cm, increasing downward), one
+            column per profile. `color` is an optional column of colors (e.g. from Munsell
+            notations converted to hex); otherwise each horizon name gets a theme color.
+        FR: Profil de sol : horizons empilés selon la profondeur (cm, vers le bas), une colonne
+            par profil. `color` : colonne de couleurs optionnelle (ex. notations Munsell
+            converties en hex) ; sinon chaque horizon reçoit une couleur du thème.
+
+        Example / Exemple:
+            chart.soil_profile('haut', 'bas', 'horizon', profile='fosse')
+        """
+        self.chart_type = 'soil_profile'
+        groups = list(self.data.groupby(profile, sort=False)) if profile else [('', self.data)]
+        palette = self._palette()
+        names = list(pd.unique(self.data[horizon]))
+        default = {h: palette[k % len(palette)] for k, h in enumerate(names)}
+        ink = plt.rcParams['axes.labelcolor']
+        for k, (_, sub) in enumerate(groups):
+            for _, row in sub.iterrows():
+                face = row[color] if color else default[row[horizon]]
+                self.ax.add_patch(plt.Rectangle((k - width / 2, row[top]), width,
+                                                row[bottom] - row[top], facecolor=face,
+                                                edgecolor=ink, linewidth=0.8))
+                if show_labels and row[bottom] - row[top] > 0:
+                    self.ax.text(k, (row[top] + row[bottom]) / 2, str(row[horizon]),
+                                 ha='center', va='center', fontsize=9, color=self._ink_on(face))
+        depth = self.data[bottom].max()
+        self.ax.set_ylim(depth * 1.03, 0)
+        self.ax.set_xlim(-0.6, len(groups) - 0.4)
+        self.ax.set_xticks(range(len(groups)), [str(n) for n, _ in groups])
+        self.ax.set_ylabel('Profondeur (cm)')
+        self.ax.grid(False, axis='x')
+        return self
+
+    def depth_profile(self, depth: str, value: str, group: Optional[str] = None,
+                      marker: str = 'o') -> 'Chart':
+        """
+        EN: A variable along depth (soil moisture, organic matter, temperature…): depth on
+            a downward vertical axis, the variable read on top. One curve per group.
+        FR: Une variable selon la profondeur (humidité, matière organique, température…) :
+            profondeur sur un axe vertical vers le bas, variable lue en haut. Une courbe par groupe.
+
+        Example / Exemple:
+            chart.depth_profile('profondeur', 'humidite', group='date')
+        """
+        self.chart_type = 'depth_profile'
+        groups = self.data.groupby(group, sort=False) if group else [(None, self.data)]
+        for (name, sub), c in zip(groups, self._palette() * 10):
+            sub = sub.sort_values(depth)
+            self.ax.plot(sub[value], sub[depth], marker=marker, color=c, label=name)
+        self.ax.invert_yaxis()
+        self.ax.xaxis.set_label_position('top')
+        self.ax.xaxis.tick_top()
+        self.ax.set_xlabel(value)
+        self.ax.set_ylabel(depth)
+        if group:
+            self.ax.legend(title=group)
+        return self
+
+    # ──────────────────────────────────────── Map / Cartes
+
+    def _halo(self):
+        """Contour de la couleur du fond autour d'un texte (lisible sur un fond de carte)."""
+        import matplotlib.patheffects as pe
+        return [pe.withStroke(linewidth=3, foreground=plt.rcParams['axes.facecolor'])]
+
+    def _geo_frame(self, lons, lats, pad: float = 0.08) -> None:
+        """Cadre en longitude/latitude avec marge, et rapport d'aspect 1/cos(latitude)."""
+        lons, lats = np.asarray(lons, float), np.asarray(lats, float)
+        dx = max(np.ptp(lons), 0.05) * pad
+        dy = max(np.ptp(lats), 0.05) * pad
+        self.ax.set_xlim(lons.min() - dx, lons.max() + dx)
+        self.ax.set_ylim(lats.min() - dy, lats.max() + dy)
+        self.ax.set_aspect(1 / np.cos(np.radians(lats.mean())))
+        self.ax.set_xlabel('Longitude')
+        self.ax.set_ylabel('Latitude')
+
+    def _basemap(self, crs: str = 'EPSG:4326', source=None) -> None:
+        """Fond de carte (contextily) ; sans contextily ou sans réseau : avertissement, pas d'erreur.
+
+        Défaut : Esri World Gray Canvas (thème clair) ou Esri World Imagery (thème sombre),
+        utilisables sans clé d'API. `source` : nom de fournisseur xyzservices
+        ('Esri.WorldTopoMap', 'OpenTopoMap'…) ou objet fournisseur (ex. avec votre clé).
+        """
+        try:
+            import contextily as ctx
+        except ImportError:
+            warnings.warn("Fond de carte : installer l'option map (pip install plutovizu[map])",
+                          stacklevel=3)
+            return
+        if isinstance(source, str):
+            source = ctx.providers.query_name(source)
+        dark = sum(mcolors.to_rgb(plt.rcParams['axes.facecolor'])) / 3 < 0.5
+        provider = source or (ctx.providers.Esri.WorldImagery if dark
+                              else ctx.providers.Esri.WorldGrayCanvas)
+        try:
+            ctx.add_basemap(self.ax, crs=crs, source=provider, attribution_size=6)
+            self.ax.grid(False)
+        except Exception as exc:  # réseau absent, serveur de tuiles indisponible…
+            warnings.warn(f"Fond de carte indisponible ({exc.__class__.__name__}) : carte sans fond",
+                          stacklevel=3)
+
+    def map_points(self, lon: str, lat: str, value: Optional[str] = None,
+                   size: Optional[str] = None, group: Optional[str] = None,
+                   labels: Optional[str] = None, basemap: bool = True,
+                   cmap: Optional[str] = None, sizes: Tuple[float, float] = (30, 500),
+                   alpha: float = 0.85, basemap_source=None) -> 'Chart':
+        """
+        EN: Points on a map (longitude/latitude, WGS84): colored by a value (colorbar) or a
+            group (legend), sized by a column, labeled, over a web basemap (contextily, optional).
+        FR: Points sur une carte (longitude/latitude, WGS84) : colorés par une valeur (barre
+            de couleur) ou un groupe (légende), dimensionnés par une colonne, nommés, sur un
+            fond de carte web (contextily, optionnel).
+
+        Example / Exemple:
+            chart.map_points('lon', 'lat', value='pluie', labels='station')
+        """
+        self.chart_type = 'map_points'
+        d = self.data.dropna(subset=[lon, lat])
+        if size:
+            s = d[size].astype(float)
+            span = (s.max() - s.min()) or 1
+            area = sizes[0] + (s - s.min()) / span * (sizes[1] - sizes[0])
+        else:
+            area = pd.Series(sizes[0] * 2, index=d.index)
+        edge = plt.rcParams['axes.facecolor']
+        if group:
+            for (name, sub), c in zip(d.groupby(group, sort=False), self._palette() * 10):
+                self.ax.scatter(sub[lon], sub[lat], s=area[sub.index], color=c, alpha=alpha,
+                                edgecolor=edge, linewidth=0.8, label=name, zorder=3)
+            self.ax.legend(title=group)
+        elif value:
+            sc = self.ax.scatter(d[lon], d[lat], c=d[value], s=area, alpha=alpha, zorder=3,
+                                 cmap=cmap or plt.rcParams['image.cmap'], edgecolor=edge,
+                                 linewidth=0.8)
+            self._colorbar(sc, value)
+        else:
+            self.ax.scatter(d[lon], d[lat], s=area, color=self._palette()[0], alpha=alpha,
+                            edgecolor=edge, linewidth=0.8, zorder=3)
+        if labels:
+            for x, y, t in zip(d[lon], d[lat], d[labels]):
+                self.ax.annotate(str(t), (x, y), xytext=(5, 5), textcoords='offset points',
+                                 fontsize=8, color=plt.rcParams['text.color'],
+                                 path_effects=self._halo(), zorder=4)
+        self._geo_frame(d[lon], d[lat])
+        if basemap:
+            self._basemap(source=basemap_source)
+        return self
+
+    def choropleth(self, column: str, labels: Optional[str] = None, cmap: Optional[str] = None,
+                   categorical: Optional[bool] = None, legend: bool = True,
+                   basemap: bool = False, edgecolor: Optional[str] = None,
+                   basemap_source=None) -> 'Chart':
+        """
+        EN: Choropleth map: each zone (region, plot…) of a GeoDataFrame colored by a column
+            — continuous (colorbar) or categorical (legend). Needs geopandas
+            (pip install plutovizu[map]); read zones with geopandas.read_file(...).
+        FR: Carte choroplèthe : chaque zone (région, parcelle…) d'un GeoDataFrame colorée
+            selon une colonne — continue (barre de couleur) ou catégorielle (légende).
+            Nécessite geopandas (pip install plutovizu[map]) ; lire les zones avec
+            geopandas.read_file(...).
+
+        Example / Exemple:
+            regions = geopandas.read_file('regions.geojson')
+            Chart(regions).choropleth('rendement', labels='nom')
+        """
+        if not hasattr(self.data, 'geometry'):
+            raise ValueError("choropleth demande un GeoDataFrame : geopandas.read_file('zones.geojson') "
+                             "(pip install plutovizu[map])")
+        self.chart_type = 'choropleth'
+        gdf = self.data
+        if categorical is None:
+            categorical = not pd.api.types.is_numeric_dtype(gdf[column])
+        common = dict(ax=self.ax, column=column, legend=legend, linewidth=0.8,
+                      edgecolor=edgecolor or plt.rcParams['axes.facecolor'])
+        if categorical:
+            k = gdf[column].nunique()
+            palette = (self._palette() * 10)[:k]
+            gdf.plot(categorical=True, cmap=mcolors.ListedColormap(palette),
+                     legend_kwds={'title': column, 'loc': 'upper left', 'bbox_to_anchor': (1, 1)},
+                     **common)
+        else:
+            gdf.plot(cmap=cmap or plt.rcParams['image.cmap'],
+                     legend_kwds={'label': column, 'shrink': 0.7}, **common)
+        if labels:
+            for geom, t in zip(gdf.geometry, gdf[labels]):
+                p = geom.representative_point()
+                self.ax.annotate(str(t), (p.x, p.y), ha='center', va='center', fontsize=8,
+                                 color=plt.rcParams['text.color'], path_effects=self._halo())
+        self.ax.set_axis_off()
+        if basemap:
+            self._basemap(crs=gdf.crs.to_string() if gdf.crs else 'EPSG:4326',
+                          source=basemap_source)
+        return self
+
+    def flow_map(self, lon_from: str, lat_from: str, lon_to: str, lat_to: str,
+                 weight: Optional[str] = None, label_from: Optional[str] = None,
+                 label_to: Optional[str] = None, basemap: bool = True,
+                 curvature: float = 0.25, color: Optional[str] = None,
+                 max_width: float = 8, basemap_source=None) -> 'Chart':
+        """
+        EN: Flow map: one curved arrow per row from origin to destination (lon/lat), width
+            proportional to `weight` — trade, transport, migrations.
+        FR: Carte de flux : une flèche courbe par ligne de l'origine vers la destination
+            (lon/lat), d'épaisseur proportionnelle à `weight` — échanges, transport, migrations.
+
+        Example / Exemple:
+            chart.flow_map('lon_dep', 'lat_dep', 'lon_arr', 'lat_arr', weight='tonnes',
+                           label_from='depart', label_to='arrivee')
+        """
+        from matplotlib.patches import FancyArrowPatch
+        self.chart_type = 'flow_map'
+        d = self.data.dropna(subset=[lon_from, lat_from, lon_to, lat_to])
+        if weight:
+            w = d[weight].astype(float)
+            span = (w.max() - w.min()) or 1
+            widths = 1 + (w - w.min()) / span * (max_width - 1)
+        else:
+            widths = pd.Series(2.0, index=d.index)
+        c = color or self._palette()[0]
+        for i, row in d.iterrows():
+            self.ax.add_patch(FancyArrowPatch(
+                (row[lon_from], row[lat_from]), (row[lon_to], row[lat_to]),
+                connectionstyle=f'arc3,rad={curvature}', arrowstyle='-|>',
+                mutation_scale=8 + widths[i] * 1.5, linewidth=widths[i], color=c, alpha=0.75,
+                zorder=3))
+        ends = pd.concat([d[[lon_from, lat_from]].set_axis(['lon', 'lat'], axis=1)
+                          .assign(nom=d[label_from] if label_from else None),
+                          d[[lon_to, lat_to]].set_axis(['lon', 'lat'], axis=1)
+                          .assign(nom=d[label_to] if label_to else None)]).drop_duplicates(['lon', 'lat'])
+        self.ax.scatter(ends['lon'], ends['lat'], s=30, color=plt.rcParams['text.color'], zorder=4)
+        if label_from or label_to:
+            for _, e in ends.dropna(subset=['nom']).iterrows():
+                self.ax.annotate(str(e['nom']), (e['lon'], e['lat']), xytext=(5, 5),
+                                 textcoords='offset points', fontsize=8,
+                                 color=plt.rcParams['text.color'], path_effects=self._halo(), zorder=5)
+        self._geo_frame(ends['lon'], ends['lat'], pad=0.15)
+        if basemap:
+            self._basemap(source=basemap_source)
         return self
 
     # ──────────────────────────────────────── Qualitative analysis / Analyse qualitative

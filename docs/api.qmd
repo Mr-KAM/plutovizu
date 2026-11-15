@@ -329,11 +329,12 @@ chart.bump('saison', 'classement', 'equipe')
            overlap: float = 1.5, alpha: float = 0.7) -> Chart
 ```
 
-Distributions KDE superposées. Nécessite `scipy`.
+Distributions KDE superposées, une crête par groupe (le premier en haut). Toutes les
+densités partagent la même échelle, quelles que soient les unités de `value_col`.
 
 | Paramètre | Défaut | Description |
 |---|---|---|
-| `overlap` | `1.5` | Chevauchement vertical (plus élevé = plus dense) |
+| `overlap` | `1.5` | Hauteur de la plus haute crête, en lignes (1 = touche la ligne du dessus) |
 
 ```python
 chart.ridgeline('salaire', 'secteur', overlap=2.0)
@@ -679,7 +680,7 @@ pyramide des âges.
 rose des vents avec `compass=True`), `'line'` ou `'scatter'` ; `theta` en catégories ou en
 degrés.
 
-### Champs et cartes
+### Champs
 
 ```python
 .contour(x, y, z, filled=True, levels=10, cmap=None, show_points=False,
@@ -704,6 +705,59 @@ Une grille régulière complète de (x, y) est détectée automatiquement (`cont
 
 Ces méthodes remplacent l'axe du graphique par un axe 3D (`chart.ax`). `surface` triangule
 automatiquement des points dispersés (`trisurf`).
+
+---
+
+## Climat & sols
+
+Exemples dans la page [Climat & sols](charts/sciences.qmd). Les couleurs conventionnelles
+(température rouge, pluie bleue, déficit orange) sont réglables par paramètre.
+
+```python
+.walter_lieth(month, temp, precip, tmin=None, station=None,
+              temp_color='#d1495b', precip_color='#2e86de')        # → chart.climate_summary
+.climogram(precip, temp, month=None, group=None, labels=True)
+.water_balance(month, precip, etp, show_bars=True,
+               surplus_color='#2e86de', deficit_color='#e67e22')   # → chart.water_table, water_summary
+.degree_days(date, tmin, tmax, base=10.0, cap=None, stages=None, color=None)
+                                                                   # → chart.gdd, chart.stage_dates
+.wind_rose(direction, speed, sectors=16, speed_bins=None, unit='m/s', cmap=None)
+                                                                   # → chart.wind_table
+.anomaly(x, value, baseline=None, window=None,
+         pos_color='#d6604d', neg_color='#4393c3')                 # → chart.anomalies
+.climate_stripes(x, value, cmap='RdBu_r', show_years=True)
+.soil_profile(top, bottom, horizon, profile=None, color=None, width=0.6, show_labels=True)
+.depth_profile(depth, value, group=None, marker='o')
+```
+
+- `walter_lieth` : 10 °C ↔ 20 mm, pluies comprimées au 1/10 au-delà de 100 mm ;
+  `tmin` marque les mois de gel.
+- `degree_days` : DJ = max(0, (min(Tmax, cap) + Tmin) / 2 − base) ; `stages` = {stade: DJ}.
+- `anomaly` : `baseline` = moyenne (défaut), nombre, ou période `(début, fin)` de `x`.
+- `wind_rose` : directions en degrés (0 = nord), vitesses regroupées selon `speed_bins`.
+
+---
+
+## Map
+
+Exemples dans la page [Map](charts/map.qmd). Option : `pip install plutovizu[map]`.
+
+```python
+.map_points(lon, lat, value=None, size=None, group=None, labels=None, basemap=True,
+            cmap=None, sizes=(30, 500), alpha=0.85, basemap_source=None)
+.choropleth(column, labels=None, cmap=None, categorical=None, legend=True,
+            basemap=False, edgecolor=None, basemap_source=None)   # data = GeoDataFrame
+.flow_map(lon_from, lat_from, lon_to, lat_to, weight=None, label_from=None, label_to=None,
+          basemap=True, curvature=0.25, color=None, max_width=8, basemap_source=None)
+```
+
+- Coordonnées en longitude/latitude (WGS84) pour `map_points` et `flow_map` ; rapport
+  d'aspect corrigé selon la latitude.
+- `choropleth` demande un `GeoDataFrame` (geopandas) ; une colonne texte donne une carte
+  catégorielle.
+- Fond de carte : Esri World Gray Canvas (thème clair) ou World Imagery (thème sombre), sans
+  clé d'API ; `basemap_source` accepte un nom (`'Esri.WorldTopoMap'`) ou un fournisseur
+  xyzservices. Sans contextily ou sans réseau : avertissement, carte sans fond.
 
 ---
 

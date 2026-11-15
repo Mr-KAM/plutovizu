@@ -770,3 +770,166 @@ def test_named_palette_feeds_new_methods(essai):
     c = Chart(essai).set_colors('Set2').mean_bar('variete', 'rendement')
     import seaborn as sns
     assert _hex(c.ax.patches[0].get_facecolor()) == _hex(sns.color_palette('Set2')[0])
+
+
+# ── ridgeline : visible quelles que soient les unités ───────────────────────
+
+@pytest.mark.parametrize('scale', [1e-3, 1, 50_000])
+def test_ridgeline_visible_whatever_the_units(scale):
+    rng = np.random.default_rng(3)
+    d = pd.DataFrame({'v': np.concatenate([rng.normal(m, 0.2, 150) for m in (1, 2, 3)]) * scale,
+                      'g': np.repeat(['A', 'B', 'C'], 150)})
+    c = Chart(d).ridgeline('v', 'g', overlap=1.5)
+    heights = []
+    for poly in c.ax.collections:                      # une surface remplie par groupe
+        ys = poly.get_paths()[0].vertices[:, 1]
+        heights.append(ys.max() - ys.min())
+    assert len(heights) == 3
+    assert max(heights) == pytest.approx(1.5, rel=0.01)   # la plus haute crête = overlap lignes
+    assert min(heights) > 0.5                             # toutes nettement visibles
+    pos = {t.get_text(): y for t, y in zip(c.ax.get_yticklabels(), c.ax.get_yticks())}
+    assert pos['A'] > pos['B'] > pos['C']              # premier groupe en haut
+
+def test_ridgeline_needs_data():
+    with pytest.raises(ValueError):
+        Chart(pd.DataFrame({'v': [1.0], 'g': ['A']})).ridgeline('v', 'g')
+
+
+# ── climat & sols ───────────────────────────────────────────────────────────
+
+MOIS = ['J', 'F', 'M', 'A', 'M2', 'J2', 'J3', 'A2', 'S', 'O', 'N', 'D']
+
+
+@pytest.fixture
+def station():
+    return pd.DataFrame({'mois': MOIS,
+                         'temp': [24, 26, 28, 30, 31, 30, 28, 27, 27, 28, 27, 25],
+                         'pluie': [0, 0, 0, 5, 30, 100, 300, 300, 150, 40, 2, 0],
+                         'etp': [140, 150, 180, 190, 200, 170, 140, 120, 120, 140, 140, 135],
+                         'tmin': [-1, 2, 5, 8, 10, 12, 12, 12, 10, 6, 2, -2]})
+
+
+def test_walter_lieth_scale_and_summary(station):
+    c = Chart(station).walter_lieth('mois', 'temp', 'pluie', tmin='tmin', station='Station A')
+    precip_line = c.ax.lines[1].get_ydata()
+    assert precip_line[5] == pytest.approx(50)          # 100 mm → ligne des 50 °C
+    assert precip_line[6] == pytest.approx(60)          # 300 mm → 50 + 200/20
+    labels = {t.get_text() for t in c.ax2.get_yticklabels()}
+    assert {'100', '300'} <= labels
+    assert c.climate_summary['p_totale'] == pytest.approx(927)
+    assert 'J' in c.climate_summary['mois_secs'] and 'J3' not in c.climate_summary['mois_secs']
+
+
+def test_climogram_closed_loop(station):
+    d = pd.concat([station.assign(st='A'), station.assign(st='B', temp=station['temp'] - 5)])
+    c = Chart(d).climogram('pluie', 'temp', month='mois', group='st')
+    assert len(c.ax.lines) == 2 and len(c.ax.lines[0].get_xdata()) == 13   # boucle fermée
+
+
+def test_water_balance(station):
+    c = Chart(station).water_balance('mois', 'pluie', 'etp')
+    assert c.water_table['bilan'].tolist() == (station['pluie'] - station['etp']).tolist()
+    assert c.water_summary['excedent'] == pytest.approx(160 + 180 + 30)   # juil., août, sept.
+
+
+def test_degree_days_and_stages():
+    d = pd.DataFrame({'jour': pd.date_range('2024-06-01', periods=10),
+                      'tmin': [10.0] * 10, 'tmax': [30.0] * 10})
+    c = Chart(d).degree_days('jour', 'tmin', 'tmax', base=10, stages={'Levée': 50})
+    assert c.gdd['dj'].tolist() == [10.0] * 10
+    assert c.stage_dates['Levée'] == pd.Timestamp('2024-06-05')
+    capped = Chart(d).degree_days('jour', 'tmin', 'tmax', base=10, cap=20)
+    assert capped.gdd['dj'].iloc[0] == 5.0                      # (20 + 10) / 2 − 10
+
+
+def test_wind_rose_sectors_and_total():
+    d = pd.DataFrame({'dir': [355, 5, 90, 180, 270, 92], 'v': [1, 3, 5, 7, 9, 1]})
+    c = Chart(d).wind_rose('dir', 'v', sectors=4)
+    t = c.wind_table
+    assert t.to_numpy().sum() == pytest.approx(100)
+    assert t.loc[0].sum() == pytest.approx(100 * 2 / 6)         # 355° et 5° → nord
+    assert c.ax.name == 'polar'
+
+
+def test_anomaly_baselines():
+    d = pd.DataFrame({'an': range(2000, 2010), 't': np.arange(10.0)})
+    c = Chart(d).anomaly('an', 't', window=3)
+    assert c.anomalies.mean() == pytest.approx(0)
+    ref = Chart(d).anomaly('an', 't', baseline=(2000, 2004))
+    assert ref.anomaly_reference == pytest.approx(2.0)
+
+
+def test_climate_stripes():
+    d = pd.DataFrame({'an': range(1990, 2020), 't': np.linspace(14, 15.5, 30)})
+    c = Chart(d).climate_stripes('an', 't')
+    faces = [p.get_facecolor() for p in c.ax.patches]
+    assert len(faces) == 30
+    assert faces[0][2] > faces[0][0] and faces[-1][0] > faces[-1][2]   # bleu → rouge
+
+
+def test_soil_and_depth_profiles():
+    h = pd.DataFrame({'fosse': ['P1'] * 3 + ['P2'] * 2, 'horizon': ['A', 'B', 'C', 'A', 'Bt'],
+                      'haut': [0, 20, 60, 0, 30], 'bas': [20, 60, 120, 30, 90]})
+    c = Chart(h).soil_profile('haut', 'bas', 'horizon', profile='fosse')
+    assert len(c.ax.patches) == 5
+    assert c.ax.get_ylim()[0] > c.ax.get_ylim()[1]               # profondeur vers le bas
+    p = pd.DataFrame({'z': [0, 10, 30, 60] * 2, 'hum': [30, 25, 20, 18, 15, 14, 16, 17],
+                      'date': ['juin'] * 4 + ['août'] * 4})
+    dp = Chart(p).depth_profile('z', 'hum', group='date')
+    assert dp.ax.yaxis_inverted()
+
+
+# ── map ─────────────────────────────────────────────────────────────────────
+
+@pytest.fixture
+def villes():
+    return pd.DataFrame({'ville': ['Dakar', 'Thiès', 'Kaolack', 'Tambacounda'],
+                         'lon': [-17.44, -16.93, -16.07, -13.67],
+                         'lat': [14.69, 14.79, 14.15, 13.77],
+                         'pluie': [400, 500, 650, 850],
+                         'zone': ['côte', 'centre', 'centre', 'est']})
+
+
+def test_map_points_without_basemap(villes):
+    c = Chart(villes).map_points('lon', 'lat', value='pluie', size='pluie', labels='ville',
+                                 basemap=False)
+    assert c.ax.get_aspect() == pytest.approx(1 / np.cos(np.radians(villes['lat'].mean())))
+    assert [t.get_text() for t in c.ax.texts] == villes['ville'].tolist()
+    g = Chart(villes).map_points('lon', 'lat', group='zone', basemap=False)
+    assert len(g.ax.get_legend().get_texts()) == 3
+
+
+def test_basemap_failure_only_warns(villes, monkeypatch):
+    contextily = pytest.importorskip('contextily')
+
+    def offline(*a, **k):
+        raise ConnectionError('pas de réseau')
+    monkeypatch.setattr(contextily, 'add_basemap', offline)
+    with pytest.warns(UserWarning, match='Fond de carte indisponible'):
+        Chart(villes).map_points('lon', 'lat')
+
+
+def test_choropleth_numeric_categorical_and_error(villes):
+    gpd = pytest.importorskip('geopandas')
+    from shapely.geometry import box
+    parcelles = gpd.GeoDataFrame({'id': ['P1', 'P2', 'P3', 'P4'], 'rdt': [3.1, 4.2, 5.0, 2.4],
+                                  'culture': ['riz', 'mil', 'riz', 'maïs']},
+                                 geometry=[box(i, 0, i + 1, 1) for i in range(4)],
+                                 crs='EPSG:32628')
+    c = Chart(parcelles).choropleth('rdt', labels='id')
+    assert [t.get_text() for t in c.ax.texts] == ['P1', 'P2', 'P3', 'P4']
+    cat = Chart(parcelles).choropleth('culture')
+    assert len(cat.ax.get_legend().get_texts()) == 3
+    with pytest.raises(ValueError, match='GeoDataFrame'):
+        Chart(villes).choropleth('pluie')
+
+
+def test_flow_map(villes):
+    flux = pd.DataFrame({'de': ['Kaolack', 'Tambacounda'], 'vers': ['Dakar', 'Dakar'],
+                         'lon1': [-16.07, -13.67], 'lat1': [14.15, 13.77],
+                         'lon2': [-17.44, -17.44], 'lat2': [14.69, 14.69], 't': [1200, 400]})
+    c = Chart(flux).flow_map('lon1', 'lat1', 'lon2', 'lat2', weight='t', label_from='de',
+                             label_to='vers', basemap=False)
+    widths = sorted(p.get_linewidth() for p in c.ax.patches)
+    assert len(widths) == 2 and widths[-1] > widths[0]
+    assert sorted(t.get_text() for t in c.ax.texts) == ['Dakar', 'Kaolack', 'Tambacounda']

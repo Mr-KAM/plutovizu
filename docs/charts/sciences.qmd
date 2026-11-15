@@ -1,6 +1,6 @@
 ---
 title: "Climat & sols"
-subtitle: "Graphiques spécialisés des sciences de la nature."
+subtitle: "Climatogrammes, bilan hydrique, degrés-jours, vent, profils et textures de sol."
 ---
 
 ```{python}
@@ -75,4 +75,142 @@ chart = (Chart(sols, figsize=(8, 7.5))
     .tight_layout())
 print(chart.texture_classes.value_counts().to_string())
 chart.show()
+```
+
+
+## Climat
+
+::: {.callout-note}
+Les stations de cette page sont **fictives** (climats de type sahélien, soudanien et
+guinéen) : les valeurs sont illustratives.
+:::
+
+### `walter_lieth` — Climatogramme de Walter-Lieth {#g-walter_lieth}
+
+Le diagramme climatique de référence en écologie : 10 °C correspondent à 20 mm de pluie,
+l'échelle des pluies est comprimée au 1/10 au-delà de 100 mm (aplat bleu foncé). La saison
+humide est en bleu, la saison sèche en pointillés rouges, les mois de gel (`tmin` < 0)
+sont marqués sous l'axe. Moyenne annuelle et cumul en haut à droite ; résumé dans
+`chart.climate_summary`.
+
+```{python}
+#| fig-cap: "Climatogramme d'une station de type soudanien"
+chart = (Chart(station_b, figsize=(9, 5.5))
+    .walter_lieth('mois', 'temperature', 'pluie', tmin='tmin', station='Station B (fictive)')
+    .tight_layout())
+print(chart.climate_summary)
+chart.show()
+```
+
+### `climogram` — Climogramme (hythergramme) {#g-climogram}
+
+Température et précipitations de chaque mois en un point, reliés en boucle : la forme de
+la boucle résume le climat, et plusieurs stations se comparent d'un coup d'œil.
+
+```{python}
+#| fig-cap: "Trois climats tropicaux"
+(Chart(stations_climat, figsize=(9, 5.5))
+    .climogram('pluie', 'temperature', month='mois', group='station')
+    .title('Climogrammes')
+    .tight_layout()
+    .show())
+```
+
+### `water_balance` — Bilan hydrique {#g-water_balance}
+
+Précipitations face à l'évapotranspiration potentielle (ETP) : excédent en bleu, déficit
+en orange. Bilan mensuel dans `chart.water_table`, totaux dans `chart.water_summary`.
+
+```{python}
+#| fig-cap: "Bilan hydrique simplifié P – ETP"
+chart = (Chart(station_b, figsize=(9, 4.5))
+    .water_balance('mois', 'pluie', 'etp')
+    .title('Bilan hydrique (mm)')
+    .tight_layout())
+print(chart.water_summary)
+chart.show()
+```
+
+### `degree_days` — Degrés-jours de croissance {#g-degree_days}
+
+Somme des températures utiles à la culture : chaque jour apporte
+max(0, (Tmax + Tmin) / 2 − base), Tmax pouvant être plafonnée (`cap`). `stages` marque la
+date d'atteinte de chaque stade.
+
+```{python}
+#| fig-cap: "Degrés-jours cumulés et stades d'un riz (seuils illustratifs)"
+chart = (Chart(meteo, figsize=(9, 4.5))
+    .degree_days('jour', 'tmin', 'tmax', base=10, cap=35,
+                 stages={'Tallage': 600, 'Initiation paniculaire': 950, 'Floraison': 1250})
+    .title('Degrés-jours cumulés (base 10 °C)')
+    .tight_layout())
+print(chart.stage_dates)
+chart.show()
+```
+
+### `wind_rose` — Rose des vents {#g-wind_rose}
+
+Directement à partir des observations : directions en degrés (0 = nord) regroupées en
+secteurs, vitesses en classes, fréquences en % des observations.
+
+```{python}
+#| fig-cap: "Rose des vents à partir de 900 observations"
+(Chart(vent_obs, figsize=(7.5, 6.5))
+    .wind_rose('direction', 'vitesse', speed_bins=[0, 2, 4, 6, 8])
+    .title('Rose des vents')
+    .tight_layout()
+    .show())
+```
+
+### `anomaly` — Anomalies {#g-anomaly}
+
+L'écart de chaque année à une référence : la moyenne, un nombre, ou la moyenne d'une
+période (`baseline=(1961, 1990)`), avec une moyenne glissante en option.
+
+```{python}
+#| fig-cap: "Anomalies de température par rapport à 1961-1990"
+(Chart(annees, figsize=(10, 4))
+    .anomaly('annee', 'temperature', baseline=(1961, 1990), window=10)
+    .title('Écart à la normale 1961-1990 (°C)')
+    .tight_layout()
+    .show())
+```
+
+### `climate_stripes` — Bandes climatiques {#g-climate_stripes}
+
+Une bande par année, du bleu (plus froid que la moyenne) au rouge (plus chaud), dans
+l'esprit des *warming stripes* d'Ed Hawkins.
+
+```{python}
+#| fig-cap: "Bandes climatiques 1961-2024"
+(Chart(annees, figsize=(10, 2.5))
+    .climate_stripes('annee', 'temperature')
+    .show())
+```
+
+## Sol
+
+### `soil_profile` — Profil de sol {#g-soil_profile}
+
+Les horizons empilés selon la profondeur, une colonne par fosse. `color` accepte une
+colonne de couleurs, par exemple des notations Munsell converties en hexadécimal.
+
+```{python}
+#| fig-cap: "Trois fosses le long d'une toposéquence"
+(Chart(horizons, figsize=(8, 6))
+    .soil_profile('haut', 'bas', 'horizon', profile='fosse', color='couleur')
+    .title('Profils de sol')
+    .tight_layout()
+    .show())
+```
+
+### `depth_profile` — Variable selon la profondeur {#g-depth_profile}
+
+```{python}
+#| fig-cap: "Humidité volumique du sol à deux dates"
+(Chart(profil_humidite, figsize=(6.5, 6))
+    .depth_profile('profondeur', 'humidite', group='date')
+    .labels('Humidité (%)', 'Profondeur (cm)')
+    .tight_layout()
+    .show())
 ```

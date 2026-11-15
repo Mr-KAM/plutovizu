@@ -61,6 +61,10 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `donut`, `polar`, `radial_bar`, `progress_bar` | Anneau, polaire (rose des vents), barres radiales, progression |
 | `contour`, `mesh`, `vector_field` | Courbes de niveau, grille colorée, champ de vecteurs |
 | `scatter3d`, `line3d`, `surface`, `bar3d` | Graphiques 3D |
+| `walter_lieth`, `climogram`, `water_balance`, `degree_days` | Climatogramme, climogramme, bilan hydrique, degrés-jours |
+| `wind_rose`, `anomaly`, `climate_stripes` | Rose des vents, anomalies, bandes climatiques |
+| `soil_profile`, `depth_profile` | Profil de sol, variable selon la profondeur |
+| `map_points`, `choropleth`, `flow_map` | Map : points, zones, flux (`pip install plutovizu[map]`) |
 | `word_cloud(text)` | Nuage de mots (réponses ouvertes, entretiens) |
 | `word_frequency(text, top, ngram)` | Mots ou expressions les plus cités |
 | `likert(columns, order)` | Échelle de Likert (barres divergentes) |
@@ -71,7 +75,7 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 `mean_bar(..., letters=True)` ajoute les lettres du test de Tukey HSD ;
 `texture_class(sable, limon, argile)` donne la classe USDA d'un sol.
 
-Liste complète des 68 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
+Liste complète des 80 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html).
 
 ## Thèmes
 

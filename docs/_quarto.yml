@@ -45,6 +45,7 @@ website:
           - charts/champs.qmd
           - charts/3d.qmd
           - charts/sciences.qmd
+          - charts/map.qmd
           - charts/qualitatif.qmd
           - charts/seaborn.qmd
       - section: "Mise en forme"

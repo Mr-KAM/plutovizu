@@ -53,12 +53,22 @@ vol = pd.DataFrame({'x': np.cos(t) * t, 'y': np.sin(t) * t, 'z': 20 + 2 * t})
 
 C = lambda d, w=4, h=3: Chart(d, figsize=(w, h))  # noqa: E731
 
+import geopandas as gpd  # noqa: E402
+from shapely.geometry import box  # noqa: E402
+
+_r = np.random.default_rng(1)
+parcelles = gpd.GeoDataFrame({'rendement': 3 + _r.normal(0, .6, 20)},
+                             geometry=[box(x * 110, y * 80, x * 110 + 100, y * 80 + 70)
+                                       for y in range(4) for x in range(5)], crs='EPSG:32628')
+_dakar = villes.set_index('ville').loc['Dakar']
+flux_vignette = villes[villes['ville'].isin(['Saint-Louis', 'Kaolack', 'Tambacounda', 'Kolda', 'Ziguinchor'])]     .assign(lon2=_dakar['lon'], lat2=_dakar['lat'], t=[400, 1200, 300, 650, 500])
+
 EVO, DIS, COM, REL = 'Évolution', 'Distribution', 'Comparaison', 'Relation'
-MUL, CPO, CHA, D3 = 'Multivarié', 'Composition', 'Champs & cartes', '3D'
-SCI, QUA, SNS = 'Climat & sols', 'Qualitatif', 'Seaborn'
+MUL, CPO, CHA, D3 = 'Multivarié', 'Composition', 'Champs', '3D'
+SCI, QUA, SNS, CAR = 'Climat & sols', 'Qualitatif', 'Seaborn', 'Map'
 PAGE = {EVO: 'evolution', DIS: 'distribution', COM: 'comparaison', REL: 'relation',
         MUL: 'multivarie', CPO: 'composition', CHA: 'champs', D3: '3d', SCI: 'sciences',
-        QUA: 'qualitatif', SNS: 'seaborn'}
+        QUA: 'qualitatif', SNS: 'seaborn', CAR: 'map'}
 
 # (méthode, titre de la carte, catégorie, usage, vignette)
 CATALOGUE = [
@@ -182,7 +192,7 @@ CATALOGUE = [
     ('progress_bar', 'Barre de progression', CPO, 'Objectif atteint',
      lambda: C(avancement, 4, 2).progress_bar('pct', labels='activite')),
 
-    ('contour', 'Courbes de niveau', CHA, 'Cartes, prélèvements dispersés',
+    ('contour', 'Courbes de niveau', CHA, 'Courbes sur grille ou prélèvements',
      lambda: C(champ).contour('x', 'y', 'ph', colorbar=False, labels=False, show_points=True)),
     ('mesh', 'Grille colorée', CHA, 'Valeur par cellule (pcolormesh)',
      lambda: C(reponse).mesh('azote', 'eau', 'rendement', colorbar=False)),
@@ -202,6 +212,32 @@ CATALOGUE = [
      lambda: C(climat).ombrothermic('mois', 'temp', 'precip')),
     ('soil_texture', 'Textures USDA', SCI, 'Classer des sols',
      lambda: C(sols, 3.6, 3.2).soil_texture('sable', 'limon', 'argile', show_classes=True)),
+
+    ('walter_lieth', 'Walter-Lieth', SCI, 'Climatogramme de référence',
+     lambda: C(station_b).walter_lieth('mois', 'temperature', 'pluie')),
+    ('climogram', 'Climogramme', SCI, 'Comparer des climats',
+     lambda: C(stations_climat).climogram('pluie', 'temperature', group='station')),
+    ('water_balance', 'Bilan hydrique', SCI, 'Excédent et déficit P – ETP',
+     lambda: C(station_b).water_balance('mois', 'pluie', 'etp')),
+    ('degree_days', 'Degrés-jours', SCI, 'Somme des températures, stades',
+     lambda: C(meteo).degree_days('jour', 'tmin', 'tmax', stages={'Floraison': 1250})),
+    ('wind_rose', 'Rose des vents', SCI, 'Direction et vitesse du vent',
+     lambda: C(vent_obs, 3.4, 3.4).wind_rose('direction', 'vitesse')),
+    ('anomaly', 'Anomalies', SCI, 'Écart à une normale',
+     lambda: C(annees).anomaly('annee', 'temperature', baseline=(1961, 1990))),
+    ('climate_stripes', 'Bandes climatiques', SCI, 'Une couleur par année',
+     lambda: C(annees, 4, 2).climate_stripes('annee', 'temperature', show_years=False)),
+    ('soil_profile', 'Profil de sol', SCI, 'Horizons selon la profondeur',
+     lambda: C(horizons).soil_profile('haut', 'bas', 'horizon', profile='fosse', color='couleur')),
+    ('depth_profile', 'Selon la profondeur', SCI, 'Humidité, matière organique…',
+     lambda: C(profil_humidite, 3.2, 3).depth_profile('profondeur', 'humidite', group='date')),
+
+    ('map_points', 'Points sur carte', CAR, 'Stations, parcelles géolocalisées',
+     lambda: C(villes, 3.6, 3).map_points('lon', 'lat', value='pluie', size='pluie')),
+    ('choropleth', 'Carte de zones', CAR, 'Régions, parcelles colorées',
+     lambda: C(parcelles).choropleth('rendement', legend=False)),
+    ('flow_map', 'Carte de flux', CAR, 'Échanges entre lieux',
+     lambda: C(flux_vignette, 3.6, 3).flow_map('lon', 'lat', 'lon2', 'lat2', weight='t')),
 
     ('word_cloud', 'Nuage de mots', QUA, "Thèmes dominants d'un texte",
      lambda: C(enquete).word_cloud('reponse', max_words=60)),

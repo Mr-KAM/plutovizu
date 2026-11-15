@@ -22,6 +22,10 @@ dependencies = [
 morethemes = [
     "morethemes>=0.9.0",
 ]
+map = [
+    "contextily>=1.7.1",
+    "geopandas>=1.2.0",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -35,6 +39,8 @@ dev = [
     "pyyaml>=6.0.3",
     "ipykernel>=7.4.0",
     "morethemes>=0.9.0",  # thèmes optionnels, utilisés par la doc et les tests
+    "geopandas>=1.2.0",
+    "contextily>=1.7.1",
 ]
 
 [tool.pytest.ini_options]

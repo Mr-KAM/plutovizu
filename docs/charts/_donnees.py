@@ -145,3 +145,64 @@ segments = pd.DataFrame({
     'code': rng.choice(['Eau', 'Prix', 'Crédit', 'Semences', 'Formation', 'Marché'], 120,
                        p=[.25, .2, .15, .15, .1, .15]),
 })
+
+# ── Climat de trois stations FICTIVES (valeurs illustratives, types sahélien → guinéen)
+_mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc']
+stations_climat = pd.DataFrame({
+    'station': np.repeat(['Station A (sahélienne)', 'Station B (soudanienne)', 'Station C (guinéenne)'], 12),
+    'mois': _mois * 3,
+    'temperature': [22, 25, 29, 32, 34, 33, 30, 28, 29, 30, 27, 23,
+                    25, 27, 30, 32, 31, 28, 26, 26, 26, 27, 26, 25,
+                    26, 27, 27, 27, 26, 25, 24, 24, 25, 25, 26, 26],
+    'pluie': [0, 0, 0, 1, 8, 35, 110, 170, 95, 15, 1, 0,
+              0, 1, 4, 20, 85, 150, 230, 290, 220, 85, 10, 1,
+              8, 15, 45, 110, 190, 240, 280, 330, 300, 220, 90, 20],
+    'tmin': [14, 16, 20, 24, 26, 26, 24, 23, 23, 22, 18, 15,
+             17, 19, 22, 25, 24, 22, 21, 21, 21, 21, 19, 17,
+             20, 21, 22, 22, 22, 21, 21, 21, 21, 21, 21, 20],
+    'etp': [140, 160, 210, 230, 240, 210, 170, 140, 145, 160, 145, 135,
+            150, 165, 200, 210, 185, 150, 125, 115, 120, 140, 145, 145,
+            120, 130, 150, 150, 140, 125, 110, 105, 110, 120, 120, 115],
+})
+station_b = stations_climat[stations_climat['station'].str.startswith('Station B')].reset_index(drop=True)
+
+# ── Observations de vent brutes (direction en degrés, vitesse en m/s)
+rng = np.random.default_rng(12)
+vent_obs = pd.DataFrame({
+    'direction': np.concatenate([rng.normal(270, 25, 500), rng.normal(45, 30, 250),
+                                 rng.uniform(0, 360, 150)]) % 360,
+    'vitesse': np.concatenate([rng.gamma(3, 1.4, 500), rng.gamma(2, 1.2, 250), rng.gamma(1.5, 1, 150)]),
+})
+
+# ── Température annuelle d'une station fictive (tendance + variabilité)
+rng = np.random.default_rng(13)
+annees = pd.DataFrame({'annee': np.arange(1961, 2025)})
+annees['temperature'] = 26.8 + 0.022 * (annees['annee'] - 1961) + rng.normal(0, 0.25, len(annees))
+annees['pluie'] = 620 + rng.normal(0, 110, len(annees))
+
+# ── Horizons de trois fosses pédologiques (couleurs approchées des notations Munsell)
+horizons = pd.DataFrame({
+    'fosse': ['Plateau'] * 4 + ['Versant'] * 3 + ['Bas-fond'] * 4,
+    'horizon': ['A', 'Bt', 'Bc', 'C', 'A', 'Bw', 'C', 'Ag', 'Bg1', 'Bg2', 'Cg'],
+    'haut': [0, 18, 55, 110, 0, 25, 70, 0, 20, 60, 105],
+    'bas': [18, 55, 110, 160, 25, 70, 140, 20, 60, 105, 150],
+    'couleur': ['#6b4f3a', '#a0522d', '#b5651d', '#d2b48c', '#7a5c44', '#b08a5e', '#d8c3a5',
+                '#5b5446', '#7d7f6b', '#8e9585', '#a9ae9f'],
+})
+
+# ── Humidité du sol selon la profondeur, à deux dates
+profil_humidite = pd.DataFrame({
+    'profondeur': [0, 10, 20, 40, 60, 80, 100] * 2,
+    'humidite': [32, 30, 28, 25, 23, 22, 22, 9, 11, 14, 17, 19, 20, 21],
+    'date': ['Fin de saison des pluies'] * 7 + ['Fin de saison sèche'] * 7,
+})
+
+# ── Villes du Sénégal : coordonnées réelles, valeurs ILLUSTRATIVES
+villes = pd.DataFrame({
+    'ville': ['Dakar', 'Thiès', 'Saint-Louis', 'Louga', 'Diourbel', 'Kaolack', 'Fatick',
+              'Tambacounda', 'Kolda', 'Ziguinchor', 'Kédougou', 'Matam'],
+    'lon': [-17.44, -16.93, -16.49, -16.22, -16.23, -16.07, -16.41, -13.67, -14.94, -16.27, -12.18, -13.26],
+    'lat': [14.69, 14.79, 16.03, 15.62, 14.66, 14.15, 14.34, 13.77, 12.89, 12.58, 12.56, 15.66],
+    'pluie': [380, 480, 280, 330, 520, 640, 620, 820, 1050, 1350, 1200, 400],
+    'zone': ['Ouest', 'Ouest', 'Nord', 'Nord', 'Centre', 'Centre', 'Centre', 'Est', 'Sud', 'Sud', 'Sud', 'Nord'],
+})

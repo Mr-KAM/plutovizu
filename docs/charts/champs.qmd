@@ -1,5 +1,5 @@
 ---
-title: "Champs & cartes"
+title: "Champs"
 subtitle: "Une grandeur répartie dans l'espace : grilles régulières ou prélèvements dispersés."
 ---
 
