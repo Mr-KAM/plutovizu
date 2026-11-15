@@ -401,7 +401,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../charts/champs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Champs &amp; cartes</span></a>
+ <span class="menu-text">Champs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -414,6 +414,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../charts/sciences.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Climat &amp; sols</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../charts/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Map</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -514,7 +520,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-scatter3d" class="level3">
 <h3 class="anchored" data-anchor-id="g-scatter3d"><code>scatter3d</code> — Nuage de points 3D</h3>
-<div id="361be682" class="cell" data-execution_count="2">
+<div id="3325eb04" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">6.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .scatter3d(<span class="st">'hauteur'</span>, <span class="st">'jours_floraison'</span>, <span class="st">'rendement'</span>, group<span class="op">=</span><span class="st">'cycle'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Caractères en 3D'</span>)</span>
@@ -531,7 +537,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-line3d" class="level3">
 <h3 class="anchored" data-anchor-id="g-line3d"><code>line3d</code> — Courbe 3D</h3>
-<div id="2e7e7476" class="cell" data-execution_count="3">
+<div id="ba446a54" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">6</span> <span class="op">*</span> np.pi, <span class="dv">300</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>vol <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: np.cos(t) <span class="op">*</span> t, <span class="st">'y'</span>: np.sin(t) <span class="op">*</span> t, <span class="st">'altitude'</span>: <span class="dv">20</span> <span class="op">+</span> <span class="dv">2</span> <span class="op">*</span> t})</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(Chart(vol, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">6.5</span>))</span>
@@ -551,7 +557,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-surface" class="level3">
 <h3 class="anchored" data-anchor-id="g-surface"><code>surface</code> — Surface 3D</h3>
 <p>Sur une grille régulière : <code>kind='surface'</code> ou <code>'wireframe'</code> ; sur des points dispersés, la surface est triangulée (<code>trisurf</code>) automatiquement.</p>
-<div id="8bad529e" class="cell" data-execution_count="4">
+<div id="91126c45" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .surface(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Surface de réponse'</span>)</span>
@@ -565,7 +571,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="1332f046" class="cell" data-execution_count="5">
+<div id="17c59e0e" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .surface(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>, kind<span class="op">=</span><span class="st">'wireframe'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Fil de fer'</span>)</span>
@@ -582,7 +588,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-bar3d" class="level3">
 <h3 class="anchored" data-anchor-id="g-bar3d"><code>bar3d</code> — Barres 3D</h3>
-<div id="62b62541" class="cell" data-execution_count="6">
+<div id="7146e07f" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>moyennes <span class="op">=</span> essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>], as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">'rendement'</span>].mean()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(Chart(moyennes, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">6.5</span>))</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .bar3d(<span class="st">'variete'</span>, <span class="st">'dose'</span>, <span class="st">'rendement'</span>)</span>
@@ -1017,8 +1023,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../charts/champs.html" class="pagination-link" aria-label="Champs &amp; cartes">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Champs &amp; cartes</span>
+      <a href="../charts/champs.html" class="pagination-link" aria-label="Champs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Champs</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

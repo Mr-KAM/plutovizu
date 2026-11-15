@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Champs &amp; cartes – plutovizu</title>
+<title>Champs – plutovizu</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -312,7 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../gallery.html">Graphiques</a></li><li class="breadcrumb-item"><a href="../charts/champs.html">Champs &amp; cartes</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../gallery.html">Graphiques</a></li><li class="breadcrumb-item"><a href="../charts/champs.html">Champs</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Basculer la barre latérale" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -401,7 +401,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../charts/champs.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Champs &amp; cartes</span></a>
+ <span class="menu-text">Champs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -414,6 +414,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../charts/sciences.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Climat &amp; sols</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../charts/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Map</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -490,9 +496,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <main class="content" id="quarto-document-content">
 
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../gallery.html">Graphiques</a></li><li class="breadcrumb-item"><a href="../charts/champs.html">Champs &amp; cartes</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../gallery.html">Graphiques</a></li><li class="breadcrumb-item"><a href="../charts/champs.html">Champs</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Champs &amp; cartes</h1>
+<h1 class="title">Champs</h1>
 <p class="subtitle lead">Une grandeur répartie dans l’espace : grilles régulières ou prélèvements dispersés.</p>
 </div>
 
@@ -514,7 +520,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-contour" class="level3">
 <h3 class="anchored" data-anchor-id="g-contour"><code>contour</code> — Courbes de niveau</h3>
 <p>Sur une grille régulière (<code>contourf</code>) ou, comme ici, sur des prélèvements dispersés : la surface est alors interpolée par triangulation (<code>tricontourf</code>). <code>show_points</code> et <code>show_mesh</code> montrent les points et le maillage.</p>
-<div id="afde7744" class="cell" data-execution_count="2">
+<div id="3635985d" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(champ, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .contour(<span class="st">'x'</span>, <span class="st">'y'</span>, <span class="st">'ph'</span>, show_points<span class="op">=</span><span class="va">True</span>, show_mesh<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Carte du pH de la parcelle'</span>)</span>
@@ -534,7 +540,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-mesh" class="level3">
 <h3 class="anchored" data-anchor-id="g-mesh"><code>mesh</code> — Grille colorée</h3>
 <p>Une cellule colorée par point d’une grille régulière (<code>pcolormesh</code>), ou des triangles colorés sur des points dispersés (<code>tripcolor</code>).</p>
-<div id="93ab858e" class="cell" data-execution_count="3">
+<div id="5b576288" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(reponse, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .mesh(<span class="st">'azote'</span>, <span class="st">'eau'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement (t/ha)'</span>)</span>
@@ -554,7 +560,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-vector_field" class="level3">
 <h3 class="anchored" data-anchor-id="g-vector_field"><code>vector_field</code> — Champ de vecteurs</h3>
 <p>Vent, écoulement, gradient : flèches (<code>quiver</code>), barbules de vent (<code>barbs</code>) ou lignes de courant (<code>stream</code>, grille régulière), colorées par l’intensité.</p>
-<div id="8e5f8529" class="cell" data-execution_count="4">
+<div id="e5237ad3" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .vector_field(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'u'</span>, <span class="st">'v'</span>, kind<span class="op">=</span><span class="st">'stream'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Vent autour d</span><span class="ch">\'</span><span class="st">une dépression'</span>)</span>
@@ -569,7 +575,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="c5805d1a" class="cell" data-execution_count="5">
+<div id="60b83295" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">6</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .vector_field(<span class="st">'lon'</span>, <span class="st">'lat'</span>, <span class="st">'u'</span>, <span class="st">'v'</span>, kind<span class="op">=</span><span class="st">'quiver'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Vent (flèches)'</span>)</span>

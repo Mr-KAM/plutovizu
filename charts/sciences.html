@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../charts/qualitatif.html" rel="next">
+<link href="../charts/map.html" rel="next">
 <link href="../charts/3d.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -401,7 +401,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../charts/champs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Champs &amp; cartes</span></a>
+ <span class="menu-text">Champs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -414,6 +414,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../charts/sciences.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Climat &amp; sols</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../charts/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Map</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -482,6 +488,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#g-ombrothermic" id="toc-g-ombrothermic" class="nav-link active" data-scroll-target="#g-ombrothermic"><code>ombrothermic</code> — Diagramme ombrothermique</a></li>
   <li><a href="#g-soil_texture" id="toc-g-soil_texture" class="nav-link" data-scroll-target="#g-soil_texture"><code>soil_texture</code> — Triangle des textures USDA</a></li>
+  <li><a href="#climat" id="toc-climat" class="nav-link" data-scroll-target="#climat">Climat</a>
+  <ul class="collapse">
+  <li><a href="#g-walter_lieth" id="toc-g-walter_lieth" class="nav-link" data-scroll-target="#g-walter_lieth"><code>walter_lieth</code> — Climatogramme de Walter-Lieth</a></li>
+  <li><a href="#g-climogram" id="toc-g-climogram" class="nav-link" data-scroll-target="#g-climogram"><code>climogram</code> — Climogramme (hythergramme)</a></li>
+  <li><a href="#g-water_balance" id="toc-g-water_balance" class="nav-link" data-scroll-target="#g-water_balance"><code>water_balance</code> — Bilan hydrique</a></li>
+  <li><a href="#g-degree_days" id="toc-g-degree_days" class="nav-link" data-scroll-target="#g-degree_days"><code>degree_days</code> — Degrés-jours de croissance</a></li>
+  <li><a href="#g-wind_rose" id="toc-g-wind_rose" class="nav-link" data-scroll-target="#g-wind_rose"><code>wind_rose</code> — Rose des vents</a></li>
+  <li><a href="#g-anomaly" id="toc-g-anomaly" class="nav-link" data-scroll-target="#g-anomaly"><code>anomaly</code> — Anomalies</a></li>
+  <li><a href="#g-climate_stripes" id="toc-g-climate_stripes" class="nav-link" data-scroll-target="#g-climate_stripes"><code>climate_stripes</code> — Bandes climatiques</a></li>
+  </ul></li>
+  <li><a href="#sol" id="toc-sol" class="nav-link" data-scroll-target="#sol">Sol</a>
+  <ul class="collapse">
+  <li><a href="#g-soil_profile" id="toc-g-soil_profile" class="nav-link" data-scroll-target="#g-soil_profile"><code>soil_profile</code> — Profil de sol</a></li>
+  <li><a href="#g-depth_profile" id="toc-g-depth_profile" class="nav-link" data-scroll-target="#g-depth_profile"><code>depth_profile</code> — Variable selon la profondeur</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -492,7 +513,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../gallery.html">Graphiques</a></li><li class="breadcrumb-item"><a href="../charts/sciences.html">Climat &amp; sols</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Climat &amp; sols</h1>
-<p class="subtitle lead">Graphiques spécialisés des sciences de la nature.</p>
+<p class="subtitle lead">Climatogrammes, bilan hydrique, degrés-jours, vent, profils et textures de sol.</p>
 </div>
 
 
@@ -513,7 +534,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-ombrothermic" class="level3">
 <h3 class="anchored" data-anchor-id="g-ombrothermic"><code>ombrothermic</code> — Diagramme ombrothermique</h3>
 <p>Le diagramme ombrothermique de Walter-Lieth met en regard la courbe des températures et les barres de précipitations selon la convention <strong>p = 2T</strong>. Les zones où p &lt; 2T sont des <strong>périodes sèches</strong>.</p>
-<div id="53a60038" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="2">
+<div id="0d7f5f21" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:   [<span class="st">'Jan'</span>,<span class="st">'Fév'</span>,<span class="st">'Mar'</span>,<span class="st">'Avr'</span>,<span class="st">'Mai'</span>,<span class="st">'Jun'</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">'Jul'</span>,<span class="st">'Aoû'</span>,<span class="st">'Sep'</span>,<span class="st">'Oct'</span>,<span class="st">'Nov'</span>,<span class="st">'Déc'</span>],</span>
@@ -542,7 +563,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Analyse textuelle des périodes sèches :</p>
-<div id="bf9e5579" class="cell" data-execution_count="3">
+<div id="60006d7b" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> Chart</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -585,7 +606,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="g-soil_texture" class="level3">
 <h3 class="anchored" data-anchor-id="g-soil_texture"><code>soil_texture</code> — Triangle des textures USDA</h3>
 <p>Les 12 classes de texture USDA tracées et nommées, avec les échantillons par-dessus. La classe de chaque échantillon est dans <code>chart.texture_classes</code> ; la fonction <code>texture_class(sable, limon, argile)</code> classe aussi des valeurs sans tracer.</p>
-<div id="ab8c6e88" class="cell" data-execution_count="4">
+<div id="8b48ccd0" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(sols, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">7.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .soil_texture(<span class="st">'sable'</span>, <span class="st">'limon'</span>, <span class="st">'argile'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Triangle des textures (USDA)'</span>)</span>
@@ -611,8 +632,207 @@ Sable loameux           1</code></pre>
 </div>
 </div>
 </div>
+</section>
+<section id="climat" class="level2">
+<h2 class="anchored" data-anchor-id="climat">Climat</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Les stations de cette page sont <strong>fictives</strong> (climats de type sahélien, soudanien et guinéen) : les valeurs sont illustratives.</p>
+</div>
+</div>
+<section id="g-walter_lieth" class="level3">
+<h3 class="anchored" data-anchor-id="g-walter_lieth"><code>walter_lieth</code> — Climatogramme de Walter-Lieth</h3>
+<p>Le diagramme climatique de référence en écologie : 10 °C correspondent à 20 mm de pluie, l’échelle des pluies est comprimée au 1/10 au-delà de 100 mm (aplat bleu foncé). La saison humide est en bleu, la saison sèche en pointillés rouges, les mois de gel (<code>tmin</code> &lt; 0) sont marqués sous l’axe. Moyenne annuelle et cumul en haut à droite ; résumé dans <code>chart.climate_summary</code>.</p>
+<div id="379b4b27" class="cell" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .walter_lieth(<span class="st">'mois'</span>, <span class="st">'temperature'</span>, <span class="st">'pluie'</span>, tmin<span class="op">=</span><span class="st">'tmin'</span>, station<span class="op">=</span><span class="st">'Station B (fictive)'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.climate_summary)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'t_moyenne': 27.416666666666668, 'p_totale': 1096.0, 'mois_secs': ['Jan', 'Fév', 'Mar', 'Avr', 'Nov', 'Déc']}</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-6-output-2.png" width="857" height="519" class="figure-img"></p>
+<figcaption>Climatogramme d’une station de type soudanien</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-climogram" class="level3">
+<h3 class="anchored" data-anchor-id="g-climogram"><code>climogram</code> — Climogramme (hythergramme)</h3>
+<p>Température et précipitations de chaque mois en un point, reliés en boucle : la forme de la boucle résume le climat, et plusieurs stations se comparent d’un coup d’œil.</p>
+<div id="598d4d0a" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(stations_climat, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .climogram(<span class="st">'pluie'</span>, <span class="st">'temperature'</span>, month<span class="op">=</span><span class="st">'mois'</span>, group<span class="op">=</span><span class="st">'station'</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Climogrammes'</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-7-output-1.png" width="855" height="518" class="figure-img"></p>
+<figcaption>Trois climats tropicaux</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-water_balance" class="level3">
+<h3 class="anchored" data-anchor-id="g-water_balance"><code>water_balance</code> — Bilan hydrique</h3>
+<p>Précipitations face à l’évapotranspiration potentielle (ETP) : excédent en bleu, déficit en orange. Bilan mensuel dans <code>chart.water_table</code>, totaux dans <code>chart.water_summary</code>.</p>
+<div id="37feeb98" class="cell" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .water_balance(<span class="st">'mois'</span>, <span class="st">'pluie'</span>, <span class="st">'etp'</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Bilan hydrique (mm)'</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.water_summary)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'excedent': 380.0, 'deficit': 1134.0}</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-8-output-2.png" width="856" height="422" class="figure-img"></p>
+<figcaption>Bilan hydrique simplifié P – ETP</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-degree_days" class="level3">
+<h3 class="anchored" data-anchor-id="g-degree_days"><code>degree_days</code> — Degrés-jours de croissance</h3>
+<p>Somme des températures utiles à la culture : chaque jour apporte max(0, (Tmax + Tmin) / 2 − base), Tmax pouvant être plafonnée (<code>cap</code>). <code>stages</code> marque la date d’atteinte de chaque stade.</p>
+<div id="528fcee6" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .degree_days(<span class="st">'jour'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, base<span class="op">=</span><span class="dv">10</span>, cap<span class="op">=</span><span class="dv">35</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                 stages<span class="op">=</span>{<span class="st">'Tallage'</span>: <span class="dv">600</span>, <span class="st">'Initiation paniculaire'</span>: <span class="dv">950</span>, <span class="st">'Floraison'</span>: <span class="dv">1250</span>})</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Degrés-jours cumulés (base 10 °C)'</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.stage_dates)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'Tallage': Timestamp('2024-07-06 00:00:00'), 'Initiation paniculaire': Timestamp('2024-07-29 00:00:00'), 'Floraison': Timestamp('2024-08-17 00:00:00')}</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-9-output-2.png" width="856" height="422" class="figure-img"></p>
+<figcaption>Degrés-jours cumulés et stades d’un riz (seuils illustratifs)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-wind_rose" class="level3">
+<h3 class="anchored" data-anchor-id="g-wind_rose"><code>wind_rose</code> — Rose des vents</h3>
+<p>Directement à partir des observations : directions en degrés (0 = nord) regroupées en secteurs, vitesses en classes, fréquences en % des observations.</p>
+<div id="5975d7a2" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent_obs, figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="fl">6.5</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    .wind_rose(<span class="st">'direction'</span>, <span class="st">'vitesse'</span>, speed_bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>])</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rose des vents'</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-10-output-1.png" width="684" height="614" class="figure-img"></p>
+<figcaption>Rose des vents à partir de 900 observations</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-anomaly" class="level3">
+<h3 class="anchored" data-anchor-id="g-anomaly"><code>anomaly</code> — Anomalies</h3>
+<p>L’écart de chaque année à une référence : la moyenne, un nombre, ou la moyenne d’une période (<code>baseline=(1961, 1990)</code>), avec une moyenne glissante en option.</p>
+<div id="9633cf30" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    .anomaly(<span class="st">'annee'</span>, <span class="st">'temperature'</span>, baseline<span class="op">=</span>(<span class="dv">1961</span>, <span class="dv">1990</span>), window<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Écart à la normale 1961-1990 (°C)'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-11-output-1.png" width="951" height="374" class="figure-img"></p>
+<figcaption>Anomalies de température par rapport à 1961-1990</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-climate_stripes" class="level3">
+<h3 class="anchored" data-anchor-id="g-climate_stripes"><code>climate_stripes</code> — Bandes climatiques</h3>
+<p>Une bande par année, du bleu (plus froid que la moyenne) au rouge (plus chaud), dans l’esprit des <em>warming stripes</em> d’Ed Hawkins.</p>
+<div id="f278a4b1" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">2.5</span>))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    .climate_stripes(<span class="st">'annee'</span>, <span class="st">'temperature'</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-12-output-1.png" width="770" height="223" class="figure-img"></p>
+<figcaption>Bandes climatiques 1961-2024</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sol" class="level2">
+<h2 class="anchored" data-anchor-id="sol">Sol</h2>
+<section id="g-soil_profile" class="level3">
+<h3 class="anchored" data-anchor-id="g-soil_profile"><code>soil_profile</code> — Profil de sol</h3>
+<p>Les horizons empilés selon la profondeur, une colonne par fosse. <code>color</code> accepte une colonne de couleurs, par exemple des notations Munsell converties en hexadécimal.</p>
+<div id="f435130f" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(Chart(horizons, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    .soil_profile(<span class="st">'haut'</span>, <span class="st">'bas'</span>, <span class="st">'horizon'</span>, profile<span class="op">=</span><span class="st">'fosse'</span>, color<span class="op">=</span><span class="st">'couleur'</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Profils de sol'</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-13-output-1.png" width="760" height="566" class="figure-img"></p>
+<figcaption>Trois fosses le long d’une toposéquence</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-depth_profile" class="level3">
+<h3 class="anchored" data-anchor-id="g-depth_profile"><code>depth_profile</code> — Variable selon la profondeur</h3>
+<div id="b334aa19" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(Chart(profil_humidite, figsize<span class="op">=</span>(<span class="fl">6.5</span>, <span class="dv">6</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    .depth_profile(<span class="st">'profondeur'</span>, <span class="st">'humidite'</span>, group<span class="op">=</span><span class="st">'date'</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Humidité (%)'</span>, <span class="st">'Profondeur (cm)'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-14-output-1.png" width="616" height="566" class="figure-img"></p>
+<figcaption>Humidité volumique du sol à deux dates</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1036,8 +1256,8 @@ Sable loameux           1</code></pre>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../charts/qualitatif.html" class="pagination-link" aria-label="Analyse qualitative">
-        <span class="nav-page-text">Analyse qualitative</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../charts/map.html" class="pagination-link" aria-label="Map">
+        <span class="nav-page-text">Map</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -401,7 +401,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../charts/champs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Champs &amp; cartes</span></a>
+ <span class="menu-text">Champs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -414,6 +414,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../charts/sciences.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Climat &amp; sols</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../charts/map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Map</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -521,7 +527,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Tous les exemples utilisent le thème <a href="../themes.html"><code>editorial</code></a> ; chaque graphique suit le thème actif (<code>set_theme(...)</code>). Retour à la <a href="../gallery.html">galerie</a>.</p>
 <section id="g-line" class="level3">
 <h3 class="anchored" data-anchor-id="g-line"><code>line</code> — Courbe</h3>
-<div id="7ea4bedd" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
+<div id="d87c4a33" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mois <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:    mois,</span>
@@ -550,7 +556,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-area" class="level3">
 <h3 class="anchored" data-anchor-id="g-area"><code>area</code> — Aire (empilée)</h3>
-<div id="ab753a3a" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
+<div id="297a4809" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2025</span>)),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">30</span>, <span class="dv">28</span>, <span class="dv">25</span>, <span class="dv">22</span>, <span class="dv">20</span>, <span class="dv">18</span>, <span class="dv">16</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">12</span>],</span>
@@ -578,7 +584,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-streamgraph" class="level3">
 <h3 class="anchored" data-anchor-id="g-streamgraph"><code>streamgraph</code> — Flux temporel</h3>
-<div id="5e822112" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="4">
+<div id="c65ad1e5" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2012</span>, <span class="dv">2025</span>)),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">32</span>,<span class="dv">30</span>,<span class="dv">28</span>,<span class="dv">25</span>,<span class="dv">22</span>,<span class="dv">20</span>,<span class="dv">18</span>,<span class="dv">16</span>,<span class="dv">15</span>,<span class="dv">13</span>,<span class="dv">12</span>,<span class="dv">11</span>,<span class="dv">10</span>],</span>
@@ -610,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-step" class="level3">
 <h3 class="anchored" data-anchor-id="g-step"><code>step</code> — Courbe en escalier</h3>
 <p>Valeur constante entre deux mesures (stocks, niveaux, tarifs) — <code>where</code> place la marche.</p>
-<div id="b8ae92fd" class="cell" data-execution_count="5">
+<div id="2d0daa70" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>meteo[<span class="st">'pluie_cumulee'</span>] <span class="op">=</span> meteo[<span class="st">'pluie'</span>].cumsum()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .step(<span class="st">'jour'</span>, <span class="st">'pluie_cumulee'</span>, where<span class="op">=</span><span class="st">'post'</span>, fill<span class="op">=</span><span class="va">True</span>)</span>
@@ -630,7 +636,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-stem" class="level3">
 <h3 class="anchored" data-anchor-id="g-stem"><code>stem</code> — Diagramme en bâtons</h3>
 <p>Un trait par observation depuis une ligne de base : idéal pour des événements ponctuels.</p>
-<div id="4c2349d0" class="cell" data-execution_count="6">
+<div id="48560c01" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(meteo[meteo[<span class="st">'pluie'</span>] <span class="op">&gt;</span> <span class="dv">0</span>], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .stem(<span class="st">'jour'</span>, <span class="st">'pluie'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluies journalières (mm)'</span>)</span>
@@ -649,7 +655,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-band" class="level3">
 <h3 class="anchored" data-anchor-id="g-band"><code>band</code> — Bande entre deux courbes</h3>
 <p>Une bande colorée entre deux colonnes (minimum–maximum, intervalle de confiance), avec une courbe centrale optionnelle.</p>
-<div id="fac11ffe" class="cell" data-execution_count="7">
+<div id="c1156078" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .band(<span class="st">'jour'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, y<span class="op">=</span><span class="st">'tmoy'</span>, label<span class="op">=</span><span class="st">'Tmin – Tmax'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Températures journalières (°C)'</span>)</span>
@@ -667,7 +673,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-bump" class="level3">
 <h3 class="anchored" data-anchor-id="g-bump"><code>bump</code> — Évolution de classement</h3>
-<div id="ad07c432" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="8">
+<div id="39d57329" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'saison'</span>:     [<span class="dv">2019</span>,<span class="dv">2020</span>,<span class="dv">2021</span>,<span class="dv">2022</span>,<span class="dv">2023</span>] <span class="op">*</span> <span class="dv">5</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:     ([<span class="st">'PSG'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Lyon'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Marseille'</span>]<span class="op">*</span><span class="dv">5</span></span>
@@ -695,7 +701,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-timeline" class="level3">
 <h3 class="anchored" data-anchor-id="g-timeline"><code>timeline</code> — Frise chronologique</h3>
 <p>Des événements datés, chacun avec sa tige et son libellé, alternés au-dessus et au-dessous.</p>
-<div id="d0618525" class="cell" data-execution_count="9">
+<div id="baaa324f" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(calendrier, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .timeline(<span class="st">'date'</span>, <span class="st">'etape'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Calendrier cultural 2024'</span>)</span>
@@ -714,7 +720,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="g-eventplot" class="level3">
 <h3 class="anchored" data-anchor-id="g-eventplot"><code>eventplot</code> — Événements par groupe</h3>
 <p>Un trait par événement, une ligne par groupe : dates d’observation, stades phénologiques…</p>
-<div id="f7386bb6" class="cell" data-execution_count="10">
+<div id="68676a64" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(floraison, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.5</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .eventplot(<span class="st">'date'</span>, group<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Floraison par variété'</span>)</span>
@@ -732,7 +738,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-calendar_heatmap" class="level3">
 <h3 class="anchored" data-anchor-id="g-calendar_heatmap"><code>calendar_heatmap</code> — Calendrier de contributions</h3>
-<div id="7c3758c1" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="11">
+<div id="5cbfa480" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> pd.date_range(<span class="st">'2024-01-01'</span>, <span class="st">'2024-12-31'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>commits <span class="op">=</span> np.random.poisson(<span class="dv">3</span>, <span class="bu">len</span>(dates))</span>
@@ -757,7 +763,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="g-gantt" class="level3">
 <h3 class="anchored" data-anchor-id="g-gantt"><code>gantt</code> — Diagramme de Gantt</h3>
-<div id="20a593f3" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="12">
+<div id="c890e3ad" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tache'</span>:   [<span class="st">'Analyse'</span>,<span class="st">'Design'</span>,<span class="st">'Dev Backend'</span>,<span class="st">'Dev Frontend'</span>,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Intégration'</span>,<span class="st">'Tests'</span>,<span class="st">'Déploiement'</span>],</span>
