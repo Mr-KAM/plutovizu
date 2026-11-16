@@ -1,19 +1,19 @@
 /*-- scss:defaults --*/
-// Thème clair : blanc + vert émeraude foncé (contraste AA sur blanc)
+// Thème clair : blanc + violet du logo (#5B4BDB), titres bleu nuit (#14123A)
 
 $body-bg: #ffffff;
-$body-color: #3f3f46;
-$headings-color: #09090b;
-$link-color: #047857;
-$primary: #059669;
+$body-color: #3b3863;
+$headings-color: #14123A;
+$link-color: #5B4BDB;
+$primary: #5B4BDB;
 
 $navbar-bg: #ffffff;
-$navbar-fg: #52525b;
-$navbar-hl: #09090b;
+$navbar-fg: #55527a;
+$navbar-hl: #14123A;
 $sidebar-bg: #ffffff;
-$sidebar-fg: #52525b;
-$sidebar-hl: #047857;
+$sidebar-fg: #55527a;
+$sidebar-hl: #5B4BDB;
 $footer-bg: #ffffff;
-$code-block-bg: #f7f8f8;
+$code-block-bg: #F7F6FF;
 
 /*-- scss:rules --*/

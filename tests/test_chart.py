@@ -162,8 +162,11 @@ def test_gradient_invalid_color_raises(df):
     with pytest.raises(ValueError):
         Chart(df).generate_gradient_palette('g', 'pas_une_couleur', 'red')
 
-def test_font_missing_warns(df):
-    with pytest.warns(UserWarning, match='not found'):
+def test_font_missing_warns(df, monkeypatch):
+    def introuvable(*a, **k):  # pas de réseau dans les tests : Google Fonts « échoue »
+        raise RuntimeError('absente')
+    monkeypatch.setattr('plutovizu.chart.load_font', introuvable)
+    with pytest.warns(UserWarning, match='introuvable'):
         Chart(df).font('Police Qui N Existe Pas')
 
 def test_generate_gradient_palette(df):
@@ -246,8 +249,8 @@ def test_every_theme_renders(df, name):
 
 def test_theme_applies_to_title_and_background(df):
     c = Chart(df, theme='pluto').line('x', 'a').title('Titre')
-    assert matplotlib.colors.to_hex(c.fig.get_facecolor()) == '#0b0d0e'
-    assert matplotlib.colors.to_hex(c.ax.title.get_color()) == '#f4f4f5'
+    assert matplotlib.colors.to_hex(c.fig.get_facecolor()) == '#14123a'   # bleu nuit du logo
+    assert matplotlib.colors.to_hex(c.ax.title.get_color()) == '#f7f6ff'
 
 def test_switching_theme_resets_previous_settings():
     set_theme('editorial')             # grille horizontale seule
@@ -1311,3 +1314,111 @@ def test_network_and_arc_diagram(pistes):
     assert len(a.ax.patches) == len(pistes)
     with pytest.raises(ValueError):
         Chart(pistes).arc_diagram('de', 'vers', order=['A'])
+
+
+# ──────────────────────────────── Polices, taille, annotations, coins arrondis
+
+def test_bundled_fonts_and_defaults(df):
+    from matplotlib import font_manager as fm
+    import plutovizu
+    assert {f.name for f in fm.fontManager.ttflist} >= {'Fira Sans', 'Inter'}
+    assert fm.findfont(fm.FontProperties(family=['sans-serif'])).endswith('FiraSans-Regular.ttf')
+    assert plutovizu.load_font('Inter', 'semibold').get_file().endswith('Inter-SemiBold.ttf')
+    assert plutovizu.load_font('Fira Sans', 'bold', italic=True).get_file().endswith('FiraSans-BoldItalic.ttf')
+    assert Chart(df).fig.get_size_inches() * 2.54 == pytest.approx([16, 10])
+    assert plutovizu.cm(20, 12) == pytest.approx((20 / 2.54, 12 / 2.54))
+
+
+def test_annotation_and_arrow(df):
+    from matplotlib.patches import FancyArrowPatch
+    c = (Chart(df).line('x', 'a')
+         .annotation('Pic', xy=(5, 0.5), xytext=(2, 1.5))
+         .arrow((0.1, 0.9), (0.3, 0.6), coords='axes')
+         .arrow((0.1, 0.1), (0.2, 0.2), coords='figure'))
+    assert [t.get_text() for t in c.ax.texts] == ['Pic']
+    assert c.ax.texts[0].get_ha() == 'right'          # flèche vers la droite : texte qui finit au départ
+    assert sum(isinstance(p, FancyArrowPatch) for p in c.ax.patches) == 2
+    assert any(isinstance(p, FancyArrowPatch) for p in c.fig.patches)
+    with pytest.raises(ValueError):
+        Chart(df).arrow((0, 0), (1, 1), coords='pixels')
+
+
+def test_rounded_corners_bars_and_pie(df, tmp_path):
+    from matplotlib.patches import PathPatch, Rectangle
+    c = Chart(df).bar('cat', 'b').rounded(8)
+    n = len([p for p in c.ax.patches if isinstance(p, Rectangle)])
+    c.save(tmp_path / 'b.png')
+    paths = [p for p in c.ax.patches if isinstance(p, PathPatch)]
+    assert len(paths) == n and not any(isinstance(p, Rectangle) for p in c.ax.patches)
+    assert any(code == 3 for p in paths for code in p.get_path().codes)   # courbes (CURVE3)
+    # les coins restent dans la barre d'origine (pas de débordement)
+    parts = pd.DataFrame({'v': [40, 30, 30]})
+    pie = Chart(parts).pie('v').rounded(6)
+    pie.save(tmp_path / 'p.png')
+    assert all(isinstance(p, PathPatch) for p in pie.ax.patches)
+    with pytest.raises(ValueError):
+        Chart(df).rounded(-1)
+
+
+def test_round_path_keeps_shape():
+    from matplotlib.path import Path
+    from plutovizu.chart import _round_path
+    square = Path([(0, 0), (100, 0), (100, 50), (0, 50), (0, 0)], closed=True)
+    r = _round_path(square, 10)
+    v = r.vertices
+    assert v[:, 0].min() >= -1e-9 and v[:, 0].max() <= 100 + 1e-9 and v[:, 1].max() <= 50 + 1e-9
+    assert (r.codes == Path.CURVE3).sum() == 8                    # 4 coins × (contrôle + fin)
+    assert not r.contains_point((0.5, 0.5))                       # coin effectivement arrondi
+    assert r.contains_point((50, 25))
+    assert _round_path(Path([(0, 0), (1, 0), (1, 1), (0, 1), (0, 0)], closed=True), 0.4) is not None
+
+
+# ──────────────────────────────── Bump chart (bumplot)
+
+@pytest.fixture
+def classement():
+    perms = [[1, 2, 3], [2, 1, 3], [3, 1, 2]]
+    return pd.DataFrame([(s, e, r) for s, p in zip(['J1', 'J2', 'J3'], perms) for e, r in zip('ABC', p)],
+                        columns=['journee', 'equipe', 'rang'])
+
+
+def test_bump_ranks_keep_order(classement):
+    from matplotlib.patches import PathPatch
+    c = Chart(classement).bump('journee', 'rang', 'equipe')
+    assert c.ranks.loc['J3'].to_dict() == {'A': 3, 'B': 1, 'C': 2}
+    assert sum(isinstance(p, PathPatch) for p in c.ax.patches) == 3          # une courbe par équipe
+    pts = {col.get_label(): col.get_offsets()[:, 1].tolist() for col in c.ax.collections}
+    assert pts['A'] == [1, 2, 3]                                             # rang 1 conservé (pas inversé)
+    assert c.ax.yaxis_inverted()
+    assert [t.get_text() for t in c.ax.texts] == ['A', 'B', 'C']             # noms en bout de ligne
+
+
+def test_bump_values_highlight_ordinal(classement):
+    vals = classement.assign(score=lambda d: 10 - d['rang'])                 # plus fort = 1er
+    c = Chart(vals).bump('journee', 'score', 'equipe', values=True, highlight=['B'], ordinal=True)
+    assert c.ranks.loc['J2'].to_dict() == {'A': 2, 'B': 1, 'C': 3}
+    assert [t.get_text() for t in c.ax.get_yticklabels()][:2] == ['1er', '2e']
+    with pytest.raises(ValueError):
+        Chart(vals).bump('journee', 'score', 'equipe', values=True, highlight=['Z'])
+    with pytest.raises(ValueError):
+        Chart(classement).bump('journee', 'rang', 'equipe', curve_force=2)
+    with pytest.raises(ValueError):
+        Chart(classement.iloc[:-1]).bump('journee', 'rang', 'equipe')       # période incomplète
+
+
+def test_rounded_leaves_bump_curves(classement, tmp_path):
+    c = Chart(classement).bump('journee', 'rang', 'equipe').rounded(6)
+    before = [p.get_path().vertices.copy() for p in c.ax.patches]
+    c.save(tmp_path / 'b.png')
+    assert all(np.allclose(a, p.get_path().vertices) for a, p in zip(before, c.ax.patches))
+
+
+def test_save_defaults_400dpi_and_format_from_extension(df, tmp_path):
+    from PIL import Image
+    import matplotlib as mpl
+    assert mpl.rcParams['savefig.dpi'] == 400                     # thème : plt.savefig aussi
+    Chart(df).line('x', 'a').save(tmp_path / 'g.png', bbox_inches=None)
+    with Image.open(tmp_path / 'g.png') as im:
+        assert im.size == (int(16 / 2.54 * 400), int(10 / 2.54 * 400))   # 16 × 10 cm à 400 dpi
+    Chart(df).line('x', 'a').save(tmp_path / 'g.pdf')
+    assert (tmp_path / 'g.pdf').read_bytes()[:4] == b'%PDF'

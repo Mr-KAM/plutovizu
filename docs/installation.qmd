@@ -67,6 +67,12 @@ Les dépendances suivantes sont installées automatiquement :
 | `squarify` | ≥ 0.4.4 | Pavage du `treemap` |
 | `circlify` | ≥ 0.16.0 | Cercles imbriqués (`circle_packing`) |
 | `wordcloud` | ≥ 1.9.6 | Nuage de mots (`word_cloud`) |
+| `pyfonts` | ≥ 1.4.2 | Gestion des polices, Google Fonts (`load_font`, `font`) |
+| `drawarrow` | ≥ 0.1.0 | Flèches courbes (`annotation`, `arrow`) |
+| `bumplot` | ≥ 0.3.0 | Courbes lissées des graphiques de classement (`bump`) |
+
+Les polices **Fira Sans** (par défaut) et **Inter** sont incluses dans le package
+(licence SIL Open Font License) : rien à installer.
 
 ### Dépendance optionnelle : map
 
@@ -79,7 +85,7 @@ pip install plutovizu[map]
 ### Dépendance optionnelle : morethemes
 
 Les 16 thèmes de [morethemes](https://github.com/y-sunflower/morethemes) (`wsj`, `economist`,
-`retro`…) et le téléchargement des polices Google Fonts (dont Raleway pour le thème `prezi`) :
+`retro`…) ; leurs polices Google Fonts sont téléchargées par pyfonts :
 
 ```bash
 pip install plutovizu[morethemes]

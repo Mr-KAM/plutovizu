@@ -8,7 +8,15 @@ import numpy as np
 from typing import Optional, Union, List, Tuple, Dict, Any
 import seaborn as sns
 
+from .fonts import load_font
 from .themes import set_theme
+
+FIGSIZE = (16 / 2.54, 10 / 2.54)  # taille par défaut : 16 × 10 cm (en pouces)
+
+
+def cm(width: float, height: float) -> Tuple[float, float]:
+    """Taille en centimètres → pouces, pour figsize : Chart(df, figsize=cm(20, 12))."""
+    return width / 2.54, height / 2.54
 
 
 def _opts(**kwargs) -> Dict[str, Any]:
@@ -81,6 +89,60 @@ def get_fonts(pattern: str = None, sort: bool = True) -> List[str]:
     return fonts
 
 
+
+def _round_path(path, r: float, min_angle: float = 25.0):
+    """Arrondit les coins vifs (> min_angle degrés) d'un chemin fermé, en pixels.
+
+    Chaque coin est remplacé par une courbe de Bézier quadratique entre les points situés
+    à r le long du contour de part et d'autre (r réduit si les coins sont proches).
+    Retourne None s'il n'y a aucun coin à arrondir.
+    """
+    from matplotlib.path import Path
+    verts, codes, changed = [], [], False
+    for P in path.to_polygons(closed_only=True):
+        if len(P) > 1 and np.allclose(P[0], P[-1]):
+            P = P[:-1]
+        P = P[np.r_[True, np.any(np.abs(np.diff(P, axis=0)) > 1e-9, axis=1)]]
+        n = len(P)
+        if n < 3:
+            continue
+        nxt = np.roll(P, -1, axis=0) - P
+        seg = np.linalg.norm(nxt, axis=1)
+        prev = np.roll(nxt, 1, axis=0)
+        cosang = (prev * nxt).sum(1) / np.maximum(np.roll(seg, 1) * seg, 1e-12)
+        sharp = np.where(np.degrees(np.arccos(np.clip(cosang, -1, 1))) > min_angle)[0]
+        s = np.r_[0, np.cumsum(seg)[:-1]]
+        L = seg.sum()
+        if len(sharp) == 0 or L <= 0:
+            verts += [*P, P[0]]
+            codes += [Path.MOVETO] + [Path.LINETO] * (n - 1) + [Path.CLOSEPOLY]
+            continue
+        ss = s[sharp]
+        gaps = np.diff(np.r_[ss, ss[0] + L])
+        rr = min(r, 0.45 * gaps.min())
+
+        def at(t):
+            t %= L
+            k = min(np.searchsorted(s, t, side='right') - 1, n - 1)
+            return P[k] + nxt[k] * (t - s[k]) / max(seg[k], 1e-12)
+
+        start = ss[0] + gaps[0] / 2                      # entre deux coins : hors arrondi
+        sharp_set = set(sharp.tolist())
+        items = []
+        for j in range(n):
+            d = (s[j] - start) % L
+            if j in sharp_set:
+                items += [(d - rr, Path.LINETO, at(s[j] - rr)), (d, Path.CURVE3, P[j]),
+                          (d + rr, Path.CURVE3, at(s[j] + rr))]
+            elif not any(abs(((s[j] - c + L / 2) % L) - L / 2) < rr for c in ss):
+                items.append((d, Path.LINETO, P[j]))
+        items.sort(key=lambda it: it[0])
+        verts += [at(start)] + [v for _, _, v in items] + [at(start)]
+        codes += [Path.MOVETO] + [c for _, c, _ in items] + [Path.CLOSEPOLY]
+        changed = True
+    return Path(np.array(verts), codes) if changed else None
+
+
 class Chart:
     """
     EN: Fluent chart builder that wraps matplotlib for pandas DataFrames.
@@ -127,7 +189,7 @@ class Chart:
             FR: Palette de couleurs actuellement active.
     """
 
-    def __init__(self, data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6),
+    def __init__(self, data: pd.DataFrame, figsize: Tuple[float, float] = FIGSIZE,
                  theme: Optional[str] = None):
         """
         EN: Initialise a Chart from a pandas DataFrame.
@@ -137,9 +199,11 @@ class Chart:
             data (pd.DataFrame):
                 EN: The dataset to visualise.
                 FR: Le jeu de données à visualiser.
-            figsize (Tuple[int, int]):
-                EN: Figure width and height in inches. Default (10, 6).
-                FR: Largeur et hauteur de la figure en pouces. Défaut (10, 6).
+            figsize (Tuple[float, float]):
+                EN: Figure width and height in inches. Default 16 × 10 cm (FIGSIZE);
+                    cm(16, 10) gives a size in centimetres.
+                FR: Largeur et hauteur de la figure en pouces. Défaut 16 × 10 cm (FIGSIZE) ;
+                    cm(16, 10) donne une taille en centimètres.
             theme (str, optional):
                 EN: Theme name (see list_themes()). Shortcut for set_theme(theme):
                     like seaborn.set_theme, it also applies to the following charts.
@@ -166,7 +230,7 @@ class Chart:
 
     def title(self, title: str, fontsize: Optional[int] = None, fontweight: Optional[str] = None,
               color: Optional[str] = None, pad: Optional[float] = None,
-              loc: Optional[str] = None) -> 'Chart':
+              loc: Optional[str] = None, **kwargs) -> 'Chart':
         """
         EN: Set the chart title. Options left to None follow the active theme.
         FR: Définit le titre du graphique. Les options laissées à None suivent le thème actif.
@@ -190,19 +254,27 @@ class Chart:
             loc (str, optional):
                 EN: Alignment: 'left', 'center' or 'right'. Default: theme.
                 FR: Alignement : 'left', 'center' ou 'right'. Défaut : thème.
+            **kwargs:
+                EN: Other matplotlib Text options, e.g. fontproperties=load_font('Inter', 'bold').
+                FR: Autres options de texte matplotlib, ex. fontproperties=load_font('Inter', 'bold').
 
         Returns / Retourne:
             Chart: self
 
         Example / Exemple:
             chart.title('Ventes annuelles', fontsize=18, color='steelblue')
+            chart.title('Ventes', fontproperties=load_font('Inter', 'semibold'))
         """
+        if 'fontproperties' in kwargs:  # police choisie : garder la taille du titre du thème
+            fp = fm.FontProperties._from_any(kwargs['fontproperties']).copy()
+            fp.set_size(fontsize or plt.rcParams['axes.titlesize'])
+            kwargs['fontproperties'] = fp
         if self.sns_grid is not None or getattr(self, '_panels', False):  # plusieurs panneaux : titre général
             self.fig.suptitle(title, y=1.02, **_opts(fontsize=fontsize, fontweight=fontweight,
-                                                     color=color))
+                                                     color=color), **kwargs)
             return self
         self.ax.set_title(title, **_opts(fontsize=fontsize, fontweight=fontweight,
-                                         color=color, pad=pad, loc=loc))
+                                         color=color, pad=pad, loc=loc), **kwargs)
         return self
 
     def labels(self, xlabel: str = None, ylabel: str = None,
@@ -388,8 +460,12 @@ class Chart:
         available_fonts = self.get_available_fonts()
         if family not in ['sans-serif', 'serif', 'monospace', 'fantasy', 'cursive'] \
                 and family not in available_fonts:
-            warnings.warn(f"Font '{family}' not found. Using 'sans-serif'.", stacklevel=2)
-            family = 'sans-serif'
+            try:  # pas installée : Google Fonts via pyfonts (téléchargée une fois, en cache)
+                load_font(family, weight=weight)
+            except Exception:
+                warnings.warn(f"Police '{family}' introuvable (ni installée, ni sur Google Fonts) : "
+                              "'sans-serif' utilisée.", stacklevel=2)
+                family = 'sans-serif'
         plt.rcParams.update({
             'font.family': family,
             'font.size': size,
@@ -801,6 +877,7 @@ class Chart:
             self.ax.plot(self.data[x], self.data[col], marker=marker,
                          linewidth=linewidth, markersize=markersize,
                          alpha=alpha, label=col)
+        self._concise_dates(x)
         return self
 
     def bar(self, x: str, y: Union[str, List[str]], horizontal: bool = False,
@@ -1111,6 +1188,7 @@ class Chart:
         else:
             for col in y:
                 self.ax.fill_between(self.data[x], self.data[col], alpha=alpha, label=col)
+        self._concise_dates(x)
         return self
 
     def violin(self, columns: Union[str, List[str]]) -> 'Chart':
@@ -1499,45 +1577,90 @@ class Chart:
         self.ax.axhline(0, color=plt.rcParams['axes.labelcolor'], linewidth=0.8)
         return self
 
-    def bump(self, x: str, y: str, group: str,
-             linewidth: float = 2.5, markersize: float = 8) -> 'Chart':
+    def bump(self, x: str, y: str, group: str, linewidth: float = 2.5, markersize: float = 8,
+             values: bool = False, curve_force: float = 0.5,
+             highlight: Optional[List] = None, end_labels: bool = True,
+             ordinal: bool = False) -> 'Chart':
         """
-        EN: Draw a bump chart to visualise ranking changes over time.
-            The y-axis is inverted so rank 1 appears at the top.
-            Each group (team, country, product…) gets one line.
-        FR: Trace un graphique de classement (bump chart) pour visualiser l'évolution
-            des rangs dans le temps. L'axe y est inversé pour que le rang 1 apparaisse en haut.
-            Chaque groupe (équipe, pays, produit…) reçoit une ligne.
+        EN: Bump chart (bumplot): evolution of rankings over time with smooth Bézier curves;
+            rank 1 at the top. `y` holds ranks (1 = best), or raw values with values=True
+            (highest value = rank 1, computed at each x). `highlight` emphasises some groups
+            (others greyed), `end_labels` writes the names at the end of the lines.
+            Ranks in `chart.ranks` (one row per x, one column per group).
+        FR: Graphique de classement (bump chart, avec bumplot) : évolution des rangs dans le
+            temps en courbes de Bézier lissées ; rang 1 en haut. `y` contient des rangs
+            (1 = premier), ou des valeurs brutes avec values=True (plus forte valeur = rang 1,
+            calculé à chaque x). `highlight` met en avant certains groupes (les autres en
+            gris), `end_labels` écrit les noms au bout des lignes. Rangs dans `chart.ranks`
+            (une ligne par x, une colonne par groupe).
 
         Args / Paramètres:
-            x (str):
-                EN: Column for time periods or seasons.
-                FR: Colonne pour les périodes ou saisons.
-            y (str):
-                EN: Column with rank values (integer, lower = better).
-                FR: Colonne avec les valeurs de rang (entier, plus bas = meilleur).
-            group (str):
-                EN: Column identifying each ranked entity.
-                FR: Colonne identifiant chaque entité classée.
-            linewidth (float):
-                EN: Line stroke width. Default 2.5.
-                FR: Épaisseur du trait. Défaut 2.5.
-            markersize (float):
-                EN: Marker diameter at each data point. Default 8.
-                FR: Diamètre du marqueur à chaque point de données. Défaut 8.
+            x (str): EN/FR: Colonne des périodes (années, saisons, journées…).
+            y (str): EN/FR: Colonne des rangs (1 = premier), ou des valeurs avec values=True.
+            group (str): EN/FR: Colonne des éléments classés (une ligne par élément).
+            linewidth (float): EN/FR: Épaisseur des courbes.
+            markersize (float): EN/FR: Diamètre des points (points).
+            values (bool): EN/FR: `y` contient des valeurs : le rang est calculé à chaque x (plus forte = 1).
+            curve_force (float): EN/FR: Courbure des liaisons, de 0 (segments droits) à 1 (paliers plats et transitions raides) ; 0.5 = sigmoïde douce.
+            highlight (list, optional): EN/FR: Groupes mis en couleur ; les autres passent en gris clair.
+            end_labels (bool): EN/FR: Écrit le nom de chaque groupe au bout de sa ligne (à la place de la légende).
+            ordinal (bool): EN/FR: Rangs écrits « 1er, 2e, 3e… » sur l'axe vertical.
 
         Returns / Retourne:
             Chart: self
 
         Example / Exemple:
             chart.bump('saison', 'classement', 'equipe')
+            chart.bump('annee', 'production', 'pays', values=True, highlight=['Sénégal'])
         """
+        from bumplot import bumplot
+        if not 0 <= curve_force <= 1:
+            raise ValueError('curve_force doit être compris entre 0 et 1 (au-delà, les courbes font des boucles)')
         self.chart_type = 'bump'
-        for g, gdf in self.data.groupby(group):
-            gdf = gdf.sort_values(x)
-            self.ax.plot(gdf[x], gdf[y], marker='o', linewidth=linewidth,
-                         markersize=markersize, label=str(g))
-        self.ax.invert_yaxis()
+        wide = self.data.pivot_table(index=x, columns=group, values=y, aggfunc='first', sort=True)
+        if wide.isna().any().any():
+            missing = wide.columns[wide.isna().any()].tolist()
+            raise ValueError(f'Valeur manquante pour certaines périodes : {missing} '
+                             '(un bump chart demande une valeur par groupe et par période)')
+        names = [str(c) for c in wide.columns]
+        wide.columns = names
+        # bumplot classe par valeurs décroissantes : pour des rangs (1 = premier), on inverse
+        table = (wide if values else -wide).reset_index()
+        palette = self._palette()
+        muted = mcolors.to_hex(mcolors.to_rgba(plt.rcParams['axes.labelcolor'], 0.35), keep_alpha=True)
+        if highlight is not None:
+            unknown = set(map(str, highlight)) - set(names)
+            if unknown:
+                raise ValueError(f'highlight : groupes inconnus {sorted(unknown)}')
+            focus = [n for n in names if n in set(map(str, highlight))]
+            colors = [palette[focus.index(n) % len(palette)] if n in focus else muted for n in names]
+            columns = [(n, {'zorder': 3 if n in focus else 2}) for n in names]
+        else:
+            focus, colors, columns = names, [palette[k % len(palette)] for k in range(len(names))], names
+        _, artists = bumplot(x, columns, table, curve_force=curve_force, colors=colors, ax=self.ax,
+                             plot_kwargs={'linewidth': linewidth},
+                             scatter_kwargs={'s': markersize ** 2, 'zorder': 4,
+                                             'edgecolor': plt.rcParams['axes.facecolor'],
+                                             'linewidth': 1.2})
+        self.ranks = wide.rank(axis=1, ascending=False, method='first').astype(int) if values \
+            else wide.astype(int)
+        if ordinal:
+            ticks = self.ax.get_yticks()
+            self.ax.set_yticks(ticks, [f'{int(t)}{"er" if int(t) == 1 else "e"}' for t in ticks])
+        self.ax.grid(False)
+        if end_labels:
+            ink = plt.rcParams['axes.labelcolor']
+            for name, color in zip(names, colors):
+                px, py = artists[name][1].get_offsets()[-1]
+                self.ax.annotate(name, (px, py), xytext=(10, 0), textcoords='offset points',
+                                 va='center', fontsize=9, color=color if name in focus else ink,
+                                 fontweight='bold' if highlight is not None and name in focus
+                                 else 'normal', annotation_clip=False)
+            self.ax.margins(x=0.04)
+            for side in ('top', 'right'):
+                self.ax.spines[side].set_visible(False)
+        else:
+            self.ax.legend(title=group, loc='center left', bbox_to_anchor=(1.01, 0.5))
         return self
 
     def ridgeline(self, value_col: str, group_col: str,
@@ -2566,6 +2689,13 @@ class Chart:
             return None
         return xs, ys, [d.pivot(index=y, columns=x, values=col).reindex(index=ys, columns=xs)
                         .to_numpy(float) for col in z]
+
+    def _legend_below(self, inches: float = 0.5) -> Dict[str, Any]:
+        """Options de légende centrée sous l'axe, à `inches` pouces du bas du graphique
+        (sous les graduations et le titre de l'axe), quelle que soit la taille de la figure."""
+        import matplotlib.transforms as mtransforms
+        below = self.ax.transAxes + mtransforms.ScaledTranslation(0, -inches, self.fig.dpi_scale_trans)
+        return dict(loc='upper center', bbox_to_anchor=(0.5, 0), bbox_transform=below)
 
     def _concise_dates(self, column: str) -> None:
         """Dates en abscisse : graduations compactes (« juin », « 15 »…) au lieu de dates complètes."""
@@ -3752,8 +3882,8 @@ class Chart:
             k = labels.index(f'{cec} (T)')
             handles.append(handles.pop(k))
             labels.append(labels.pop(k))
-        self.ax.legend(handles, labels, ncol=min(len(labels), 6), loc='upper center',
-                       bbox_to_anchor=(0.5, -0.14), frameon=False)
+        self.ax.legend(handles, labels, ncol=min(len(labels), 6), frameon=False,
+                       **self._legend_below())
         return self
 
     def infiltration_curve(self, time: str, cumulative: str, model: str = 'philip',
@@ -4129,8 +4259,7 @@ class Chart:
         if show_float:
             handles.append(plt.Rectangle((0, 0), 1, 1, facecolor='none', edgecolor=ink,
                                          hatch='///', label='Marge totale'))
-        self.ax.legend(handles=handles, loc='lower center', bbox_to_anchor=(0.5, 1.0),
-                       ncol=3, frameon=False)
+        self.ax.legend(handles=handles, ncol=3, frameon=False, **self._legend_below())
         self.ax.set_xlim(0, self.project_duration * 1.04)
         return self
 
@@ -5481,6 +5610,159 @@ class Chart:
                          arrowprops=arrowprops if arrow else None)
         return self
 
+    def annotation(self, text: str, xy: Tuple[float, float], xytext: Tuple[float, float],
+                   radius: float = 0.3, color: Optional[str] = None,
+                   arrow_color: Optional[str] = None, fontsize: Optional[float] = None,
+                   fontweight: Optional[str] = None, width: float = 1.2,
+                   head_width: float = 3.5, head_length: float = 6.0, coords: str = 'data',
+                   **text_kwargs) -> 'Chart':
+        """
+        EN: Annotation with a curved arrow (drawarrow): the text is written at `xytext` and
+            an arrow goes from the text to the annotated point `xy`. The text is aligned
+            automatically so the arrow starts at its edge.
+        FR: Annotation avec une flèche courbe (drawarrow) : le texte est écrit en `xytext` et
+            une flèche part du texte vers le point annoté `xy`. Le texte est aligné
+            automatiquement pour que la flèche parte de son bord.
+
+        Args / Paramètres:
+            text (str): EN/FR: Texte de l'annotation (retours à la ligne avec \\n).
+            xy (tuple): EN/FR: Point annoté (pointe de la flèche).
+            xytext (tuple): EN/FR: Position du texte (départ de la flèche).
+            radius (float): EN/FR: Courbure de la flèche (0 = droite, négatif = courbe dans l'autre sens).
+            color (str, optional): EN/FR: Couleur du texte ; défaut : couleur du texte du thème.
+            arrow_color (str, optional): EN/FR: Couleur de la flèche ; défaut : celle du texte.
+            fontsize (float, optional): EN/FR: Taille du texte ; défaut : thème.
+            fontweight (str, optional): EN/FR: Graisse du texte ('bold', 'semibold'…).
+            width (float): EN/FR: Épaisseur du trait de la flèche.
+            head_width (float): EN/FR: Largeur de la pointe.
+            head_length (float): EN/FR: Longueur de la pointe.
+            coords (str): EN/FR: Repère des positions : 'data' (données) ou 'axes' (0–1 dans le graphique).
+            **text_kwargs: EN/FR: Options du texte matplotlib (fontproperties, ha, va, bbox…).
+
+        Example / Exemple:
+            chart.annotation('Record\\nde 2024', xy=(2024, 5.1), xytext=(2019, 5.6), radius=-0.3)
+        """
+        from drawarrow import ax_arrow
+        if coords not in ('data', 'axes'):
+            raise ValueError("coords doit valoir 'data' ou 'axes'")
+        tr = self.ax.transData if coords == 'data' else self.ax.transAxes
+        if coords == 'data':  # dates, catégories… → nombres matplotlib
+            xy, xytext = [(self.ax.convert_xunits(px), self.ax.convert_yunits(py))
+                          for px, py in (xy, xytext)]
+        self.ax.get_xlim()  # limites à jour avant de passer en pixels
+        (x0, y0), (x1, y1) = tr.transform([xytext, xy])
+        dx, dy = x1 - x0, y1 - y0
+        if abs(dx) >= abs(dy):     # flèche plutôt horizontale : le texte finit (ou commence) au départ
+            ha, va = ('right' if dx > 0 else 'left'), 'center'
+        else:                      # plutôt verticale : texte au-dessus ou en dessous du départ
+            ha, va = 'center', ('top' if dy > 0 else 'bottom')
+        color = color or plt.rcParams['text.color']
+        self.ax.text(*xytext, text, transform=tr, color=color, fontsize=fontsize,
+                     fontweight=fontweight, ha=text_kwargs.pop('ha', ha),
+                     va=text_kwargs.pop('va', va), **text_kwargs)
+        ax_arrow(xytext, xy, ax=self.ax, radius=radius, color=arrow_color or color,
+                 width=width, head_width=head_width, head_length=head_length,
+                 transform=tr, shrinkA=4, shrinkB=2)
+        return self
+
+    def arrow(self, tail: Tuple[float, float], head: Tuple[float, float], radius: float = 0.3,
+              color: Optional[str] = None, width: float = 1.5, head_width: float = 4.0,
+              head_length: float = 7.0, double_headed: bool = False,
+              inflection: Optional[Tuple[float, float]] = None, coords: str = 'data',
+              **kwargs) -> 'Chart':
+        """
+        EN: Draw a (curved) arrow with drawarrow from `tail` to `head`, in data, axes (0–1)
+            or figure (0–1) coordinates.
+        FR: Trace une flèche (courbe) avec drawarrow de `tail` à `head`, en coordonnées des
+            données, du graphique (0–1) ou de la figure (0–1).
+
+        Args / Paramètres:
+            tail (tuple): EN/FR: Point de départ de la flèche.
+            head (tuple): EN/FR: Point d'arrivée (pointe).
+            radius (float): EN/FR: Courbure (0 = droite ; le signe change le sens de la courbe).
+            color (str, optional): EN/FR: Couleur ; défaut : couleur du texte du thème.
+            width (float): EN/FR: Épaisseur du trait.
+            head_width (float): EN/FR: Largeur de la pointe.
+            head_length (float): EN/FR: Longueur de la pointe.
+            double_headed (bool): EN/FR: Pointe aux deux extrémités.
+            inflection (tuple, optional): EN/FR: Point de passage intermédiaire (flèche en S).
+            coords (str): EN/FR: 'data', 'axes' (0–1 dans le graphique) ou 'figure' (0–1 dans la figure).
+            **kwargs: EN/FR: Options de drawarrow / FancyArrowPatch (alpha, linestyle, zorder…).
+
+        Example / Exemple:
+            chart.arrow((0.1, 0.9), (0.3, 0.6), coords='axes', radius=-0.4)
+        """
+        from drawarrow import ax_arrow, fig_arrow
+        if coords not in ('data', 'axes', 'figure'):
+            raise ValueError("coords doit valoir 'data', 'axes' ou 'figure'")
+        opts = dict(radius=radius, color=color or plt.rcParams['text.color'], width=width,
+                    head_width=head_width, head_length=head_length,
+                    double_headed=double_headed, inflection_position=inflection, **kwargs)
+        if coords == 'figure':
+            fig_arrow(tail, head, fig=self.fig, **opts)
+        else:
+            if coords == 'data':  # dates, catégories… → nombres matplotlib
+                tail, head = [(self.ax.convert_xunits(px), self.ax.convert_yunits(py))
+                              for px, py in (tail, head)]
+            ax_arrow(tail, head, ax=self.ax, transform=self.ax.transData if coords == 'data'
+                     else self.ax.transAxes, **opts)
+        return self
+
+    def rounded(self, radius: float = 6.0) -> 'Chart':
+        """
+        EN: Smooth (rounded) corners on the chart's shapes: bars, histogram and treemap
+            rectangles, pie, donut and radial-bar sectors, polygons. `radius` is in points
+            (clamped so thin shapes stay intact). Applied when the chart is shown or saved,
+            once the final layout is known, so it can be called anywhere in the chain.
+        FR: Coins adoucis (arrondis) sur les formes du graphique : barres, rectangles
+            d'histogramme et de treemap, secteurs de camembert, d'anneau et de barres
+            radiales, polygones. `radius` est en points (réduit pour les formes fines).
+            Appliqué à l'affichage ou à l'enregistrement, une fois la mise en page connue :
+            on peut donc l'appeler n'importe où dans la chaîne.
+
+        Args / Paramètres:
+            radius (float): EN/FR: Rayon des coins en points (1 point = 1/72 de pouce).
+
+        Example / Exemple:
+            Chart(df).bar('region', 'ventes').rounded(8).show()
+            Chart(df).donut('surface', labels='culture').rounded(5).show()
+        """
+        if radius < 0:
+            raise ValueError('radius doit être positif')
+        self._round_radius = radius
+        return self
+
+    def _apply_rounding(self) -> None:
+        """Remplace les formes anguleuses par leur version aux coins arrondis (une seule fois)."""
+        from matplotlib.patches import FancyArrowPatch, PathPatch, Polygon, Rectangle, Wedge
+        radius = getattr(self, '_round_radius', None)
+        if not radius:
+            return
+        self._round_radius = None
+        r_px = radius * self.fig.dpi / 72
+        for ax in self.fig.axes:
+            ax.get_xlim()  # limites à jour
+            for patch in list(ax.patches):
+                if isinstance(patch, FancyArrowPatch) or not isinstance(
+                        patch, (Rectangle, Wedge, Polygon, PathPatch)):
+                    continue
+                if not patch.get_fill() or patch.get_facecolor()[3] == 0:
+                    continue  # tracé sans remplissage (courbe de bump chart…) : on n'y touche pas
+                tr = patch.get_transform()
+                new_path = _round_path(tr.transform_path(patch.get_path()), r_px)
+                if new_path is None:
+                    continue
+                new = PathPatch(tr.inverted().transform_path(new_path))
+                new.update_from(patch)
+                new.set_transform(tr)
+                new.set_zorder(patch.get_zorder())
+                new.set_label(patch.get_label())
+                new.set_clip_on(patch.get_clip_on())
+                clip = patch.get_clip_path()
+                patch.remove()
+                ax.add_patch(new)
+                new.set_clip_path(clip)
+
     def set_style(self, style: str = 'default') -> 'Chart':
         """
         EN: Apply a matplotlib style sheet to the figure.
@@ -5531,8 +5813,8 @@ class Chart:
         self.fig.tight_layout()
         return self
 
-    def save(self, filename: str, dpi: int = 300, bbox_inches: str = 'tight',
-             format: str = 'png') -> 'Chart':
+    def save(self, filename: str, dpi: int = 400, bbox_inches: str = 'tight',
+             format: Optional[str] = None) -> 'Chart':
         """
         EN: Save the figure to a file. Returns self for continued chaining.
         FR: Enregistre la figure dans un fichier. Retourne self pour continuer le chaînage.
@@ -5542,14 +5824,16 @@ class Chart:
                 EN: Output file path (extension inferred unless format is given).
                 FR: Chemin du fichier de sortie (extension déduite sauf si format est précisé).
             dpi (int):
-                EN: Resolution in dots per inch. Default 300.
-                FR: Résolution en points par pouce. Défaut 300.
+                EN: Resolution in dots per inch. Default 400.
+                FR: Résolution en points par pouce. Défaut 400.
             bbox_inches (str):
                 EN: Bounding box for saving ('tight' removes surrounding whitespace).
                 FR: Boîte englobante pour l'enregistrement ('tight' supprime l'espace vide).
             format (str):
-                EN: Output format ('png', 'pdf', 'svg', 'eps'…). Default 'png'.
-                FR: Format de sortie ('png', 'pdf', 'svg', 'eps'…). Défaut 'png'.
+                EN: Output format ('png', 'pdf', 'svg', 'eps'…). Default: from the file
+                    extension (png without extension).
+                FR: Format de sortie ('png', 'pdf', 'svg', 'eps'…). Défaut : déduit de
+                    l'extension du fichier (png sans extension).
 
         Returns / Retourne:
             Chart: self
@@ -5557,6 +5841,7 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').tight_layout().save('rapport.pdf', format='pdf')
         """
+        self._apply_rounding()
         self.fig.savefig(filename, dpi=dpi, bbox_inches=bbox_inches, format=format)
         return self
 
@@ -5573,6 +5858,7 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').tight_layout().show()
         """
+        self._apply_rounding()
         if 'inline' in matplotlib.get_backend():
             from IPython.display import display  # backend inline ⇒ IPython présent
             display(self.fig)

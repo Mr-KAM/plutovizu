@@ -12,11 +12,13 @@ $code-block-border-left: false;
 /*-- scss:rules --*/
 
 $is-dark: lightness($body-bg) < 50%;
-$green: if($is-dark, #34d399, #047857);           // texte vert (contraste OK)
-$green-glow: #10b981;                              // décor
-$line: if($is-dark, rgba(255, 255, 255, .08), rgba(9, 9, 11, .08));
-$surface: if($is-dark, rgba(255, 255, 255, .04), rgba(9, 9, 11, .03));
-$muted: if($is-dark, #a1a1aa, #71717a);
+// Couleurs du logo (plutovizu-logo-kit) : violet, bleu nuit, orange
+$accent: if($is-dark, #A79BFF, #5B4BDB);          // texte d'accent (contraste OK)
+$accent-glow: if($is-dark, #8577F2, #5B4BDB);     // décor
+$orange: if($is-dark, #FF8A3D, #FF7A2F);          // touche orange (lune du logo)
+$line: if($is-dark, rgba(167, 155, 255, .14), rgba(20, 18, 58, .09));
+$surface: if($is-dark, rgba(167, 155, 255, .07), rgba(91, 75, 219, .05));
+$muted: if($is-dark, #b3aedb, #6e6a93);
 
 body {
   -webkit-font-smoothing: antialiased;
@@ -54,7 +56,8 @@ body {
   }
   .sidebar-link {
     font-size: .875rem;
-    &.active { color: $green; font-weight: 500; }
+    &.active { color: $accent; font-weight: 500; box-shadow: inset 2px 0 0 $orange;
+      padding-left: .6rem !important; margin-left: -.6rem; }
   }
 }
 
@@ -79,14 +82,14 @@ h1, h2, h3, h4 { letter-spacing: -.02em; }
   margin-bottom: .4rem;
   font-size: .8rem;
   font-weight: 600;
-  .breadcrumb-item, .breadcrumb-item a, .breadcrumb-item + .breadcrumb-item::before { color: $green !important; }
+  .breadcrumb-item, .breadcrumb-item a, .breadcrumb-item + .breadcrumb-item::before { color: $accent !important; }
 }
 .home .quarto-page-breadcrumbs { display: none !important; }
 
 #quarto-document-content :is(h2, h3, h4) code {
   font-size: .85em;
-  color: $green;
-  background: rgba($green-glow, .1);
+  color: $accent;
+  background: rgba($accent-glow, .1);
   padding: .1em .4em;
   border-radius: .4rem;
 }
@@ -130,7 +133,7 @@ div.sourceCode {
 hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
 
 #TOC .nav-link { font-size: .825rem; color: $muted; }
-#TOC .nav-link.active { color: $green !important; border-left-color: $green !important; }
+#TOC .nav-link.active { color: $accent !important; border-left-color: $accent !important; }
 
 // Liens Précédent / Suivant en cartes
 .page-navigation .nav-page a {
@@ -138,18 +141,18 @@ hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
   padding: .75rem 1rem;
   border: 1px solid $line;
   border-radius: $border-radius;
-  &:hover { border-color: rgba($green-glow, .5); }
+  &:hover { border-color: rgba($accent-glow, .5); }
 }
 
 .nav-footer { color: $muted; font-size: .825rem; border-top: 1px solid $line; }
 
-::selection { background: rgba($green-glow, .3); }
+::selection { background: rgba($orange, .35); }
 
 // ── Page d'accueil (body-classes: home) ────────────────
 .home-hero {
   text-align: center;
   padding: 2.5rem 0 1.5rem;
-  background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba($green-glow, if($is-dark, .14, .08)), transparent 70%);
+  background: radial-gradient(ellipse 60% 70% at 50% 0%, rgba($accent-glow, if($is-dark, .14, .08)), transparent 70%);
   .home-logo { width: min(560px, 100%); height: auto; }
   .subtitle { max-width: 34rem; margin: .5rem auto 0; line-height: 1.6; font-size: 1.1rem; color: $text-muted; }
 }
@@ -175,19 +178,19 @@ hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
     display: grid;
     place-items: center;
     border-radius: 1rem;
-    border: 1px solid rgba($green-glow, .18);
-    background-color: rgba($green-glow, if($is-dark, .08, .06));
+    border: 1px solid rgba($accent-glow, .18);
+    background-color: rgba($accent-glow, if($is-dark, .08, .06));
     background-image:
-      linear-gradient(rgba($green-glow, .12) 1px, transparent 1px),
-      linear-gradient(90deg, rgba($green-glow, .12) 1px, transparent 1px);
+      linear-gradient(rgba($accent-glow, .12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($accent-glow, .12) 1px, transparent 1px);
     background-size: 26px 26px;
     background-position: center;
-    i { font-size: 3.6rem; color: $green; filter: drop-shadow(0 0 22px rgba($green-glow, .45)); }
+    i { font-size: 3.6rem; color: $accent; filter: drop-shadow(0 0 22px rgba($accent-glow, .45)); }
   }
   .feature-title { display: block; margin-top: .9rem; font-weight: 600; color: $headings-color; }
   .feature-text { display: block; margin-top: .2rem; color: $muted; font-size: .9rem; line-height: 1.55; }
 
-  &:hover .feature-art, &:focus-visible .feature-art { border-color: rgba($green-glow, .5); }
+  &:hover .feature-art, &:focus-visible .feature-art { border-color: rgba($accent-glow, .5); }
 }
 
 // ── Responsive ──────────────────────────────────────────
@@ -257,14 +260,14 @@ hr { border: 0; height: 1px; background: $line; opacity: 1; margin: 2.5rem 0; }
     font-size: .7rem;
     border-radius: 999px;
     border-color: $line;
-    color: $green;
+    color: $accent;
   }
 }
 @media (prefers-reduced-motion: no-preference) {
   .quarto-listing .quarto-grid-item.card { transition: transform .15s ease, border-color .15s ease; }
 }
 .quarto-listing .quarto-grid-item.card:hover {
-  border-color: rgba($green-glow, .6);
+  border-color: rgba($accent-glow, .6);
   transform: translateY(-2px);
 }
 .quarto-listing-category-title { font-weight: 600; }

@@ -86,7 +86,7 @@ CATALOGUE = [
     ('band', 'Bande', EVO, 'Plage min–max ou intervalle autour d’une courbe',
      lambda: C(meteo).band('jour', 'tmin', 'tmax', y='tmoy')),
     ('bump', 'Classement', EVO, 'Évolution des rangs',
-     lambda: C(rangs).bump('annee', 'rang', 'culture')),
+     lambda: C(rangs).bump('annee', 'rang', 'culture', highlight=['Riz', 'Mil'])),
     ('timeline', 'Frise chronologique', EVO, 'Jalons et calendrier cultural',
      lambda: C(calendrier, 5, 3).timeline('date', 'etape')),
     ('eventplot', 'Événements', EVO, 'Dates d’observation par groupe',

@@ -98,16 +98,19 @@ band:
 
 bump:
   desc: >-
-    Graphique de classement : le rang de chaque élément à chaque période, relié par des
-    lignes ; le rang 1 est en haut.
+    Graphique de classement (bump chart, avec bumplot) : le rang de chaque élément à chaque
+    période, relié par des courbes lissées ; le rang 1 est en haut et les noms sont écrits
+    au bout des lignes.
   usage: >-
     Comparer l'évolution des positions relatives (classement d'équipes, de cultures, de
-    pays) quand l'ordre compte plus que les valeurs.
-  rows: une ligne par élément et par période (format long)
+    pays, de produits) quand l'ordre compte plus que les valeurs. À partir de valeurs
+    brutes (`values=True`), le rang est calculé à chaque période.
+  rows: une ligne par élément et par période (format long), sans période manquante
   data:
     - [saison, "nombre ou texte ordonné", "`x` : période", "2021"]
-    - [classement, entier, "`y` : rang (1 = premier)", "3"]
+    - [classement, "entier, ou nombre avec values=True", "`y` : rang (1 = premier) ou valeur", "3"]
     - [equipe, texte, "`group` : élément classé (une ligne par élément)", "Lyon"]
+  returns: "`chart.ranks` : rangs, une ligne par période et une colonne par élément."
 
 timeline:
   desc: >-

@@ -25,7 +25,9 @@ Ou avec `uv` :
 uv add plutovizu
 ```
 
-**Dépendances :** matplotlib, pandas, numpy, seaborn (Python ≥ 3.12)
+**Dépendances :** matplotlib, pandas, numpy, seaborn, scipy, pyfonts, drawarrow, bumplot… (Python ≥ 3.12).
+Les polices **Fira Sans** (par défaut) et **Inter** sont incluses ; un graphique mesure
+16 × 10 cm par défaut (`figsize=cm(24, 12)` pour une autre taille en centimètres).
 
 ## Utilisation rapide
 
@@ -35,7 +37,7 @@ import pandas as pd
 
 df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 
-(Chart(df, figsize=(10, 6))
+(Chart(df)
     .bar('categorie', 'ventes')
     .labels(xlabel='Catégorie', ylabel='Ventes')
     .grid()
@@ -153,12 +155,27 @@ chart.preview_palette('Set1')
 
 # Export
 chart.tight_layout()
-chart.save('graphique.png', dpi=300)
+chart.save('graphique.png')        # 400 dpi par défaut ; .pdf, .svg selon l'extension
 chart.show()
 fig, ax = chart.get_figure()
 ```
 
-## Polices
+## Polices, annotations, coins arrondis
+
+Fira Sans (défaut) et Inter sont fournies ; `load_font` (pyfonts) charge aussi n'importe
+quelle police Google Fonts. Les flèches courbes viennent de drawarrow.
+
+```python
+from plutovizu import Chart, load_font
+
+(Chart(df)
+    .bar('region', 'ventes')
+    .rounded(8)                                   # coins arrondis (points)
+    .annotation('Record', xy=(2, 520), xytext=(0.5, 560), radius=-0.3)
+    .arrow((0.1, 0.9), (0.3, 0.7), coords='axes')
+    .title('Ventes', fontproperties=load_font('Inter', 'semibold'))
+    .show())
+```
 
 ```python
 from plutovizu import get_fonts

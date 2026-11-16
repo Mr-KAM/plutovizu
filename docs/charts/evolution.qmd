@@ -202,9 +202,56 @@ df = pd.DataFrame({
     .bump('saison', 'classement', 'equipe')
     .title('Classement Ligue 1 (2019–2023)')
     .labels(xlabel='Saison', ylabel='Classement')
-    .set_legend()
     .tight_layout()
     .show())
+```
+
+Les courbes de Bézier viennent de [bumplot](https://github.com/y-sunflower/bumplot) ; les
+noms sont écrits au bout des lignes (`end_labels=False` remet une légende).
+
+#### À partir de valeurs, avec mise en avant
+
+Avec `values=True`, `y` contient des **valeurs** (production, score, ventes) : le rang est
+calculé à chaque période, la plus forte valeur étant 1re. `highlight` met quelques
+éléments en couleur et passe les autres en gris ; `ordinal=True` écrit « 1er, 2e… ».
+
+```{python}
+#| fig-cap: "Rang de six pays selon leur production de riz (données fictives)"
+rng = np.random.default_rng(4)
+pays = ['Sénégal', 'Mali', 'Niger', 'Burkina Faso', "Côte d'Ivoire", 'Guinée']
+production = pd.DataFrame(
+    [(a, p, 100 + 40 * k + rng.normal(0, 35) + (12 * (a - 2015) if p == 'Sénégal' else 0))
+     for a in range(2015, 2025) for k, p in enumerate(pays)],
+    columns=['annee', 'pays', 'production'])
+
+chart = (Chart(production, figsize=(10, 5))
+    .bump('annee', 'production', 'pays', values=True,
+          highlight=['Sénégal', 'Mali'], ordinal=True)
+    .title('Production de riz : le Sénégal progresse')
+    .tight_layout())
+chart.show()
+chart.ranks.tail(3)          # rangs calculés : une ligne par année, une colonne par pays
+```
+
+#### Courbure des liaisons
+
+`curve_force` va de 0 (segments droits) à 1 (paliers plats et transitions raides) ;
+0.5, la valeur par défaut, donne une sigmoïde douce.
+
+```{python}
+#| fig-cap: "Même classement, trois courbures"
+journees = pd.DataFrame(
+    [(j, e, r) for j, perm in zip(['J1', 'J2', 'J3', 'J4', 'J5'],
+                                  [[1, 2, 3, 4], [2, 1, 3, 4], [2, 3, 1, 4], [3, 4, 1, 2], [4, 3, 1, 2]])
+     for e, r in zip(['Ndiambour', 'Jaraaf', 'Teungueth', 'Casa Sports'], perm)],
+    columns=['journee', 'equipe', 'rang'])
+
+for force in (0, 0.5, 1):
+    (Chart(journees, figsize=(8, 3.6))
+        .bump('journee', 'rang', 'equipe', curve_force=force)
+        .title(f'curve_force={force}')
+        .tight_layout()
+        .show())
 ```
 
 

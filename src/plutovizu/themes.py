@@ -26,7 +26,8 @@ import matplotlib as mpl
 import seaborn as sns
 from cycler import cycler
 
-_SANS = ['Inter', 'Segoe UI', 'Helvetica Neue', 'Arial', 'DejaVu Sans']
+# Fira Sans (défaut) et Inter sont fournies avec plutovizu (voir fonts.py)
+_SANS = ['Fira Sans', 'Inter', 'Segoe UI', 'Helvetica Neue', 'Arial', 'DejaVu Sans']
 _SERIF = ['Georgia', 'Cambria', 'Times New Roman', 'DejaVu Serif']
 _MONO = ['JetBrains Mono', 'Cascadia Mono', 'Consolas', 'DejaVu Sans Mono']
 
@@ -56,6 +57,8 @@ def _theme(bg: str, fg: str, muted: str, grid: str, palette: List[str],
         'legend.frameon': False,
         # Tracés
         'lines.linewidth': 2.2, 'lines.markersize': 6,
+        # Export : 400 dpi par défaut (plt.savefig, fig.savefig, Chart.save)
+        'savefig.dpi': 400,
         'patch.force_edgecolor': True, 'patch.edgecolor': bg, 'patch.linewidth': .8,
     }
     rc.update(extra)
@@ -63,11 +66,11 @@ def _theme(bg: str, fg: str, muted: str, grid: str, palette: List[str],
 
 
 THEMES: Dict[str, Dict] = {
-    # Sombre, assorti à la documentation : quasi-noir + émeraude
+    # Couleurs du logo, assorti à la documentation : bleu nuit + violet + orange
     'pluto': _theme(
-        bg='#0b0d0e', fg='#f4f4f5', muted='#a1a1aa', grid='#232629',
-        palette=['#34d399', '#60a5fa', '#f472b6', '#fbbf24', '#a78bfa', '#f87171', '#2dd4bf'],
-        cmap='mako'),
+        bg='#14123A', fg='#F7F6FF', muted='#b3aedb', grid='#2B2670',
+        palette=['#A79BFF', '#FF8A3D', '#5EEAD4', '#F472B6', '#FCD34D', '#60A5FA', '#E4E0FF'],
+        cmap='magma'),
     # Presse : fond blanc, grille horizontale seule, aucun axe vertical
     'editorial': _theme(
         bg='#ffffff', fg='#111827', muted='#6b7280', grid='#e5e7eb',
@@ -156,7 +159,7 @@ THEMES: Dict[str, Dict] = {
 _GOOGLE_FONTS = {'prezi': 'Raleway'}
 
 DESCRIPTIONS: Dict[str, str] = {
-    'pluto': "Quasi-noir et vert émeraude, assorti à la documentation.",
+    'pluto': "Bleu nuit, violet et orange : les couleurs du logo et de la documentation.",
     'editorial': "Style presse : fond blanc, grille horizontale seule, aucun axe vertical.",
     'paper': "Papier crème, typographie serif et couleurs terre : un rendu imprimé.",
     'arctic': "Gris bleuté et palette polaire : doux et froid, idéal pour des rapports.",

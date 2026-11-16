@@ -63,14 +63,14 @@ set_theme({**get_theme('pluto'), 'axes.titlesize': 20})
 ### `__init__(data, figsize, theme)`
 
 ```python
-Chart(data: pd.DataFrame, figsize: Tuple[int, int] = (10, 6),
+Chart(data: pd.DataFrame, figsize: Tuple[float, float] = FIGSIZE,   # 16 × 10 cm
       theme: Optional[str] = None)
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `data` | `pd.DataFrame` | — | Jeu de données source |
-| `figsize` | `Tuple[int, int]` | `(10, 6)` | Largeur × hauteur en pouces |
+| `figsize` | `Tuple[float, float]` | `FIGSIZE` (16 × 10 cm) | Largeur × hauteur en pouces ; `cm(largeur, hauteur)` convertit des centimètres |
 | `theme` | `str` | `None` | Raccourci de `set_theme(theme)` — s'applique aussi aux graphiques suivants |
 
 ```python
@@ -317,17 +317,19 @@ chart.waterfall('poste', 'delta', positive_color='#2a9d8f', negative_color='#e76
 ### `bump`
 
 ```python
-.bump(x: str, y: str, group: str,
-      linewidth: float = 2.5, markersize: float = 8) -> Chart
+.bump(x: str, y: str, group: str, linewidth: float = 2.5, markersize: float = 8,
+      values: bool = False, curve_force: float = 0.5, highlight: list = None,
+      end_labels: bool = True, ordinal: bool = False) -> Chart     # → chart.ranks
 ```
 
-Évolution de classement — axe y inversé (rang 1 en haut).
+Graphique de classement en courbes lissées ([bumplot](https://github.com/y-sunflower/bumplot)).
+`y` : rangs (1 = premier) ou valeurs avec `values=True` ; `curve_force` de 0 (droit) à 1 ;
+`highlight` met des groupes en couleur (les autres en gris) ; `ordinal` écrit « 1er, 2e… ».
 
 ```python
 chart.bump('saison', 'classement', 'equipe')
+chart.bump('annee', 'production', 'pays', values=True, highlight=['Sénégal'], ordinal=True)
 ```
-
----
 
 ### `ridgeline`
 
@@ -1075,6 +1077,38 @@ Applique un style matplotlib (`'ggplot'`, `'seaborn-v0_8'`, `'dark_background'`�
                 arrowprops: Optional[dict] = None) -> Chart
 ```
 
+### `annotation`
+
+```python
+.annotation(text: str, xy: Tuple, xytext: Tuple, radius: float = 0.3,
+            color: str = None, arrow_color: str = None, fontsize: float = None,
+            fontweight: str = None, width: float = 1.2, head_width: float = 3.5,
+            head_length: float = 6.0, coords: str = 'data', **text_kwargs) -> Chart
+```
+
+Texte en `xytext` et flèche courbe (drawarrow) vers `xy` ; alignement du texte automatique.
+`coords` : `'data'` ou `'axes'` (0–1).
+
+### `arrow`
+
+```python
+.arrow(tail: Tuple, head: Tuple, radius: float = 0.3, color: str = None,
+       width: float = 1.5, head_width: float = 4.0, head_length: float = 7.0,
+       double_headed: bool = False, inflection: Tuple = None,
+       coords: str = 'data', **kwargs) -> Chart
+```
+
+Flèche drawarrow ; `coords` : `'data'`, `'axes'` (0–1) ou `'figure'` (0–1).
+
+### `rounded`
+
+```python
+.rounded(radius: float = 6.0) -> Chart
+```
+
+Coins arrondis (rayon en points) des barres, rectangles, secteurs et polygones ;
+appliqué à `show()` / `save()`.
+
 ---
 
 ## Couleurs
@@ -1131,6 +1165,20 @@ Chart.print_available_palettes(category: str = 'all', limit: int = None) -> None
 
 ## Polices
 
+Fira Sans (défaut) et Inter sont fournies avec le package et enregistrées à l'import.
+
+### `load_font` (fonction)
+
+```python
+from plutovizu import load_font
+load_font(family: str = 'Fira Sans', weight: int | str = 'regular',
+          italic: bool = False) -> FontProperties
+```
+
+Polices fournies lues dans le package ; toute autre famille Google Fonts est téléchargée
+et mise en cache par pyfonts, puis enregistrée (son nom marche aussi dans `rcParams`).
+`weight` : `'light'`, `'regular'`, `'medium'`, `'semibold'`, `'bold'` ou 300–700.
+
 ### `get_available_fonts`
 
 ```python
@@ -1156,14 +1204,14 @@ Chart.print_available_fonts(pattern: str = None, limit: int = None) -> None
 ### `save`
 
 ```python
-.save(filename: str, dpi: int = 300,
-      bbox_inches: str = 'tight', format: str = 'png') -> Chart
+.save(filename: str, dpi: int = 400,
+      bbox_inches: str = 'tight', format: str = None) -> Chart   # format : selon l'extension
 ```
 
 Retourne `self` — chaînable après `save()`.
 
 ```python
-chart.save('rapport.png').save('rapport.pdf', format='pdf').show()
+chart.save('rapport.png').save('rapport.pdf').show()     # 400 dpi par défaut
 ```
 
 ### `show`
@@ -1186,5 +1234,5 @@ Retourne `(fig, ax)` pour personnalisation matplotlib avancée.
 ```python
 fig, ax = chart.line('x', 'y').get_figure()
 ax.axhspan(0, 5, alpha=0.1, color='green')
-fig.savefig('custom.png', dpi=300)
+fig.savefig('custom.png')     # 400 dpi (savefig.dpi des thèmes)
 ```

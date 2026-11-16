@@ -1,20 +1,20 @@
 /*-- scss:defaults --*/
-// Thème sombre (par défaut) : quasi-noir + vert émeraude
+// Thème sombre (par défaut) : bleu nuit du logo (#14123A) + violet clair (#8577F2 / #A79BFF)
 
-$body-bg: #0b0d0e;
-$body-color: #d4d4d8;
-$headings-color: #fafafa;
-$link-color: #34d399;
-$primary: #10b981;
+$body-bg: #14123A;
+$body-color: #d9d6f2;
+$headings-color: #F7F6FF;
+$link-color: #A79BFF;
+$primary: #8577F2;
 
-$navbar-bg: #0b0d0e;
-$navbar-fg: #a1a1aa;
-$navbar-hl: #fafafa;
-$sidebar-bg: #0b0d0e;
-$sidebar-fg: #a1a1aa;
-$sidebar-hl: #34d399;
-$footer-bg: #0b0d0e;
-$code-block-bg: #111416;
+$navbar-bg: #14123A;
+$navbar-fg: #b3aedb;
+$navbar-hl: #F7F6FF;
+$sidebar-bg: #14123A;
+$sidebar-fg: #b3aedb;
+$sidebar-hl: #A79BFF;
+$footer-bg: #14123A;
+$code-block-bg: #1c1950;
 $table-bg: transparent;
 
 /*-- scss:rules --*/
