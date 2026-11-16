@@ -81,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-952cc186b5a1eaa8a19394d372d07cb4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8778577dfb335af5b746ae7292e442d8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -614,7 +614,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="80040d9c" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
+<div id="d059725b" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'salaire'</span>: np.random.normal(<span class="dv">42000</span>, <span class="dv">9000</span>, <span class="dv">800</span>)})</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -628,7 +628,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-4-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-4-output-1.png" width="595" height="368" class="figure-img"></p>
 <figcaption>Distribution des salaires</figcaption>
 </figure>
 </div>
@@ -708,7 +708,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Deux groupes sur les mêmes classes, l’un vers le haut, l’autre vers le bas ; <code>horizontal=True</code> donne une pyramide des âges.</p>
-<div id="c61a4ed1" class="cell" data-execution_count="5">
+<div id="d271ce7f" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(population, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .bihistogram(<span class="st">'age'</span>, <span class="st">'sexe'</span>, bins<span class="op">=</span><span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">95</span>, <span class="dv">5</span>), horizontal<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pyramide des âges'</span>)</span>
@@ -717,7 +717,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-6-output-1.png" width="759" height="470" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-6-output-1.png" width="757" height="470" class="figure-img"></p>
 <figcaption>Pyramide des âges d’un village</figcaption>
 </figure>
 </div>
@@ -786,7 +786,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="215a7499" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="7">
+<div id="d91fc2c8" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'maths'</span>:    np.random.normal(<span class="dv">13</span>, <span class="dv">3</span>, <span class="dv">100</span>),</span>
@@ -805,7 +805,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-8-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-8-output-1.png" width="594" height="368" class="figure-img"></p>
 <figcaption>Comparaison des notes par matière</figcaption>
 </figure>
 </div>
@@ -864,7 +864,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="1856ba3c" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="9">
+<div id="3afdc789" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">2</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Paris'</span>:  np.random.normal(<span class="dv">45</span>, <span class="dv">15</span>, <span class="dv">200</span>),</span>
@@ -883,7 +883,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-10-output-1.png" width="952" height="566" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-10-output-1.png" width="594" height="368" class="figure-img"></p>
 <figcaption>Distribution des temps de trajet par ville</figcaption>
 </figure>
 </div>
@@ -963,7 +963,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="0dd12fb5" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="11">
+<div id="e9ebc357" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">3</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>secteurs <span class="op">=</span> [<span class="st">'Tech'</span>, <span class="st">'Finance'</span>, <span class="st">'Santé'</span>, <span class="st">'Éducation'</span>, <span class="st">'Commerce'</span>]</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>moyennes  <span class="op">=</span> [<span class="dv">68000</span>, <span class="dv">72000</span>, <span class="dv">52000</span>, <span class="dv">38000</span>, <span class="dv">44000</span>]</span>
@@ -983,7 +983,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-12-output-1.png" width="952" height="566" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-12-output-1.png" width="594" height="368" class="figure-img"></p>
 <figcaption>Distribution des salaires par secteur</figcaption>
 </figure>
 </div>
@@ -1063,7 +1063,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="dd06f21e" class="cell" data-execution_count="13">
+<div id="94d3be30" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .kde(<span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Densité du rendement'</span>)</span>
@@ -1072,7 +1072,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-14-output-1.png" width="856" height="374" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-14-output-1.png" width="852" height="374" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1146,7 +1146,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="17565cd2" class="cell" data-execution_count="15">
+<div id="7b091ed7" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .ecdf(<span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Part des parcelles sous chaque rendement'</span>)</span>
@@ -1155,7 +1155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-16-output-1.png" width="855" height="374" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-16-output-1.png" width="853" height="374" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1229,7 +1229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p><code>strip</code> disperse les points au hasard (rapide, même sur de gros effectifs) ; <code>swarm</code> les range sans chevauchement (plus lisible, pour quelques centaines de points au plus).</p>
-<div id="69edc010" class="cell" data-execution_count="17">
+<div id="18b8c0ba" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .strip(<span class="st">'variete'</span>, <span class="st">'rendement'</span>, jitter<span class="op">=</span><span class="fl">0.25</span>, alpha<span class="op">=</span><span class="fl">0.7</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'strip : points dispersés'</span>)</span>
@@ -1243,7 +1243,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="89d8edff" class="cell" data-execution_count="18">
+<div id="06cebeb5" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .swarm(<span class="st">'variete'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'dose'</span>, palette<span class="op">=</span><span class="st">'crest'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'swarm : points rangés, colorés par dose'</span>)</span>
@@ -1325,7 +1325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="c4092230" class="cell" data-execution_count="20">
+<div id="88edd3d7" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .boxen(<span class="st">'dose'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par dose (letter-value plot)'</span>)</span>
@@ -1392,7 +1392,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Vérifie la normalité, par exemple des résidus d’un modèle : les points doivent suivre la droite.</p>
-<div id="36fc2925" class="cell" data-execution_count="22">
+<div id="c17b707f" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>essai[<span class="st">'residus'</span>] <span class="op">=</span> essai[<span class="st">'rendement'</span>] <span class="op">-</span> essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>])[<span class="st">'rendement'</span>].transform(<span class="st">'mean'</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="fl">4.5</span>))</span>
@@ -1403,7 +1403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-23-output-1.png" width="663" height="422" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-23-output-1.png" width="662" height="422" class="figure-img"></p>
 <figcaption>Normalité des résidus (écart à la moyenne de chaque traitement)</figcaption>
 </figure>
 </div>
@@ -1483,7 +1483,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Les effectifs dans une grille de rectangles : la densité d’un grand nuage de points.</p>
-<div id="75ecf3e4" class="cell" data-execution_count="24">
+<div id="65347fb9" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">1</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>jours <span class="op">=</span> pd.DataFrame({<span class="st">'temperature'</span>: rng.normal(<span class="dv">28</span>, <span class="dv">3</span>, <span class="dv">5000</span>)})</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>jours[<span class="st">'humidite'</span>] <span class="op">=</span> <span class="dv">95</span> <span class="op">-</span> <span class="fl">1.6</span> <span class="op">*</span> jours[<span class="st">'temperature'</span>] <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">5000</span>)</span>
@@ -1495,7 +1495,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="distribution_files/figure-html/cell-25-output-1.png" width="718" height="470" class="figure-img"></p>
+<p><img src="distribution_files/figure-html/cell-25-output-1.png" width="720" height="470" class="figure-img"></p>
 <figcaption>Relation température – pluie sur 5 000 jours simulés</figcaption>
 </figure>
 </div>

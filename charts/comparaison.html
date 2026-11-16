@@ -81,8 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-952cc186b5a1eaa8a19394d372d07cb4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8778577dfb335af5b746ae7292e442d8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -635,7 +635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="6dc08dff" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
+<div id="2c4e5ff5" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'Île-de-France'</span>, <span class="st">'Auvergne-Rhône-Alpes'</span>, <span class="st">'PACA'</span>, <span class="st">'Occitanie'</span>, <span class="st">'Bretagne'</span>],</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ca'</span>:     [<span class="dv">980</span>, <span class="dv">620</span>, <span class="dv">430</span>, <span class="dv">380</span>, <span class="dv">270</span>],</span>
@@ -652,14 +652,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-4-output-1.png" width="952" height="567" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-4-output-1.png" width="594" height="367" class="figure-img"></p>
 <figcaption>Chiffre d’affaires par région</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Plusieurs colonnes <code>y</code> donnent des barres groupées, ou empilées avec <code>stacked=True</code> ; <code>show_values=True</code> écrit chaque valeur sur sa barre.</p>
-<div id="59072f2a" class="cell" data-execution_count="4">
+<div id="df7db94f" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>production <span class="op">=</span> pd.DataFrame({<span class="st">'annee'</span>: [<span class="st">'2021'</span>, <span class="st">'2022'</span>, <span class="st">'2023'</span>, <span class="st">'2024'</span>],</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'Riz'</span>: [<span class="dv">420</span>, <span class="dv">455</span>, <span class="dv">390</span>, <span class="dv">480</span>], <span class="st">'Maïs'</span>: [<span class="dv">310</span>, <span class="dv">300</span>, <span class="dv">335</span>, <span class="dv">350</span>],</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'Mil'</span>: [<span class="dv">180</span>, <span class="dv">165</span>, <span class="dv">190</span>, <span class="dv">175</span>]})</span>
@@ -671,13 +671,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-5-output-1.png" width="856" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-5-output-1.png" width="853" height="422" class="figure-img"></p>
 <figcaption>Production par culture et par année (barres empilées)</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="a91f9700" class="cell" data-execution_count="5">
+<div id="97ed00f2" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(production, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .bar(<span class="st">'annee'</span>, [<span class="st">'Riz'</span>, <span class="st">'Maïs'</span>, <span class="st">'Mil'</span>], horizontal<span class="op">=</span><span class="va">True</span>, show_values<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Production (t) — barres groupées'</span>)</span>
@@ -686,7 +686,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-6-output-1.png" width="856" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-6-output-1.png" width="853" height="422" class="figure-img"></p>
 <figcaption>Même données, barres groupées horizontales</figcaption>
 </figure>
 </div>
@@ -798,7 +798,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Moyennes par traitement avec barres d’erreur : <code>error='se'</code> (erreur type, défaut), <code>'sd'</code> (écart-type) ou <code>'ci95'</code> (intervalle de confiance à 95 %). <code>hue</code> ajoute un second facteur, <code>points=True</code> superpose les observations.</p>
-<div id="5ad80d0d" class="cell" data-execution_count="7">
+<div id="aecf4fcd" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement moyen ± erreur type'</span>)</span>
@@ -808,13 +808,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-8-output-1.png" width="951" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-8-output-1.png" width="950" height="422" class="figure-img"></p>
 <figcaption>Rendement moyen par dose et par variété</figcaption>
 </figure>
 </div>
 </div>
 </div>
-<div id="4d897c77" class="cell" data-execution_count="8">
+<div id="1bfd3ea5" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'variete'</span>, <span class="st">'rendement'</span>, error<span class="op">=</span><span class="st">'ci95'</span>, points<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par variété'</span>)</span>
@@ -823,14 +823,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-9-output-1.png" width="759" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-9-output-1.png" width="758" height="422" class="figure-img"></p>
 <figcaption>Intervalle de confiance à 95 % et observations individuelles</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>Avec <code>letters=True</code>, un test de Tukey HSD compare les moyennes : deux barres qui partagent une lettre ne diffèrent pas significativement (α = 5 % par défaut, réglable avec <code>alpha_test</code>). Avec <code>hue</code>, les comparaisons se font à l’intérieur de chaque niveau de <code>x</code>. Les lettres sont aussi dans <code>chart.tukey_letters</code>.</p>
-<div id="95eaf9f1" class="cell" data-execution_count="9">
+<div id="b17260c3" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">4.5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .mean_bar(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, letters<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par dose — lettres de Tukey'</span>)</span>
@@ -840,7 +840,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-10-output-1.png" width="951" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-10-output-1.png" width="950" height="422" class="figure-img"></p>
 <figcaption>Comparaison des variétés à chaque dose (test de Tukey)</figcaption>
 </figure>
 </div>
@@ -942,7 +942,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Des points avec leurs barres d’erreur (colonnes ou constantes), une série par groupe.</p>
-<div id="82b07b4d" class="cell" data-execution_count="11">
+<div id="b08fedc1" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>resume <span class="op">=</span> (essai.groupby([<span class="st">'variete'</span>, <span class="st">'dose'</span>], as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">'rendement'</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>          .agg(moyenne<span class="op">=</span><span class="st">'mean'</span>, ecart_type<span class="op">=</span><span class="st">'std'</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>(Chart(resume, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
@@ -1046,7 +1046,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Une ligne par niveau du second facteur : des lignes non parallèles suggèrent une interaction (à confirmer par une ANOVA à deux facteurs).</p>
-<div id="95b3c352" class="cell" data-execution_count="13">
+<div id="d6c23e75" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .interaction(<span class="st">'dose'</span>, <span class="st">'variete'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Interaction dose × variété'</span>)</span>
@@ -1056,7 +1056,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-14-output-1.png" width="855" height="422" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-14-output-1.png" width="854" height="422" class="figure-img"></p>
 <figcaption>Interaction dose × variété</figcaption>
 </figure>
 </div>
@@ -1136,7 +1136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="82af9c3e" class="cell" data-execution_count="15">
+<div id="4f70c801" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .pointplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, dodge<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Moyennes et IC 95 %'</span>)</span>
@@ -1145,7 +1145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-16-output-1.png" width="855" height="374" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-16-output-1.png" width="854" height="374" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1207,7 +1207,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="711f224a" class="cell" data-execution_count="17">
+<div id="479d6709" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(sols, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .countplot(<span class="st">'zone'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Nombre de parcelles par zone'</span>)</span>
@@ -1216,7 +1216,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-18-output-1.png" width="759" height="374" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-18-output-1.png" width="758" height="374" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1305,7 +1305,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="261f10d7" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="19">
+<div id="f8beec6b" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">7</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> np.repeat(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2024</span>), <span class="dv">2</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>status <span class="op">=</span> [<span class="st">'ouragan'</span>, <span class="st">'dépression tropicale'</span>] <span class="op">*</span> <span class="dv">9</span></span>
@@ -1326,7 +1326,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-20-output-1.png" width="952" height="566" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-20-output-1.png" width="594" height="368" class="figure-img"></p>
 <figcaption>Tempêtes tropicales par année et intensité</figcaption>
 </figure>
 </div>
@@ -1426,7 +1426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="6fc1de6f" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="21">
+<div id="7f774c1e" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pays'</span>:     [<span class="st">'France'</span>,<span class="st">'Allemagne'</span>,<span class="st">'Espagne'</span>,<span class="st">'Italie'</span>,<span class="st">'Portugal'</span>,<span class="st">'Pays-Bas'</span>],</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'pib_2020'</span>: [<span class="dv">38000</span>, <span class="dv">46000</span>, <span class="dv">27000</span>, <span class="dv">31000</span>, <span class="dv">22000</span>, <span class="dv">52000</span>],</span>
@@ -1445,7 +1445,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-22-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-22-output-1.png" width="593" height="368" class="figure-img"></p>
 <figcaption>Évolution du PIB par habitant 2020–2024</figcaption>
 </figure>
 </div>
@@ -1526,7 +1526,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="061e8f34" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="23">
+<div id="e15cffc5" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:    [<span class="st">'A'</span>,<span class="st">'A'</span>,<span class="st">'B'</span>,<span class="st">'B'</span>,<span class="st">'C'</span>,<span class="st">'C'</span>],</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'vitesse'</span>:   [<span class="dv">8</span>, <span class="dv">7</span>, <span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">5</span>, <span class="dv">8</span>],</span>
@@ -1545,7 +1545,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-24-output-1.png" width="579" height="562" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-24-output-1.png" width="372" height="367" class="figure-img"></p>
 <figcaption>Profil multidimensionnel de trois équipes</figcaption>
 </figure>
 </div>
@@ -1620,7 +1620,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="a9b6e396" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="25">
+<div id="cd0350b6" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'puissance'</span>:    np.random.randint(<span class="dv">80</span>,  <span class="dv">300</span>, <span class="dv">60</span>),</span>
@@ -1641,7 +1641,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-26-output-1.png" width="951" height="566" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-26-output-1.png" width="594" height="368" class="figure-img"></p>
 <figcaption>Profils automobiles multi-variables</figcaption>
 </figure>
 </div>
@@ -1743,7 +1743,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Barres (rose), courbe ou points sur un axe polaire. Avec <code>group</code>, les barres s’empilent : c’est la rose des vents (<code>compass=True</code> met le nord en haut, sens horaire).</p>
-<div id="e373d161" class="cell" data-execution_count="27">
+<div id="1cf2e8de" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(Chart(rose, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    .polar(<span class="st">'direction'</span>, <span class="st">'frequence'</span>, group<span class="op">=</span><span class="st">'vitesse'</span>, compass<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rose des vents (</span><span class="sc">% d</span><span class="st">u temps)'</span>)</span>
@@ -1752,7 +1752,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="comparaison_files/figure-html/cell-28-output-1.png" width="667" height="610" class="figure-img"></p>
+<p><img src="comparaison_files/figure-html/cell-28-output-1.png" width="666" height="616" class="figure-img"></p>
 <figcaption>Rose des vents de la saison</figcaption>
 </figure>
 </div>

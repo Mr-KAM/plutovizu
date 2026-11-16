@@ -80,8 +80,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-14db6a1db564520c221d78f22be3dc91.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a0bfe8bc257342616ce8c6a1795f6683.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-fa9f86f40348d5133fd7354733d720ba.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-952cc186b5a1eaa8a19394d372d07cb4.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-8778577dfb335af5b746ae7292e442d8.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -597,6 +597,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#font" id="toc-font" class="nav-link" data-scroll-target="#font"><code>font</code></a></li>
   <li><a href="#set_style" id="toc-set_style" class="nav-link" data-scroll-target="#set_style"><code>set_style</code></a></li>
   <li><a href="#add_annotation" id="toc-add_annotation" class="nav-link" data-scroll-target="#add_annotation"><code>add_annotation</code></a></li>
+  <li><a href="#annotation" id="toc-annotation" class="nav-link" data-scroll-target="#annotation"><code>annotation</code></a></li>
+  <li><a href="#arrow" id="toc-arrow" class="nav-link" data-scroll-target="#arrow"><code>arrow</code></a></li>
+  <li><a href="#rounded" id="toc-rounded" class="nav-link" data-scroll-target="#rounded"><code>rounded</code></a></li>
   </ul></li>
   <li><a href="#couleurs" id="toc-couleurs" class="nav-link" data-scroll-target="#couleurs">Couleurs</a>
   <ul class="collapse">
@@ -609,6 +612,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#polices" id="toc-polices" class="nav-link" data-scroll-target="#polices">Polices</a>
   <ul class="collapse">
+  <li><a href="#load_font-fonction" id="toc-load_font-fonction" class="nav-link" data-scroll-target="#load_font-fonction"><code>load_font</code> (fonction)</a></li>
   <li><a href="#get_available_fonts" id="toc-get_available_fonts" class="nav-link" data-scroll-target="#get_available_fonts"><code>get_available_fonts</code></a></li>
   <li><a href="#print_available_fonts-statique" id="toc-print_available_fonts-statique" class="nav-link" data-scroll-target="#print_available_fonts-statique"><code>print_available_fonts</code> <em>(statique)</em></a></li>
   </ul></li>
@@ -751,7 +755,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="classe-chart">Classe <code>Chart</code></h2>
 <section id="init__data-figsize-theme" class="level3">
 <h3 class="anchored" data-anchor-id="init__data-figsize-theme"><code>__init__(data, figsize, theme)</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Chart(data: pd.DataFrame, figsize: Tuple[<span class="bu">int</span>, <span class="bu">int</span>] <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">6</span>),</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Chart(data: pd.DataFrame, figsize: Tuple[<span class="bu">float</span>, <span class="bu">float</span>] <span class="op">=</span> FIGSIZE,   <span class="co"># 16 × 10 cm</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>      theme: Optional[<span class="bu">str</span>] <span class="op">=</span> <span class="va">None</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <table class="caption-top table">
 <colgroup>
@@ -777,9 +781,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><code>figsize</code></td>
-<td><code>Tuple[int, int]</code></td>
-<td><code>(10, 6)</code></td>
-<td>Largeur × hauteur en pouces</td>
+<td><code>Tuple[float, float]</code></td>
+<td><code>FIGSIZE</code> (16 × 10 cm)</td>
+<td>Largeur × hauteur en pouces ; <code>cm(largeur, hauteur)</code> convertit des centimètres</td>
 </tr>
 <tr class="odd">
 <td><code>theme</code></td>
@@ -978,11 +982,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="bump" class="level3">
 <h3 class="anchored" data-anchor-id="bump"><code>bump</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>.bump(x: <span class="bu">str</span>, y: <span class="bu">str</span>, group: <span class="bu">str</span>,</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>      linewidth: <span class="bu">float</span> <span class="op">=</span> <span class="fl">2.5</span>, markersize: <span class="bu">float</span> <span class="op">=</span> <span class="dv">8</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Évolution de classement — axe y inversé (rang 1 en haut).</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>chart.bump(<span class="st">'saison'</span>, <span class="st">'classement'</span>, <span class="st">'equipe'</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<hr>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>.bump(x: <span class="bu">str</span>, y: <span class="bu">str</span>, group: <span class="bu">str</span>, linewidth: <span class="bu">float</span> <span class="op">=</span> <span class="fl">2.5</span>, markersize: <span class="bu">float</span> <span class="op">=</span> <span class="dv">8</span>,</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>      values: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>, curve_force: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.5</span>, highlight: <span class="bu">list</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>      end_labels: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>, ordinal: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>) <span class="op">-&gt;</span> Chart     <span class="co"># → chart.ranks</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Graphique de classement en courbes lissées (<a href="https://github.com/y-sunflower/bumplot">bumplot</a>). <code>y</code> : rangs (1 = premier) ou valeurs avec <code>values=True</code> ; <code>curve_force</code> de 0 (droit) à 1 ; <code>highlight</code> met des groupes en couleur (les autres en gris) ; <code>ordinal</code> écrit « 1er, 2e… ».</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>chart.bump(<span class="st">'saison'</span>, <span class="st">'classement'</span>, <span class="st">'equipe'</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>chart.bump(<span class="st">'annee'</span>, <span class="st">'production'</span>, <span class="st">'pays'</span>, values<span class="op">=</span><span class="va">True</span>, highlight<span class="op">=</span>[<span class="st">'Sénégal'</span>], ordinal<span class="op">=</span><span class="va">True</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="ridgeline" class="level3">
 <h3 class="anchored" data-anchor-id="ridgeline"><code>ridgeline</code></h3>
@@ -1564,6 +1569,27 @@ Note
 <span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>                fontsize: <span class="bu">int</span> <span class="op">=</span> <span class="dv">10</span>, color: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>,</span>
 <span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a>                arrow: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>,</span>
 <span id="cb99-4"><a href="#cb99-4" aria-hidden="true" tabindex="-1"></a>                arrowprops: Optional[<span class="bu">dict</span>] <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="annotation" class="level3">
+<h3 class="anchored" data-anchor-id="annotation"><code>annotation</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>.annotation(text: <span class="bu">str</span>, xy: Tuple, xytext: Tuple, radius: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>            color: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>, arrow_color: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>, fontsize: <span class="bu">float</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>            fontweight: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>, width: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.2</span>, head_width: <span class="bu">float</span> <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>            head_length: <span class="bu">float</span> <span class="op">=</span> <span class="fl">6.0</span>, coords: <span class="bu">str</span> <span class="op">=</span> <span class="st">'data'</span>, <span class="op">**</span>text_kwargs) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Texte en <code>xytext</code> et flèche courbe (drawarrow) vers <code>xy</code> ; alignement du texte automatique. <code>coords</code> : <code>'data'</code> ou <code>'axes'</code> (0–1).</p>
+</section>
+<section id="arrow" class="level3">
+<h3 class="anchored" data-anchor-id="arrow"><code>arrow</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>.arrow(tail: Tuple, head: Tuple, radius: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.3</span>, color: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>       width: <span class="bu">float</span> <span class="op">=</span> <span class="fl">1.5</span>, head_width: <span class="bu">float</span> <span class="op">=</span> <span class="fl">4.0</span>, head_length: <span class="bu">float</span> <span class="op">=</span> <span class="fl">7.0</span>,</span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>       double_headed: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>, inflection: Tuple <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>       coords: <span class="bu">str</span> <span class="op">=</span> <span class="st">'data'</span>, <span class="op">**</span>kwargs) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Flèche drawarrow ; <code>coords</code> : <code>'data'</code>, <code>'axes'</code> (0–1) ou <code>'figure'</code> (0–1).</p>
+</section>
+<section id="rounded" class="level3">
+<h3 class="anchored" data-anchor-id="rounded"><code>rounded</code></h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>.rounded(radius: <span class="bu">float</span> <span class="op">=</span> <span class="fl">6.0</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Coins arrondis (rayon en points) des barres, rectangles, secteurs et polygones ; appliqué à <code>show()</code> / <code>save()</code>.</p>
 <hr>
 </section>
 </section>
@@ -1571,47 +1597,55 @@ Note
 <h2 class="anchored" data-anchor-id="couleurs">Couleurs</h2>
 <section id="set_colors" class="level3">
 <h3 class="anchored" data-anchor-id="set_colors"><code>set_colors</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb100"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>.set_colors(colors: Union[<span class="bu">str</span>, List[<span class="bu">str</span>]] <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>.set_colors(colors: Union[<span class="bu">str</span>, List[<span class="bu">str</span>]] <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Accepte un nom de palette seaborn/matplotlib, un nom de palette personnalisée ou une liste de couleurs.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb101"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>chart.set_colors(<span class="st">'deep'</span>)</span>
-<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>chart.set_colors([<span class="st">'#e63946'</span>, <span class="st">'#457b9d'</span>, <span class="st">'#1d3557'</span>])</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>chart.set_colors(<span class="st">'deep'</span>)</span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>chart.set_colors([<span class="st">'#e63946'</span>, <span class="st">'#457b9d'</span>, <span class="st">'#1d3557'</span>])</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="create_custom_palette" class="level3">
 <h3 class="anchored" data-anchor-id="create_custom_palette"><code>create_custom_palette</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb102"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>.create_custom_palette(name: <span class="bu">str</span>, colors: List[<span class="bu">str</span>],</span>
-<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>                       save_palette: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>.create_custom_palette(name: <span class="bu">str</span>, colors: List[<span class="bu">str</span>],</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>                       save_palette: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="generate_gradient_palette" class="level3">
 <h3 class="anchored" data-anchor-id="generate_gradient_palette"><code>generate_gradient_palette</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb103"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a>.generate_gradient_palette(name: <span class="bu">str</span>, start_color: <span class="bu">str</span>, end_color: <span class="bu">str</span>,</span>
-<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a>                           n_colors: <span class="bu">int</span> <span class="op">=</span> <span class="dv">10</span>,</span>
-<span id="cb103-3"><a href="#cb103-3" aria-hidden="true" tabindex="-1"></a>                           save_palette: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb106"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>.generate_gradient_palette(name: <span class="bu">str</span>, start_color: <span class="bu">str</span>, end_color: <span class="bu">str</span>,</span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>                           n_colors: <span class="bu">int</span> <span class="op">=</span> <span class="dv">10</span>,</span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a>                           save_palette: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="preview_palette" class="level3">
 <h3 class="anchored" data-anchor-id="preview_palette"><code>preview_palette</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb104"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>.preview_palette(palette_name: <span class="bu">str</span>, n_colors: <span class="bu">int</span> <span class="op">=</span> <span class="dv">8</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb107"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>.preview_palette(palette_name: <span class="bu">str</span>, n_colors: <span class="bu">int</span> <span class="op">=</span> <span class="dv">8</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="get_available_palettes" class="level3">
 <h3 class="anchored" data-anchor-id="get_available_palettes"><code>get_available_palettes</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb105"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>.get_available_palettes(include_custom: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
-<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>                         include_seaborn: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
-<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a>                         include_matplotlib: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, List[<span class="bu">str</span>]]</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb108"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>.get_available_palettes(include_custom: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>                         include_seaborn: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>                         include_matplotlib: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> Dict[<span class="bu">str</span>, List[<span class="bu">str</span>]]</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="print_available_palettes-statique" class="level3">
 <h3 class="anchored" data-anchor-id="print_available_palettes-statique"><code>print_available_palettes</code> <em>(statique)</em></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb106"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>Chart.print_available_palettes(category: <span class="bu">str</span> <span class="op">=</span> <span class="st">'all'</span>, limit: <span class="bu">int</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb109"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>Chart.print_available_palettes(category: <span class="bu">str</span> <span class="op">=</span> <span class="st">'all'</span>, limit: <span class="bu">int</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
 <section id="polices" class="level2">
 <h2 class="anchored" data-anchor-id="polices">Polices</h2>
+<p>Fira Sans (défaut) et Inter sont fournies avec le package et enregistrées à l’import.</p>
+<section id="load_font-fonction" class="level3">
+<h3 class="anchored" data-anchor-id="load_font-fonction"><code>load_font</code> (fonction)</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> load_font</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>load_font(family: <span class="bu">str</span> <span class="op">=</span> <span class="st">'Fira Sans'</span>, weight: <span class="bu">int</span> <span class="op">|</span> <span class="bu">str</span> <span class="op">=</span> <span class="st">'regular'</span>,</span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>          italic: <span class="bu">bool</span> <span class="op">=</span> <span class="va">False</span>) <span class="op">-&gt;</span> FontProperties</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Polices fournies lues dans le package ; toute autre famille Google Fonts est téléchargée et mise en cache par pyfonts, puis enregistrée (son nom marche aussi dans <code>rcParams</code>). <code>weight</code> : <code>'light'</code>, <code>'regular'</code>, <code>'medium'</code>, <code>'semibold'</code>, <code>'bold'</code> ou 300–700.</p>
+</section>
 <section id="get_available_fonts" class="level3">
 <h3 class="anchored" data-anchor-id="get_available_fonts"><code>get_available_fonts</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb107"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>.get_available_fonts(pattern: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>, sort: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> List[<span class="bu">str</span>]</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb111"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>.get_available_fonts(pattern: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>, sort: <span class="bu">bool</span> <span class="op">=</span> <span class="va">True</span>) <span class="op">-&gt;</span> List[<span class="bu">str</span>]</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="print_available_fonts-statique" class="level3">
 <h3 class="anchored" data-anchor-id="print_available_fonts-statique"><code>print_available_fonts</code> <em>(statique)</em></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb108"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>Chart.print_available_fonts(pattern: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>, limit: <span class="bu">int</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>Chart.print_available_fonts(pattern: <span class="bu">str</span> <span class="op">=</span> <span class="va">None</span>, limit: <span class="bu">int</span> <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> <span class="va">None</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 </section>
@@ -1619,27 +1653,27 @@ Note
 <h2 class="anchored" data-anchor-id="export-et-utilitaires">Export et utilitaires</h2>
 <section id="tight_layout" class="level3">
 <h3 class="anchored" data-anchor-id="tight_layout"><code>tight_layout</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb109"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>.tight_layout() <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb113"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>.tight_layout() <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="save" class="level3">
 <h3 class="anchored" data-anchor-id="save"><code>save</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb110"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>.save(filename: <span class="bu">str</span>, dpi: <span class="bu">int</span> <span class="op">=</span> <span class="dv">300</span>,</span>
-<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>      bbox_inches: <span class="bu">str</span> <span class="op">=</span> <span class="st">'tight'</span>, <span class="bu">format</span>: <span class="bu">str</span> <span class="op">=</span> <span class="st">'png'</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb114"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>.save(filename: <span class="bu">str</span>, dpi: <span class="bu">int</span> <span class="op">=</span> <span class="dv">300</span>,</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>      bbox_inches: <span class="bu">str</span> <span class="op">=</span> <span class="st">'tight'</span>, <span class="bu">format</span>: <span class="bu">str</span> <span class="op">=</span> <span class="st">'png'</span>) <span class="op">-&gt;</span> Chart</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retourne <code>self</code> — chaînable après <code>save()</code>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb111"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>chart.save(<span class="st">'rapport.png'</span>).save(<span class="st">'rapport.pdf'</span>, <span class="bu">format</span><span class="op">=</span><span class="st">'pdf'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb115"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>chart.save(<span class="st">'rapport.png'</span>).save(<span class="st">'rapport.pdf'</span>, <span class="bu">format</span><span class="op">=</span><span class="st">'pdf'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="show" class="level3">
 <h3 class="anchored" data-anchor-id="show"><code>show</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb112"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>.show() <span class="op">-&gt;</span> <span class="va">None</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb116"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>.show() <span class="op">-&gt;</span> <span class="va">None</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Terminal du chaînage. Affiche la figure du graphique (notebook ou fenêtre), puis la <strong>ferme</strong> pour libérer la mémoire : appeler <code>save()</code> avant <code>show()</code> si besoin des deux.</p>
 </section>
 <section id="get_figure" class="level3">
 <h3 class="anchored" data-anchor-id="get_figure"><code>get_figure</code></h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb113"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>.get_figure() <span class="op">-&gt;</span> Tuple[plt.Figure, plt.Axes]</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb117"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>.get_figure() <span class="op">-&gt;</span> Tuple[plt.Figure, plt.Axes]</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Retourne <code>(fig, ax)</code> pour personnalisation matplotlib avancée.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb114"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> chart.line(<span class="st">'x'</span>, <span class="st">'y'</span>).get_figure()</span>
-<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>ax.axhspan(<span class="dv">0</span>, <span class="dv">5</span>, alpha<span class="op">=</span><span class="fl">0.1</span>, color<span class="op">=</span><span class="st">'green'</span>)</span>
-<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>fig.savefig(<span class="st">'custom.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb118"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> chart.line(<span class="st">'x'</span>, <span class="st">'y'</span>).get_figure()</span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>ax.axhspan(<span class="dv">0</span>, <span class="dv">5</span>, alpha<span class="op">=</span><span class="fl">0.1</span>, color<span class="op">=</span><span class="st">'green'</span>)</span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>fig.savefig(<span class="st">'custom.png'</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
