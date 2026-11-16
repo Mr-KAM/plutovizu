@@ -621,7 +621,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.pca</code> : variance expliquée, coordonnées des individus et des variables.</p>
 <p><strong>Exemple</strong></p>
 <p>ACP normée : les individus sur les deux premiers axes, colorés par groupe, et les variables en flèches. Variance expliquée, coordonnées et contributions dans <code>chart.pca</code>.</p>
-<div id="2a898a2f" class="cell" data-execution_count="3">
+<div id="cb53d943" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">30</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>precocite <span class="op">=</span> rng.normal(size<span class="op">=</span>n)</span>
@@ -748,7 +748,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Regroupe les individus selon leur ressemblance (méthode de Ward par défaut, variables centrées-réduites). <code>color_threshold</code> colore les groupes formés sous la hauteur de coupe, marquée par une ligne pointillée.</p>
-<div id="cdb7ce05" class="cell" data-execution_count="5">
+<div id="d233a926" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .dendrogram(labels<span class="op">=</span><span class="st">'variete'</span>, color_threshold<span class="op">=</span><span class="dv">6</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Dendrogramme des variétés (Ward)'</span>)</span>
@@ -853,7 +853,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs dendrogrammes. Les colonnes sont centrées-réduites par défaut (<code>standardize=True</code>).</p>
-<div id="230a39e5" class="cell" data-execution_count="7">
+<div id="d3b16a2f" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">9</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .clustermap(labels<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Clustermap des caractères variétaux'</span>)</span>

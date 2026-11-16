@@ -220,7 +220,7 @@
     "href": "customization.html#export",
     "title": "Personnalisation",
     "section": "Export",
-    "text": "Export\n# Enregistrer en PNG haute résolution (retourne self — chaînable)\nchart.save('sortie.png', dpi=300)\n\n# Enregistrer en PDF vectoriel\nchart.save('rapport.pdf', format='pdf')\n\n# Enregistrer en SVG\nchart.save('figure.svg', format='svg', bbox_inches='tight')\n\n# Accéder aux objets matplotlib bruts pour personnalisation avancée\nfig, ax = chart.get_figure()\nax.axvspan(3, 5, alpha=0.1, color='red')   # zone colorée\nfig.savefig('custom.png', dpi=300)",
+    "text": "Export\n# PNG haute résolution : 400 dpi par défaut (retourne self — chaînable)\nchart.save('sortie.png')\nchart.save('apercu.png', dpi=150)          # plus léger\n\n# PDF vectoriel, SVG : format déduit de l'extension\nchart.save('rapport.pdf')\nchart.save('figure.svg')\n\n# Accéder aux objets matplotlib bruts pour personnalisation avancée\nfig, ax = chart.get_figure()\nax.axvspan(3, 5, alpha=0.1, color='red')   # zone colorée\nfig.savefig('custom.png')                  # 400 dpi aussi (réglage du thème)",
     "crumbs": [
       "Documentation",
       "Mise en forme",
@@ -544,7 +544,7 @@
     "href": "api.html#export-et-utilitaires",
     "title": "Référence API",
     "section": "Export et utilitaires",
-    "text": "Export et utilitaires\n\ntight_layout\n.tight_layout() -&gt; Chart\n\n\nsave\n.save(filename: str, dpi: int = 300,\n      bbox_inches: str = 'tight', format: str = 'png') -&gt; Chart\nRetourne self — chaînable après save().\nchart.save('rapport.png').save('rapport.pdf', format='pdf').show()\n\n\nshow\n.show() -&gt; None\nTerminal du chaînage. Affiche la figure du graphique (notebook ou fenêtre), puis la ferme pour libérer la mémoire : appeler save() avant show() si besoin des deux.\n\n\nget_figure\n.get_figure() -&gt; Tuple[plt.Figure, plt.Axes]\nRetourne (fig, ax) pour personnalisation matplotlib avancée.\nfig, ax = chart.line('x', 'y').get_figure()\nax.axhspan(0, 5, alpha=0.1, color='green')\nfig.savefig('custom.png', dpi=300)",
+    "text": "Export et utilitaires\n\ntight_layout\n.tight_layout() -&gt; Chart\n\n\nsave\n.save(filename: str, dpi: int = 400,\n      bbox_inches: str = 'tight', format: str = None) -&gt; Chart   # format : selon l'extension\nRetourne self — chaînable après save().\nchart.save('rapport.png').save('rapport.pdf').show()     # 400 dpi par défaut\n\n\nshow\n.show() -&gt; None\nTerminal du chaînage. Affiche la figure du graphique (notebook ou fenêtre), puis la ferme pour libérer la mémoire : appeler save() avant show() si besoin des deux.\n\n\nget_figure\n.get_figure() -&gt; Tuple[plt.Figure, plt.Axes]\nRetourne (fig, ax) pour personnalisation matplotlib avancée.\nfig, ax = chart.line('x', 'y').get_figure()\nax.axhspan(0, 5, alpha=0.1, color='green')\nfig.savefig('custom.png')     # 400 dpi (savefig.dpi des thèmes)",
     "crumbs": [
       "Documentation",
       "Référence",
