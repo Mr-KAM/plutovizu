@@ -323,6 +323,16 @@
   path: charts/sciences.html#g-climogram
   image: images/vignettes/climogram.png
   categories: ["Climat & sols"]
+- title: "Climagramme d'Emberger"
+  description: "emberger() — Étage bioclimatique, Q2"
+  path: charts/sciences.html#g-emberger
+  image: images/vignettes/emberger.png
+  categories: ["Climat & sols"]
+- title: "Écoclimatogramme"
+  description: "ecoclimatogram() — Mois favorables à une espèce"
+  path: charts/sciences.html#g-ecoclimatogram
+  image: images/vignettes/ecoclimatogram.png
+  categories: ["Climat & sols"]
 - title: "Bilan hydrique"
   description: "water_balance() — Excédent et déficit P – ETP"
   path: charts/sciences.html#g-water_balance

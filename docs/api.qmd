@@ -726,6 +726,10 @@ Exemples dans la page [Climat & sols](charts/sciences.qmd). Les couleurs convent
 .walter_lieth(month, temp, precip, tmin=None, station=None,
               temp_color='#d1495b', precip_color='#2e86de')        # → chart.climate_summary
 .climogram(precip, temp, month=None, group=None, labels=True)
+.emberger(precip, tmax, tmin, station=None, monthly=False, formula='emberger',
+          limits=None, labels=True, log=False)                # → chart.emberger_table
+.ecoclimatogram(humidity, temp, month=None, group=None, optimum=None, tolerance=None,
+                labels=True, zone_color='#2e9e5b')          # → chart.ecoclimate
 .water_balance(month, precip, etp, show_bars=True,
                surplus_color='#2e86de', deficit_color='#e67e22')   # → chart.water_table, water_summary
 .degree_days(date, tmin, tmax, base=10.0, cap=None, stages=None, color=None)
@@ -749,6 +753,9 @@ Exemples dans la page [Climat & sols](charts/sciences.qmd). Les couleurs convent
 .isopleth(time, depth, value, levels=10, cmap=None, contour_labels=True)
 ```
 
+- `emberger` : Q2 = 2000·P / (M² − m²) en kelvin (ou `formula='stewart'` : 3,43·P / (M − m)) ;
+  étages aux limites Q2 = 10, 45, 70, 110, 150 (`limits` : nombres ou couples `(a, b)` pour
+  Q2 = a + b·m) ; variantes de l'hiver à m = −3, 0, 3, 7, 10 °C.
 - `walter_lieth` : 10 °C ↔ 20 mm, pluies comprimées au 1/10 au-delà de 100 mm ;
   `tmin` marque les mois de gel.
 - `degree_days` : DJ = max(0, (min(Tmax, cap) + Tmin) / 2 − base) ; `stages` = {stade: DJ}.
@@ -1121,7 +1128,11 @@ appliqué à `show()` / `save()`. **Par défaut, tous les graphiques sont arrond
 .set_colors(colors: Union[str, List[str]] = None) -> Chart
 ```
 
-Accepte un nom de palette seaborn/matplotlib, un nom de palette personnalisée ou une liste de couleurs.
+Accepte un nom de palette seaborn/matplotlib, une des 2 700 palettes **pypalettes**
+(`'Cross'`, `'Hiroshige'`…), un nom de palette personnalisée ou une liste de couleurs.
+
+`pypalette(nom, continuous=False, reverse=False)` (fonction) renvoie une palette pypalettes
+en colormap et l'enregistre sous son nom : `cmap='Hiroshige'` marche ensuite partout.
 
 ```python
 chart.set_colors('deep')

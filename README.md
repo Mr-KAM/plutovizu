@@ -25,7 +25,8 @@ Ou avec `uv` :
 uv add plutovizu
 ```
 
-**Dépendances :** matplotlib, pandas, numpy, seaborn, scipy, pyfonts, drawarrow, bumplot… (Python ≥ 3.12).
+**Dépendances :** matplotlib, pandas, numpy, seaborn, scipy, pyfonts, drawarrow, bumplot, pypalettes… (Python ≥ 3.12).
+Plus de 2 700 palettes [pypalettes](https://github.com/y-sunflower/pypalettes) : `chart.set_colors('Hiroshige')`.
 Les polices **Fira Sans** (par défaut) et **Inter** sont incluses ; un graphique mesure
 16 × 10 cm par défaut (`figsize=cm(24, 12)` pour une autre taille en centimètres).
 
@@ -74,7 +75,8 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `donut`, `polar`, `radial_bar`, `progress_bar` | Anneau, polaire (rose des vents), barres radiales, progression |
 | `contour`, `mesh`, `vector_field` | Courbes de niveau, grille colorée, champ de vecteurs |
 | `scatter3d`, `line3d`, `surface`, `bar3d` | Graphiques 3D |
-| `walter_lieth`, `climogram`, `water_balance`, `degree_days` | Climatogramme, climogramme, bilan hydrique, degrés-jours |
+| `walter_lieth`, `climogram`, `emberger`, `ecoclimatogram` | Climatogramme, climogramme, climagramme d'Emberger, écoclimatogramme |
+| `water_balance`, `degree_days` | Bilan hydrique, degrés-jours |
 | `wind_rose`, `anomaly`, `climate_stripes` | Rose des vents, anomalies, bandes climatiques |
 | `soil_profile`, `depth_profile`, `soil_properties` | Profil de sol, variable(s) selon la profondeur |
 | `retention_curve`, `grain_size_curve`, `exchange_complex` | Pédologie : courbe pF, granulométrie, complexe d'échange |
@@ -98,7 +100,7 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 `mean_bar(..., letters=True)` ajoute les lettres du test de Tukey HSD ;
 `texture_class(sable, limon, argile)` donne la classe USDA d'un sol.
 
-Liste complète des 104 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html) ;
+Liste complète des 106 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html) ;
 chaque graphique y a sa fiche : description, cas d'usage, structure du DataFrame attendu et
 paramètres, avant l'exemple.
 

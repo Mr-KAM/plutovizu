@@ -80,6 +80,40 @@ climogram:
     temp: Colonne des températures (axe vertical).
     month: Colonne des mois, écrits à côté des points.
 
+emberger:
+  desc: >-
+    Climagramme d'Emberger : chaque station placée selon son quotient pluviothermique Q2
+    et m (minimum moyen du mois le plus froid), sur un fond qui donne l'étage
+    bioclimatique et la variante thermique de l'hiver.
+  usage: >-
+    Classer le bioclimat de stations méditerranéennes ou arides (« semi-aride à hiver
+    frais »…), comparer des sites, raisonner le choix d'espèces forestières ou cultivées
+    selon l'aridité et la rigueur de l'hiver.
+  rows: "une ligne par station (P annuel, M, m) — ou une ligne par mois et par station avec monthly=True"
+  data:
+    - [station, texte, "`station` (optionnel) : nom du point", "Haut plateau"]
+    - [pluie, nombre, "`precip` : précipitations annuelles (mm)", "290"]
+    - [M, nombre, "`tmax` : moyenne des maxima du mois le plus chaud (°C)", "34.5"]
+    - [m, nombre, "`tmin` : moyenne des minima du mois le plus froid (°C)", "-0.5"]
+  returns: "`chart.emberger_table` : P, M, m, Q2, étage, variante et bioclimat de chaque station."
+
+ecoclimatogram:
+  desc: >-
+    Écoclimatogramme de Bodenheimer : température moyenne mensuelle selon l'humidité
+    relative, en boucle annuelle, comparée à la zone optimale et à la zone de tolérance
+    d'une espèce.
+  usage: >-
+    Évaluer les mois favorables au développement d'un ravageur, d'un vecteur ou d'une
+    culture, comparer des stations ou des années, raisonner la surveillance et les dates
+    d'intervention.
+  rows: une ligne par mois (et par station ou année)
+  data:
+    - [station, texte, "`group` (optionnel) : une boucle par station", "Littoral"]
+    - [mois, texte, "`month` (optionnel) : étiquette des points", "Août"]
+    - [humidite, nombre, "`humidity` : humidité relative moyenne (%)", "84"]
+    - [temperature, nombre, "`temp` : température moyenne (°C)", "27.8"]
+  returns: "`chart.ecoclimate` : zone de chaque mois ('optimale', 'favorable', 'défavorable')."
+
 water_balance:
   desc: >-
     Bilan hydrique simplifié : précipitations face à l'évapotranspiration potentielle ;

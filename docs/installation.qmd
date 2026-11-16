@@ -70,6 +70,7 @@ Les dépendances suivantes sont installées automatiquement :
 | `pyfonts` | ≥ 1.4.2 | Gestion des polices, Google Fonts (`load_font`, `font`) |
 | `drawarrow` | ≥ 0.1.0 | Flèches courbes (`annotation`, `arrow`) |
 | `bumplot` | ≥ 0.3.0 | Courbes lissées des graphiques de classement (`bump`) |
+| `pypalettes` | ≥ 0.2.2 | Plus de 2 700 palettes de couleurs (`set_colors`, `pypalette`) |
 
 Les polices **Fira Sans** (par défaut) et **Inter** sont incluses dans le package
 (licence SIL Open Font License) : rien à installer.

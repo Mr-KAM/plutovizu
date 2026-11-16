@@ -163,6 +163,76 @@ la boucle résume le climat, et plusieurs stations se comparent d'un coup d'œil
     .show())
 ```
 
+### `emberger` — Climagramme d'Emberger {#g-emberger}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('emberger')
+```
+
+
+Chaque station est placée selon son **quotient pluviothermique Q2** et **m**, la moyenne des
+minima du mois le plus froid. Q2 = 2000·P / (M² − m²), avec M et m en kelvin (Emberger) ;
+`formula='stewart'` utilise la forme simplifiée Q2 = 3,43·P / (M − m). Les bandes donnent
+l'**étage bioclimatique** (saharien, aride, semi-aride, subhumide, humide, perhumide), les
+verticales la **variante thermique** de l'hiver (m = −3, 0, 3, 7, 10 °C).
+
+```{python}
+#| fig-cap: "Climagramme d'Emberger de six stations (données fictives)"
+chart = (Chart(stations_emberger, figsize=cm(18, 12))
+    .emberger('pluie', 'M', 'm', station='station')
+    .title("Climagramme d'Emberger")
+    .tight_layout())
+chart.show()
+chart.emberger_table
+```
+
+::: {.callout-note}
+Les limites entre étages varient selon les auteurs. Par défaut, plutovizu utilise l'échelle de
+Q2 la plus citée (10, 45, 70, 110, 150) ; sur le climagramme de Sauvage (1963), les limites
+sont **obliques**. `limits` accepte pour chaque limite un nombre ou un couple `(a, b)` qui
+donne la droite Q2 = a + b·m.
+:::
+
+```{python}
+#| fig-cap: "Formule de Stewart, limites obliques (illustratives) et échelle logarithmique"
+(Chart(stations_emberger, figsize=cm(18, 12))
+    .emberger('pluie', 'M', 'm', station='station', formula='stewart', log=True,
+              limits=[(8, 0.4), (30, 1.2), (50, 1.5), (80, 2), (120, 2.5)])
+    .title('Limites obliques, axe logarithmique')
+    .tight_layout()
+    .show())
+```
+
+Avec des **données mensuelles** (une ligne par mois et par station), `monthly=True` calcule
+P (somme), M (plus fort maximum mensuel) et m (plus faible minimum mensuel).
+
+### `ecoclimatogram` — Écoclimatogramme {#g-ecoclimatogram}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('ecoclimatogram')
+```
+
+
+L'écoclimatogramme de **Bodenheimer** place chaque mois selon son **humidité relative** et sa
+**température** moyennes ; les points forment une boucle annuelle. On le compare à la **zone
+optimale** d'une espèce — ravageur, criquet, mouche des fruits, culture — et à sa **zone de
+tolérance**, plus large : les mois qui y tombent sont ceux où l'espèce peut se développer.
+
+```{python}
+#| fig-cap: "Écoclimatogramme de deux stations et zones d'un ravageur (données et seuils fictifs)"
+chart = (Chart(ecoclimat, figsize=cm(18, 12))
+    .ecoclimatogram('humidite', 'temperature', month='mois', group='station',
+                    optimum=(60, 80, 24, 30), tolerance=(40, 90, 18, 34))
+    .title('Écoclimatogramme — mois favorables au ravageur')
+    .tight_layout())
+chart.show()
+chart.ecoclimate.groupby(['groupe', 'zone']).size().unstack(fill_value=0)
+```
+
 ### `water_balance` — Bilan hydrique {#g-water_balance}
 
 ```{python}

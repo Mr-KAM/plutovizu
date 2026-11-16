@@ -1444,3 +1444,64 @@ def test_default_rounding_8_points(df, tmp_path):
         assert all(isinstance(p, Rectangle) for p in off.ax.patches)
     finally:
         Chart.default_round = 8
+
+
+# ──────────────────────────────── Climagramme d'Emberger, pypalettes
+
+@pytest.fixture
+def stations_emb():
+    return pd.DataFrame({'station': ['A', 'B', 'C'], 'P': [650, 290, 45],
+                         'M': [30.5, 34.5, 41.0], 'm': [8.0, -0.5, 5.5]})
+
+
+def test_emberger_q2_and_classes(stations_emb):
+    c = Chart(stations_emb).emberger('P', 'M', 'm', station='station')
+    t = c.emberger_table.set_index('station')
+    q2 = 2000 * 650 / ((30.5 + 273.15) ** 2 - (8 + 273.15) ** 2)
+    assert t.at['A', 'Q2'] == pytest.approx(q2, abs=0.05)
+    assert t['etage'].tolist() == ['Subhumide', 'Aride', 'Saharien']
+    assert t['variante'].tolist() == ['hiver chaud', 'hiver froid', 'hiver tempéré']
+    assert t.at['B', 'bioclimat'] == 'Aride à hiver froid'
+    s = Chart(stations_emb).emberger('P', 'M', 'm', formula='stewart').emberger_table
+    assert s['Q2'].iloc[0] == pytest.approx(3.43 * 650 / (30.5 - 8), abs=0.05)
+    # limite oblique : Q2 = 0 + 20·m → A (m = 8, seuil 160) passe sous la 1re limite
+    o = Chart(stations_emb).emberger('P', 'M', 'm', limits=[(0, 20), 200, 300, 400, 500]).emberger_table
+    assert o['etage'].iloc[0] == 'Saharien'
+    with pytest.raises(ValueError):
+        Chart(stations_emb).emberger('P', 'M', 'm', limits=[10, 20])
+    with pytest.raises(ValueError):
+        Chart(stations_emb).emberger('P', 'm', 'M')                       # M < m
+
+
+def test_emberger_monthly_aggregation():
+    months = pd.DataFrame({'st': ['X'] * 12, 'p': [10] * 12,
+                           'tx': np.linspace(15, 32, 12), 'tn': np.linspace(2, 18, 12)})
+    t = Chart(months).emberger('p', 'tx', 'tn', station='st', monthly=True).emberger_table
+    assert t[['P', 'M', 'm']].iloc[0].tolist() == pytest.approx([120, 32, 2])
+
+
+def test_pypalettes_integration(df):
+    import matplotlib
+    from plutovizu import pypalette
+    c = Chart(df).set_colors('Cross')
+    assert c.current_palette[0] == '#c969a1'
+    pals = c.get_available_palettes()
+    assert 'Cross' in pals['pypalettes_qualitative'] and len(pals['pypalettes_sequential']) > 50
+    c.preview_palette('Hiroshige')
+    cmap = pypalette('Hiroshige', continuous=True)
+    assert 'Hiroshige' in matplotlib.colormaps and cmap.N > 9
+    with pytest.raises(ValueError):
+        Chart(df).set_colors('PaletteQuiNExistePas')
+    with pytest.raises(ValueError):
+        pypalette('PaletteQuiNExistePas')
+
+
+def test_ecoclimatogram_zones():
+    d = pd.DataFrame({'mois': ['J', 'F', 'M', 'A'], 'hr': [70, 50, 30, 85], 't': [26, 22, 33, 20]})
+    c = Chart(d).ecoclimatogram('hr', 't', month='mois', optimum=(60, 80, 24, 30),
+                                tolerance=(40, 90, 18, 34))
+    assert c.ecoclimate['zone'].tolist() == ['optimale', 'favorable', 'défavorable', 'favorable']
+    line = c.ax.lines[0]
+    assert line.get_xdata()[-1] == 70 and len(line.get_xdata()) == 5            # boucle fermée
+    with pytest.raises(ValueError):
+        Chart(d).ecoclimatogram('hr', 't', optimum=(80, 60, 24, 30))             # min > max

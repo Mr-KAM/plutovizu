@@ -7,7 +7,7 @@ title: "Personnalisation"
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from plutovizu import Chart, set_theme
+from plutovizu import Chart, cm, set_theme
 
 set_theme('editorial')   # thème par défaut de la documentation
 ```
@@ -110,6 +110,35 @@ Palettes seaborn qualitatives disponibles :
 | `colorblind` | Accessible aux daltoniens |
 | `Set1`, `Set2`, `Set3` | Catégories qualitatives |
 | `tab10`, `tab20` | Nombreuses catégories |
+
+### Palettes pypalettes
+
+[pypalettes](https://github.com/y-sunflower/pypalettes) apporte plus de 2 700 palettes
+(MetBrewer, MoMAColors, nationalparkcolors, ggthemes…). Elles s'utilisent par leur nom
+comme les palettes seaborn : `set_colors`, `preview_palette`, et en dégradé avec
+`pypalette(nom, continuous=True)` pour les paramètres `cmap`.
+
+```{python}
+#| fig-cap: "Palette « Hiroshige » (pypalettes) sur des barres"
+from plutovizu import pypalette
+
+parts = pd.DataFrame({'culture': ['Riz', 'Maïs', 'Mil', 'Sorgho', 'Niébé', 'Arachide'],
+                      'surface': [420, 310, 180, 150, 140, 260]})
+(Chart(parts)
+    .set_colors('Hiroshige')
+    .pie('surface', labels='culture')
+    .title('Assolement, palette Hiroshige')
+    .show())
+
+Chart(parts, figsize=cm(16, 3)).preview_palette('Cross').show()
+```
+
+```python
+chart.set_colors('Cross')                                   # couleurs des séries
+Chart(df).isopleth('date', 'prof', 'hum', cmap=pypalette('Hokusai2', continuous=True))
+chart.get_available_palettes()['pypalettes_sequential']     # palettes par type
+Chart.print_available_palettes('pypalettes', limit=10)
+```
 
 ### Palette personnalisée
 

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from plutovizu import Chart, set_theme, theme_context
+from plutovizu import Chart, cm, set_theme, theme_context
 
 set_theme('editorial')
 
@@ -339,3 +339,21 @@ echanges = pd.DataFrame([
     ('Coop C', 'Coop D', 9), ('Coop D', 'Coop A', 3), ('Coop B', 'Coop E', 7),
     ('Coop E', 'Coop D', 4), ('Coop C', 'Coop B', 2), ('Coop F', 'Coop A', 6), ('Coop F', 'Coop E', 3)],
     columns=['de', 'vers', 'tonnes'])
+
+# ── Climagramme d'Emberger (stations FICTIVES, valeurs vraisemblables) ───────
+# P : pluie annuelle (mm) ; M : moyenne des maxima du mois le plus chaud (°C) ;
+# m : moyenne des minima du mois le plus froid (°C)
+stations_emberger = pd.DataFrame({
+    'station': ['Littoral', 'Plaine', 'Montagne', 'Haut plateau', 'Piémont', 'Oasis'],
+    'pluie': [650, 420, 980, 290, 140, 45],
+    'M': [30.5, 33.8, 28.0, 34.5, 38.5, 41.0],
+    'm': [8.0, 4.5, -1.5, -0.5, 3.2, 5.5]})
+
+# ── Écoclimatogramme : humidité relative et température mensuelles (FICTIVES) ──
+ecoclimat = pd.DataFrame({
+    'mois': ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'] * 2,
+    'station': ['Littoral'] * 12 + ['Intérieur'] * 12,
+    'humidite': [68, 70, 72, 74, 76, 79, 82, 84, 82, 76, 70, 67,
+                 35, 30, 26, 24, 27, 40, 62, 74, 70, 52, 40, 38],
+    'temperature': [21, 21.5, 22, 22.5, 24, 26.5, 27.5, 27.8, 28, 27.5, 25, 22,
+                    24, 26.5, 29.5, 32, 33.5, 32, 28.5, 27.5, 28, 29, 27, 24.5]})

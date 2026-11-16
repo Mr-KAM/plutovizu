@@ -9,6 +9,7 @@ from typing import Optional, Union, List, Tuple, Dict, Any
 import seaborn as sns
 
 from .fonts import load_font
+from .palettes import pypalette_colors, pypalettes_catalogue
 from .themes import set_theme
 
 FIGSIZE = (16 / 2.54, 10 / 2.54)  # taille par défaut : 16 × 10 cm (en pouces)
@@ -489,13 +490,13 @@ class Chart:
     def set_colors(self, colors: Union[str, List[str]] = None) -> 'Chart':
         """
         EN: Apply a color palette to subsequent chart elements.
-            Accepts a seaborn palette name, a matplotlib style name,
-            a custom palette name (created with create_custom_palette),
-            or a list of color strings.
+            Accepts a seaborn palette name, a matplotlib colormap name, one of the
+            2,700 pypalettes palettes (e.g. 'Cross', 'Hiroshige'), a custom palette name
+            (created with create_custom_palette), or a list of color strings.
         FR: Applique une palette de couleurs aux éléments du graphique.
-            Accepte un nom de palette seaborn, un style matplotlib,
-            un nom de palette personnalisée (créée avec create_custom_palette),
-            ou une liste de couleurs.
+            Accepte un nom de palette seaborn, un colormap matplotlib, une des 2 700
+            palettes pypalettes (ex. 'Cross', 'Hiroshige'), un nom de palette
+            personnalisée (créée avec create_custom_palette), ou une liste de couleurs.
 
         Args / Paramètres:
             colors (Union[str, List[str]], optional):
@@ -507,17 +508,22 @@ class Chart:
 
         Example / Exemple:
             chart.set_colors('deep')
+            chart.set_colors('Cross')                     # pypalettes
             chart.set_colors(['#e63946', '#457b9d', '#1d3557'])
         """
         if colors:
             if isinstance(colors, str):
                 if colors in self.custom_palettes:
                     colors = self.custom_palettes[colors]
-                else:  # palette seaborn ou colormap matplotlib
+                else:  # palette seaborn ou colormap matplotlib, sinon pypalettes
                     try:
                         colors = sns.color_palette(colors)
                     except Exception:
-                        raise ValueError(f"Color palette '{colors}' not recognized") from None
+                        found = pypalette_colors(colors)
+                        if found is None:
+                            raise ValueError(f"Palette '{colors}' inconnue (seaborn, matplotlib, "
+                                             "pypalettes ou personnalisée)") from None
+                        colors = found
             self._apply_palette(colors)
         return self
 
@@ -570,7 +576,8 @@ class Chart:
 
     def get_available_palettes(self, include_custom: bool = True,
                                include_seaborn: bool = True,
-                               include_matplotlib: bool = True) -> Dict[str, List[str]]:
+                               include_matplotlib: bool = True,
+                               include_pypalettes: bool = True) -> Dict[str, List[str]]:
         """
         EN: Return a catalogue of all available color palettes grouped by category.
         FR: Retourne un catalogue de toutes les palettes disponibles, groupées par catégorie.
@@ -585,6 +592,9 @@ class Chart:
             include_matplotlib (bool):
                 EN: Include matplotlib colormaps. Default True.
                 FR: Inclure les colormaps matplotlib. Défaut True.
+            include_pypalettes (bool):
+                EN: Include the pypalettes palettes (qualitative, sequential, diverging, other).
+                FR: Inclure les palettes pypalettes (qualitatives, séquentielles, divergentes, autres).
 
         Returns / Retourne:
             Dict[str, List[str]]:
@@ -637,6 +647,9 @@ class Chart:
                 'Pastel1', 'Pastel2', 'Paired', 'Accent', 'Dark2',
                 'Set1', 'Set2', 'Set3', 'tab10', 'tab20', 'tab20b', 'tab20c'
             ]
+        if include_pypalettes:
+            for name, kind in sorted(pypalettes_catalogue().items()):
+                palettes.setdefault(f'pypalettes_{kind}', []).append(name)
         return palettes
 
     @staticmethod
@@ -647,9 +660,9 @@ class Chart:
 
         Args / Paramètres:
             category (str):
-                EN: Filter output: 'all', 'seaborn', 'matplotlib', 'custom',
+                EN: Filter output: 'all', 'seaborn', 'matplotlib', 'pypalettes', 'custom',
                     or any specific sub-category key. Default 'all'.
-                FR: Filtre la sortie : 'all', 'seaborn', 'matplotlib', 'custom',
+                FR: Filtre la sortie : 'all', 'seaborn', 'matplotlib', 'pypalettes', 'custom',
                     ou toute clé de sous-catégorie. Défaut 'all'.
             limit (int, optional):
                 EN: Maximum palettes to show per category.
@@ -669,11 +682,13 @@ class Chart:
             categories_to_show = [k for k in palettes if k.startswith('seaborn')]
         elif category == 'matplotlib':
             categories_to_show = [k for k in palettes if k.startswith('matplotlib')]
+        elif category == 'pypalettes':
+            categories_to_show = [k for k in palettes if k.startswith('pypalettes')]
         elif category in palettes:
             categories_to_show = [category]
         else:
             raise ValueError(f"Unknown category '{category}'. Available: "
-                             f"{['all', 'seaborn', 'matplotlib', *palettes]}")
+                             f"{['all', 'seaborn', 'matplotlib', 'pypalettes', *palettes]}")
         print("Available Color Palettes:")
         print("=" * 50)
         for cat in categories_to_show:
@@ -689,9 +704,9 @@ class Chart:
     def preview_palette(self, palette_name: str, n_colors: int = 8) -> 'Chart':
         """
         EN: Render a horizontal color-bar preview of the given palette.
-            Supports custom palettes, seaborn palettes, and matplotlib colormaps.
+            Supports custom palettes, seaborn palettes, matplotlib colormaps and pypalettes.
         FR: Affiche un aperçu horizontal de la palette sous forme de barre de couleurs.
-            Supporte les palettes personnalisées, seaborn et les colormaps matplotlib.
+            Supporte les palettes personnalisées, seaborn, les colormaps matplotlib et pypalettes.
 
         Args / Paramètres:
             palette_name (str):
@@ -716,9 +731,12 @@ class Chart:
             except Exception:
                 try:
                     cmap = matplotlib.colormaps[palette_name]
+                    colors = [cmap(i / max(n_colors - 1, 1)) for i in range(n_colors)]
                 except KeyError:
-                    raise ValueError(f"Palette '{palette_name}' not found") from None
-                colors = [cmap(i / max(n_colors - 1, 1)) for i in range(n_colors)]
+                    colors = pypalette_colors(palette_name)
+                    if colors is None:
+                        raise ValueError(f"Palette '{palette_name}' not found") from None
+                    colors = colors[:n_colors]
         self.ax.clear()
         for i, color in enumerate(colors):
             self.ax.barh(0, 1, left=i, color=color, edgecolor='white', linewidth=0.5)
@@ -3475,6 +3493,204 @@ class Chart:
         self.ax.set_ylabel('Température (°C)')
         if group:
             self.ax.legend(title=group)
+        return self
+
+    def ecoclimatogram(self, humidity: str, temp: str, month: Optional[str] = None,
+                       group: Optional[str] = None, optimum: Optional[Tuple] = None,
+                       tolerance: Optional[Tuple] = None, labels: bool = True,
+                       zone_color: str = '#2e9e5b') -> 'Chart':
+        """
+        EN: Ecoclimatogram (Bodenheimer): monthly mean temperature against relative humidity,
+            joined into a closed loop (one per station or year), compared with the optimum
+            zone of a species (pest, locust, crop…) and optionally its wider tolerance zone.
+            Zones are (humidity min, humidity max, temperature min, temperature max).
+            Month-by-month position in `chart.ecoclimate` ('optimale', 'favorable',
+            'défavorable').
+        FR: Écoclimatogramme (Bodenheimer) : température moyenne mensuelle selon l'humidité
+            relative, points reliés en boucle fermée (une par station ou par année), comparés
+            à la zone optimale d'une espèce (ravageur, criquet, culture…) et éventuellement à
+            sa zone de tolérance, plus large. Zones : (humidité min, humidité max,
+            température min, température max). Position de chaque mois dans
+            `chart.ecoclimate` ('optimale', 'favorable', 'défavorable').
+
+        Args / Paramètres:
+            humidity (str): EN/FR: Colonne de l'humidité relative moyenne mensuelle (%).
+            temp (str): EN/FR: Colonne de la température moyenne mensuelle (°C).
+            month (str, optional): EN/FR: Colonne des mois, écrits à côté des points.
+            group (str, optional): EN/FR: Colonne des stations (ou années) : une boucle par groupe.
+            optimum (tuple, optional): EN/FR: Zone optimale (hum_min, hum_max, t_min, t_max).
+            tolerance (tuple, optional): EN/FR: Zone de tolérance, plus large (même format) : mois « favorables ».
+            labels (bool): EN/FR: Écrit les mois à côté des points (avec `month`).
+            zone_color (str): EN/FR: Couleur des zones optimale et de tolérance (distincte des courbes).
+
+        Example / Exemple:
+            chart.ecoclimatogram('humidite', 'temperature', month='mois',
+                                 optimum=(60, 80, 24, 30), tolerance=(40, 90, 18, 34))
+        """
+        self.chart_type = 'ecoclimatogram'
+        ink = plt.rcParams['axes.labelcolor']
+        p = self._palette()
+        for zone, alpha, name in ((tolerance, 0.10, 'Zone de tolérance'), (optimum, 0.22, 'Zone optimale')):
+            if zone is None:
+                continue
+            if len(zone) != 4 or zone[0] >= zone[1] or zone[2] >= zone[3]:
+                raise ValueError(f'{name} : (hum_min, hum_max, t_min, t_max) avec min < max attendu')
+            h0, h1, t0, t1 = zone
+            self.ax.add_patch(plt.Rectangle((h0, t0), h1 - h0, t1 - t0, facecolor=zone_color,
+                                            alpha=alpha, edgecolor=zone_color, lw=1.2,
+                                            ls='-' if zone is optimum else '--', zorder=0,
+                                            label=name))
+
+        def inside(zone, h, t):
+            return zone is not None and zone[0] <= h <= zone[1] and zone[2] <= t <= zone[3]
+
+        rows = []
+        groups = self.data.groupby(group, sort=False) if group else [(None, self.data)]
+        for (name, sub), c in zip(groups, p * 10):
+            h, t = sub[humidity].to_numpy(float), sub[temp].to_numpy(float)
+            self.ax.plot(np.append(h, h[0]), np.append(t, t[0]), color=c, lw=1.8,
+                         marker='o', markersize=5, label=name, zorder=3)
+            months = sub[month].astype(str).tolist() if month else [str(k + 1) for k in range(len(sub))]
+            for hm, tm, mo in zip(h, t, months):
+                where = ('optimale' if inside(optimum, hm, tm)
+                         else 'favorable' if inside(tolerance, hm, tm) else 'défavorable')
+                rows.append({'groupe': name, 'mois': mo, humidity: hm, temp: tm, 'zone': where})
+                if labels and month:
+                    self.ax.annotate(mo, (hm, tm), xytext=(4, 4), textcoords='offset points',
+                                     fontsize=7, color=c, path_effects=self._halo(), zorder=4)
+        self.ecoclimate = pd.DataFrame(rows)
+        if not group:
+            self.ecoclimate = self.ecoclimate.drop(columns='groupe')
+        self.ax.set_xlabel('Humidité relative (%)')
+        self.ax.set_ylabel('Température (°C)')
+        if group or optimum is not None or tolerance is not None:
+            self.ax.legend(loc='best', fontsize=8)
+        return self
+
+    # Étages et variantes du climagramme d'Emberger (échelle de Q2 la plus citée en
+    # bioclimatologie méditerranéenne ; les limites exactes varient selon les auteurs).
+    EMBERGER_STAGES = ('Saharien', 'Aride', 'Semi-aride', 'Subhumide', 'Humide', 'Perhumide')
+    EMBERGER_LIMITS = (10, 45, 70, 110, 150)
+    EMBERGER_VARIANTS = ('très froid', 'froid', 'frais', 'tempéré', 'chaud', 'très chaud')
+    EMBERGER_M = (-3, 0, 3, 7, 10)
+
+    def emberger(self, precip: str, tmax: str, tmin: str, station: Optional[str] = None,
+                 monthly: bool = False, formula: str = 'emberger',
+                 limits: Optional[List] = None, labels: bool = True,
+                 log: bool = False) -> 'Chart':
+        """
+        EN: Emberger climagram: pluviothermic quotient Q2 against m (mean minimum of the
+            coldest month), with the bioclimatic stages (Saharan to per-humid) and the winter
+            variants (very cold to very hot). Q2 = 2000·P / (M² − m²), temperatures in kelvin
+            (formula='emberger'), or Stewart's Q2 = 3.43·P / (M − m) (formula='stewart').
+            One row per station (P annual, M, m), or monthly data with monthly=True
+            (P = sum, M = highest monthly max, m = lowest monthly min).
+            Stage limits: Q2 = 10, 45, 70, 110, 150 by default; `limits` accepts numbers or
+            (a, b) pairs for oblique lines Q2 = a + b·m. Table in `chart.emberger_table`.
+        FR: Climagramme d'Emberger : quotient pluviothermique Q2 selon m (minimum moyen du
+            mois le plus froid), avec les étages bioclimatiques (saharien à perhumide) et les
+            variantes thermiques (hiver très froid à très chaud). Q2 = 2000·P / (M² − m²),
+            températures en kelvin (formula='emberger'), ou Q2 = 3,43·P / (M − m) de Stewart
+            (formula='stewart'). Une ligne par station (P annuel, M, m), ou données mensuelles
+            avec monthly=True (P = somme, M = plus fort maximum mensuel, m = plus faible
+            minimum mensuel). Limites des étages : Q2 = 10, 45, 70, 110, 150 par défaut ;
+            `limits` accepte des nombres ou des couples (a, b) pour des droites obliques
+            Q2 = a + b·m. Tableau dans `chart.emberger_table`.
+
+        Args / Paramètres:
+            precip (str): EN/FR: Colonne des précipitations (mm) : annuelles, ou mensuelles avec monthly=True.
+            tmax (str): EN/FR: Colonne M (°C) : moyenne des maxima du mois le plus chaud, ou maxima mensuels.
+            tmin (str): EN/FR: Colonne m (°C) : moyenne des minima du mois le plus froid, ou minima mensuels.
+            station (str, optional): EN/FR: Colonne du nom des stations (une ligne, ou 12 avec monthly=True).
+            monthly (bool): EN/FR: Données mensuelles : P, M et m sont calculés par station.
+            formula (str): EN/FR: 'emberger' (2000·P / (M² − m²), en kelvin) ou 'stewart' (3,43·P / (M − m)).
+            limits (list, optional): EN/FR: 5 limites entre étages : nombres (Q2 constant) ou couples (a, b) pour Q2 = a + b·m.
+            labels (bool): EN/FR: Écrit le nom des stations à côté des points.
+            log (bool): EN/FR: Axe de Q2 en échelle logarithmique.
+
+        Example / Exemple:
+            chart.emberger('pluie', 'M', 'm', station='station')
+            chart.emberger('pluie', 'tmax', 'tmin', station='station', monthly=True)
+        """
+        if formula not in ('emberger', 'stewart'):
+            raise ValueError("formula doit valoir 'emberger' ou 'stewart'")
+        limits = list(limits) if limits is not None else list(self.EMBERGER_LIMITS)
+        if len(limits) != len(self.EMBERGER_STAGES) - 1:
+            raise ValueError(f'limits : {len(self.EMBERGER_STAGES) - 1} limites attendues '
+                             f'(entre {", ".join(self.EMBERGER_STAGES)})')
+        self.chart_type = 'emberger'
+        d = self.data
+        if monthly:
+            if not station:
+                d = d.assign(_station='Station')
+            key = station or '_station'
+            d = d.groupby(key, sort=False).agg(P=(precip, 'sum'), M=(tmax, 'max'),
+                                               m=(tmin, 'min')).reset_index()
+            names = d[key].astype(str).tolist()
+        else:
+            d = pd.DataFrame({'P': d[precip], 'M': d[tmax], 'm': d[tmin]}).reset_index(drop=True)
+            names = (self.data[station].astype(str).tolist() if station
+                     else [str(k + 1) for k in range(len(d))])
+        P, M, m = (d[c].to_numpy(float) for c in ('P', 'M', 'm'))
+        if np.any(M <= m):
+            raise ValueError('M (maximum du mois le plus chaud) doit dépasser m (minimum du mois le plus froid)')
+        q2 = 2000 * P / ((M + 273.15) ** 2 - (m + 273.15) ** 2) if formula == 'emberger' \
+            else 3.43 * P / (M - m)
+
+        def limit(k, x):  # limite k entre deux étages, à la température m = x
+            lim = limits[k]
+            return np.full_like(np.asarray(x, float), lim, dtype=float) if np.isscalar(lim) \
+                else lim[0] + lim[1] * np.asarray(x, float)
+
+        stage = np.sum([q2 >= limit(k, m) for k in range(len(limits))], axis=0)
+        variant = np.digitize(m, self.EMBERGER_M)
+        self.emberger_table = pd.DataFrame({
+            'station': names, 'P': P, 'M': M, 'm': m, 'Q2': q2.round(1),
+            'etage': [self.EMBERGER_STAGES[k] for k in stage],
+            'variante': [f'hiver {self.EMBERGER_VARIANTS[k]}' for k in variant]})
+        self.emberger_table['bioclimat'] = (self.emberger_table['etage'] + ' à '
+                                            + self.emberger_table['variante'])
+
+        # ── Fond : étages (bandes colorées) et variantes (verticales)
+        x0, x1 = min(-6.0, m.min() - 1.5), max(14.0, m.max() + 1.5)
+        ytop = max(200.0, q2.max() * 1.2)
+        ybot = 1.0 if log else 0.0
+        xs = np.linspace(x0, x1, 50)
+        bounds = [np.full_like(xs, ybot)] + [limit(k, xs) for k in range(len(limits))] \
+            + [np.full_like(xs, ytop)]
+        shades = matplotlib.colormaps['BrBG'](np.linspace(0.28, 0.78, len(self.EMBERGER_STAGES)))
+        ink = plt.rcParams['axes.labelcolor']
+        for k, name in enumerate(self.EMBERGER_STAGES):
+            lo, hi = np.clip(bounds[k], ybot, ytop), np.clip(bounds[k + 1], ybot, ytop)
+            self.ax.fill_between(xs, lo, hi, color=shades[k], alpha=0.35, linewidth=0, zorder=0)
+            mid = np.sqrt(lo[-1] * hi[-1]) if log else (lo[-1] + hi[-1]) / 2
+            if hi[-1] > lo[-1]:
+                self.ax.text(x1 - 0.2, mid, name, ha='right', va='center', fontsize=8,
+                             color=ink, fontweight='bold', alpha=0.8, zorder=1)
+        for k in range(len(limits)):
+            self.ax.plot(xs, limit(k, xs), color=ink, lw=0.7, alpha=0.6, zorder=1)
+        for t in self.EMBERGER_M:
+            self.ax.axvline(t, color=ink, lw=0.6, ls='--', alpha=0.5, zorder=1)
+        edges = [x0, *self.EMBERGER_M, x1]
+        for (a, b), name in zip(zip(edges, edges[1:]), self.EMBERGER_VARIANTS):
+            self.ax.text((a + b) / 2, 1.01, name, transform=self.ax.get_xaxis_transform(),
+                         ha='center', va='bottom', fontsize=7, color=ink)
+        # ── Stations
+        colors = self._palette()
+        for k, (x, y, name) in enumerate(zip(m, q2, names)):
+            self.ax.scatter(x, y, s=55, color=colors[k % len(colors)], zorder=3,
+                            edgecolors=plt.rcParams['axes.facecolor'], linewidths=1.2)
+            if labels:
+                self.ax.annotate(name, (x, y), xytext=(6, 4), textcoords='offset points',
+                                 fontsize=8, path_effects=self._halo(), zorder=4)
+        if log:
+            self.ax.set_yscale('log')
+            self.ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f'{v:g}'))
+        self.ax.set_xlim(x0, x1)
+        self.ax.set_ylim(ybot, ytop)
+        self.ax.grid(False)
+        self.ax.set_xlabel('m : minimum moyen du mois le plus froid (°C)')
+        self.ax.set_ylabel('Q2' + (' (Stewart)' if formula == 'stewart' else ''))
         return self
 
     def water_balance(self, month: str, precip: str, etp: str, show_bars: bool = True,
