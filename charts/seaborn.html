@@ -590,7 +590,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="c5141853" class="cell" data-execution_count="3">
+<div id="7cbea638" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .seaborn(<span class="st">'violinplot'</span>, x<span class="op">=</span><span class="st">'variete'</span>, y<span class="op">=</span><span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, inner<span class="op">=</span><span class="st">'quart'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Distribution du rendement par variété'</span>)</span>
@@ -606,7 +606,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Les fonctions seaborn « figure » (<code>relplot</code>, <code>displot</code>, <code>catplot</code>, <code>lmplot</code>, <code>pairplot</code>, <code>jointplot</code>, <code>clustermap</code>) créent une grille de panneaux : <code>title()</code> devient le titre général et la grille est disponible dans <code>chart.sns_grid</code>.</p>
-<div id="3f6ad14a" class="cell" data-execution_count="4">
+<div id="17a2fab8" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .seaborn(<span class="st">'relplot'</span>, x<span class="op">=</span><span class="st">'dose'</span>, y<span class="op">=</span><span class="st">'rendement'</span>, col<span class="op">=</span><span class="st">'variete'</span>, kind<span class="op">=</span><span class="st">'line'</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>             marker<span class="op">=</span><span class="st">'o'</span>, height<span class="op">=</span><span class="fl">3.2</span>, aspect<span class="op">=</span><span class="dv">1</span>)</span>

@@ -513,6 +513,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#g-walter_lieth" id="toc-g-walter_lieth" class="nav-link" data-scroll-target="#g-walter_lieth"><code>walter_lieth</code> — Climatogramme de Walter-Lieth</a></li>
   <li><a href="#g-climogram" id="toc-g-climogram" class="nav-link" data-scroll-target="#g-climogram"><code>climogram</code> — Climogramme (hythergramme)</a></li>
+  <li><a href="#g-emberger" id="toc-g-emberger" class="nav-link" data-scroll-target="#g-emberger"><code>emberger</code> — Climagramme d’Emberger</a></li>
+  <li><a href="#g-ecoclimatogram" id="toc-g-ecoclimatogram" class="nav-link" data-scroll-target="#g-ecoclimatogram"><code>ecoclimatogram</code> — Écoclimatogramme</a></li>
   <li><a href="#g-water_balance" id="toc-g-water_balance" class="nav-link" data-scroll-target="#g-water_balance"><code>water_balance</code> — Bilan hydrique</a></li>
   <li><a href="#g-degree_days" id="toc-g-degree_days" class="nav-link" data-scroll-target="#g-degree_days"><code>degree_days</code> — Degrés-jours de croissance</a></li>
   <li><a href="#g-wind_rose" id="toc-g-wind_rose" class="nav-link" data-scroll-target="#g-wind_rose"><code>wind_rose</code> — Rose des vents</a></li>
@@ -679,7 +681,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.dry_months</code> (mode ‘lines’) : la liste des mois secs.</p>
 <p><strong>Exemple</strong></p>
 <p>Le diagramme ombrothermique de Bagnouls et Gaussen met en regard la courbe des températures et les barres de précipitations selon la convention <strong>p = 2T</strong>. Les zones où p &lt; 2T sont des <strong>périodes sèches</strong>.</p>
-<div id="1996164f" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="3">
+<div id="810b1eab" class="cell" data-fig-height="6" data-fig-width="12" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:   [<span class="st">'Jan'</span>,<span class="st">'Fév'</span>,<span class="st">'Mar'</span>,<span class="st">'Avr'</span>,<span class="st">'Mai'</span>,<span class="st">'Jun'</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               <span class="st">'Jul'</span>,<span class="st">'Aoû'</span>,<span class="st">'Sep'</span>,<span class="st">'Oct'</span>,<span class="st">'Nov'</span>,<span class="st">'Déc'</span>],</span>
@@ -708,7 +710,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Analyse textuelle des périodes sèches :</p>
-<div id="4f177181" class="cell" data-execution_count="4">
+<div id="0a0a06e0" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> Chart</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -750,7 +752,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <section id="variante-en-deux-courbes-périodes-sèches-hachurées" class="level4">
 <h4 class="anchored" data-anchor-id="variante-en-deux-courbes-périodes-sèches-hachurées">Variante en deux courbes, périodes sèches hachurées</h4>
 <p>Avec <code>kind='lines'</code>, les précipitations sont tracées en <strong>courbe</strong> (sur l’échelle P = 2T) et les <strong>périodes sèches</strong> — là où la courbe des pluies passe sous celle des températures — sont <strong>hachurées</strong> entre les deux courbes. Les hachures s’arrêtent exactement aux croisements. <code>hatch</code> change le motif (<code>'///'</code>, <code>'xx'</code>, <code>'...'</code>) ; les mois secs sont dans <code>chart.dry_months</code>.</p>
-<div id="92ee462e" class="cell" data-execution_count="5">
+<div id="d46f950d" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .ombrothermic(<span class="st">'mois'</span>, <span class="st">'temperature'</span>, <span class="st">'pluie'</span>, kind<span class="op">=</span><span class="st">'lines'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Diagramme ombrothermique — Station B (fictive)'</span>)</span>
@@ -867,7 +869,7 @@ Résumé: 8 mois secs sur 12 mois</code></pre>
 <p><strong>Résultats calculés</strong> : <code>chart.texture_classes</code> : la classe USDA de chaque échantillon.</p>
 <p><strong>Exemple</strong></p>
 <p>Les 12 classes de texture USDA tracées et nommées, avec les échantillons par-dessus. La classe de chaque échantillon est dans <code>chart.texture_classes</code> ; la fonction <code>texture_class(sable, limon, argile)</code> classe aussi des valeurs sans tracer.</p>
-<div id="50887428" class="cell" data-execution_count="7">
+<div id="059fbe43" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(sols, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">7.5</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .soil_texture(<span class="st">'sable'</span>, <span class="st">'limon'</span>, <span class="st">'argile'</span>, group<span class="op">=</span><span class="st">'zone'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Triangle des textures (USDA)'</span>)</span>
@@ -1011,7 +1013,7 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.climate_summary</code> : moyennes et totaux annuels.</p>
 <p><strong>Exemple</strong></p>
 <p>Le diagramme climatique de référence en écologie : 10 °C correspondent à 20 mm de pluie, l’échelle des pluies est comprimée au 1/10 au-delà de 100 mm (aplat bleu foncé). La saison humide est en bleu, la saison sèche en pointillés rouges, les mois de gel (<code>tmin</code> &lt; 0) sont marqués sous l’axe. Moyenne annuelle et cumul en haut à droite ; résumé dans <code>chart.climate_summary</code>.</p>
-<div id="160722d4" class="cell" data-execution_count="9">
+<div id="8db30c92" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .walter_lieth(<span class="st">'mois'</span>, <span class="st">'temperature'</span>, <span class="st">'pluie'</span>, tmin<span class="op">=</span><span class="st">'tmin'</span>, station<span class="op">=</span><span class="st">'Station B (fictive)'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
@@ -1121,7 +1123,7 @@ Note
 </table>
 <p><strong>Exemple</strong></p>
 <p>Température et précipitations de chaque mois en un point, reliés en boucle : la forme de la boucle résume le climat, et plusieurs stations se comparent d’un coup d’œil.</p>
-<div id="7114e8a6" class="cell" data-execution_count="11">
+<div id="823a1f0a" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(stations_climat, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .climogram(<span class="st">'pluie'</span>, <span class="st">'temperature'</span>, month<span class="op">=</span><span class="st">'mois'</span>, group<span class="op">=</span><span class="st">'station'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Climogrammes'</span>)</span>
@@ -1133,6 +1135,417 @@ Note
 <p><img src="sciences_files/figure-html/cell-12-output-1.png" width="854" height="518" class="figure-img"></p>
 <figcaption>Trois climats tropicaux</figcaption>
 </figure>
+</div>
+</div>
+</div>
+</section>
+<section id="g-emberger" class="level3">
+<h3 class="anchored" data-anchor-id="g-emberger"><code>emberger</code> — Climagramme d’Emberger</h3>
+<p>Climagramme d’Emberger : chaque station placée selon son quotient pluviothermique Q2 et m (minimum moyen du mois le plus froid), sur un fond qui donne l’étage bioclimatique et la variante thermique de l’hiver.</p>
+<p><strong>Quand l’utiliser.</strong> Classer le bioclimat de stations méditerranéennes ou arides (« semi-aride à hiver frais »…), comparer des sites, raisonner le choix d’espèces forestières ou cultivées selon l’aridité et la rigueur de l’hiver.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par station (P annuel, M, m) — ou une ligne par mois et par station avec monthly=True.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>station</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>station</code> (optionnel) : nom du point</td>
+<td style="text-align: left;">Haut plateau</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>pluie</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>precip</code> : précipitations annuelles (mm)</td>
+<td style="text-align: left;">290</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>M</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>tmax</code> : moyenne des maxima du mois le plus chaud (°C)</td>
+<td style="text-align: left;">34.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>m</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>tmin</code> : moyenne des minima du mois le plus froid (°C)</td>
+<td style="text-align: left;">-0.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>precip</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne des précipitations (mm) : annuelles, ou mensuelles avec monthly=True.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tmax</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne M (°C) : moyenne des maxima du mois le plus chaud, ou maxima mensuels.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>tmin</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne m (°C) : moyenne des minima du mois le plus froid, ou minima mensuels.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>station</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne du nom des stations (une ligne, ou 12 avec monthly=True).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>monthly</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Données mensuelles : P, M et m sont calculés par station.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>formula</code></td>
+<td style="text-align: left;"><code>'emberger'</code></td>
+<td style="text-align: left;">‘emberger’ (2000·P / (M² − m²), en kelvin) ou ‘stewart’ (3,43·P / (M − m)).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>limits</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">5 limites entre étages : nombres (Q2 constant) ou couples (a, b) pour Q2 = a + b·m.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit le nom des stations à côté des points.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>log</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;">Axe de Q2 en échelle logarithmique.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.emberger_table</code> : P, M, m, Q2, étage, variante et bioclimat de chaque station.</p>
+<p><strong>Exemple</strong></p>
+<p>Chaque station est placée selon son <strong>quotient pluviothermique Q2</strong> et <strong>m</strong>, la moyenne des minima du mois le plus froid. Q2 = 2000·P / (M² − m²), avec M et m en kelvin (Emberger) ; <code>formula='stewart'</code> utilise la forme simplifiée Q2 = 3,43·P / (M − m). Les bandes donnent l’<strong>étage bioclimatique</strong> (saharien, aride, semi-aride, subhumide, humide, perhumide), les verticales la <strong>variante thermique</strong> de l’hiver (m = −3, 0, 3, 7, 10 °C).</p>
+<div id="4ae3d2a8" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(stations_emberger, figsize<span class="op">=</span>cm(<span class="dv">18</span>, <span class="dv">12</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .emberger(<span class="st">'pluie'</span>, <span class="st">'M'</span>, <span class="st">'m'</span>, station<span class="op">=</span><span class="st">'station'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Climagramme d'Emberger"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>chart.emberger_table</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-14-output-1.png" width="670" height="444" class="figure-img"></p>
+<figcaption>Climagramme d’Emberger de six stations (données fictives)</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="13">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">station</th>
+<th data-quarto-table-cell-role="th">P</th>
+<th data-quarto-table-cell-role="th">M</th>
+<th data-quarto-table-cell-role="th">m</th>
+<th data-quarto-table-cell-role="th">Q2</th>
+<th data-quarto-table-cell-role="th">etage</th>
+<th data-quarto-table-cell-role="th">variante</th>
+<th data-quarto-table-cell-role="th">bioclimat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Littoral</td>
+<td>650.0</td>
+<td>30.5</td>
+<td>8.0</td>
+<td>98.8</td>
+<td>Subhumide</td>
+<td>hiver chaud</td>
+<td>Subhumide à hiver chaud</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Plaine</td>
+<td>420.0</td>
+<td>33.8</td>
+<td>4.5</td>
+<td>49.0</td>
+<td>Semi-aride</td>
+<td>hiver tempéré</td>
+<td>Semi-aride à hiver tempéré</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Montagne</td>
+<td>980.0</td>
+<td>28.0</td>
+<td>-1.5</td>
+<td>116.0</td>
+<td>Humide</td>
+<td>hiver froid</td>
+<td>Humide à hiver froid</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>Haut plateau</td>
+<td>290.0</td>
+<td>34.5</td>
+<td>-0.5</td>
+<td>28.6</td>
+<td>Aride</td>
+<td>hiver froid</td>
+<td>Aride à hiver froid</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>Piémont</td>
+<td>140.0</td>
+<td>38.5</td>
+<td>3.2</td>
+<td>13.5</td>
+<td>Aride</td>
+<td>hiver tempéré</td>
+<td>Aride à hiver tempéré</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>Oasis</td>
+<td>45.0</td>
+<td>41.0</td>
+<td>5.5</td>
+<td>4.3</td>
+<td>Saharien</td>
+<td>hiver tempéré</td>
+<td>Saharien à hiver tempéré</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Les limites entre étages varient selon les auteurs. Par défaut, plutovizu utilise l’échelle de Q2 la plus citée (10, 45, 70, 110, 150) ; sur le climagramme de Sauvage (1963), les limites sont <strong>obliques</strong>. <code>limits</code> accepte pour chaque limite un nombre ou un couple <code>(a, b)</code> qui donne la droite Q2 = a + b·m.</p>
+</div>
+</div>
+<div id="145f7c19" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(Chart(stations_emberger, figsize<span class="op">=</span>cm(<span class="dv">18</span>, <span class="dv">12</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    .emberger(<span class="st">'pluie'</span>, <span class="st">'M'</span>, <span class="st">'m'</span>, station<span class="op">=</span><span class="st">'station'</span>, formula<span class="op">=</span><span class="st">'stewart'</span>, log<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>              limits<span class="op">=</span>[(<span class="dv">8</span>, <span class="fl">0.4</span>), (<span class="dv">30</span>, <span class="fl">1.2</span>), (<span class="dv">50</span>, <span class="fl">1.5</span>), (<span class="dv">80</span>, <span class="dv">2</span>), (<span class="dv">120</span>, <span class="fl">2.5</span>)])</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Limites obliques, axe logarithmique'</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-15-output-1.png" width="670" height="444" class="figure-img"></p>
+<figcaption>Formule de Stewart, limites obliques (illustratives) et échelle logarithmique</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Avec des <strong>données mensuelles</strong> (une ligne par mois et par station), <code>monthly=True</code> calcule P (somme), M (plus fort maximum mensuel) et m (plus faible minimum mensuel).</p>
+</section>
+<section id="g-ecoclimatogram" class="level3">
+<h3 class="anchored" data-anchor-id="g-ecoclimatogram"><code>ecoclimatogram</code> — Écoclimatogramme</h3>
+<p>Écoclimatogramme de Bodenheimer : température moyenne mensuelle selon l’humidité relative, en boucle annuelle, comparée à la zone optimale et à la zone de tolérance d’une espèce.</p>
+<p><strong>Quand l’utiliser.</strong> Évaluer les mois favorables au développement d’un ravageur, d’un vecteur ou d’une culture, comparer des stations ou des années, raisonner la surveillance et les dates d’intervention.</p>
+<p><strong>Données attendues</strong> : un DataFrame, une ligne par mois (et par station ou année).</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Colonne (exemple)</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Rôle</th>
+<th style="text-align: left;">Exemple de valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>station</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>group</code> (optionnel) : une boucle par station</td>
+<td style="text-align: left;">Littoral</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mois</code></td>
+<td style="text-align: left;">texte</td>
+<td style="text-align: left;"><code>month</code> (optionnel) : étiquette des points</td>
+<td style="text-align: left;">Août</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>humidite</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>humidity</code> : humidité relative moyenne (%)</td>
+<td style="text-align: left;">84</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temperature</code></td>
+<td style="text-align: left;">nombre</td>
+<td style="text-align: left;"><code>temp</code> : température moyenne (°C)</td>
+<td style="text-align: left;">27.8</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Paramètres</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Paramètre</th>
+<th style="text-align: left;">Défaut</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>humidity</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de l’humidité relative moyenne mensuelle (%).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>temp</code></td>
+<td style="text-align: left;"><strong>obligatoire</strong></td>
+<td style="text-align: left;">Colonne de la température moyenne mensuelle (°C).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>month</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des mois, écrits à côté des points.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>group</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Colonne des stations (ou années) : une boucle par groupe.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>optimum</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Zone optimale (hum_min, hum_max, t_min, t_max).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tolerance</code></td>
+<td style="text-align: left;"><code>None</code></td>
+<td style="text-align: left;">Zone de tolérance, plus large (même format) : mois « favorables ».</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>labels</code></td>
+<td style="text-align: left;"><code>True</code></td>
+<td style="text-align: left;">Écrit les mois à côté des points (avec <code>month</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>zone_color</code></td>
+<td style="text-align: left;"><code>'#2e9e5b'</code></td>
+<td style="text-align: left;">Couleur des zones optimale et de tolérance (distincte des courbes).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Résultats calculés</strong> : <code>chart.ecoclimate</code> : zone de chaque mois (‘optimale’, ‘favorable’, ‘défavorable’).</p>
+<p><strong>Exemple</strong></p>
+<p>L’écoclimatogramme de <strong>Bodenheimer</strong> place chaque mois selon son <strong>humidité relative</strong> et sa <strong>température</strong> moyennes ; les points forment une boucle annuelle. On le compare à la <strong>zone optimale</strong> d’une espèce — ravageur, criquet, mouche des fruits, culture — et à sa <strong>zone de tolérance</strong>, plus large : les mois qui y tombent sont ceux où l’espèce peut se développer.</p>
+<div id="c35db7e9" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(ecoclimat, figsize<span class="op">=</span>cm(<span class="dv">18</span>, <span class="dv">12</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    .ecoclimatogram(<span class="st">'humidite'</span>, <span class="st">'temperature'</span>, month<span class="op">=</span><span class="st">'mois'</span>, group<span class="op">=</span><span class="st">'station'</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                    optimum<span class="op">=</span>(<span class="dv">60</span>, <span class="dv">80</span>, <span class="dv">24</span>, <span class="dv">30</span>), tolerance<span class="op">=</span>(<span class="dv">40</span>, <span class="dv">90</span>, <span class="dv">18</span>, <span class="dv">34</span>))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Écoclimatogramme — mois favorables au ravageur'</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>chart.ecoclimate.groupby([<span class="st">'groupe'</span>, <span class="st">'zone'</span>]).size().unstack(fill_value<span class="op">=</span><span class="dv">0</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="sciences_files/figure-html/cell-17-output-1.png" width="670" height="444" class="figure-img"></p>
+<figcaption>Écoclimatogramme de deux stations et zones d’un ravageur (données et seuils fictifs)</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">zone</th>
+<th data-quarto-table-cell-role="th">défavorable</th>
+<th data-quarto-table-cell-role="th">favorable</th>
+<th data-quarto-table-cell-role="th">optimale</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">groupe</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Intérieur</th>
+<td>6</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Littoral</th>
+<td>0</td>
+<td>8</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+
 </div>
 </div>
 </div>
@@ -1222,20 +1635,20 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.water_table</code> (bilan mensuel), <code>chart.water_summary</code> (totaux).</p>
 <p><strong>Exemple</strong></p>
 <p>Précipitations face à l’évapotranspiration potentielle (ETP) : excédent en bleu, déficit en orange. Bilan mensuel dans <code>chart.water_table</code>, totaux dans <code>chart.water_summary</code>.</p>
-<div id="6af06528" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .water_balance(<span class="st">'mois'</span>, <span class="st">'pluie'</span>, <span class="st">'etp'</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Bilan hydrique (mm)'</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.water_summary)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="083899ab" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(station_b, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    .water_balance(<span class="st">'mois'</span>, <span class="st">'pluie'</span>, <span class="st">'etp'</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Bilan hydrique (mm)'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.water_summary)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>{'excedent': 380.0, 'deficit': 1134.0}</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-14-output-2.png" width="853" height="422" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-19-output-2.png" width="853" height="422" class="figure-img"></p>
 <figcaption>Bilan hydrique simplifié P – ETP</figcaption>
 </figure>
 </div>
@@ -1332,21 +1745,21 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.gdd</code> (série journalière), <code>chart.stage_dates</code> (date de chaque stade).</p>
 <p><strong>Exemple</strong></p>
 <p>Somme des températures utiles à la culture : chaque jour apporte max(0, (Tmax + Tmin) / 2 − base), Tmax pouvant être plafonnée (<code>cap</code>). <code>stages</code> marque la date d’atteinte de chaque stade.</p>
-<div id="dbad3124" class="cell" data-execution_count="15">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    .degree_days(<span class="st">'jour'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, base<span class="op">=</span><span class="dv">10</span>, cap<span class="op">=</span><span class="dv">35</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                 stages<span class="op">=</span>{<span class="st">'Tallage'</span>: <span class="dv">600</span>, <span class="st">'Initiation paniculaire'</span>: <span class="dv">950</span>, <span class="st">'Floraison'</span>: <span class="dv">1250</span>})</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Degrés-jours cumulés (base 10 °C)'</span>)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.stage_dates)</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="6d2863ef" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    .degree_days(<span class="st">'jour'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, base<span class="op">=</span><span class="dv">10</span>, cap<span class="op">=</span><span class="dv">35</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                 stages<span class="op">=</span>{<span class="st">'Tallage'</span>: <span class="dv">600</span>, <span class="st">'Initiation paniculaire'</span>: <span class="dv">950</span>, <span class="st">'Floraison'</span>: <span class="dv">1250</span>})</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Degrés-jours cumulés (base 10 °C)'</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(chart.stage_dates)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>chart.show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>{'Tallage': Timestamp('2024-07-06 00:00:00'), 'Initiation paniculaire': Timestamp('2024-07-29 00:00:00'), 'Floraison': Timestamp('2024-08-17 00:00:00')}</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-16-output-2.png" width="852" height="422" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-21-output-2.png" width="852" height="422" class="figure-img"></p>
 <figcaption>Degrés-jours cumulés et stades d’un riz (seuils illustratifs)</figcaption>
 </figure>
 </div>
@@ -1438,16 +1851,16 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.wind_table</code> : fréquences par secteur et classe de vitesse.</p>
 <p><strong>Exemple</strong></p>
 <p>Directement à partir des observations : directions en degrés (0 = nord) regroupées en secteurs, vitesses en classes, fréquences en % des observations.</p>
-<div id="18e0b413" class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent_obs, figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="fl">6.5</span>))</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    .wind_rose(<span class="st">'direction'</span>, <span class="st">'vitesse'</span>, speed_bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>])</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rose des vents'</span>)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="4f3c254a" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(Chart(vent_obs, figsize<span class="op">=</span>(<span class="fl">7.5</span>, <span class="fl">6.5</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    .wind_rose(<span class="st">'direction'</span>, <span class="st">'vitesse'</span>, speed_bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>])</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rose des vents'</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-18-output-1.png" width="681" height="614" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-23-output-1.png" width="681" height="614" class="figure-img"></p>
 <figcaption>Rose des vents à partir de 900 observations</figcaption>
 </figure>
 </div>
@@ -1539,16 +1952,16 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.anomalies</code> : les écarts.</p>
 <p><strong>Exemple</strong></p>
 <p>L’écart de chaque année à une référence : la moyenne, un nombre, ou la moyenne d’une période (<code>baseline=(1961, 1990)</code>), avec une moyenne glissante en option.</p>
-<div id="c8f47d9f" class="cell" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    .anomaly(<span class="st">'annee'</span>, <span class="st">'temperature'</span>, baseline<span class="op">=</span>(<span class="dv">1961</span>, <span class="dv">1990</span>), window<span class="op">=</span><span class="dv">10</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Écart à la normale 1961-1990 (°C)'</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cd245137" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    .anomaly(<span class="st">'annee'</span>, <span class="st">'temperature'</span>, baseline<span class="op">=</span>(<span class="dv">1961</span>, <span class="dv">1990</span>), window<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Écart à la normale 1961-1990 (°C)'</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-20-output-1.png" width="950" height="374" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-25-output-1.png" width="950" height="374" class="figure-img"></p>
 <figcaption>Anomalies de température par rapport à 1961-1990</figcaption>
 </figure>
 </div>
@@ -1623,14 +2036,14 @@ Note
 </table>
 <p><strong>Exemple</strong></p>
 <p>Une bande par année, du bleu (plus froid que la moyenne) au rouge (plus chaud), dans l’esprit des <em>warming stripes</em> d’Ed Hawkins.</p>
-<div id="59874d59" class="cell" data-execution_count="21">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">2.5</span>))</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    .climate_stripes(<span class="st">'annee'</span>, <span class="st">'temperature'</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="e47e4363" class="cell" data-execution_count="26">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(Chart(annees, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">2.5</span>))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    .climate_stripes(<span class="st">'annee'</span>, <span class="st">'temperature'</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-22-output-1.png" width="769" height="226" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-27-output-1.png" width="769" height="226" class="figure-img"></p>
 <figcaption>Bandes climatiques 1961-2024</figcaption>
 </figure>
 </div>
@@ -1747,16 +2160,16 @@ Note
 </table>
 <p><strong>Exemple</strong></p>
 <p>Les horizons empilés selon la profondeur, une colonne par fosse. <code>color</code> accepte une colonne de couleurs, par exemple des notations Munsell converties en hexadécimal.</p>
-<div id="e37e5ea8" class="cell" data-execution_count="23">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(Chart(horizons, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    .soil_profile(<span class="st">'haut'</span>, <span class="st">'bas'</span>, <span class="st">'horizon'</span>, profile<span class="op">=</span><span class="st">'fosse'</span>, color<span class="op">=</span><span class="st">'couleur'</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Profils de sol'</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="a7f0aa6b" class="cell" data-execution_count="28">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(Chart(horizons, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">6</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    .soil_profile(<span class="st">'haut'</span>, <span class="st">'bas'</span>, <span class="st">'horizon'</span>, profile<span class="op">=</span><span class="st">'fosse'</span>, color<span class="op">=</span><span class="st">'couleur'</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Profils de sol'</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-24-output-1.png" width="757" height="566" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-29-output-1.png" width="757" height="566" class="figure-img"></p>
 <figcaption>Trois fosses le long d’une toposéquence</figcaption>
 </figure>
 </div>
@@ -1842,16 +2255,16 @@ Note
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="d8bbb337" class="cell" data-execution_count="25">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>(Chart(profil_humidite, figsize<span class="op">=</span>(<span class="fl">6.5</span>, <span class="dv">6</span>))</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    .depth_profile(<span class="st">'profondeur'</span>, <span class="st">'humidite'</span>, group<span class="op">=</span><span class="st">'date'</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Humidité (%)'</span>, <span class="st">'Profondeur (cm)'</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="a04a7cfc" class="cell" data-execution_count="30">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(Chart(profil_humidite, figsize<span class="op">=</span>(<span class="fl">6.5</span>, <span class="dv">6</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    .depth_profile(<span class="st">'profondeur'</span>, <span class="st">'humidite'</span>, group<span class="op">=</span><span class="st">'date'</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Humidité (%)'</span>, <span class="st">'Profondeur (cm)'</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-26-output-1.png" width="613" height="566" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-31-output-1.png" width="613" height="566" class="figure-img"></p>
 <figcaption>Humidité volumique du sol à deux dates</figcaption>
 </figure>
 </div>
@@ -1955,16 +2368,16 @@ Note
 </table>
 <p><strong>Exemple</strong></p>
 <p>Plusieurs propriétés côte à côte sur la même échelle de profondeur. Avec <code>bottom</code>, les valeurs sont tracées en <strong>paliers</strong> sur l’épaisseur de chaque horizon.</p>
-<div id="5913d9e1" class="cell" data-execution_count="27">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>(Chart(proprietes, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    .soil_properties(<span class="st">'haut'</span>, [<span class="st">'pH'</span>, <span class="st">'MO (%)'</span>, <span class="st">'Argile (%)'</span>, <span class="st">'CEC (cmol+/kg)'</span>],</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                     bottom<span class="op">=</span><span class="st">'bas'</span>, group<span class="op">=</span><span class="st">'fosse'</span>)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Propriétés des sols par horizon'</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="084a482d" class="cell" data-execution_count="32">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>(Chart(proprietes, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    .soil_properties(<span class="st">'haut'</span>, [<span class="st">'pH'</span>, <span class="st">'MO (%)'</span>, <span class="st">'Argile (%)'</span>, <span class="st">'CEC (cmol+/kg)'</span>],</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>                     bottom<span class="op">=</span><span class="st">'bas'</span>, group<span class="op">=</span><span class="st">'fosse'</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Propriétés des sols par horizon'</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-28-output-1.png" width="816" height="500" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-33-output-1.png" width="816" height="500" class="figure-img"></p>
 <figcaption>Propriétés de deux fosses par horizon (données fictives)</figcaption>
 </figure>
 </div>
@@ -2067,23 +2480,23 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.retention</code> : θr, θs, α, n, capacité au champ, point de flétrissement, réserve utile.</p>
 <p><strong>Exemple</strong></p>
 <p>Teneur en eau selon la succion (pF = log₁₀ de la succion en cm d’eau). Les lignes marquent la <strong>capacité au champ</strong> (pF 2,5) et le <strong>point de flétrissement</strong> (pF 4,2) ; la <strong>réserve utile</strong> est l’eau retenue entre les deux. Le modèle de <strong>van Genuchten</strong> est ajusté sur les points (<code>fit=False</code> : simple interpolation). <code>unit='kPa'</code> ou <code>'cm'</code> si la succion n’est pas en pF.</p>
-<div id="3c43bebc" class="cell" data-execution_count="29">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(retention, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    .retention_curve(<span class="st">'pF'</span>, <span class="st">'theta'</span>, group<span class="op">=</span><span class="st">'horizon'</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Teneur en eau volumique θ (m³/m³)'</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes de rétention'</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>chart.retention.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="4856729d" class="cell" data-execution_count="34">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(retention, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    .retention_curve(<span class="st">'pF'</span>, <span class="st">'theta'</span>, group<span class="op">=</span><span class="st">'horizon'</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Teneur en eau volumique θ (m³/m³)'</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes de rétention'</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>chart.retention.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-30-output-1.png" width="854" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-35-output-1.png" width="854" height="518" class="figure-img"></p>
 <figcaption>Courbes pF de deux horizons (données fictives)</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="29">
+<div class="cell-output cell-output-display" data-execution_count="34">
 <div>
 
 
@@ -2131,17 +2544,17 @@ Note
 </div>
 </div>
 <p>Avec un seul échantillon, la réserve utile est surlignée :</p>
-<div id="c914e9d7" class="cell" data-execution_count="30">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>(Chart(retention[retention[<span class="st">'horizon'</span>] <span class="op">==</span> <span class="st">'A (limoneux)'</span>], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    .retention_curve(<span class="st">'pF'</span>, <span class="st">'theta'</span>)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Teneur en eau volumique θ (m³/m³)'</span>)</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Réserve utile de l</span><span class="ch">\'</span><span class="st">horizon A'</span>)</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="81314c70" class="cell" data-execution_count="35">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>(Chart(retention[retention[<span class="st">'horizon'</span>] <span class="op">==</span> <span class="st">'A (limoneux)'</span>], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>))</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    .retention_curve(<span class="st">'pF'</span>, <span class="st">'theta'</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">'Teneur en eau volumique θ (m³/m³)'</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Réserve utile de l</span><span class="ch">\'</span><span class="st">horizon A'</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-31-output-1.png" width="854" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-36-output-1.png" width="854" height="518" class="figure-img"></p>
 </figure>
 </div>
 </div>
@@ -2233,22 +2646,22 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.grain_size</code> : D10, D30, D60, Cu, Cc.</p>
 <p><strong>Exemple</strong></p>
 <p>Pourcentage de particules plus fines qu’un diamètre (échelle log), avec les limites argile (2 µm), limon (50 µm), sable (2 mm). <code>chart.grain_size</code> donne D10, D30, D60, le coefficient d’uniformité <strong>Cu = D60/D10</strong> et de courbure <strong>Cc = D30²/(D10·D60)</strong> ; NaN quand le diamètre est hors des mesures. <code>limits</code> et <code>names</code> changent la classification.</p>
-<div id="54108abe" class="cell" data-execution_count="32">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(granulo, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    .grain_size_curve(<span class="st">'diametre_mm'</span>, <span class="st">'passant'</span>, group<span class="op">=</span><span class="st">'echantillon'</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes granulométriques'</span>)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>chart.grain_size.<span class="bu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="a6ad3153" class="cell" data-execution_count="37">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(granulo, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    .grain_size_curve(<span class="st">'diametre_mm'</span>, <span class="st">'passant'</span>, group<span class="op">=</span><span class="st">'echantillon'</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes granulométriques'</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>chart.grain_size.<span class="bu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-33-output-1.png" width="949" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-38-output-1.png" width="949" height="518" class="figure-img"></p>
 <figcaption>Granulométrie de trois matériaux (données fictives)</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="37">
 <div>
 
 
@@ -2391,22 +2804,22 @@ Note
 <p><strong>Résultats calculés</strong> : <code>chart.base_saturation</code> : V (%) par horizon.</p>
 <p><strong>Exemple</strong></p>
 <p>Cations échangeables empilés par horizon (cmol+/kg), acidité échangeable hachurée, CEC marquée d’un trait. Le <strong>taux de saturation V = S/T</strong> (S = somme des bases, T = CEC, ou S + acidité sans <code>cec</code>) est écrit au bout des barres et stocké dans <code>chart.base_saturation</code>.</p>
-<div id="bc6bedc0" class="cell" data-execution_count="34">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(complexe, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    .exchange_complex(<span class="st">'horizon'</span>, [<span class="st">'Ca'</span>, <span class="st">'Mg'</span>, <span class="st">'K'</span>, <span class="st">'Na'</span>], acidity<span class="op">=</span><span class="st">'H_Al'</span>, cec<span class="op">=</span><span class="st">'CEC'</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Complexe d</span><span class="ch">\'</span><span class="st">échange par horizon'</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>chart.base_saturation.<span class="bu">round</span>(<span class="dv">1</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="d6fd58a7" class="cell" data-execution_count="39">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(complexe, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>    .exchange_complex(<span class="st">'horizon'</span>, [<span class="st">'Ca'</span>, <span class="st">'Mg'</span>, <span class="st">'K'</span>, <span class="st">'Na'</span>], acidity<span class="op">=</span><span class="st">'H_Al'</span>, cec<span class="op">=</span><span class="st">'CEC'</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Complexe d</span><span class="ch">\'</span><span class="st">échange par horizon'</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>chart.base_saturation.<span class="bu">round</span>(<span class="dv">1</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-35-output-1.png" width="855" height="470" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-40-output-1.png" width="855" height="470" class="figure-img"></p>
 <figcaption>Complexe d’échange d’un sol lessivé (données fictives)</figcaption>
 </figure>
 </div>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="34">
+<div class="cell-output cell-output-display" data-execution_count="39">
 <pre><code>A     84.8
 E     66.3
 Bt    90.7
@@ -2490,17 +2903,17 @@ Name: V (%), dtype: float64</code></pre>
 <p><strong>Résultats calculés</strong> : <code>chart.infiltration</code> : paramètres du modèle et vitesse finale.</p>
 <p><strong>Exemple</strong></p>
 <p>Infiltration cumulée d’un essai (double anneau, Beerkan…) avec un modèle ajusté : <strong>Philip</strong> I = S·√t + A·t (défaut) ou <strong>Horton</strong> I = fc·t + (f0 − fc)(1 − e^(−kt))/k. La vitesse d’infiltration, mesurée et modélisée, est sur l’axe de droite ; la ligne pointillée est la vitesse finale (A ou fc). Paramètres dans <code>chart.infiltration</code>.</p>
-<div id="bbc1accc" class="cell" data-execution_count="36">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(infiltration, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    .infiltration_curve(<span class="st">'minutes'</span>, <span class="st">'infiltration_mm'</span>, model<span class="op">=</span><span class="st">'philip'</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Infiltration — modèle de Philip'</span>)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>({k: <span class="bu">round</span>(v, <span class="dv">3</span>) <span class="cf">if</span> <span class="bu">isinstance</span>(v, <span class="bu">float</span>) <span class="cf">else</span> v <span class="cf">for</span> k, v <span class="kw">in</span> chart.infiltration.items()})</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="50b3e98c" class="cell" data-execution_count="41">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(infiltration, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    .infiltration_curve(<span class="st">'minutes'</span>, <span class="st">'infiltration_mm'</span>, model<span class="op">=</span><span class="st">'philip'</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Infiltration — modèle de Philip'</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    .tight_layout())</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>chart.show()</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>({k: <span class="bu">round</span>(v, <span class="dv">3</span>) <span class="cf">if</span> <span class="bu">isinstance</span>(v, <span class="bu">float</span>) <span class="cf">else</span> v <span class="cf">for</span> k, v <span class="kw">in</span> chart.infiltration.items()})</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-37-output-1.png" width="948" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-42-output-1.png" width="948" height="518" class="figure-img"></p>
 <figcaption>Essai d’infiltration (données fictives)</figcaption>
 </figure>
 </div>
@@ -2594,17 +3007,17 @@ Name: V (%), dtype: float64</code></pre>
 </table>
 <p><strong>Exemple</strong></p>
 <p>Une variable du sol dans le plan <strong>profondeur × temps</strong> : on suit l’humectation et le dessèchement du profil au fil des saisons. Données en format long (une ligne par date et profondeur).</p>
-<div id="fb2c6daf" class="cell" data-execution_count="38">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>(Chart(humidite_sol, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    .isopleth(<span class="st">'date'</span>, <span class="st">'profondeur'</span>, <span class="st">'humidite'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">'Profondeur (cm)'</span>)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Isoplèthes d</span><span class="ch">\'</span><span class="st">humidité du sol'</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="9e280080" class="cell" data-execution_count="43">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>(Chart(humidite_sol, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    .isopleth(<span class="st">'date'</span>, <span class="st">'profondeur'</span>, <span class="st">'humidite'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">'Profondeur (cm)'</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Isoplèthes d</span><span class="ch">\'</span><span class="st">humidité du sol'</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="sciences_files/figure-html/cell-39-output-1.png" width="894" height="518" class="figure-img"></p>
+<p><img src="sciences_files/figure-html/cell-44-output-1.png" width="894" height="518" class="figure-img"></p>
 <figcaption>Humidité du sol (%) selon la date et la profondeur (données fictives)</figcaption>
 </figure>
 </div>

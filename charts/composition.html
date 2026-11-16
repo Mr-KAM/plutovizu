@@ -613,7 +613,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="ea5194c6" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="3">
+<div id="3c43714f" class="cell" data-fig-height="6" data-fig-width="6" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'segment'</span>: [<span class="st">'Résidentiel'</span>,<span class="st">'Professionnel'</span>,<span class="st">'Industrie'</span>,<span class="st">'Administration'</span>],</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'part'</span>:    [<span class="dv">42</span>, <span class="dv">28</span>, <span class="dv">18</span>, <span class="dv">12</span>],</span>
@@ -725,7 +725,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Un camembert évidé, avec un texte central ; avec <code>group</code>, deux anneaux imbriqués (groupes à l’intérieur, éléments à l’extérieur).</p>
-<div id="59cdc6b7" class="cell" data-execution_count="5">
+<div id="7cbb70f6" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(cultures, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .donut(<span class="st">'surface'</span>, labels<span class="op">=</span><span class="st">'culture'</span>, group<span class="op">=</span><span class="st">'famille'</span>, center_text<span class="op">=</span><span class="st">'1 865 ha'</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Assolement'</span>)</span>
@@ -813,7 +813,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="ebf56d87" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="7">
+<div id="ef39e152" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'departement'</span>: [<span class="st">'R&amp;D'</span>,<span class="st">'Ventes'</span>,<span class="st">'Marketing'</span>,<span class="st">'Ops'</span>,<span class="st">'Finance'</span>,<span class="st">'IT'</span>,<span class="st">'RH'</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'budget'</span>:      [<span class="dv">450</span>, <span class="dv">380</span>, <span class="dv">210</span>, <span class="dv">280</span>, <span class="dv">150</span>, <span class="dv">200</span>, <span class="dv">120</span>],</span>
@@ -929,7 +929,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Un cercle par ligne, d’aire proportionnelle à la valeur (calcul par <a href="https://github.com/elmotec/circlify">circlify</a>). Avec <code>group</code>, les cercles sont regroupés dans le cercle de leur groupe ; une liste de colonnes donne plusieurs niveaux d’imbrication (<code>group=['cycle', 'famille']</code>).</p>
-<div id="24cca04d" class="cell" data-execution_count="9">
+<div id="ba40d90f" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cultures <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'famille'</span>: [<span class="st">'Céréales'</span>] <span class="op">*</span> <span class="dv">4</span> <span class="op">+</span> [<span class="st">'Légumineuses'</span>] <span class="op">*</span> <span class="dv">3</span> <span class="op">+</span> [<span class="st">'Tubercules'</span>] <span class="op">*</span> <span class="dv">3</span> <span class="op">+</span> [<span class="st">'Maraîchage'</span>] <span class="op">*</span> <span class="dv">3</span>,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'culture'</span>: [<span class="st">'Riz'</span>, <span class="st">'Maïs'</span>, <span class="st">'Mil'</span>, <span class="st">'Sorgho'</span>, <span class="st">'Niébé'</span>, <span class="st">'Arachide'</span>, <span class="st">'Soja'</span>,</span>
@@ -1019,7 +1019,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="8a6fad8f" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="11">
+<div id="804321d3" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'poste'</span>: [<span class="st">'CA'</span>,<span class="st">'Coût prod.'</span>,<span class="st">'Marge brute'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,<span class="st">'Marketing'</span>,<span class="st">'Résultat'</span>],</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'delta'</span>: [<span class="dv">500</span>, <span class="op">-</span><span class="dv">200</span>, <span class="dv">300</span>, <span class="op">-</span><span class="dv">60</span>, <span class="op">-</span><span class="dv">140</span>, <span class="op">-</span><span class="dv">40</span>, <span class="dv">60</span>],</span>
@@ -1139,7 +1139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Pour des compositions en trois parts (pourcentages ou fractions), comme la texture du sol. Sommets : premier argument en bas à gauche, deuxième en bas à droite, troisième en haut.</p>
-<div id="36eba25c" class="cell" data-execution_count="13">
+<div id="32a9c6a4" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">11</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>sols <span class="op">=</span> pd.DataFrame({<span class="st">'zone'</span>: rng.choice([<span class="st">'bas-fond'</span>, <span class="st">'plateau'</span>], <span class="dv">40</span>)})</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sols[<span class="st">'sable'</span>] <span class="op">=</span> np.where(sols[<span class="st">'zone'</span>] <span class="op">==</span> <span class="st">'plateau'</span>, rng.uniform(<span class="dv">55</span>, <span class="dv">85</span>, <span class="dv">40</span>), rng.uniform(<span class="dv">10</span>, <span class="dv">45</span>, <span class="dv">40</span>))</span>
@@ -1245,7 +1245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="04897c72" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
+<div id="6b0aa1f8" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'flux'</span>:       [<span class="dv">200</span>, <span class="op">-</span><span class="dv">80</span>,  <span class="op">-</span><span class="dv">50</span>, <span class="op">-</span><span class="dv">70</span>,   <span class="dv">80</span>,  <span class="op">-</span><span class="dv">30</span>, <span class="op">-</span><span class="dv">50</span>],</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'etiquette'</span>:  [<span class="st">'Revenus'</span>,<span class="st">'Coût matières'</span>,<span class="st">'Loyers'</span>,<span class="st">'Salaires'</span>,</span>
@@ -1346,7 +1346,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Un arc concentrique par indicateur, sa longueur rapportée à un tour complet.</p>
-<div id="bfcec00f" class="cell" data-execution_count="17">
+<div id="50b1a3fd" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(avancement, figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">6.5</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .radial_bar(<span class="st">'pct'</span>, labels<span class="op">=</span><span class="st">'activite'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Avancement du projet'</span>)</span>
@@ -1435,7 +1435,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Une barre pleine sur un rail clair : un nombre, ou une colonne (une barre par ligne).</p>
-<div id="d996bcbb" class="cell" data-execution_count="19">
+<div id="3fd2c682" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(avancement, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">2.8</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .progress_bar(<span class="st">'pct'</span>, labels<span class="op">=</span><span class="st">'activite'</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Objectifs atteints'</span>)</span>
