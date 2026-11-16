@@ -1103,11 +1103,13 @@ Flèche drawarrow ; `coords` : `'data'`, `'axes'` (0–1) ou `'figure'` (0–1).
 ### `rounded`
 
 ```python
-.rounded(radius: float = 6.0) -> Chart
+.rounded(radius: float = 8.0) -> Chart
 ```
 
 Coins arrondis (rayon en points) des barres, rectangles, secteurs et polygones ;
-appliqué à `show()` / `save()`.
+appliqué à `show()` / `save()`. **Par défaut, tous les graphiques sont arrondis à
+8 points** (`Chart.default_round`) ; `rounded(0)` garde des coins vifs,
+`Chart.default_round = 0` désactive l'arrondi pour la session.
 
 ---
 

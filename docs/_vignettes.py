@@ -316,7 +316,7 @@ def build():
             for ax in chart.fig.axes:  # tous les panneaux (soil_properties…)
                 if ax.get_legend() is not None and name not in ('polar', 'scatter3d'):
                     ax.get_legend().remove()
-            chart.fig.savefig(out / f'{name}.png', dpi=80)
+            chart.save(out / f'{name}.png', dpi=80, bbox_inches=None)   # applique l'arrondi par défaut
         plt.close('all')
         items.append({'title': title, 'description': f'{name}() — {usage}',
                       'path': f'charts/{PAGE[cat]}.html#g-{name}',

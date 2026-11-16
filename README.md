@@ -170,7 +170,7 @@ from plutovizu import Chart, load_font
 
 (Chart(df)
     .bar('region', 'ventes')
-    .rounded(8)                                   # coins arrondis (points)
+    .rounded(12)                                  # coins arrondis : 8 points par défaut, 0 = vifs
     .annotation('Record', xy=(2, 520), xytext=(0.5, 560), radius=-0.3)
     .arrow((0.1, 0.9), (0.3, 0.7), coords='axes')
     .title('Ventes', fontproperties=load_font('Inter', 'semibold'))

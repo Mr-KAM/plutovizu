@@ -189,6 +189,15 @@ class Chart:
             FR: Palette de couleurs actuellement active.
     """
 
+    # Coins arrondis appliqués par défaut à tous les graphiques (points) ;
+    # Chart.default_round = 0 les désactive pour toute la session, .rounded(0) pour un graphique.
+    default_round: float = 8.0
+    # Graphiques dont les formes doivent rester jointives : pas d'arrondi par défaut
+    # (.rounded(r) reste possible explicitement).
+    _NO_DEFAULT_ROUND = frozenset({'soil_texture', 'ternary', 'calendar_heatmap', 'sankey', 'mesh',
+                                   'soil_profile', 'climate_stripes', 'seaborn.jointplot',
+                                   'exchange_complex'})
+
     def __init__(self, data: pd.DataFrame, figsize: Tuple[float, float] = FIGSIZE,
                  theme: Optional[str] = None):
         """
@@ -225,6 +234,8 @@ class Chart:
         self.custom_palettes = {}
         self.current_palette = None
         self.sns_grid = None  # grille seaborn (pairplot, jointplot, clustermap…) le cas échéant
+        self._round_radius = Chart.default_round   # coins arrondis par défaut (voir rounded)
+        self._round_explicit = False
 
     # ──────────────────────────────────────── Appearance / Apparence
 
@@ -5708,7 +5719,7 @@ class Chart:
                      else self.ax.transAxes, **opts)
         return self
 
-    def rounded(self, radius: float = 6.0) -> 'Chart':
+    def rounded(self, radius: float = 8.0) -> 'Chart':
         """
         EN: Smooth (rounded) corners on the chart's shapes: bars, histogram and treemap
             rectangles, pie, donut and radial-bar sectors, polygons. `radius` is in points
@@ -5719,17 +5730,21 @@ class Chart:
             radiales, polygones. `radius` est en points (réduit pour les formes fines).
             Appliqué à l'affichage ou à l'enregistrement, une fois la mise en page connue :
             on peut donc l'appeler n'importe où dans la chaîne.
+            Par défaut, tous les graphiques ont des coins arrondis de 8 points
+            (Chart.default_round) ; rounded(0) garde des coins vifs.
 
         Args / Paramètres:
-            radius (float): EN/FR: Rayon des coins en points (1 point = 1/72 de pouce).
+            radius (float): EN/FR: Rayon des coins en points (1 point = 1/72 de pouce) ; 0 = coins vifs.
 
         Example / Exemple:
             Chart(df).bar('region', 'ventes').rounded(8).show()
             Chart(df).donut('surface', labels='culture').rounded(5).show()
+            Chart(df).bar('region', 'ventes').rounded(0).show()     # coins vifs
         """
         if radius < 0:
             raise ValueError('radius doit être positif')
         self._round_radius = radius
+        self._round_explicit = True
         return self
 
     def _apply_rounding(self) -> None:
@@ -5737,6 +5752,8 @@ class Chart:
         from matplotlib.patches import FancyArrowPatch, PathPatch, Polygon, Rectangle, Wedge
         radius = getattr(self, '_round_radius', None)
         if not radius:
+            return
+        if not getattr(self, '_round_explicit', False) and self.chart_type in self._NO_DEFAULT_ROUND:
             return
         self._round_radius = None
         r_px = radius * self.fig.dpi / 72
@@ -5748,11 +5765,16 @@ class Chart:
                     continue
                 if not patch.get_fill() or patch.get_facecolor()[3] == 0:
                     continue  # tracé sans remplissage (courbe de bump chart…) : on n'y touche pas
-                tr = patch.get_transform()
-                new_path = _round_path(tr.transform_path(patch.get_path()), r_px)
+                # repère des données (et non celui de la forme, non inversible si largeur ou hauteur = 0)
+                tr = patch.get_data_transform()
+                data_path = patch.get_patch_transform().transform_path(patch.get_path())
+                new_path = _round_path(tr.transform_path(data_path), r_px)
                 if new_path is None:
                     continue
-                new = PathPatch(tr.inverted().transform_path(new_path))
+                try:
+                    new = PathPatch(tr.inverted().transform_path(new_path))
+                except np.linalg.LinAlgError:
+                    continue
                 new.update_from(patch)
                 new.set_transform(tr)
                 new.set_zorder(patch.get_zorder())

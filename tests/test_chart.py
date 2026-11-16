@@ -1422,3 +1422,25 @@ def test_save_defaults_400dpi_and_format_from_extension(df, tmp_path):
         assert im.size == (int(16 / 2.54 * 400), int(10 / 2.54 * 400))   # 16 × 10 cm à 400 dpi
     Chart(df).line('x', 'a').save(tmp_path / 'g.pdf')
     assert (tmp_path / 'g.pdf').read_bytes()[:4] == b'%PDF'
+
+
+def test_default_rounding_8_points(df, tmp_path):
+    from matplotlib.patches import PathPatch, Rectangle
+    assert Chart.default_round == 8
+    c = Chart(df).bar('cat', 'b')
+    c.save(tmp_path / 'a.png')                                    # arrondi par défaut
+    assert all(isinstance(p, PathPatch) for p in c.ax.patches)
+    sharp = Chart(df).bar('cat', 'b').rounded(0)                   # coins vifs pour ce graphique
+    sharp.save(tmp_path / 'b.png')
+    assert all(isinstance(p, Rectangle) for p in sharp.ax.patches)
+    prof = pd.DataFrame({'haut': [0, 20], 'bas': [20, 50], 'horizon': ['A', 'B']})
+    sp = Chart(prof).soil_profile('haut', 'bas', 'horizon')        # formes jointives : pas d'arrondi
+    sp.save(tmp_path / 'c.png')
+    assert all(isinstance(p, Rectangle) for p in sp.ax.patches)
+    try:
+        Chart.default_round = 0                                    # désactivé pour la session
+        off = Chart(df).bar('cat', 'b')
+        off.save(tmp_path / 'd.png')
+        assert all(isinstance(p, Rectangle) for p in off.ax.patches)
+    finally:
+        Chart.default_round = 8

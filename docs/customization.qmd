@@ -31,20 +31,31 @@ Chart(df, figsize=(8, 5))          # 8 × 5 pouces
 
 ## Coins arrondis
 
-`rounded(radius)` adoucit les coins des formes : barres, histogrammes, treemaps,
-camemberts, anneaux, barres radiales… Le rayon est en points ; il est réduit
-automatiquement pour les formes fines. L'arrondi est appliqué à l'affichage
-(`show()`) ou à l'enregistrement (`save()`), une fois la mise en page connue : la
-méthode peut donc se placer n'importe où dans la chaîne.
+**Tous les graphiques ont des coins arrondis de 8 points par défaut** : barres,
+histogrammes, treemaps, Gantt, camemberts, anneaux, barres radiales… Le rayon est en
+points ; il est réduit automatiquement pour les formes fines. L'arrondi est appliqué à
+l'affichage (`show()`) ou à l'enregistrement (`save()`), une fois la mise en page connue.
+
+- `rounded(r)` change le rayon d'un graphique, `rounded(0)` garde des coins vifs ;
+- `Chart.default_round = 0` (ou une autre valeur) change le défaut pour toute la session ;
+- les graphiques dont les formes doivent rester jointives ne sont pas arrondis par défaut
+  (triangle des textures, ternaire, calendrier, Sankey, maillage, profil de sol, bandes
+  climatiques, complexe d'échange, marges du jointplot) ; `rounded(r)` reste possible.
 
 ```{python}
-#| fig-cap: "Barres et anneau aux coins arrondis"
+#| fig-cap: "Arrondi par défaut (8 points), puis coins vifs avec rounded(0)"
 ventes = pd.DataFrame({'region': ['Nord', 'Sud', 'Est', 'Ouest', 'Centre'],
                        'ca': [420, 310, 520, 280, 390]})
 (Chart(ventes)
-    .bar('region', 'ca')
-    .rounded(8)
+    .bar('region', 'ca')                       # arrondi de 8 points par défaut
     .title('Chiffre d\'affaires par région')
+    .tight_layout()
+    .show())
+
+(Chart(ventes)
+    .bar('region', 'ca')
+    .rounded(0)                                # coins vifs
+    .title('Coins vifs : rounded(0)')
     .tight_layout()
     .show())
 
@@ -57,7 +68,7 @@ parts = pd.DataFrame({'culture': ['Riz', 'Maïs', 'Mil', 'Sorgho'], 'part': [40,
 ```
 
 Les écarts entre secteurs (bordure couleur du fond, réglée par le thème) rendent
-l'arrondi visible ; `rounded(0)` ou l'absence d'appel garde les coins vifs.
+l'arrondi visible.
 
 ---
 
