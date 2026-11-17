@@ -5943,7 +5943,8 @@ class Chart:
             once the final layout is known, so it can be called anywhere in the chain.
         FR: Coins adoucis (arrondis) sur les formes du graphique : barres, rectangles
             d'histogramme et de treemap, secteurs de camembert, d'anneau et de barres
-            radiales, polygones. `radius` est en points (réduit pour les formes fines).
+            radiales, polygones, et (plus légèrement) pastilles de légende. `radius` est en
+            points (réduit pour les formes fines).
             Appliqué à l'affichage ou à l'enregistrement, une fois la mise en page connue :
             on peut donc l'appeler n'importe où dans la chaîne.
             Par défaut, tous les graphiques ont des coins arrondis de 8 points
@@ -6000,6 +6001,28 @@ class Chart:
                 patch.remove()
                 ax.add_patch(new)
                 new.set_clip_path(clip)
+        self._round_legends(radius)
+
+    def _round_legends(self, radius: float) -> None:
+        """Arrondit légèrement les pastilles rectangulaires des légendes (unités : points)."""
+        from matplotlib.offsetbox import DrawingArea
+        from matplotlib.patches import FancyBboxPatch, Rectangle
+        legends = [ax.get_legend() for ax in self.fig.axes] + list(self.fig.legends)
+        for leg in filter(None, legends):
+            for da in leg.findobj(DrawingArea):
+                for k, h in enumerate(da._children):
+                    if type(h) is not Rectangle:
+                        continue
+                    w, hh = h.get_width(), h.get_height()
+                    rs = min(radius / 3, 0.35 * min(w, hh))  # ponytail: « légèrement » = 1/3 du rayon
+                    new = FancyBboxPatch(h.get_xy(), w, hh,
+                                         boxstyle=f'round,pad=0,rounding_size={rs}')
+                    new.update_from(h)
+                    new.set_transform(h.get_data_transform())  # sans la transformation propre au rectangle
+                    new.set_figure(self.fig)
+                    da._children[k] = new
+                    if h in leg.legend_handles:
+                        leg.legend_handles[leg.legend_handles.index(h)] = new
 
     def set_style(self, style: str = 'default') -> 'Chart':
         """

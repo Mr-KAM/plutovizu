@@ -1505,3 +1505,14 @@ def test_ecoclimatogram_zones():
     assert line.get_xdata()[-1] == 70 and len(line.get_xdata()) == 5            # boucle fermée
     with pytest.raises(ValueError):
         Chart(d).ecoclimatogram('hr', 't', optimum=(80, 60, 24, 30))             # min > max
+
+
+def test_legend_handles_rounded():
+    from matplotlib.patches import FancyBboxPatch, Rectangle
+    df = pd.DataFrame({'r': ['A', 'B'], 'x': [3, 5], 'y': [4, 1]})
+    c = Chart(df).bar('r', ['x', 'y'])
+    c._apply_rounding()
+    assert all(isinstance(h, FancyBboxPatch) for h in c.ax.get_legend().legend_handles)
+    c0 = Chart(df).bar('r', ['x', 'y']).rounded(0)
+    c0._apply_rounding()
+    assert all(type(h) is Rectangle for h in c0.ax.get_legend().legend_handles)
