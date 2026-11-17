@@ -448,8 +448,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Seaborn</span></a>
+  <a href="../charts/complexes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphiques complexes</span></a>
   </div>
 </li>
       </ul>
@@ -506,7 +506,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#g-pca_biplot" id="toc-g-pca_biplot" class="nav-link active" data-scroll-target="#g-pca_biplot"><code>pca_biplot</code> — Analyse en composantes principales</a></li>
   <li><a href="#g-dendrogram" id="toc-g-dendrogram" class="nav-link" data-scroll-target="#g-dendrogram"><code>dendrogram</code> — Classification hiérarchique</a></li>
-  <li><a href="#g-clustermap" id="toc-g-clustermap" class="nav-link" data-scroll-target="#g-clustermap"><code>clustermap</code> — Carte de chaleur classée</a></li>
   </ul>
 </nav>
     </div>
@@ -621,7 +620,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.pca</code> : variance expliquée, coordonnées des individus et des variables.</p>
 <p><strong>Exemple</strong></p>
 <p>ACP normée : les individus sur les deux premiers axes, colorés par groupe, et les variables en flèches. Variance expliquée, coordonnées et contributions dans <code>chart.pca</code>.</p>
-<div id="1d04949b" class="cell" data-execution_count="3">
+<div id="6547a64d" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">7</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">30</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>precocite <span class="op">=</span> rng.normal(size<span class="op">=</span>n)</span>
@@ -647,7 +646,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="multivarie_files/figure-html/cell-4-output-2.png" width="758" height="566" class="figure-img"></p>
+<p><img src="multivarie_files/figure-html/cell-4-output-2.png" width="756" height="566" class="figure-img"></p>
 <figcaption>ACP de cinq caractères agronomiques sur 30 variétés</figcaption>
 </figure>
 </div>
@@ -748,7 +747,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Regroupe les individus selon leur ressemblance (méthode de Ward par défaut, variables centrées-réduites). <code>color_threshold</code> colore les groupes formés sous la hauteur de coupe, marquée par une ligne pointillée.</p>
-<div id="c5eb6338" class="cell" data-execution_count="5">
+<div id="a4d326f2" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .dendrogram(labels<span class="op">=</span><span class="st">'variete'</span>, color_threshold<span class="op">=</span><span class="dv">6</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Dendrogramme des variétés (Ward)'</span>)</span>
@@ -759,110 +758,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figure class="figure">
 <p><img src="multivarie_files/figure-html/cell-6-output-1.png" width="1046" height="472" class="figure-img"></p>
 <figcaption>Classification des variétés sur leurs caractères</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="g-clustermap" class="level3">
-<h3 class="anchored" data-anchor-id="g-clustermap"><code>clustermap</code> — Carte de chaleur classée</h3>
-<p>Carte de chaleur des données avec un dendrogramme sur les lignes et un sur les colonnes, réordonnées selon la classification (seaborn clustermap).</p>
-<p><strong>Quand l’utiliser.</strong> Voir à la fois les groupes d’individus et les groupes de variables, et ce qui les caractérise (profils d’expression, de traits, de sites).</p>
-<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu, des colonnes numériques.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Colonne (exemple)</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Rôle</th>
-<th style="text-align: left;">Exemple de valeur</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>variete</code></td>
-<td style="text-align: left;">texte</td>
-<td style="text-align: left;"><code>labels</code> : nom des lignes</td>
-<td style="text-align: left;">V07</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>hauteur</code></td>
-<td style="text-align: left;">nombre</td>
-<td style="text-align: left;"><code>columns</code> : colonne de la matrice</td>
-<td style="text-align: left;">118</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>talles</code></td>
-<td style="text-align: left;">nombre</td>
-<td style="text-align: left;"><code>columns</code> : colonne de la matrice</td>
-<td style="text-align: left;">14</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Paramètres</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Paramètre</th>
-<th style="text-align: left;">Défaut</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>columns</code></td>
-<td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Colonnes numériques ; <code>None</code> = toutes.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>labels</code></td>
-<td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Colonne nommant les lignes.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>standardize</code></td>
-<td style="text-align: left;"><code>True</code></td>
-<td style="text-align: left;">Centre-réduit chaque colonne (couleurs comparables entre variables).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>cmap</code></td>
-<td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Défaut ‘vlag’ si standardisé, sinon celle du thème.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>method</code></td>
-<td style="text-align: left;"><code>'ward'</code></td>
-<td style="text-align: left;">Méthode d’agrégation de la classification (‘ward’, ‘average’…).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>figsize</code></td>
-<td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Taille de la figure créée par seaborn (pouces) ; <code>None</code> = celle du Chart.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>**kwargs</code></td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">Options supplémentaires transmises à la fonction sous-jacente (seaborn ou matplotlib).</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Exemple</strong></p>
-<p>Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs dendrogrammes. Les colonnes sont centrées-réduites par défaut (<code>standardize=True</code>).</p>
-<div id="90b43dad" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">9</span>))</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .clustermap(labels<span class="op">=</span><span class="st">'variete'</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Clustermap des caractères variétaux'</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="multivarie_files/figure-html/cell-8-output-1.png" width="757" height="886" class="figure-img"></p>
-<figcaption>Profils des variétés classés par ressemblance</figcaption>
 </figure>
 </div>
 </div>

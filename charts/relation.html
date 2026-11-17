@@ -448,8 +448,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../charts/seaborn.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Seaborn</span></a>
+  <a href="../charts/complexes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Graphiques complexes</span></a>
   </div>
 </li>
       </ul>
@@ -511,8 +511,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#g-hexbin" id="toc-g-hexbin" class="nav-link" data-scroll-target="#g-hexbin"><code>hexbin</code> — Pavage hexagonal</a></li>
   <li><a href="#g-heatmap" id="toc-g-heatmap" class="nav-link" data-scroll-target="#g-heatmap"><code>heatmap</code> — Carte de chaleur (corrélation)</a></li>
   <li><a href="#g-pivot_heatmap" id="toc-g-pivot_heatmap" class="nav-link" data-scroll-target="#g-pivot_heatmap"><code>pivot_heatmap</code> — Tableau croisé coloré</a></li>
-  <li><a href="#g-jointplot" id="toc-g-jointplot" class="nav-link" data-scroll-target="#g-jointplot"><code>jointplot</code> — Relation et distributions marginales</a></li>
-  <li><a href="#g-pairplot" id="toc-g-pairplot" class="nav-link" data-scroll-target="#g-pairplot"><code>pairplot</code> — Matrice de nuages de points</a></li>
   </ul>
 </nav>
     </div>
@@ -618,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="003499e8" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
+<div id="70b4d9b3" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">10</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="dv">200</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>temp <span class="op">=</span> np.random.normal(<span class="dv">22</span>, <span class="dv">8</span>, n)</span>
@@ -729,7 +727,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.regression_stats</code> : coefficients, R², p-value.</p>
 <p><strong>Exemple</strong></p>
 <p>Ajustement polynomial avec bande de confiance à 95 %, équation et R² (et p-value pour un ajustement linéaire). Les résultats sont aussi disponibles dans <code>chart.regression_stats</code>.</p>
-<div id="8c505456" class="cell" data-execution_count="5">
+<div id="1dff3b42" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">4.5</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .regression(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, order<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Courbe de réponse à l'azote"</span>)</span>
@@ -814,7 +812,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Des résidus sans structure valident le modèle ; une courbe signale un mauvais degré.</p>
-<div id="4f15e65b" class="cell" data-execution_count="7">
+<div id="e11be2ef" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .residplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, order<span class="op">=</span><span class="dv">1</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Résidus d'un ajustement linéaire : la courbure appelle un degré 2"</span>)</span>
@@ -924,7 +922,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Un nuage de points avec une ellipse par groupe, couvrant 95 % de la population (loi normale bivariée ; réglable avec <code>level</code>).</p>
-<div id="b5e363ed" class="cell" data-execution_count="9">
+<div id="424d3a07" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .confidence_ellipse(<span class="st">'jours_floraison'</span>, <span class="st">'hauteur'</span>, group<span class="op">=</span><span class="st">'cycle'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Ellipses de confiance à 95 %'</span>)</span>
@@ -933,7 +931,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="relation_files/figure-html/cell-10-output-1.png" width="757" height="470" class="figure-img"></p>
+<p><img src="relation_files/figure-html/cell-10-output-1.png" width="755" height="470" class="figure-img"></p>
 <figcaption>Hauteur et date de floraison selon le cycle</figcaption>
 </figure>
 </div>
@@ -1012,7 +1010,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="b1be0a8f" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="11">
+<div id="ea6f727b" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'age'</span>:    np.random.normal(<span class="dv">40</span>, <span class="dv">12</span>, <span class="dv">5000</span>),</span>
@@ -1103,7 +1101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="13d462f1" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="13">
+<div id="1fdb5187" class="cell" data-fig-height="6" data-fig-width="7" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">5</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'température'</span>: np.random.normal(<span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">100</span>),</span>
@@ -1219,7 +1217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.pivot_table</code> : le tableau croisé.</p>
 <p><strong>Exemple</strong></p>
 <p>Une valeur agrégée (moyenne par défaut) selon deux catégories, annotée et colorée.</p>
-<div id="7600f869" class="cell" data-execution_count="15">
+<div id="1d3302ed" class="cell" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">4</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .pivot_heatmap(<span class="st">'dose'</span>, <span class="st">'variete'</span>, <span class="st">'rendement'</span>, fmt<span class="op">=</span><span class="st">'.2f'</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement moyen (t/ha)'</span>)</span>
@@ -1230,180 +1228,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figure class="figure">
 <p><img src="relation_files/figure-html/cell-16-output-1.png" width="719" height="374" class="figure-img"></p>
 <figcaption>Rendement moyen par variété et par dose</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="g-jointplot" class="level3">
-<h3 class="anchored" data-anchor-id="g-jointplot"><code>jointplot</code> — Relation et distributions marginales</h3>
-<p>Nuage de points (ou densité, régression, hexagones) avec la distribution de chaque variable dans les marges (seaborn jointplot).</p>
-<p><strong>Quand l’utiliser.</strong> Étudier une relation entre deux variables en gardant un œil sur leurs distributions individuelles.</p>
-<p><strong>Données attendues</strong> : un DataFrame, une ligne par observation.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Colonne (exemple)</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Rôle</th>
-<th style="text-align: left;">Exemple de valeur</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>dose</code></td>
-<td style="text-align: left;">nombre</td>
-<td style="text-align: left;"><code>x</code></td>
-<td style="text-align: left;">90</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>rendement</code></td>
-<td style="text-align: left;">nombre</td>
-<td style="text-align: left;"><code>y</code></td>
-<td style="text-align: left;">5.2</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Paramètres</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Paramètre</th>
-<th style="text-align: left;">Défaut</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>x</code></td>
-<td style="text-align: left;"><strong>obligatoire</strong></td>
-<td style="text-align: left;">Colonne de l’axe horizontal.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>y</code></td>
-<td style="text-align: left;"><strong>obligatoire</strong></td>
-<td style="text-align: left;">Colonne de l’axe vertical.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>hue</code></td>
-<td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Colonne de regroupement : une couleur par modalité.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>kind</code></td>
-<td style="text-align: left;"><code>'scatter'</code></td>
-<td style="text-align: left;">Type du panneau central : ‘scatter’, ‘kde’, ‘hist’, ‘hex’, ‘reg’ ou ‘resid’.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>**kwargs</code></td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">Options supplémentaires transmises à la fonction sous-jacente (seaborn ou matplotlib).</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Exemple</strong></p>
-<div id="3e601408" class="cell" data-execution_count="17">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .jointplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, kind<span class="op">=</span><span class="st">'reg'</span>, height<span class="op">=</span><span class="fl">5.5</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement selon la dose'</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="relation_files/figure-html/cell-18-output-1.png" width="508" height="543" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="g-pairplot" class="level3">
-<h3 class="anchored" data-anchor-id="g-pairplot"><code>pairplot</code> — Matrice de nuages de points</h3>
-<p>Matrice de graphiques : un nuage de points pour chaque paire de variables et la distribution de chaque variable sur la diagonale.</p>
-<p><strong>Quand l’utiliser.</strong> Exploration initiale d’un jeu de données à plusieurs variables numériques, coloré par groupe.</p>
-<p><strong>Données attendues</strong> : un DataFrame, une ligne par individu.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: left;">Colonne (exemple)</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Rôle</th>
-<th style="text-align: left;">Exemple de valeur</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>hauteur</code></td>
-<td style="text-align: left;">nombre</td>
-<td style="text-align: left;"><code>vars</code> : variable</td>
-<td style="text-align: left;">118</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>rendement</code></td>
-<td style="text-align: left;">nombre</td>
-<td style="text-align: left;"><code>vars</code> : variable</td>
-<td style="text-align: left;">4.9</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>cycle</code></td>
-<td style="text-align: left;">texte</td>
-<td style="text-align: left;"><code>hue</code> (optionnel)</td>
-<td style="text-align: left;">Tardif</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Paramètres</strong></p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Paramètre</th>
-<th style="text-align: left;">Défaut</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;"><code>vars</code></td>
-<td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Liste des colonnes numériques à croiser ; <code>None</code> = toutes.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>hue</code></td>
-<td style="text-align: left;"><code>None</code></td>
-<td style="text-align: left;">Colonne de regroupement : une couleur par modalité.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;"><code>corner</code></td>
-<td style="text-align: left;"><code>False</code></td>
-<td style="text-align: left;">N’affiche que le triangle inférieur (pas de doublons).</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;"><code>**kwargs</code></td>
-<td style="text-align: left;">—</td>
-<td style="text-align: left;">Options supplémentaires transmises à la fonction sous-jacente (seaborn ou matplotlib).</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Exemple</strong></p>
-<div id="ef334fa5" class="cell" data-execution_count="19">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .pairplot(<span class="bu">vars</span><span class="op">=</span>[<span class="st">'hauteur'</span>, <span class="st">'jours_floraison'</span>, <span class="st">'talles'</span>, <span class="st">'rendement'</span>],</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>              hue<span class="op">=</span><span class="st">'cycle'</span>, corner<span class="op">=</span><span class="va">True</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Relations entre caractères'</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="relation_files/figure-html/cell-20-output-1.png" width="852" height="788" class="figure-img"></p>
 </figure>
 </div>
 </div>
