@@ -566,13 +566,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="coins-arrondis" class="level2">
 <h2 class="anchored" data-anchor-id="coins-arrondis">Coins arrondis</h2>
-<p><strong>Tous les graphiques ont des coins arrondis de 8 points par défaut</strong> : barres, histogrammes, treemaps, Gantt, camemberts, anneaux, barres radiales… Le rayon est en points ; il est réduit automatiquement pour les formes fines. L’arrondi est appliqué à l’affichage (<code>show()</code>) ou à l’enregistrement (<code>save()</code>), une fois la mise en page connue.</p>
+<p><strong>Tous les graphiques ont des coins arrondis de 8 points par défaut</strong> : barres, histogrammes, treemaps, Gantt, camemberts, anneaux, barres radiales, cellules de la matrice des codes… Le rayon est en points ; il est réduit automatiquement pour les formes fines. Les pastilles de légende sont arrondies plus légèrement (un tiers du rayon). L’arrondi est appliqué à l’affichage (<code>show()</code>) ou à l’enregistrement (<code>save()</code>), une fois la mise en page connue.</p>
 <ul>
-<li><code>rounded(r)</code> change le rayon d’un graphique, <code>rounded(0)</code> garde des coins vifs ;</li>
+<li><code>rounded(r)</code> change le rayon d’un graphique (formes et légende), <code>rounded(0)</code> garde des coins vifs ;</li>
 <li><code>Chart.default_round = 0</code> (ou une autre valeur) change le défaut pour toute la session ;</li>
 <li>les graphiques dont les formes doivent rester jointives ne sont pas arrondis par défaut (triangle des textures, ternaire, calendrier, Sankey, maillage, profil de sol, bandes climatiques, complexe d’échange, marges du jointplot) ; <code>rounded(r)</code> reste possible.</li>
 </ul>
-<div id="e67548a0" class="cell" data-execution_count="2">
+<div id="3c0da2f2" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ventes <span class="op">=</span> pd.DataFrame({<span class="st">'region'</span>: [<span class="st">'Nord'</span>, <span class="st">'Sud'</span>, <span class="st">'Est'</span>, <span class="st">'Ouest'</span>, <span class="st">'Centre'</span>],</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                       <span class="st">'ca'</span>: [<span class="dv">420</span>, <span class="dv">310</span>, <span class="dv">520</span>, <span class="dv">280</span>, <span class="dv">390</span>]})</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>(Chart(ventes)</span>
@@ -624,7 +624,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="palettes-de-couleurs">Palettes de couleurs</h2>
 <section id="palettes-seaborn-intégrées" class="level3">
 <h3 class="anchored" data-anchor-id="palettes-seaborn-intégrées">Palettes seaborn intégrées</h3>
-<div id="703e2122" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
+<div id="73868a04" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'x'</span>: <span class="bu">range</span>(<span class="dv">10</span>),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'A'</span>: np.random.randn(<span class="dv">10</span>).cumsum(),</span>
@@ -644,7 +644,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="customization_files/figure-html/cell-4-output-1.png" width="596" height="368" class="figure-img"></p>
+<p><img src="customization_files/figure-html/cell-4-output-1.png" width="595" height="368" class="figure-img"></p>
 <figcaption>Courbes avec la palette ‘deep’ de seaborn</figcaption>
 </figure>
 </div>
@@ -693,7 +693,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="palettes-pypalettes" class="level3">
 <h3 class="anchored" data-anchor-id="palettes-pypalettes">Palettes pypalettes</h3>
 <p><a href="https://github.com/y-sunflower/pypalettes">pypalettes</a> apporte plus de 2 700 palettes (MetBrewer, MoMAColors, nationalparkcolors, ggthemes…). Elles s’utilisent par leur nom comme les palettes seaborn : <code>set_colors</code>, <code>preview_palette</code>, et en dégradé avec <code>pypalette(nom, continuous=True)</code> pour les paramètres <code>cmap</code>.</p>
-<div id="b134f4b2" class="cell" data-execution_count="4">
+<div id="ab9c472d" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> pypalette</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>parts <span class="op">=</span> pd.DataFrame({<span class="st">'culture'</span>: [<span class="st">'Riz'</span>, <span class="st">'Maïs'</span>, <span class="st">'Mil'</span>, <span class="st">'Sorgho'</span>, <span class="st">'Niébé'</span>, <span class="st">'Arachide'</span>],</span>
@@ -728,7 +728,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="palette-personnalisée" class="level3">
 <h3 class="anchored" data-anchor-id="palette-personnalisée">Palette personnalisée</h3>
-<div id="d5d6288f" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="5">
+<div id="df409918" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'categorie'</span>: [<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'C'</span>, <span class="st">'D'</span>, <span class="st">'E'</span>],</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'valeur'</span>:    [<span class="dv">80</span>, <span class="dv">65</span>, <span class="dv">90</span>, <span class="dv">45</span>, <span class="dv">72</span>],</span>
@@ -762,7 +762,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="dégradé-entre-deux-couleurs" class="level3">
 <h3 class="anchored" data-anchor-id="dégradé-entre-deux-couleurs">Dégradé entre deux couleurs</h3>
-<div id="cf9562dc" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="6">
+<div id="2f428191" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df_dummy <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: [<span class="dv">1</span>], <span class="st">'y'</span>: [<span class="dv">1</span>]})</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(Chart(df_dummy)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .generate_gradient_palette(<span class="st">'ocean_fire'</span>, <span class="st">'#003049'</span>, <span class="st">'#d62828'</span>, n_colors<span class="op">=</span><span class="dv">8</span>)</span>
@@ -784,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="prévisualiser-une-palette" class="level3">
 <h3 class="anchored" data-anchor-id="prévisualiser-une-palette">Prévisualiser une palette</h3>
-<div id="37ea7e65" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="7">
+<div id="266e78e6" class="cell" data-fig-height="2" data-fig-width="8" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_dummy <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: [<span class="dv">1</span>], <span class="st">'y'</span>: [<span class="dv">1</span>]})</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>(Chart(df_dummy)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .preview_palette(<span class="st">'viridis'</span>, n_colors<span class="op">=</span><span class="dv">10</span>)</span>
@@ -818,7 +818,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="fira-sans-et-inter-fournies-avec-plutovizu">Fira Sans et Inter, fournies avec plutovizu</h3>
 <p>Les polices <strong>Fira Sans</strong> (police par défaut de tous les thèmes plutovizu) et <strong>Inter</strong> sont incluses dans le package (licence SIL Open Font License) et enregistrées dans matplotlib dès <code>import plutovizu</code> : aucune installation ni connexion n’est nécessaire. Les graisses disponibles : Light, Regular, Italic, Medium, SemiBold, Bold, Bold Italic.</p>
 <p><code>load_font</code> (basée sur <a href="https://github.com/y-sunflower/pyfonts">pyfonts</a>) donne une police précise pour un élément ; toute autre police <strong>Google Fonts</strong> est téléchargée une fois puis mise en cache.</p>
-<div id="9f4a2e60" class="cell" data-execution_count="8">
+<div id="c9bdd8ad" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> plutovizu <span class="im">import</span> load_font</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
@@ -847,7 +847,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="changer-la-police-globale" class="level3">
 <h3 class="anchored" data-anchor-id="changer-la-police-globale">Changer la police globale</h3>
 <p><code>font()</code> change la police de tout le graphique ; une police absente du système est cherchée sur Google Fonts (via pyfonts) avant de revenir à <code>sans-serif</code>.</p>
-<div id="b44d49c7" class="cell" data-execution_count="9">
+<div id="d8774818" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(Chart(df)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Inter'</span>, size<span class="op">=</span><span class="dv">11</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .line(<span class="st">'x'</span>, <span class="st">'y'</span>, marker<span class="op">=</span><span class="st">'s'</span>, linewidth<span class="op">=</span><span class="dv">2</span>)</span>
@@ -889,7 +889,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="styles-matplotlib" class="level2">
 <h2 class="anchored" data-anchor-id="styles-matplotlib">Styles matplotlib</h2>
-<div id="2a45d6a3" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="10">
+<div id="2dd13a77" class="cell" data-fig-height="4" data-fig-width="8" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'x'</span>: <span class="bu">range</span>(<span class="dv">10</span>), <span class="st">'y'</span>: np.random.randn(<span class="dv">10</span>).cumsum()})</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -921,7 +921,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="annotations" class="level2">
 <h2 class="anchored" data-anchor-id="annotations">Annotations</h2>
 <p><code>annotation</code> et <code>arrow</code> dessinent des flèches courbes avec <a href="https://github.com/y-sunflower/drawarrow">drawarrow</a>. <code>annotation</code> écrit le texte en <code>xytext</code> et trace une flèche jusqu’au point <code>xy</code> ; le texte est aligné automatiquement pour que la flèche parte de son bord. <code>radius</code> règle la courbure (0 = droite, le signe change le sens).</p>
-<div id="116254e8" class="cell" data-execution_count="11">
+<div id="d3d27e72" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({<span class="st">'annee'</span>: <span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2025</span>),</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                   <span class="st">'rendement'</span>: [<span class="fl">3.1</span>, <span class="fl">3.3</span>, <span class="fl">3.0</span>, <span class="fl">3.6</span>, <span class="fl">3.8</span>, <span class="fl">3.5</span>, <span class="fl">4.0</span>, <span class="fl">4.4</span>, <span class="fl">4.2</span>, <span class="fl">5.1</span>]})</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -953,7 +953,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="grille-légende-limites" class="level2">
 <h2 class="anchored" data-anchor-id="grille-légende-limites">Grille, légende, limites</h2>
-<div id="65b5aed6" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="12">
+<div id="7397b7e7" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'x'</span>: <span class="bu">range</span>(<span class="dv">20</span>),</span>
