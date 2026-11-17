@@ -14,7 +14,7 @@ graphique : usage, structure du DataFrame attendu et paramètres.
 | [06_analyse_qualitative](06_analyse_qualitative.ipynb) | Nuage de mots, fréquences, Likert, matrice des codes |
 | [07_map](07_map.ipynb) | Points, zones, flux, densité, isolignes, itinéraires (`pip install plutovizu[map]`) |
 | [08_graphes_reseaux](08_graphes_reseaux.ipynb) | Réseaux, plus court chemin, arbre couvrant, flot maximal, chemin critique, tournées |
-| [09_seaborn](09_seaborn.ipynb) | Graphiques seaborn avec le thème et le chaînage |
+| [09_graphiques_complexes](09_graphiques_complexes.ipynb) | Pareto, carte de contrôle, Marimekko, Bland-Altman, raincloud, grilles seaborn |
 | [10_mise_en_forme](10_mise_en_forme.ipynb) | Thèmes, palettes (dont pypalettes), polices (Fira Sans, Inter), annotations, coins arrondis, export |
 
 Les notebooks utilisent le noyau Jupyter `plutovizu` :

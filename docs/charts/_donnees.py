@@ -357,3 +357,28 @@ ecoclimat = pd.DataFrame({
                  35, 30, 26, 24, 27, 40, 62, 74, 70, 52, 40, 38],
     'temperature': [21, 21.5, 22, 22.5, 24, 26.5, 27.5, 27.8, 28, 27.5, 25, 22,
                     24, 26.5, 29.5, 32, 33.5, 32, 28.5, 27.5, 28, 29, 27, 24.5]})
+
+# ── Graphiques complexes (données FICTIVES) ──────────────────────────────────
+# Pareto : pertes post-récolte de maïs par cause (tonnes)
+pertes = pd.DataFrame({
+    'cause': ['Insectes du stock', 'Moisissures', 'Rongeurs', 'Égrenage au champ',
+              'Transport', 'Séchage insuffisant', 'Vol', 'Oiseaux', 'Battage', 'Autres'],
+    'tonnes': [182, 141, 96, 64, 38, 27, 15, 11, 7, 4]})
+
+# Carte de contrôle : humidité des grains (%) à la réception, lot par lot
+_rc = np.random.default_rng(7)
+lots = pd.DataFrame({'lot': np.arange(1, 31),
+                     'humidite': np.round(13.2 + _rc.normal(0, 0.35, 30), 2)})
+lots.loc[[11, 23], 'humidite'] = [14.9, 11.6]   # deux lots hors limites
+
+# Marimekko : surfaces cultivées (ha) par région et par culture
+assolement = pd.DataFrame({
+    'region': ['Nord'] * 4 + ['Centre'] * 4 + ['Sud'] * 4 + ['Est'] * 4,
+    'culture': ['Mil', 'Sorgho', 'Arachide', 'Niébé'] * 4,
+    'surface': [420, 260, 150, 90, 300, 210, 380, 160, 120, 90, 260, 70, 150, 180, 60, 110]})
+
+# Bland-Altman : humidité du sol (%) par gravimétrie et par sonde capacitive
+_rb = np.random.default_rng(3)
+_vrai = _rb.uniform(8, 32, 40)
+mesures = pd.DataFrame({'gravimetrie': np.round(_vrai + _rb.normal(0, 0.6, 40), 1),
+                        'sonde': np.round(_vrai * 0.97 + 1.2 + _rb.normal(0, 1.0, 40), 1)})

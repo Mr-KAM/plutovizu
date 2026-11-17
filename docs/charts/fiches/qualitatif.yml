@@ -60,7 +60,8 @@ likert:
 code_matrix:
   desc: >-
     Matrice des codes : nombre de fois où chaque code (thème) apparaît dans chaque cas
-    (entretien, document, groupe), en carte de chaleur.
+    (entretien, document, groupe), en carte de chaleur aux cases arrondies (`rounded(0)` :
+    cases vives).
   usage: >-
     Analyse qualitative codée (type NVivo / Atlas.ti) : comparer les thèmes abordés par
     chaque entretien ou catégorie d'acteurs.
@@ -75,18 +76,3 @@ code_matrix:
     annot: Écrit les valeurs dans les cases.
   returns: "`chart.code_table` : le tableau cas × codes."
 
-seaborn:
-  desc: >-
-    Accès à toutes les fonctions de seaborn avec les données, le thème et le chaînage du
-    Chart : les fonctions « axes » dessinent sur le graphique, les fonctions « figure »
-    (pairplot, catplot…) créent leur propre grille.
-  usage: >-
-    Utiliser un graphique seaborn qui n'a pas de méthode dédiée (violinplot, swarmplot,
-    lineplot avec intervalle, displot…), tout en gardant le thème et `.title()`, `.save()`.
-  rows: "le format attendu par la fonction seaborn choisie, en général le format long (une ligne par observation)"
-  data:
-    - [variete, texte, "`x` : catégorie", "Nerica-4"]
-    - [rendement, nombre, "`y` : valeur", "5.3"]
-  params:
-    name: Nom de la fonction seaborn, ex. 'violinplot', 'swarmplot', 'lineplot', 'displot'.
-    kwargs: Arguments de la fonction seaborn (`x=`, `y=`, `hue=`, `inner=`…) ; `data` est fourni automatiquement.

@@ -1,0 +1,186 @@
+pareto:
+  desc: >-
+    Diagramme de Pareto : catégories triées par valeur décroissante (barres) et pourcentage
+    cumulé (courbe, axe de droite), avec le seuil de la règle des 80/20. Les catégories
+    « essentielles », celles qu'il faut pour atteindre le seuil, sont en couleur pleine.
+  usage: >-
+    Hiérarchiser les causes d'un problème (pertes post-récolte, défauts, pannes, erreurs,
+    plaintes) pour concentrer l'effort sur le petit nombre qui pèse le plus.
+  rows: "une ligne par catégorie (avec `value`), ou une ligne par événement (comptage)"
+  data:
+    - [cause, texte, "`category` : catégorie (cause, défaut, type d'erreur)", "Moisissures"]
+    - [tonnes, nombre, "`value` (optionnel) : valeur à sommer ; sinon les lignes sont comptées", "141"]
+  returns: "`chart.pareto_table` : valeur, part (%), cumul (%) et classe ('essentielle' ou 'secondaire') de chaque catégorie ; `chart.ax2` : l'axe du cumul."
+
+control_chart:
+  desc: >-
+    Carte de contrôle de Shewhart aux valeurs individuelles : la série, sa moyenne et les
+    limites de contrôle à ± 3 σ (σ estimé par l'étendue mobile moyenne, MR/1,128) ; les
+    points hors limites sont mis en évidence.
+  usage: >-
+    Suivre la stabilité d'un procédé (humidité des lots, poids des sacs, température d'un
+    séchoir, rendement d'une chaîne) et repérer les dérives à expliquer.
+  rows: une ligne par mesure, dans l'ordre de prise
+  data:
+    - [lot, "nombre ou date", "`x` : ordre des mesures", "12"]
+    - [humidite, nombre, "`y` : valeur mesurée", "13.4"]
+  returns: "`chart.control_limits` : moyenne, sigma, LSC et LIC ; `chart.control_table` : les mesures et la colonne `hors_limites`."
+
+marimekko:
+  desc: >-
+    Graphique Marimekko (mosaïque) : une barre empilée à 100 % par catégorie, de largeur
+    proportionnelle à sa part du total. Deux niveaux de composition dans une seule figure.
+  usage: >-
+    Comparer la composition de groupes de tailles différentes : cultures par région selon
+    la surface, ventes par marché et par produit, effectifs par site et par classe.
+  rows: une ligne par combinaison (colonne de la mosaïque × segment), ou une ligne par individu
+  data:
+    - [region, texte, "`x` : colonne de la mosaïque (largeur = part du total)", "Nord"]
+    - [culture, texte, "`y` : segment empilé", "Mil"]
+    - [surface, nombre, "`value` (optionnel) : valeur à sommer", "420"]
+  returns: "`chart.marimekko_table` : le tableau croisé x × y."
+
+bland_altman:
+  desc: >-
+    Graphique de Bland-Altman : accord entre deux méthodes de mesure. Chaque paire est placée
+    selon sa moyenne et sa différence ; les lignes donnent le biais moyen et les limites
+    d'agrément (biais ± 1,96 écart-type).
+  usage: >-
+    Valider une méthode rapide ou bon marché contre une méthode de référence : sonde contre
+    gravimétrie, kit de terrain contre laboratoire, deux appareils, deux opérateurs.
+  rows: une ligne par individu mesuré par les deux méthodes
+  data:
+    - [gravimetrie, nombre, "`a` : première méthode (référence)", "18.4"]
+    - [sonde, nombre, "`b` : seconde méthode", "19.1"]
+  returns: "`chart.agreement` : biais, écart-type, limites basse et haute, nombre de points hors limites, n."
+
+raincloud:
+  desc: >-
+    Graphique en nuage de pluie (raincloud) : pour chaque catégorie, une demi-densité (le
+    nuage), une boîte à moustaches étroite et toutes les observations dessous (la pluie).
+  usage: >-
+    Comparer des distributions en montrant à la fois leur forme, leur résumé et chaque
+    valeur : rendements par variété, mesures par traitement, notes par groupe.
+  rows: une ligne par observation
+  data:
+    - [variete, texte, "`x` : catégorie", "IR-841"]
+    - [rendement, nombre, "`y` : valeur mesurée", "4.6"]
+
+relplot:
+  desc: >-
+    Grille de nuages de points ou de courbes : un panneau par modalité de `col` et de `row`,
+    une couleur par modalité de `hue` (seaborn relplot).
+  usage: >-
+    Comparer la même relation entre sites, années ou traitements, côte à côte et sur les
+    mêmes échelles ; `kind='line'` trace la moyenne et son intervalle de confiance.
+  rows: une ligne par observation (format long)
+  data:
+    - [dose, nombre, "`x`", "60"]
+    - [rendement, nombre, "`y`", "4.8"]
+    - [variete, texte, "`hue`, `col` ou `row` (optionnels)", "Nerica-4"]
+  returns: "`chart.sns_grid` : la grille seaborn (FacetGrid)."
+
+displot:
+  desc: >-
+    Grille de distributions : histogrammes, densités ou fonctions de répartition, un panneau
+    par modalité de `col` et de `row` (seaborn displot).
+  usage: >-
+    Comparer la distribution d'une variable entre groupes, superposée (`hue`) ou en
+    panneaux (`col`), avec une estimation de densité (`kde=True`).
+  rows: une ligne par observation
+  data:
+    - [rendement, nombre, "`x` : variable étudiée", "4.8"]
+    - [variete, texte, "`hue`, `col` ou `row` (optionnels)", "Nerica-4"]
+  returns: "`chart.sns_grid` : la grille seaborn (FacetGrid)."
+
+catplot:
+  desc: >-
+    Grille de graphiques par catégorie (points, essaim, boîtes, violons, boxen, moyennes,
+    barres, effectifs), un panneau par modalité de `col` et de `row` (seaborn catplot).
+  usage: >-
+    Comparer des groupes selon un second, voire un troisième facteur : variétés par bloc,
+    traitements par site, réponses par classe d'âge.
+  rows: une ligne par observation
+  data:
+    - [variete, texte, "`x` : catégorie", "IR-841"]
+    - [rendement, nombre, "`y` : valeur", "4.6"]
+    - [bloc, "texte ou entier", "`hue`, `col` ou `row` (optionnels)", "2"]
+  returns: "`chart.sns_grid` : la grille seaborn (FacetGrid)."
+
+lmplot:
+  desc: >-
+    Grille de régressions : nuage de points et droite (ou polynôme) ajustée avec sa bande
+    de confiance, par groupe (`hue`) ou par panneau (`col`, `row`) (seaborn lmplot).
+  usage: >-
+    Comparer des relations dose-réponse ou des tendances entre groupes : la pente change-t-elle
+    d'une variété ou d'un site à l'autre ?
+  rows: une ligne par observation
+  data:
+    - [dose, nombre, "`x`", "60"]
+    - [rendement, nombre, "`y`", "4.8"]
+    - [variete, texte, "`hue`, `col` ou `row` (optionnels)", "Sahel-108"]
+  returns: "`chart.sns_grid` : la grille seaborn (FacetGrid)."
+
+jointplot:
+  desc: >-
+    Nuage de points (ou densité, régression, hexagones) avec la distribution de chaque
+    variable dans les marges (seaborn jointplot).
+  usage: >-
+    Étudier une relation entre deux variables en gardant un œil sur leurs distributions
+    individuelles.
+  rows: une ligne par observation
+  data:
+    - [dose, nombre, "`x`", "90"]
+    - [rendement, nombre, "`y`", "5.2"]
+  params:
+    kind: "Type du panneau central : 'scatter', 'kde', 'hist', 'hex', 'reg' ou 'resid'."
+
+pairplot:
+  desc: >-
+    Matrice de graphiques : un nuage de points pour chaque paire de variables et la
+    distribution de chaque variable sur la diagonale.
+  usage: >-
+    Exploration initiale d'un jeu de données à plusieurs variables numériques, coloré par
+    groupe.
+  rows: une ligne par individu
+  data:
+    - [hauteur, nombre, "`vars` : variable", "118"]
+    - [rendement, nombre, "`vars` : variable", "4.9"]
+    - [cycle, texte, "`hue` (optionnel)", "Tardif"]
+  params:
+    vars: Liste des colonnes numériques à croiser ; `None` = toutes.
+    corner: N'affiche que le triangle inférieur (pas de doublons).
+
+clustermap:
+  desc: >-
+    Carte de chaleur des données avec un dendrogramme sur les lignes et un sur les colonnes,
+    réordonnées selon la classification (seaborn clustermap).
+  usage: >-
+    Voir à la fois les groupes d'individus et les groupes de variables, et ce qui les
+    caractérise (profils d'expression, de traits, de sites).
+  rows: une ligne par individu, des colonnes numériques
+  data:
+    - [variete, texte, "`labels` : nom des lignes", "V07"]
+    - [hauteur, nombre, "`columns` : colonne de la matrice", "118"]
+    - [talles, nombre, "`columns` : colonne de la matrice", "14"]
+  params:
+    columns: Colonnes numériques ; `None` = toutes.
+    standardize: Centre-réduit chaque colonne (couleurs comparables entre variables).
+    method: "Méthode d'agrégation de la classification ('ward', 'average'…)."
+    figsize: Taille de la figure créée par seaborn (pouces) ; `None` = celle du Chart.
+
+seaborn:
+  desc: >-
+    Accès à toutes les fonctions de seaborn avec les données, le thème et le chaînage du
+    Chart : les fonctions « axes » dessinent sur le graphique, les fonctions « figure »
+    (pairplot, catplot…) créent leur propre grille.
+  usage: >-
+    Utiliser un graphique seaborn qui n'a pas de méthode dédiée (violinplot, swarmplot,
+    lineplot avec intervalle, displot…), tout en gardant le thème et `.title()`, `.save()`.
+  rows: "le format attendu par la fonction seaborn choisie, en général le format long (une ligne par observation)"
+  data:
+    - [variete, texte, "`x` : catégorie", "Nerica-4"]
+    - [rendement, nombre, "`y` : valeur", "5.3"]
+  params:
+    name: Nom de la fonction seaborn, ex. 'violinplot', 'swarmplot', 'lineplot', 'displot'.
+    kwargs: Arguments de la fonction seaborn (`x=`, `y=`, `hue=`, `inner=`…) ; `data` est fourni automatiquement.

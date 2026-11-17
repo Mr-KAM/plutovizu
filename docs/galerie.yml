@@ -198,16 +198,6 @@
   path: charts/relation.html#g-pivot_heatmap
   image: images/vignettes/pivot_heatmap.png
   categories: ["Relation"]
-- title: "Nuage + marges"
-  description: "jointplot() — Relation et distributions marginales"
-  path: charts/relation.html#g-jointplot
-  image: images/vignettes/jointplot.png
-  categories: ["Relation"]
-- title: "Matrice de nuages"
-  description: "pairplot() — Toutes les paires de variables"
-  path: charts/relation.html#g-pairplot
-  image: images/vignettes/pairplot.png
-  categories: ["Relation"]
 - title: "ACP (biplot)"
   description: "pca_biplot() — Individus et variables sur 2 axes"
   path: charts/multivarie.html#g-pca_biplot
@@ -217,11 +207,6 @@
   description: "dendrogram() — Classification hiérarchique"
   path: charts/multivarie.html#g-dendrogram
   image: images/vignettes/dendrogram.png
-  categories: ["Multivarié"]
-- title: "Clustermap"
-  description: "clustermap() — Lignes et colonnes classées"
-  path: charts/multivarie.html#g-clustermap
-  image: images/vignettes/clustermap.png
   categories: ["Multivarié"]
 - title: "Camembert"
   description: "pie() — Parts d'un total"
@@ -523,8 +508,68 @@
   path: charts/graphes.html#g-arc_diagram
   image: images/vignettes/arc_diagram.png
   categories: ["Graphes & réseaux"]
+- title: "Pareto"
+  description: "pareto() — Les causes qui pèsent le plus (80/20)"
+  path: charts/complexes.html#g-pareto
+  image: images/vignettes/pareto.png
+  categories: ["Graphiques complexes"]
+- title: "Carte de contrôle"
+  description: "control_chart() — Stabilité d'un procédé, dérives"
+  path: charts/complexes.html#g-control_chart
+  image: images/vignettes/control_chart.png
+  categories: ["Graphiques complexes"]
+- title: "Marimekko"
+  description: "marimekko() — Deux niveaux de composition"
+  path: charts/complexes.html#g-marimekko
+  image: images/vignettes/marimekko.png
+  categories: ["Graphiques complexes"]
+- title: "Bland-Altman"
+  description: "bland_altman() — Accord entre deux méthodes de mesure"
+  path: charts/complexes.html#g-bland_altman
+  image: images/vignettes/bland_altman.png
+  categories: ["Graphiques complexes"]
+- title: "Nuage de pluie"
+  description: "raincloud() — Densité, boîte et observations"
+  path: charts/complexes.html#g-raincloud
+  image: images/vignettes/raincloud.png
+  categories: ["Graphiques complexes"]
+- title: "Grille de relations"
+  description: "relplot() — Courbes ou nuages par panneau"
+  path: charts/complexes.html#g-relplot
+  image: images/vignettes/relplot.png
+  categories: ["Graphiques complexes"]
+- title: "Grille de distributions"
+  description: "displot() — Histogrammes et densités par groupe"
+  path: charts/complexes.html#g-displot
+  image: images/vignettes/displot.png
+  categories: ["Graphiques complexes"]
+- title: "Grille par catégorie"
+  description: "catplot() — Boîtes, violons, points par panneau"
+  path: charts/complexes.html#g-catplot
+  image: images/vignettes/catplot.png
+  categories: ["Graphiques complexes"]
+- title: "Grille de régressions"
+  description: "lmplot() — Régressions par groupe"
+  path: charts/complexes.html#g-lmplot
+  image: images/vignettes/lmplot.png
+  categories: ["Graphiques complexes"]
+- title: "Nuage + marges"
+  description: "jointplot() — Relation et distributions marginales"
+  path: charts/complexes.html#g-jointplot
+  image: images/vignettes/jointplot.png
+  categories: ["Graphiques complexes"]
+- title: "Matrice de nuages"
+  description: "pairplot() — Toutes les paires de variables"
+  path: charts/complexes.html#g-pairplot
+  image: images/vignettes/pairplot.png
+  categories: ["Graphiques complexes"]
+- title: "Clustermap"
+  description: "clustermap() — Lignes et colonnes classées"
+  path: charts/complexes.html#g-clustermap
+  image: images/vignettes/clustermap.png
+  categories: ["Graphiques complexes"]
 - title: "Tout seaborn"
   description: "seaborn() — N'importe quel graphique seaborn"
-  path: charts/seaborn.html#g-seaborn
+  path: charts/complexes.html#g-seaborn
   image: images/vignettes/seaborn.png
-  categories: ["Seaborn"]
+  categories: ["Graphiques complexes"]

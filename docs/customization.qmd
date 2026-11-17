@@ -29,14 +29,36 @@ Chart(df, figsize=(8, 5))          # 8 × 5 pouces
 
 ---
 
+## Légendes
+
+**Une légende ne recouvre jamais le graphique.** À l'affichage (`show()`) et à
+l'enregistrement (`save()`), toute légende posée sur une zone de tracé est déplacée à droite
+de la figure, en haut, et la mise en page est refaite pour lui laisser la place : la figure
+garde sa taille. Une légende déjà placée hors du graphique (sous l'axe, à droite…) ne bouge
+pas.
+
+```{python}
+#| fig-cap: "Légende placée au centre, déplacée automatiquement hors du graphique"
+import numpy as np
+mois = pd.DataFrame({'mois': np.arange(1, 13),
+                     'Riz': [3, 4, 6, 9, 14, 18, 21, 22, 19, 13, 7, 4],
+                     'Maïs': [8, 9, 11, 13, 15, 16, 16, 15, 13, 11, 9, 8],
+                     'Mil': [15, 14, 13, 12, 11, 10, 10, 11, 12, 13, 14, 15]})
+chart = Chart(mois).line('mois', ['Riz', 'Maïs', 'Mil']).title('Ventes mensuelles (t)')
+chart.ax.legend(loc='center')                 # au milieu des courbes…
+chart.tight_layout().show()                   # … sortie à droite à l'affichage
+```
+
 ## Coins arrondis
 
 **Tous les graphiques ont des coins arrondis de 8 points par défaut** : barres,
-histogrammes, treemaps, Gantt, camemberts, anneaux, barres radiales… Le rayon est en
-points ; il est réduit automatiquement pour les formes fines. L'arrondi est appliqué à
+histogrammes, treemaps, Gantt, camemberts, anneaux, barres radiales, cellules de la
+matrice des codes… Le rayon est en points ; il est réduit automatiquement pour les formes
+fines. Les pastilles de légende sont arrondies plus légèrement (un tiers du rayon). L'arrondi est appliqué à
 l'affichage (`show()`) ou à l'enregistrement (`save()`), une fois la mise en page connue.
 
-- `rounded(r)` change le rayon d'un graphique, `rounded(0)` garde des coins vifs ;
+- `rounded(r)` change le rayon d'un graphique (formes et légende), `rounded(0)` garde des
+  coins vifs ;
 - `Chart.default_round = 0` (ou une autre valeur) change le défaut pour toute la session ;
 - les graphiques dont les formes doivent rester jointives ne sont pas arrondis par défaut
   (triangle des textures, ternaire, calendrier, Sankey, maillage, profil de sol, bandes

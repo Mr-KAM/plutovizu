@@ -57,7 +57,7 @@ website:
           - charts/ecologie.qmd
           - charts/qualitatif.qmd
           - charts/graphes.qmd
-          - charts/seaborn.qmd
+          - charts/complexes.qmd
       - section: "Mise en forme"
         contents:
           - themes.qmd

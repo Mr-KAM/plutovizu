@@ -5678,7 +5678,7 @@ class Chart:
         FR: Matrice des codes pour le codage qualitatif (cas × codes) : nombre de fois où
             chaque code (thème) apparaît dans chaque cas (entretien, document, groupe).
             Entrée : une ligne par segment codé. normalize=True donne des % par cas.
-            Tableau dans self.code_table.
+            Tableau dans self.code_table. Cases aux coins arrondis (rounded(0) : vives).
 
         Example / Exemple:
             chart.code_matrix('entretien', 'theme')
@@ -5691,12 +5691,310 @@ class Chart:
         sns.heatmap(table, ax=self.ax, annot=annot, fmt='.0f', cmap=cmap or plt.rcParams['image.cmap'],
                     linewidths=1, linecolor=plt.rcParams['axes.facecolor'],
                     cbar_kws={'label': '% du cas' if normalize else 'Occurrences'})
+        # Cellules redessinées en rectangles espacés : l'arrondi par défaut s'y applique
+        mesh = self.ax.collections[0]
+        mesh.update_scalarmappable()
+        colors = mesh.get_facecolors().reshape(*table.shape, 4)
+        mesh.set_visible(False)
+        self.ax.grid(False)
+        gap = 0.04
+        for i in range(table.shape[0]):
+            for j in range(table.shape[1]):
+                self.ax.add_patch(plt.Rectangle((j + gap, i + gap), 1 - 2 * gap, 1 - 2 * gap,
+                                                facecolor=colors[i, j], linewidth=0, zorder=1))
         self.ax.set_xlabel(code)
         self.ax.set_ylabel(case)
         self.ax.tick_params(axis='x', rotation=30)
         for t in self.ax.get_xticklabels():
             t.set_ha('right')
         self.code_table = table
+        return self
+
+    # ──────────────────────────────────────── Graphiques complexes
+
+    def pareto(self, category: str, value: Optional[str] = None, cutoff: float = 80.0,
+               show_values: bool = True, color: Optional[str] = None,
+               line_color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Pareto chart: categories sorted by decreasing value (bars) with the cumulative
+            percentage (line, right axis) and the cutoff line (80 % by default, 80/20 rule).
+            The "vital few" (categories needed to reach the cutoff) are in full colour, the
+            "trivial many" are lighter. Without `value`, rows are counted per category.
+            Table in `chart.pareto_table`.
+        FR: Diagramme de Pareto : catégories triées par valeur décroissante (barres), avec
+            le pourcentage cumulé (courbe, axe de droite) et le seuil (80 % par défaut, règle
+            des 80/20). Les catégories « essentielles » (celles qu'il faut pour atteindre le
+            seuil) sont en couleur pleine, les « secondaires » plus claires. Sans `value`,
+            les lignes sont comptées par catégorie. Tableau dans `chart.pareto_table`.
+
+        Args / Paramètres:
+            category (str): EN/FR: Colonne des catégories (causes, défauts, types d'erreur).
+            value (str, optional): EN/FR: Colonne des valeurs à sommer ; None : nombre de lignes.
+            cutoff (float): EN/FR: Seuil du pourcentage cumulé (%), 80 pour la règle des 80/20.
+            show_values (bool): EN/FR: Écrit la valeur au-dessus de chaque barre.
+            color (str, optional): EN/FR: Couleur des barres ; None : 1re couleur du thème.
+            line_color (str, optional): EN/FR: Couleur de la courbe cumulée ; None : 2e couleur du thème.
+
+        Example / Exemple:
+            chart.pareto('cause', 'tonnes')
+            chart.pareto('type_erreur')            # une ligne par erreur : comptage
+        """
+        from matplotlib.ticker import PercentFormatter
+        self.chart_type = 'pareto'
+        s = (self.data.groupby(category)[value].sum() if value
+             else self.data[category].value_counts()).sort_values(ascending=False)
+        total = s.sum()
+        if total <= 0:
+            raise ValueError('pareto : le total des valeurs doit être positif')
+        cum = s.cumsum() / total * 100
+        vital = (cum.shift(fill_value=0) < cutoff).to_numpy()   # jusqu'au seuil inclus
+        p = self._palette()
+        c, lc = color or p[0], line_color or p[1 % len(p)]
+        ink = plt.rcParams['axes.labelcolor']
+        xs = np.arange(len(s))
+        self.ax.bar(xs[vital], s[vital], color=c, label=f'Essentielles ({vital.sum()})', zorder=2)
+        if (~vital).any():
+            self.ax.bar(xs[~vital], s[~vital], color=c, alpha=0.4,
+                        label=f'Secondaires ({(~vital).sum()})', zorder=2)
+        if show_values:  # dans les grandes barres (le cumul passe par le haut de la 1re)
+            for xi, v in zip(xs, s):
+                inside = v >= 0.08 * total
+                self.ax.annotate(f'{v:,.0f}'.replace(',', ' '), (xi, v),
+                                 xytext=(0, -4 if inside else 3), textcoords='offset points',
+                                 ha='center', va='top' if inside else 'bottom', fontsize=8,
+                                 color='white' if inside else ink, zorder=4)
+        self.ax.set_xticks(xs, s.index.astype(str), rotation=35, ha='right')
+        self.ax.set_ylim(0, total * 1.05)          # 100 % à droite = total à gauche
+        self.ax.set_xlim(-0.6, len(s) - 0.4)
+        self.ax.set_xlabel(category)
+        self.ax.set_ylabel(value or 'Effectif')
+        ax2 = self.ax.twinx()
+        ax2.plot(xs, cum, color=lc, marker='o', markersize=5, lw=2, label='Cumul (%)', zorder=3)
+        ax2.axhline(cutoff, color=ink, lw=1, ls='--', alpha=0.7, label=f'Seuil {cutoff:g} %')
+        ax2.set_ylim(0, 105)
+        ax2.yaxis.set_major_formatter(PercentFormatter(decimals=0))
+        ax2.set_ylabel('Pourcentage cumulé')
+        ax2.grid(False)
+        for side in ('top', 'left', 'bottom'):
+            ax2.spines[side].set_visible(False)
+        self.ax2 = ax2
+        h1, l1 = self.ax.get_legend_handles_labels()
+        h2, l2 = ax2.get_legend_handles_labels()
+        self.ax.legend(h1 + h2, l1 + l2, fontsize=8)
+        self.pareto_table = pd.DataFrame({
+            category: s.index, 'valeur': s.to_numpy(), 'part': (s / total * 100).round(1).to_numpy(),
+            'cumul': cum.round(1).to_numpy(),
+            'classe': np.where(vital, 'essentielle', 'secondaire')})
+        return self
+
+    def control_chart(self, x: str, y: str, sigma: float = 3.0, zones: bool = True,
+                      color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Shewhart control chart for individual values (I chart): the series, its mean
+            and the control limits mean ± sigma·σ, σ estimated from the mean moving range
+            (MR/1.128). Points outside the limits are highlighted. Limits in
+            `chart.control_limits`, flagged rows in `chart.control_table`.
+        FR: Carte de contrôle de Shewhart aux valeurs individuelles (carte I) : la série, sa
+            moyenne et les limites de contrôle moyenne ± sigma·σ, σ estimé par l'étendue
+            mobile moyenne (MR/1,128). Les points hors limites sont mis en évidence. Limites
+            dans `chart.control_limits`, lignes repérées dans `chart.control_table`.
+
+        Args / Paramètres:
+            x (str): EN/FR: Colonne de l'ordre des mesures (date, lot, numéro d'échantillon).
+            y (str): EN/FR: Colonne de la valeur mesurée.
+            sigma (float): EN/FR: Nombre d'écarts-types des limites (3 : limites de Shewhart).
+            zones (bool): EN/FR: Trace aussi les zones à ±1 σ et ±2 σ (lignes pointillées).
+            color (str, optional): EN/FR: Couleur de la série ; None : 1re couleur du thème.
+
+        Example / Exemple:
+            chart.control_chart('lot', 'humidite')
+        """
+        self.chart_type = 'control_chart'
+        d = self.data[[x, y]].dropna().reset_index(drop=True)
+        v = d[y].to_numpy(float)
+        if len(v) < 2:
+            raise ValueError('control_chart : au moins deux mesures sont nécessaires')
+        center = v.mean()
+        s = np.abs(np.diff(v)).mean() / 1.128
+        ucl, lcl = center + sigma * s, center - sigma * s
+        out = (v > ucl) | (v < lcl)
+        p = self._palette()
+        alert = p[1 % len(p)]
+        ink = plt.rcParams['axes.labelcolor']
+        self.ax.plot(d[x], v, color=color or p[0], marker='o', markersize=4, lw=1.4, zorder=3,
+                     label=y)
+        if out.any():
+            self.ax.scatter(d[x][out], v[out], s=60, color=alert, zorder=4,
+                            edgecolors=plt.rcParams['axes.facecolor'], linewidths=1.2,
+                            label=f'Hors limites ({out.sum()})')
+        self.ax.axhline(center, color=ink, lw=1.2, zorder=2)
+        for lim in (ucl, lcl):
+            self.ax.axhline(lim, color=alert, lw=1.2, ls='--', zorder=2)
+        if zones:
+            for k in (1, 2):
+                for sign in (1, -1):
+                    self.ax.axhline(center + sign * k * s, color=ink, lw=0.6, ls=':', alpha=0.5,
+                                    zorder=1)
+        tr = self.ax.get_yaxis_transform()
+        for val, name in ((ucl, 'LSC'), (center, 'Moyenne'), (lcl, 'LIC')):
+            self.ax.text(1.01, val, f'{name}\n{val:.3g}', transform=tr, ha='left', va='center',
+                         fontsize=7, color=ink, clip_on=False)
+        self._concise_dates(x)
+        self.ax.set_xlabel(x)
+        self.ax.set_ylabel(y)
+        self.control_limits = {'moyenne': center, 'sigma': s, 'lsc': ucl, 'lic': lcl}
+        self.control_table = d.assign(hors_limites=out)
+        return self
+
+    def marimekko(self, x: str, y: str, value: Optional[str] = None,
+                  show_values: bool = True) -> 'Chart':
+        """
+        EN: Marimekko (mosaic) chart: one 100 % stacked bar per category of `x`, whose width
+            is proportional to its share of the total. Shows two levels of composition at
+            once (e.g. regions by area, crops within each region). Table in
+            `chart.marimekko_table`.
+        FR: Graphique Marimekko (mosaïque) : une barre empilée à 100 % par catégorie de `x`,
+            de largeur proportionnelle à sa part du total. Montre deux niveaux de composition
+            à la fois (régions selon leur surface, cultures dans chaque région). Tableau dans
+            `chart.marimekko_table`.
+
+        Args / Paramètres:
+            x (str): EN/FR: Colonne des colonnes de la mosaïque (largeur = part du total).
+            y (str): EN/FR: Colonne des segments empilés dans chaque colonne.
+            value (str, optional): EN/FR: Colonne des valeurs à sommer ; None : nombre de lignes.
+            show_values (bool): EN/FR: Écrit la part (%) dans les cases assez grandes.
+
+        Example / Exemple:
+            chart.marimekko('region', 'culture', 'surface')
+        """
+        self.chart_type = 'marimekko'
+        t = (pd.crosstab(self.data[x], self.data[y], values=self.data[value], aggfunc='sum')
+             if value else pd.crosstab(self.data[x], self.data[y])).fillna(0)
+        t = t.loc[t.sum(axis=1).sort_values(ascending=False).index,
+                  t.sum().sort_values(ascending=False).index]
+        widths = t.sum(axis=1) / t.to_numpy().sum() * 100
+        left = np.r_[0, widths.cumsum().to_numpy()[:-1]]
+        share = t.div(t.sum(axis=1), axis=0) * 100
+        p = self._palette()
+        bg = plt.rcParams['axes.facecolor']
+        bottom = np.zeros(len(t))
+        for j, col in enumerate(t.columns):
+            h = share[col].to_numpy()
+            self.ax.bar(left, h, width=widths.to_numpy(), bottom=bottom, align='edge',
+                        color=p[j % len(p)], edgecolor=bg, linewidth=1.5, label=str(col), zorder=2)
+            if show_values:
+                for lx, w, b, hh in zip(left, widths, bottom, h):
+                    if hh >= 8 and w >= 6:
+                        self.ax.text(lx + w / 2, b + hh / 2, f'{hh:.0f} %', ha='center',
+                                     va='center', fontsize=7, color='white', zorder=3)
+            bottom += h
+        self.ax.set_xticks(left + widths.to_numpy() / 2,
+                           [f'{n}\n{w:.0f} %' for n, w in zip(t.index.astype(str), widths)])
+        self.ax.set_xlim(0, 100)
+        self.ax.set_ylim(0, 100)
+        self.ax.grid(False)
+        self.ax.set_xlabel(f'{x} (largeur : part du total)')
+        self.ax.set_ylabel(f'Part de chaque {y} (%)')
+        self.ax.legend(title=y, fontsize=8)
+        self.marimekko_table = t
+        return self
+
+    def bland_altman(self, a: str, b: str, limits: float = 1.96,
+                     color: Optional[str] = None) -> 'Chart':
+        """
+        EN: Bland–Altman plot: agreement between two measurement methods. Each pair is placed
+            by its mean (x) and its difference a − b (y); lines give the mean bias and the
+            limits of agreement bias ± 1.96 SD. Values in `chart.agreement`.
+        FR: Graphique de Bland-Altman : accord entre deux méthodes de mesure. Chaque paire
+            est placée selon sa moyenne (x) et sa différence a − b (y) ; les lignes donnent
+            le biais moyen et les limites d'agrément biais ± 1,96 écart-type. Valeurs dans
+            `chart.agreement`.
+
+        Args / Paramètres:
+            a (str): EN/FR: Colonne de la première méthode (souvent la méthode de référence).
+            b (str): EN/FR: Colonne de la seconde méthode, mesurée sur les mêmes individus.
+            limits (float): EN/FR: Multiplicateur de l'écart-type des limites d'agrément (1,96 : 95 %).
+            color (str, optional): EN/FR: Couleur des points ; None : 1re couleur du thème.
+
+        Example / Exemple:
+            chart.bland_altman('gravimetrie', 'sonde')
+        """
+        self.chart_type = 'bland_altman'
+        d = self.data[[a, b]].dropna()
+        A, B = d[a].to_numpy(float), d[b].to_numpy(float)
+        mean, diff = (A + B) / 2, A - B
+        bias, sd = diff.mean(), diff.std(ddof=1)
+        lo, hi = bias - limits * sd, bias + limits * sd
+        p = self._palette()
+        ink = plt.rcParams['axes.labelcolor']
+        line = p[1 % len(p)]
+        self.ax.axhspan(lo, hi, color=line, alpha=0.08, zorder=0)
+        self.ax.axhline(0, color=ink, lw=0.6, alpha=0.5, zorder=1)
+        self.ax.axhline(bias, color=line, lw=1.6, zorder=2)
+        for lim in (lo, hi):
+            self.ax.axhline(lim, color=line, lw=1.2, ls='--', zorder=2)
+        self.ax.scatter(mean, diff, s=30, color=color or p[0], alpha=0.85, zorder=3,
+                        edgecolors=plt.rcParams['axes.facecolor'], linewidths=0.6)
+        tr = self.ax.get_yaxis_transform()
+        for val, name in ((hi, f'+{limits:g} ET'), (bias, 'Biais'), (lo, f'−{limits:g} ET')):
+            self.ax.text(1.01, val, f'{name}\n{val:.3g}', transform=tr, ha='left', va='center',
+                         fontsize=7, color=ink, clip_on=False)
+        self.ax.set_xlabel(f'Moyenne de {a} et {b}')
+        self.ax.set_ylabel(f'Différence {a} − {b}')
+        self.agreement = {'biais': bias, 'ecart_type': sd, 'limite_basse': lo, 'limite_haute': hi,
+                          'hors_limites': int(((diff < lo) | (diff > hi)).sum()), 'n': len(d)}
+        return self
+
+    def raincloud(self, x: str, y: str, order: Optional[List[str]] = None,
+                  points: bool = True) -> 'Chart':
+        """
+        EN: Raincloud plot: for each category, half a violin (the "cloud": density), a narrow
+            box plot and the raw observations below (the "rain"). Shows the shape of the
+            distribution, its summary and every value at once.
+        FR: Graphique en nuage de pluie (raincloud) : pour chaque catégorie, un demi-violon
+            (le « nuage » : densité), une boîte à moustaches étroite et les observations
+            dessous (la « pluie »). Montre à la fois la forme de la distribution, son
+            résumé et chaque valeur.
+
+        Args / Paramètres:
+            x (str): EN/FR: Colonne des catégories (une ligne par catégorie).
+            y (str): EN/FR: Colonne de la valeur mesurée (axe horizontal).
+            order (list, optional): EN/FR: Ordre des catégories ; None : ordre d'apparition.
+            points (bool): EN/FR: Affiche les observations (la « pluie »).
+
+        Example / Exemple:
+            chart.raincloud('variete', 'rendement')
+        """
+        self.chart_type = 'raincloud'
+        cats = list(order) if order is not None else list(pd.unique(self.data[x].dropna()))
+        p = self._palette()
+        rng = np.random.default_rng(0)
+        bg = plt.rcParams['axes.facecolor']
+        for i, cat in enumerate(cats):
+            c = p[i % len(p)]
+            v = self.data.loc[self.data[x] == cat, y].dropna().to_numpy(float)
+            if len(v) == 0:
+                continue
+            if len(v) > 2 and np.ptp(v) > 0:                     # nuage : demi-densité lissée
+                from scipy.stats import gaussian_kde
+                kde = gaussian_kde(v)
+                bw = kde.factor * v.std(ddof=1)
+                grid = np.linspace(v.min() - 2 * bw, v.max() + 2 * bw, 200)
+                dens = kde(grid)
+                self.ax.fill_between(grid, i, i + 0.45 * dens / dens.max(), color=c, alpha=0.55,
+                                     linewidth=0, zorder=2)
+            self.ax.boxplot(v, positions=[i - 0.1], widths=0.12, orientation='horizontal',
+                            patch_artist=True, showfliers=False, zorder=3,
+                            boxprops=dict(facecolor=bg, edgecolor=c, linewidth=1.2),
+                            medianprops=dict(color=c, linewidth=1.6),
+                            whiskerprops=dict(color=c), capprops=dict(color=c))
+            if points:
+                self.ax.scatter(v, i - 0.3 + rng.uniform(-0.07, 0.07, len(v)), s=10, color=c,
+                                alpha=0.7, zorder=2, linewidths=0)
+        self.ax.set_yticks(range(len(cats)), [str(c) for c in cats])
+        self.ax.set_ylim(-0.6, len(cats) - 0.05)
+        self.ax.set_xlabel(y)
+        self.ax.set_ylabel(x)
         return self
 
     # ──────────────────────────────────────── Seaborn
@@ -5791,6 +6089,80 @@ class Chart:
         """EN: Bivariate plot with marginal distributions (seaborn.jointplot).
         FR: Graphique bivarié avec distributions marginales (jointplot)."""
         return self.seaborn('jointplot', x=x, y=y, hue=hue, kind=kind, **kwargs)
+
+    def relplot(self, x: str, y: str, hue: Optional[str] = None, col: Optional[str] = None,
+                row: Optional[str] = None, kind: str = 'scatter', **kwargs) -> 'Chart':
+        """
+        EN: Grid of scatter or line plots, one panel per value of `col` / `row`
+            (seaborn.relplot). Creates its own figure.
+        FR: Grille de nuages de points ou de courbes, un panneau par modalité de `col` /
+            `row` (seaborn.relplot). Crée sa propre figure.
+
+        Args / Paramètres:
+            col (str, optional): EN/FR: Colonne qui sépare les panneaux en colonnes.
+            row (str, optional): EN/FR: Colonne qui sépare les panneaux en lignes.
+            kind (str): EN/FR: 'scatter' (nuage) ou 'line' (courbe moyenne et intervalle de confiance).
+
+        Example / Exemple:
+            chart.relplot('dose', 'rendement', col='variete', kind='line')
+        """
+        return self.seaborn('relplot', x=x, y=y, hue=hue, col=col, row=row, kind=kind, **kwargs)
+
+    def displot(self, x: str, hue: Optional[str] = None, col: Optional[str] = None,
+                row: Optional[str] = None, kind: str = 'hist', **kwargs) -> 'Chart':
+        """
+        EN: Grid of distributions (histogram, density or ECDF), one panel per value of
+            `col` / `row` (seaborn.displot). Creates its own figure.
+        FR: Grille de distributions (histogramme, densité ou répartition), un panneau par
+            modalité de `col` / `row` (seaborn.displot). Crée sa propre figure.
+
+        Args / Paramètres:
+            col (str, optional): EN/FR: Colonne qui sépare les panneaux en colonnes.
+            row (str, optional): EN/FR: Colonne qui sépare les panneaux en lignes.
+            kind (str): EN/FR: 'hist' (histogramme), 'kde' (densité) ou 'ecdf' (répartition).
+
+        Example / Exemple:
+            chart.displot('rendement', col='variete', kind='hist', kde=True)
+        """
+        return self.seaborn('displot', x=x, hue=hue, col=col, row=row, kind=kind, **kwargs)
+
+    def catplot(self, x: str, y: Optional[str] = None, hue: Optional[str] = None,
+                col: Optional[str] = None, row: Optional[str] = None, kind: str = 'strip',
+                **kwargs) -> 'Chart':
+        """
+        EN: Grid of categorical plots (strip, swarm, box, violin, boxen, point, bar, count),
+            one panel per value of `col` / `row` (seaborn.catplot). Creates its own figure.
+        FR: Grille de graphiques par catégorie (points, essaim, boîtes, violons, boxen,
+            moyennes, barres, effectifs), un panneau par modalité de `col` / `row`
+            (seaborn.catplot). Crée sa propre figure.
+
+        Args / Paramètres:
+            col (str, optional): EN/FR: Colonne qui sépare les panneaux en colonnes.
+            row (str, optional): EN/FR: Colonne qui sépare les panneaux en lignes.
+            kind (str): EN/FR: 'strip', 'swarm', 'box', 'violin', 'boxen', 'point', 'bar' ou 'count'.
+
+        Example / Exemple:
+            chart.catplot('variete', 'rendement', col='bloc', kind='box')
+        """
+        return self.seaborn('catplot', x=x, y=y, hue=hue, col=col, row=row, kind=kind, **kwargs)
+
+    def lmplot(self, x: str, y: str, hue: Optional[str] = None, col: Optional[str] = None,
+               row: Optional[str] = None, order: int = 1, **kwargs) -> 'Chart':
+        """
+        EN: Grid of regressions with confidence band, one per group or panel
+            (seaborn.lmplot). Creates its own figure.
+        FR: Grille de régressions avec bande de confiance, une par groupe ou par panneau
+            (seaborn.lmplot). Crée sa propre figure.
+
+        Args / Paramètres:
+            col (str, optional): EN/FR: Colonne qui sépare les panneaux en colonnes.
+            row (str, optional): EN/FR: Colonne qui sépare les panneaux en lignes.
+            order (int): EN/FR: Degré du polynôme ajusté (1 : droite, 2 : parabole).
+
+        Example / Exemple:
+            chart.lmplot('dose', 'rendement', hue='variete', order=2)
+        """
+        return self.seaborn('lmplot', x=x, y=y, hue=hue, col=col, row=row, order=order, **kwargs)
 
     # ──────────────────────────────────────── Utilities / Utilitaires
 
@@ -5964,6 +6336,62 @@ class Chart:
         self._round_explicit = True
         return self
 
+    def _legends_outside(self) -> None:
+        """Sort du graphique toute légende d'axe qui recouvre un axe de la figure (ou qui
+        dépasse de la figure à droite).
+
+        Elle est placée à droite de tous les axes (graduations et titres compris), en haut de
+        son axe, et la mise en page est refaite (tight_layout) pour lui laisser la place : la
+        figure garde sa taille.
+        """
+        from matplotlib.layout_engine import ConstrainedLayoutEngine
+        renderer = self.fig._get_renderer()
+        axes = [a for a in self.fig.axes if a.get_visible()]
+
+        def overlaps(leg):  # sur un axe, ou coupée par le bord droit de la figure
+            lb = leg.get_window_extent(renderer).padded(-1)   # 1 px de tolérance
+            return (any(lb.overlaps(a.get_window_extent(renderer)) for a in axes)
+                    or lb.x1 > self.fig.bbox.x1)
+
+        moved = [a for a in axes if a.get_legend() and a.get_legend().get_visible()
+                 and overlaps(a.get_legend())]
+        if not moved:
+            return
+
+        def place():
+            for a in moved:
+                a.get_legend().set_visible(False)
+            right = max(a.get_tightbbox(renderer).x1 for a in axes)
+            for a in moved:
+                leg = a.get_legend()
+                leg.set_visible(True)
+                gap = 8 * self.fig.dpi / 72                    # 8 points
+                top = a.get_window_extent(renderer).y1
+                leg.set_loc('upper left')
+                leg.set_bbox_to_anchor(a.transAxes.inverted().transform((right + gap, top)),
+                                       transform=a.transAxes)
+
+        place()
+        if isinstance(self.fig.get_layout_engine(), ConstrainedLayoutEngine):
+            return                                         # constrained : place réservée au tracé
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            self.tight_layout()                            # place pour la légende, puis on recale
+        renderer = self.fig._get_renderer()
+        place()
+        # Axes à proportions fixes (polaire, 3D…) : tight_layout ne libère pas toujours assez
+        # de place à droite ; on resserre alors tous les axes jusqu'à ce que la légende tienne.
+        for _ in range(4):
+            over = max(a.get_legend().get_window_extent(renderer).x1 for a in moved) \
+                - self.fig.bbox.x1 + 2
+            if over <= 0:
+                break
+            k = max(0.3, 1 - over / self.fig.bbox.width)
+            for a in axes:
+                b = a.get_position(original=True)
+                a.set_position([b.x0 * k, b.y0, b.width * k, b.height])
+            place()
+
     def _apply_rounding(self) -> None:
         """Remplace les formes anguleuses par leur version aux coins arrondis (une seule fois)."""
         from matplotlib.patches import FancyArrowPatch, PathPatch, Polygon, Rectangle, Wedge
@@ -6102,6 +6530,7 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').tight_layout().save('rapport.pdf', format='pdf')
         """
+        self._legends_outside()
         self._apply_rounding()
         self.fig.savefig(filename, dpi=dpi, bbox_inches=bbox_inches, format=format)
         return self
@@ -6119,6 +6548,7 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').tight_layout().show()
         """
+        self._legends_outside()
         self._apply_rounding()
         if 'inline' in matplotlib.get_backend():
             from IPython.display import display  # backend inline ⇒ IPython présent

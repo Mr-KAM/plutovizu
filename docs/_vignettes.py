@@ -65,11 +65,11 @@ flux_vignette = villes[villes['ville'].isin(['Saint-Louis', 'Kaolack', 'Tambacou
 
 EVO, DIS, COM, REL = 'Évolution', 'Distribution', 'Comparaison', 'Relation'
 MUL, CPO, CHA, D3 = 'Multivarié', 'Composition', 'Champs', '3D'
-SCI, QUA, SNS, CAR, ECO = 'Climat & sols', 'Qualitatif', 'Seaborn', 'Map', 'Écologie'
+SCI, QUA, CPX, CAR, ECO = 'Climat & sols', 'Qualitatif', 'Graphiques complexes', 'Map', 'Écologie'
 GRA = 'Graphes & réseaux'
 PAGE = {EVO: 'evolution', DIS: 'distribution', COM: 'comparaison', REL: 'relation',
         MUL: 'multivarie', CPO: 'composition', CHA: 'champs', D3: '3d', SCI: 'sciences',
-        QUA: 'qualitatif', SNS: 'seaborn', CAR: 'map', ECO: 'ecologie', GRA: 'graphes'}
+        QUA: 'qualitatif', CPX: 'complexes', CAR: 'map', ECO: 'ecologie', GRA: 'graphes'}
 
 # (méthode, titre de la carte, catégorie, usage, vignette)
 CATALOGUE = [
@@ -162,17 +162,11 @@ CATALOGUE = [
      lambda: C(caracteres[traits], 4, 3.2).heatmap(annot=False)),
     ('pivot_heatmap', 'Tableau croisé coloré', REL, 'Moyenne par deux catégories',
      lambda: C(essai).pivot_heatmap('dose', 'variete', 'rendement', annot=False)),
-    ('jointplot', 'Nuage + marges', REL, 'Relation et distributions marginales',
-     lambda: Chart(caracteres).jointplot('jours_floraison', 'hauteur', height=3)),
-    ('pairplot', 'Matrice de nuages', REL, 'Toutes les paires de variables',
-     lambda: Chart(caracteres).pairplot(vars=traits[:3], hue='cycle', height=1.1, corner=True)),
 
     ('pca_biplot', 'ACP (biplot)', MUL, 'Individus et variables sur 2 axes',
      lambda: C(caracteres).pca_biplot(group='cycle')),
     ('dendrogram', 'Dendrogramme', MUL, 'Classification hiérarchique',
      lambda: C(caracteres.head(16)).dendrogram(labels='variete', color_threshold=5)),
-    ('clustermap', 'Clustermap', MUL, 'Lignes et colonnes classées',
-     lambda: Chart(caracteres.head(15), figsize=(4, 4)).clustermap(labels='variete', cbar_pos=None)),
 
     ('pie', 'Camembert', CPO, "Parts d'un total",
      lambda: C(cultures.groupby('famille', as_index=False)['surface'].sum()).pie('surface', labels='famille')),
@@ -306,7 +300,31 @@ CATALOGUE = [
     ('arc_diagram', 'Diagramme en arcs', GRA, 'Mouvements entre lieux',
      lambda: C(transferts).arc_diagram('depart', 'arrivee', weight='tetes')),
 
-    ('seaborn', 'Tout seaborn', SNS, "N'importe quel graphique seaborn",
+    ('pareto', 'Pareto', CPX, 'Les causes qui pèsent le plus (80/20)',
+     lambda: C(pertes).pareto('cause', 'tonnes', show_values=False)),
+    ('control_chart', 'Carte de contrôle', CPX, 'Stabilité d\'un procédé, dérives',
+     lambda: C(lots).control_chart('lot', 'humidite')),
+    ('marimekko', 'Marimekko', CPX, 'Deux niveaux de composition',
+     lambda: C(assolement).marimekko('region', 'culture', 'surface', show_values=False)),
+    ('bland_altman', 'Bland-Altman', CPX, 'Accord entre deux méthodes de mesure',
+     lambda: C(mesures).bland_altman('gravimetrie', 'sonde')),
+    ('raincloud', 'Nuage de pluie', CPX, 'Densité, boîte et observations',
+     lambda: C(essai).raincloud('variete', 'rendement')),
+    ('relplot', 'Grille de relations', CPX, 'Courbes ou nuages par panneau',
+     lambda: Chart(essai).relplot('dose', 'rendement', hue='variete', kind='line', height=3, aspect=1.33, legend=False)),
+    ('displot', 'Grille de distributions', CPX, 'Histogrammes et densités par groupe',
+     lambda: Chart(essai).displot('rendement', hue='variete', kind='kde', fill=True, height=3, aspect=1.33, legend=False)),
+    ('catplot', 'Grille par catégorie', CPX, 'Boîtes, violons, points par panneau',
+     lambda: Chart(essai).catplot('variete', 'rendement', kind='box', height=3, aspect=1.33)),
+    ('lmplot', 'Grille de régressions', CPX, 'Régressions par groupe',
+     lambda: Chart(essai).lmplot('dose', 'rendement', hue='variete', order=2, height=3, aspect=1.33, legend=False)),
+    ('jointplot', 'Nuage + marges', CPX, 'Relation et distributions marginales',
+     lambda: Chart(caracteres).jointplot('jours_floraison', 'hauteur', height=3)),
+    ('pairplot', 'Matrice de nuages', CPX, 'Toutes les paires de variables',
+     lambda: Chart(caracteres).pairplot(vars=traits[:3], hue='cycle', height=1.1, corner=True)),
+    ('clustermap', 'Clustermap', CPX, 'Lignes et colonnes classées',
+     lambda: Chart(caracteres.head(15), figsize=(4, 4)).clustermap(labels='variete', cbar_pos=None)),
+    ('seaborn', 'Tout seaborn', CPX, "N'importe quel graphique seaborn",
      lambda: C(essai).seaborn('violinplot', x='variete', y='rendement', hue='variete', legend=False)),
 ]
 

@@ -71,22 +71,3 @@ marquée par une ligne pointillée.
 ```
 
 
-### `clustermap` — Carte de chaleur classée {#g-clustermap}
-
-```{python}
-#| echo: false
-#| output: asis
-fiche('clustermap')
-```
-
-
-Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs
-dendrogrammes. Les colonnes sont centrées-réduites par défaut (`standardize=True`).
-
-```{python}
-#| fig-cap: "Profils des variétés classés par ressemblance"
-(Chart(caracteres, figsize=(8, 9))
-    .clustermap(labels='variete')
-    .title('Clustermap des caractères variétaux')
-    .show())
-```

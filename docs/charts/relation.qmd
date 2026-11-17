@@ -193,36 +193,3 @@ Une valeur agrégée (moyenne par défaut) selon deux catégories, annotée et c
 ```
 
 
-### `jointplot` — Relation et distributions marginales {#g-jointplot}
-
-```{python}
-#| echo: false
-#| output: asis
-fiche('jointplot')
-```
-
-
-```{python}
-(Chart(essai)
-    .jointplot('dose', 'rendement', kind='reg', height=5.5)
-    .title('Rendement selon la dose')
-    .show())
-```
-
-
-### `pairplot` — Matrice de nuages de points {#g-pairplot}
-
-```{python}
-#| echo: false
-#| output: asis
-fiche('pairplot')
-```
-
-
-```{python}
-(Chart(caracteres)
-    .pairplot(vars=['hauteur', 'jours_floraison', 'talles', 'rendement'],
-              hue='cycle', corner=True, height=2)
-    .title('Relations entre caractères')
-    .show())
-```

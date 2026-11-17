@@ -95,12 +95,14 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `likert(columns, order)` | Échelle de Likert (barres divergentes) |
 | `code_matrix(case, code)` | Matrice des codes (codage qualitatif) |
 | `seaborn(name, **kwargs)` | N'importe quel graphique seaborn (`violinplot`, `relplot`…) |
-| `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot`, `pairplot`, `jointplot` | Graphiques seaborn usuels |
+| `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot` | Graphiques seaborn usuels |
+| `pareto`, `control_chart`, `marimekko`, `bland_altman`, `raincloud` | Graphiques complexes : Pareto (80/20), carte de contrôle, Marimekko, Bland-Altman, nuage de pluie |
+| `relplot`, `displot`, `catplot`, `lmplot`, `pairplot`, `jointplot` | Grilles seaborn (plusieurs panneaux) |
 
 `mean_bar(..., letters=True)` ajoute les lettres du test de Tukey HSD ;
 `texture_class(sable, limon, argile)` donne la classe USDA d'un sol.
 
-Liste complète des 106 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html) ;
+Liste complète des 115 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html) ;
 chaque graphique y a sa fiche : description, cas d'usage, structure du DataFrame attendu et
 paramètres, avant l'exemple.
 

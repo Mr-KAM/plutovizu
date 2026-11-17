@@ -102,32 +102,3 @@ pivot_heatmap:
     fmt: Format des nombres écrits (`.1f` = une décimale).
   returns: "`chart.pivot_table` : le tableau croisé."
 
-jointplot:
-  desc: >-
-    Nuage de points (ou densité, régression, hexagones) avec la distribution de chaque
-    variable dans les marges (seaborn jointplot).
-  usage: >-
-    Étudier une relation entre deux variables en gardant un œil sur leurs distributions
-    individuelles.
-  rows: une ligne par observation
-  data:
-    - [dose, nombre, "`x`", "90"]
-    - [rendement, nombre, "`y`", "5.2"]
-  params:
-    kind: "Type du panneau central : 'scatter', 'kde', 'hist', 'hex', 'reg' ou 'resid'."
-
-pairplot:
-  desc: >-
-    Matrice de graphiques : un nuage de points pour chaque paire de variables et la
-    distribution de chaque variable sur la diagonale.
-  usage: >-
-    Exploration initiale d'un jeu de données à plusieurs variables numériques, coloré par
-    groupe.
-  rows: une ligne par individu
-  data:
-    - [hauteur, nombre, "`vars` : variable", "118"]
-    - [rendement, nombre, "`vars` : variable", "4.9"]
-    - [cycle, texte, "`hue` (optionnel)", "Tardif"]
-  params:
-    vars: Liste des colonnes numériques à croiser ; `None` = toutes.
-    corner: N'affiche que le triangle inférieur (pas de doublons).

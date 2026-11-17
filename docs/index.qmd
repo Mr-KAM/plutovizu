@@ -20,7 +20,7 @@ toc: false
   <a class="feature-card" href="gallery.html">
     <div class="feature-art"><i class="bi bi-bar-chart-line"></i></div>
     <span class="feature-title">Galerie</span>
-    <span class="feature-text">106 graphiques : catalogue matplotlib, écologie, climat, sols, cartes (map), graphes et réseaux, et tout seaborn. Chacun a sa fiche : usage, données attendues, paramètres.</span>
+    <span class="feature-text">115 graphiques : catalogue matplotlib, écologie, climat, sols, cartes (map), graphes et réseaux, graphiques complexes (Pareto, carte de contrôle, Marimekko…) et tout seaborn. Chacun a sa fiche : usage, données attendues, paramètres.</span>
   </a>
   <a class="feature-card" href="customization.html">
     <div class="feature-art"><i class="bi bi-palette"></i></div>
@@ -72,9 +72,10 @@ df = pd.DataFrame({'mois': list(range(1, 13)),
 | **Écologie** | `glm_curve`, `response_curve`, `count_distribution`, `forest_plot`, `ordination` (AFC, CCA, ACP, RDA), `rank_abundance`, `accumulation`, `diversity` |
 | **Graphes & réseaux** | `network`, `arc_diagram`, `shortest_path`, `spanning_tree`, `max_flow`, `critical_path` (PERT / CPM), `tsp_route` |
 | **Map** | `map_points`, `choropleth`, `flow_map`, `density_map`, `field_map`, `route_map` ; éléments : `north_arrow`, `scale_bar`, `inset_map` |
-| **Sciences & analyse** | `regression`, `mean_bar` (lettres de Tukey), `interaction`, `qqplot`, `pca_biplot`, `dendrogram`, `clustermap`, `ternary`, `soil_texture` |
+| **Sciences & analyse** | `regression`, `mean_bar` (lettres de Tukey), `interaction`, `qqplot`, `pca_biplot`, `dendrogram`, `ternary`, `soil_texture` |
 | **Analyse qualitative** | `word_cloud`, `word_frequency`, `likert`, `code_matrix` |
-| **Seaborn** | `seaborn(...)` pour tout seaborn, et `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot`, `pairplot`, `jointplot` |
+| **Graphiques complexes** | `pareto`, `control_chart`, `marimekko`, `bland_altman`, `raincloud` ; grilles seaborn `relplot`, `displot`, `catplot`, `lmplot`, `jointplot`, `pairplot`, `clustermap` |
+| **Seaborn** | `seaborn(...)` pour tout seaborn, et `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot` |
 | **Thèmes** | `editorial` par défaut ; `set_theme`, `theme_context`, `list_themes`, `get_theme` — 36 thèmes : maison, seaborn et morethemes ([voir la page](themes.qmd)) |
 | **Apparence** | `title`, `labels`, `grid`, `font`, `set_legend`, `set_limits`, `rotate_labels`, `set_style` |
 | **Couleurs** | `set_colors`, `create_custom_palette`, `generate_gradient_palette`, `preview_palette` |

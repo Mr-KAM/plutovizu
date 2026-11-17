@@ -969,7 +969,31 @@ mots vides ignorés ; les expressions (`ngram=2`…) ne franchissent pas un mot 
 
 ---
 
-## Seaborn
+## Graphiques complexes
+
+```python
+.pareto(category, value=None, cutoff=80.0, show_values=True, color=None,
+        line_color=None)                          # → chart.pareto_table, chart.ax2
+.control_chart(x, y, sigma=3.0, zones=True, color=None)
+                                                  # → chart.control_limits, chart.control_table
+.marimekko(x, y, value=None, show_values=True)    # → chart.marimekko_table
+.bland_altman(a, b, limits=1.96, color=None)      # → chart.agreement
+.raincloud(x, y, order=None, points=True)
+.relplot(x, y, hue=None, col=None, row=None, kind='scatter')
+.displot(x, hue=None, col=None, row=None, kind='hist')
+.catplot(x, y=None, hue=None, col=None, row=None, kind='strip')
+.lmplot(x, y, hue=None, col=None, row=None, order=1)
+```
+
+- `pareto` : catégories triées, cumul en % sur l'axe de droite (100 % = total) ; les
+  catégories « essentielles » vont jusqu'à celle qui franchit `cutoff` incluse. Sans
+  `value`, les lignes sont comptées.
+- `control_chart` : carte I de Shewhart, limites moyenne ± `sigma`·σ avec σ = MR/1,128
+  (étendue mobile moyenne).
+- `bland_altman` : différence a − b selon la moyenne ; biais et limites biais ± `limits`·ET.
+- `relplot`, `displot`, `catplot`, `lmplot`, `jointplot`, `pairplot`, `clustermap` créent
+  leur propre figure (grille seaborn, dans `chart.sns_grid`) ; taille par `height` et
+  `aspect`. Les autres arguments sont transmis à seaborn.
 
 ### `seaborn`
 
@@ -1002,6 +1026,10 @@ chart.seaborn('relplot', x='dose', y='rendement', col='site', kind='line')
 | `.residplot(x, y, order=1)` | `residplot` | Résidus d'une régression |
 | `.pairplot(vars=None, hue=None, corner=False)` | `pairplot` | Matrice de nuages de points |
 | `.jointplot(x, y, hue=None, kind='scatter')` | `jointplot` | Nuage + distributions marginales |
+| `.relplot(x, y, hue=None, col=None, row=None, kind='scatter')` | `relplot` | Grille de nuages ou de courbes |
+| `.displot(x, hue=None, col=None, row=None, kind='hist')` | `displot` | Grille de distributions |
+| `.catplot(x, y=None, hue=None, col=None, row=None, kind='strip')` | `catplot` | Grille par catégorie |
+| `.lmplot(x, y, hue=None, col=None, row=None, order=1)` | `lmplot` | Grille de régressions |
 
 Chaque raccourci accepte les autres arguments de la fonction seaborn (`palette`, `dodge`,
 `height`…).
@@ -1113,7 +1141,8 @@ Flèche drawarrow ; `coords` : `'data'`, `'axes'` (0–1) ou `'figure'` (0–1).
 .rounded(radius: float = 8.0) -> Chart
 ```
 
-Coins arrondis (rayon en points) des barres, rectangles, secteurs et polygones ;
+Coins arrondis (rayon en points) des barres, rectangles, secteurs et polygones, et,
+plus légèrement (un tiers du rayon), des pastilles de légende ;
 appliqué à `show()` / `save()`. **Par défaut, tous les graphiques sont arrondis à
 8 points** (`Chart.default_round`) ; `rounded(0)` garde des coins vifs,
 `Chart.default_round = 0` désactive l'arrondi pour la session.

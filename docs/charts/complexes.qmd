@@ -1,0 +1,275 @@
+---
+title: "Graphiques complexes"
+subtitle: "Graphiques non triviaux : plusieurs couches, plusieurs axes ou plusieurs panneaux."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
+```
+
+Ces graphiques superposent plusieurs informations : un cumul sur un second axe (Pareto),
+des limites calculées (carte de contrôle, Bland-Altman), deux niveaux de composition
+(Marimekko), ou une grille de panneaux (seaborn). Tous les exemples utilisent le thème
+[`editorial`](../themes.qmd). Retour à la [galerie](../gallery.qmd).
+
+## Analyse et aide à la décision
+
+### `pareto` — Diagramme de Pareto {#g-pareto}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('pareto')
+```
+
+```{python}
+#| fig-cap: "Pertes post-récolte de maïs par cause (données fictives)"
+chart = (Chart(pertes)
+    .pareto('cause', 'tonnes')
+    .title('Pertes post-récolte : 4 causes font 80 % des pertes')
+    .tight_layout())
+chart.show()
+chart.pareto_table
+```
+
+Sans `value`, chaque ligne compte pour un : on part directement du registre des incidents.
+`cutoff` change le seuil.
+
+```{python}
+#| fig-cap: "Comptage direct d'un registre d'incidents, seuil à 70 %"
+incidents = pertes.loc[pertes.index.repeat(pertes['tonnes'] // 5), ['cause']]
+(Chart(incidents)
+    .pareto('cause', cutoff=70)
+    .title("Registre d'incidents, seuil 70 %")
+    .tight_layout()
+    .show())
+```
+
+### `control_chart` — Carte de contrôle {#g-control_chart}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('control_chart')
+```
+
+```{python}
+#| fig-cap: "Humidité des grains à la réception, lot par lot (données fictives)"
+chart = (Chart(lots)
+    .control_chart('lot', 'humidite')
+    .title('Humidité des lots : deux lots hors limites')
+    .labels('Lot', 'Humidité (%)')
+    .tight_layout())
+chart.show()
+chart.control_table[chart.control_table['hors_limites']]
+```
+
+::: {.callout-note}
+σ est estimé par l'étendue mobile moyenne (MR/1,128) et non par l'écart-type global :
+une dérive ou un point aberrant élargit moins les limites. `sigma=2` donne des limites
+d'alerte.
+:::
+
+### `marimekko` — Graphique Marimekko {#g-marimekko}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('marimekko')
+```
+
+```{python}
+#| fig-cap: "Surfaces cultivées par région et par culture (données fictives)"
+(Chart(assolement)
+    .marimekko('region', 'culture', 'surface')
+    .title('Assolement : la largeur donne le poids de chaque région')
+    .tight_layout()
+    .show())
+```
+
+### `bland_altman` — Graphique de Bland-Altman {#g-bland_altman}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('bland_altman')
+```
+
+```{python}
+#| fig-cap: "Humidité du sol : sonde capacitive contre gravimétrie (données fictives)"
+chart = (Chart(mesures)
+    .bland_altman('gravimetrie', 'sonde')
+    .title('Accord sonde / gravimétrie')
+    .labels('Moyenne des deux méthodes (%)', 'Gravimétrie − sonde (%)')
+    .tight_layout())
+chart.show()
+chart.agreement
+```
+
+### `raincloud` — Nuage de pluie {#g-raincloud}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('raincloud')
+```
+
+```{python}
+#| fig-cap: "Rendement par variété : densité, boîte et observations"
+(Chart(essai)
+    .raincloud('variete', 'rendement')
+    .title('Rendement par variété')
+    .labels('Rendement (t/ha)', '')
+    .tight_layout()
+    .show())
+```
+
+## Grilles seaborn
+
+Les fonctions seaborn « figure » créent une **grille de panneaux** : `title()` devient le
+titre général, `labels()` s'applique à tous les panneaux et la grille est dans
+`chart.sns_grid`. Leur taille se règle avec `height` (hauteur d'un panneau, en pouces) et
+`aspect` (largeur / hauteur), pas avec `figsize`.
+
+### `relplot` — Grille de relations {#g-relplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('relplot')
+```
+
+```{python}
+#| fig-cap: "Une courbe de réponse par variété, moyenne et intervalle de confiance"
+(Chart(essai)
+    .relplot('dose', 'rendement', col='variete', kind='line', marker='o', height=3.2, aspect=0.9)
+    .title("Réponse à l'azote par variété")
+    .labels('Dose N (kg/ha)', 'Rendement (t/ha)')
+    .tight_layout()
+    .show())
+```
+
+### `displot` — Grille de distributions {#g-displot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('displot')
+```
+
+```{python}
+#| fig-cap: "Histogramme et densité du rendement, un panneau par variété"
+(Chart(essai)
+    .displot('rendement', col='variete', kde=True, bins=8, height=3.2, aspect=0.9)
+    .title('Distribution du rendement')
+    .tight_layout()
+    .show())
+```
+
+### `catplot` — Grille par catégorie {#g-catplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('catplot')
+```
+
+```{python}
+#| fig-cap: "Boîtes à moustaches par variété, une couleur par dose"
+(Chart(essai.assign(dose=essai['dose'].astype(str)))
+    .catplot('variete', 'rendement', hue='dose', kind='box', height=4, aspect=1.6,
+             palette='crest')
+    .title('Rendement par variété et par dose')
+    .tight_layout()
+    .show())
+```
+
+### `lmplot` — Grille de régressions {#g-lmplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('lmplot')
+```
+
+```{python}
+#| fig-cap: "Régression quadratique du rendement sur la dose, par variété"
+(Chart(essai)
+    .lmplot('dose', 'rendement', hue='variete', order=2, height=4, aspect=1.4)
+    .title('Courbes de réponse ajustées')
+    .labels('Dose N (kg/ha)', 'Rendement (t/ha)')
+    .tight_layout()
+    .show())
+```
+
+### `jointplot` — Relation et distributions marginales {#g-jointplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('jointplot')
+```
+
+
+```{python}
+(Chart(essai)
+    .jointplot('dose', 'rendement', kind='reg', height=5.5)
+    .title('Rendement selon la dose')
+    .show())
+```
+
+### `pairplot` — Matrice de nuages de points {#g-pairplot}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('pairplot')
+```
+
+
+```{python}
+(Chart(caracteres)
+    .pairplot(vars=['hauteur', 'jours_floraison', 'talles', 'rendement'],
+              hue='cycle', corner=True, height=2)
+    .title('Relations entre caractères')
+    .show())
+```
+
+### `clustermap` — Carte de chaleur classée {#g-clustermap}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('clustermap')
+```
+
+
+Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs
+dendrogrammes. Les colonnes sont centrées-réduites par défaut (`standardize=True`).
+
+```{python}
+#| fig-cap: "Profils des variétés classés par ressemblance"
+(Chart(caracteres, figsize=(8, 9))
+    .clustermap(labels='variete')
+    .title('Clustermap des caractères variétaux')
+    .show())
+```
+
+### `seaborn` — N'importe quel graphique seaborn {#g-seaborn}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('seaborn')
+```
+
+```{python}
+#| fig-cap: "seaborn.violinplot via plutovizu"
+(Chart(essai)
+    .seaborn('violinplot', x='variete', y='rendement', hue='variete', inner='quart')
+    .title('Distribution du rendement par variété')
+    .tight_layout()
+    .show())
+```

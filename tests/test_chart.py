@@ -1516,3 +1516,56 @@ def test_legend_handles_rounded():
     c0 = Chart(df).bar('r', ['x', 'y']).rounded(0)
     c0._apply_rounding()
     assert all(type(h) is Rectangle for h in c0.ax.get_legend().legend_handles)
+
+
+# ── Graphiques complexes
+
+def test_pareto_vital_few_and_cumul():
+    df = pd.DataFrame({'cause': list('ABCDE'), 'n': [50, 25, 15, 6, 4]})
+    c = Chart(df).pareto('cause', 'n')
+    t = c.pareto_table
+    assert t['cumul'].tolist() == [50, 75, 90, 96, 100]
+    assert t['classe'].tolist() == ['essentielle'] * 3 + ['secondaire'] * 2  # A+B+C franchit 80 %
+    counted = Chart(pd.DataFrame({'e': list('aaab')})).pareto('e').pareto_table
+    assert counted['valeur'].tolist() == [3, 1]
+
+
+def test_control_chart_limits_flag_outliers():
+    v = [10.0, 10.2, 9.9, 10.1, 9.8, 10.0] * 3 + [13.0, 10.1]
+    c = Chart(pd.DataFrame({'lot': range(20), 'y': v})).control_chart('lot', 'y')
+    lim = c.control_limits
+    mr = np.abs(np.diff(v)).mean() / 1.128
+    assert lim['lsc'] == pytest.approx(np.mean(v) + 3 * mr)
+    assert c.control_table['hors_limites'].tolist() == [False] * 18 + [True, False]
+
+
+def test_marimekko_widths_and_bland_altman():
+    df = pd.DataFrame({'r': ['N', 'N', 'S'], 'c': ['a', 'b', 'a'], 'v': [30, 10, 60]})
+    c = Chart(df).marimekko('r', 'c', 'v')
+    assert c.marimekko_table.loc['S', 'a'] == 60
+    m = pd.DataFrame({'a': [10, 12, 14, 16.0], 'b': [9, 11.5, 13, 15.5]})
+    ag = Chart(m).bland_altman('a', 'b').agreement
+    assert ag['biais'] == pytest.approx(0.75)
+    assert ag['n'] == 4
+
+
+def test_raincloud_and_seaborn_grids():
+    df = pd.DataFrame({'g': ['a'] * 10 + ['b'] * 10, 'v': np.arange(20.0), 'x': np.tile(np.arange(10.0), 2)})
+    Chart(df).raincloud('g', 'v')
+    for c in (Chart(df).relplot('x', 'v', col='g'), Chart(df).displot('v', col='g'),
+              Chart(df).catplot('g', 'v', kind='box'), Chart(df).lmplot('x', 'v', hue='g')):
+        assert c.sns_grid is not None
+
+
+def test_legend_moved_outside_axes():
+    df = pd.DataFrame({'x': np.arange(10), 'a': np.arange(10.0), 'b': np.arange(10.0)[::-1]})
+    for tight in (False, True):
+        c = Chart(df).line('x', ['a', 'b'])
+        c.ax.legend(loc='center')                       # en plein milieu du graphique
+        if tight:
+            c.tight_layout()
+        c._legends_outside()
+        r = c.fig._get_renderer()
+        leg = c.ax.get_legend().get_window_extent(r).padded(-1)
+        assert not any(leg.overlaps(a.get_window_extent(r)) for a in c.fig.axes)
+        assert leg.x1 <= c.fig.bbox.x1                    # et visible en entier

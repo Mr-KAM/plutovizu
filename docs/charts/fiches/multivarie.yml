@@ -40,20 +40,3 @@ dendrogram:
     leaf_rotation: Rotation des noms des feuilles (degrés).
     columns: Colonnes numériques utilisées ; `None` = toutes.
 
-clustermap:
-  desc: >-
-    Carte de chaleur des données avec un dendrogramme sur les lignes et un sur les colonnes,
-    réordonnées selon la classification (seaborn clustermap).
-  usage: >-
-    Voir à la fois les groupes d'individus et les groupes de variables, et ce qui les
-    caractérise (profils d'expression, de traits, de sites).
-  rows: une ligne par individu, des colonnes numériques
-  data:
-    - [variete, texte, "`labels` : nom des lignes", "V07"]
-    - [hauteur, nombre, "`columns` : colonne de la matrice", "118"]
-    - [talles, nombre, "`columns` : colonne de la matrice", "14"]
-  params:
-    columns: Colonnes numériques ; `None` = toutes.
-    standardize: Centre-réduit chaque colonne (couleurs comparables entre variables).
-    method: "Méthode d'agrégation de la classification ('ward', 'average'…)."
-    figsize: Taille de la figure créée par seaborn (pouces) ; `None` = celle du Chart.
