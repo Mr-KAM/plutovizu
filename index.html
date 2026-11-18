@@ -449,6 +449,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./charts/diagrammes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Diagrammes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./charts/complexes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Graphiques complexes</span></a>
   </div>
@@ -474,6 +480,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="./customization.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Personnalisation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./infographie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Infographie</span></a>
   </div>
 </li>
       </ul>
@@ -523,7 +535,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <a class="feature-card" href="gallery.html">
     <div class="feature-art"><i class="bi bi-bar-chart-line"></i></div>
     <span class="feature-title">Galerie</span>
-    <span class="feature-text">115 graphiques : catalogue matplotlib, écologie, climat, sols, cartes (map), graphes et réseaux, graphiques complexes (Pareto, carte de contrôle, Marimekko…) et tout seaborn. Chacun a sa fiche : usage, données attendues, paramètres.</span>
+    <span class="feature-text">120 graphiques : catalogue matplotlib, écologie, climat, sols, cartes (map), graphes et réseaux, diagrammes (Sankey, cordes, Venn, logigrammes, séquences), graphiques complexes (Pareto, carte de contrôle, Marimekko…) et tout seaborn. Chacun a sa fiche : usage, données attendues, paramètres.</span>
   </a>
   <a class="feature-card" href="customization.html">
     <div class="feature-art"><i class="bi bi-palette"></i></div>
@@ -577,7 +589,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td><strong>Composition</strong></td>
-<td><code>treemap</code>, <code>circle_packing</code>, <code>donut</code>, <code>waterfall</code>, <code>streamgraph</code>, <code>radial_bar</code>, <code>progress_bar</code></td>
+<td><code>waffle</code>, <code>treemap</code>, <code>circle_packing</code>, <code>donut</code>, <code>waterfall</code>, <code>streamgraph</code>, <code>radial_bar</code>, <code>progress_bar</code></td>
 </tr>
 <tr class="odd">
 <td><strong>Types matplotlib</strong></td>
@@ -592,54 +604,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>hexbin</code></td>
 </tr>
 <tr class="even">
-<td><strong>Planification &amp; flux</strong></td>
-<td><code>gantt</code>, <code>calendar_heatmap</code>, <code>sankey</code></td>
+<td><strong>Planification</strong></td>
+<td><code>gantt</code>, <code>calendar_heatmap</code></td>
 </tr>
 <tr class="odd">
+<td><strong>Diagrammes</strong></td>
+<td><code>sankey</code>, <code>chord</code>, <code>venn</code>, <code>flowchart</code> (logigrammes, organigrammes), <code>sequence_diagram</code></td>
+</tr>
+<tr class="even">
 <td><strong>Climat &amp; sols</strong></td>
 <td><code>ombrothermic</code>, <code>walter_lieth</code>, <code>climogram</code>, <code>emberger</code>, <code>ecoclimatogram</code>, <code>water_balance</code>, <code>degree_days</code>, <code>wind_rose</code>, <code>anomaly</code>, <code>climate_stripes</code>, <code>soil_texture</code>, <code>soil_profile</code>, <code>depth_profile</code>, <code>soil_properties</code>, <code>retention_curve</code>, <code>grain_size_curve</code>, <code>exchange_complex</code>, <code>infiltration_curve</code>, <code>isopleth</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Écologie</strong></td>
 <td><code>glm_curve</code>, <code>response_curve</code>, <code>count_distribution</code>, <code>forest_plot</code>, <code>ordination</code> (AFC, CCA, ACP, RDA), <code>rank_abundance</code>, <code>accumulation</code>, <code>diversity</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Graphes &amp; réseaux</strong></td>
 <td><code>network</code>, <code>arc_diagram</code>, <code>shortest_path</code>, <code>spanning_tree</code>, <code>max_flow</code>, <code>critical_path</code> (PERT / CPM), <code>tsp_route</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Map</strong></td>
 <td><code>map_points</code>, <code>choropleth</code>, <code>flow_map</code>, <code>density_map</code>, <code>field_map</code>, <code>route_map</code> ; éléments : <code>north_arrow</code>, <code>scale_bar</code>, <code>inset_map</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Sciences &amp; analyse</strong></td>
 <td><code>regression</code>, <code>mean_bar</code> (lettres de Tukey), <code>interaction</code>, <code>qqplot</code>, <code>pca_biplot</code>, <code>dendrogram</code>, <code>ternary</code>, <code>soil_texture</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Analyse qualitative</strong></td>
 <td><code>word_cloud</code>, <code>word_frequency</code>, <code>likert</code>, <code>code_matrix</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Graphiques complexes</strong></td>
 <td><code>pareto</code>, <code>control_chart</code>, <code>marimekko</code>, <code>bland_altman</code>, <code>raincloud</code> ; grilles seaborn <code>relplot</code>, <code>displot</code>, <code>catplot</code>, <code>lmplot</code>, <code>jointplot</code>, <code>pairplot</code>, <code>clustermap</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Seaborn</strong></td>
 <td><code>seaborn(...)</code> pour tout seaborn, et <code>kde</code>, <code>ecdf</code>, <code>strip</code>, <code>swarm</code>, <code>boxen</code>, <code>pointplot</code>, <code>countplot</code>, <code>residplot</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Thèmes</strong></td>
 <td><code>editorial</code> par défaut ; <code>set_theme</code>, <code>theme_context</code>, <code>list_themes</code>, <code>get_theme</code> — 36 thèmes : maison, seaborn et morethemes (<a href="./themes.html">voir la page</a>)</td>
 </tr>
-<tr class="even">
-<td><strong>Apparence</strong></td>
-<td><code>title</code>, <code>labels</code>, <code>grid</code>, <code>font</code>, <code>set_legend</code>, <code>set_limits</code>, <code>rotate_labels</code>, <code>set_style</code></td>
-</tr>
 <tr class="odd">
+<td><strong>Apparence</strong></td>
+<td><code>title</code>, <code>subtitle</code>, <code>caption</code>, <code>background</code>, <code>labels</code>, <code>grid</code>, <code>font</code>, <code>set_legend</code>, <code>set_limits</code>, <code>rotate_labels</code>, <code>set_style</code>, <code>translate</code> — voir <a href="./infographie.html">Infographie</a></td>
+</tr>
+<tr class="even">
 <td><strong>Couleurs</strong></td>
 <td><code>set_colors</code>, <code>create_custom_palette</code>, <code>generate_gradient_palette</code>, <code>preview_palette</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><strong>Export</strong></td>
 <td><code>save</code>, <code>show</code>, <code>get_figure</code>, <code>tight_layout</code></td>
 </tr>
