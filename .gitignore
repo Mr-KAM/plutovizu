@@ -18,3 +18,7 @@ docs/**/*_files/
 docs/site_libs/
 .claude/
 command.md
+nul_renomme.png
+1-build-package.cmd
+.pypirc
+2-upload_to_pypi.cmd
