@@ -88,6 +88,8 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 | `ordination` | Écologie : AFC, CCA, ACP, RDA (triplot sites, espèces, variables) |
 | `rank_abundance`, `accumulation`, `diversity` | Écologie : rang-abondance, accumulation / raréfaction, indices de diversité |
 | `network`, `arc_diagram` | Graphes : réseau, mouvements entre lieux |
+| `sankey`, `chord`, `venn`, `flowchart`, `sequence_diagram` | Diagrammes : flux, cordes, ensembles, logigrammes et organigrammes, séquences (à la Mermaid) |
+| `waffle` | Gaufre : parts d'un total, ou évolution carré par carré |
 | `shortest_path`, `spanning_tree`, `max_flow` | Recherche opérationnelle : plus court chemin, arbre couvrant, flot maximal |
 | `critical_path`, `tsp_route` | Planification PERT / CPM, tournée du voyageur de commerce |
 | `word_cloud(text)` | Nuage de mots (réponses ouvertes, entretiens) |
@@ -102,7 +104,7 @@ df = pd.DataFrame({'categorie': ['A', 'B', 'C'], 'ventes': [120, 85, 200]})
 `mean_bar(..., letters=True)` ajoute les lettres du test de Tukey HSD ;
 `texture_class(sable, limon, argile)` donne la classe USDA d'un sol.
 
-Liste complète des 115 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html) ;
+Liste complète des 121 graphiques dans la [galerie](https://mr-kam.github.io/plutovizu/gallery.html) ;
 chaque graphique y a sa fiche : description, cas d'usage, structure du DataFrame attendu et
 paramètres, avant l'exemple.
 
@@ -129,7 +131,7 @@ Le thème `editorial` est appliqué par défaut dès `import plutovizu` ;
 from plutovizu import Chart, set_theme, theme_context
 
 set_theme('pluto')                     # pour toute la session
-Chart(df, theme='neon')                # raccourci (s'applique aussi aux suivants)
+Chart(df, theme='neon')                # ce graphique seulement
 with theme_context('paper'):           # seulement dans ce bloc
     Chart(df).line('x', 'y').show()
 set_theme(None)                        # retour au style matplotlib
@@ -150,6 +152,7 @@ chart.set_legend(show=True, location='upper right')
 chart.set_limits(xlim=(0, 100), ylim=(0, 500))
 chart.rotate_labels(x_rotation=45)
 chart.font(family='Times New Roman', size=12, weight='normal')
+chart.subtitle('Sous le titre').caption('Source : …').background('#f6eee3')   # infographie
 
 # Couleurs
 chart.set_colors('deep')                          # palette seaborn/matplotlib
@@ -157,7 +160,12 @@ chart.create_custom_palette('ma_palette', ['#FF5733', 'blue', 'green'])
 chart.generate_gradient_palette('grad', 'blue', 'red', n_colors=8)
 chart.preview_palette('Set1')
 
+# Langue des textes : 'fr', 'en', 'es', 'ar' (dictionnaire intégré)
+chart.translate('en')
+chart.translate('de', from_='online')   # tous les textes, toute langue : pip install translate
+
 # Export
+chart = Chart(df, figsize=(12, 8), dpi=200)   # dpi : affichage et export
 chart.tight_layout()
 chart.save('graphique.png')        # 400 dpi par défaut ; .pdf, .svg selon l'extension
 chart.show()

@@ -20,7 +20,7 @@ toc: false
   <a class="feature-card" href="gallery.html">
     <div class="feature-art"><i class="bi bi-bar-chart-line"></i></div>
     <span class="feature-title">Galerie</span>
-    <span class="feature-text">115 graphiques : catalogue matplotlib, écologie, climat, sols, cartes (map), graphes et réseaux, graphiques complexes (Pareto, carte de contrôle, Marimekko…) et tout seaborn. Chacun a sa fiche : usage, données attendues, paramètres.</span>
+    <span class="feature-text">121 graphiques : catalogue matplotlib, écologie, climat, sols, cartes (map), graphes et réseaux, diagrammes (Sankey, cordes, Venn, logigrammes, séquences), graphiques complexes (Pareto, carte de contrôle, Marimekko…) et tout seaborn. Chacun a sa fiche : usage, données attendues, paramètres.</span>
   </a>
   <a class="feature-card" href="customization.html">
     <div class="feature-art"><i class="bi bi-palette"></i></div>
@@ -62,12 +62,13 @@ df = pd.DataFrame({'mois': list(range(1, 13)),
 |---|---|
 | **Graphiques de base** | `line`, `bar`, `scatter`, `histogram`, `boxplot`, `pie`, `heatmap`, `area` |
 | **Distributions** | `violin`, `ridgeline` |
-| **Comparaisons** | `radar`, `parallel_coordinates`, `dumbbell`, `bump`, `lollipop` |
-| **Composition** | `treemap`, `circle_packing`, `donut`, `waterfall`, `streamgraph`, `radial_bar`, `progress_bar` |
+| **Comparaisons** | `radar`, `parallel_coordinates`, `dumbbell`, `pyramid`, `bump`, `lollipop` |
+| **Composition** | `waffle`, `treemap`, `circle_packing`, `donut`, `waterfall`, `streamgraph`, `radial_bar`, `progress_bar` |
 | **Types matplotlib** | `step`, `stem`, `band`, `timeline`, `eventplot`, `errorbar`, `hist2d`, `bihistogram`, `confidence_ellipse`, `pivot_heatmap`, `polar` |
 | **Champs & 3D** | `contour`, `mesh`, `vector_field`, `scatter3d`, `line3d`, `surface`, `bar3d` |
 | **Volumétrique** | `hexbin` |
-| **Planification & flux** | `gantt`, `calendar_heatmap`, `sankey` |
+| **Planification** | `gantt`, `calendar_heatmap` |
+| **Diagrammes** | `sankey`, `chord`, `venn`, `flowchart` (logigrammes, organigrammes), `sequence_diagram` |
 | **Climat & sols** | `ombrothermic`, `walter_lieth`, `climogram`, `emberger`, `ecoclimatogram`, `water_balance`, `degree_days`, `wind_rose`, `anomaly`, `climate_stripes`, `soil_texture`, `soil_profile`, `depth_profile`, `soil_properties`, `retention_curve`, `grain_size_curve`, `exchange_complex`, `infiltration_curve`, `isopleth` |
 | **Écologie** | `glm_curve`, `response_curve`, `count_distribution`, `forest_plot`, `ordination` (AFC, CCA, ACP, RDA), `rank_abundance`, `accumulation`, `diversity` |
 | **Graphes & réseaux** | `network`, `arc_diagram`, `shortest_path`, `spanning_tree`, `max_flow`, `critical_path` (PERT / CPM), `tsp_route` |
@@ -77,7 +78,7 @@ df = pd.DataFrame({'mois': list(range(1, 13)),
 | **Graphiques complexes** | `pareto`, `control_chart`, `marimekko`, `bland_altman`, `raincloud` ; grilles seaborn `relplot`, `displot`, `catplot`, `lmplot`, `jointplot`, `pairplot`, `clustermap` |
 | **Seaborn** | `seaborn(...)` pour tout seaborn, et `kde`, `ecdf`, `strip`, `swarm`, `boxen`, `pointplot`, `countplot`, `residplot` |
 | **Thèmes** | `editorial` par défaut ; `set_theme`, `theme_context`, `list_themes`, `get_theme` — 36 thèmes : maison, seaborn et morethemes ([voir la page](themes.qmd)) |
-| **Apparence** | `title`, `labels`, `grid`, `font`, `set_legend`, `set_limits`, `rotate_labels`, `set_style` |
+| **Apparence** | `title`, `subtitle`, `caption`, `background`, `labels`, `grid`, `tick_format`, `font`, `set_legend`, `set_limits`, `rotate_labels`, `set_style`, `translate` — voir [Infographie](infographie.qmd) |
 | **Couleurs** | `set_colors`, `create_custom_palette`, `generate_gradient_palette`, `preview_palette` |
 | **Export** | `save`, `show`, `get_figure`, `tight_layout` |
 

@@ -130,8 +130,13 @@ fiche('raincloud')
 
 Les fonctions seaborn « figure » créent une **grille de panneaux** : `title()` devient le
 titre général, `labels()` s'applique à tous les panneaux et la grille est dans
-`chart.sns_grid`. Leur taille se règle avec `height` (hauteur d'un panneau, en pouces) et
-`aspect` (largeur / hauteur), pas avec `figsize`.
+`chart.sns_grid`. Leur taille se règle comme pour les autres graphiques :
+
+- `figsize` donne la taille de **toute la figure**, dans `Chart(df, figsize=…)` ou dans
+  l'appel (`.relplot(…, figsize=(10, 4))`). Il l'emporte sur `height` et `aspect` ;
+- sans `figsize`, seaborn calcule la taille panneau par panneau : `height` (hauteur d'un
+  panneau, en pouces) et `aspect` (largeur / hauteur) ;
+- `Chart(df, dpi=…)` règle la résolution, comme pour tous les graphiques.
 
 ### `relplot` — Grille de relations {#g-relplot}
 
@@ -144,7 +149,7 @@ fiche('relplot')
 ```{python}
 #| fig-cap: "Une courbe de réponse par variété, moyenne et intervalle de confiance"
 (Chart(essai)
-    .relplot('dose', 'rendement', col='variete', kind='line', marker='o', height=3.2, aspect=0.9)
+    .relplot('dose', 'rendement', col='variete', kind='line', marker='o', figsize=(9, 3.4))
     .title("Réponse à l'azote par variété")
     .labels('Dose N (kg/ha)', 'Rendement (t/ha)')
     .tight_layout()

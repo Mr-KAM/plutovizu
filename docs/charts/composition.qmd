@@ -62,6 +62,34 @@ Un camembert évidé, avec un texte central ; avec `group`, deux anneaux imbriqu
 ```
 
 
+### `waffle` — Graphique en gaufre {#g-waffle}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('waffle')
+```
+
+```{python}
+#| fig-cap: "Assolement d'une exploitation : un carré = 1 ha (données fictives)"
+(Chart(cultures_ha, figsize=(6, 6))
+    .waffle('culture', 'ha')
+    .title('Assolement : 100 ha')
+    .tight_layout()
+    .show())
+```
+
+Avec `x`, une colonne de carrés par année ; `direct_labels` écrit les groupes à droite :
+
+```{python}
+#| fig-cap: "Surfaces par culture et par année, un carré = 5 ha (données fictives)"
+(Chart(cultures_annees, figsize=(8, 5))
+    .waffle('culture', 'ha', x='annee', unit=5, direct_labels=True)
+    .title('Surfaces cultivées (ha)')
+    .tight_layout()
+    .show())
+```
+
 ### `treemap` — Carte arborescente {#g-treemap}
 
 ```{python}
@@ -174,35 +202,6 @@ sols['limon'] = 100 - sols['sable'] - sols['argile']
 (Chart(sols, figsize=(7, 6.5))
     .ternary('sable', 'limon', 'argile', group='zone')
     .title('Texture des sols (%)')
-    .tight_layout()
-    .show())
-```
-
-
-### `sankey` — Diagramme de Sankey {#g-sankey}
-
-```{python}
-#| echo: false
-#| output: asis
-fiche('sankey')
-```
-
-
-```{python}
-#| fig-cap: "Flux financiers simplifiés"
-#| fig-width: 9
-#| fig-height: 5
-
-df = pd.DataFrame({
-    'flux':       [200, -80,  -50, -70,   80,  -30, -50],
-    'etiquette':  ['Revenus','Coût matières','Loyers','Salaires',
-                   'Marge brute','Taxes','Bénéfice net'],
-    'direction':  [0, 1, 1, -1, 0, 1, -1],
-})
-
-(Chart(df)
-    .sankey('flux', 'etiquette', orientations='direction', unit=' k€', scale=0.005)
-    .title('Flux financiers (k€)')
     .tight_layout()
     .show())
 ```

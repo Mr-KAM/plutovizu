@@ -263,6 +263,34 @@ df = pd.DataFrame({
 ```
 
 
+### `pyramid` — Pyramide des âges {#g-pyramid}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('pyramid')
+```
+
+
+Population agricole de Côte d'Ivoire en 2024, par classe d'âge, depuis
+[`examples/datasets/`](https://github.com/Mr-KAM/plutovizu/tree/main/examples/datasets).
+
+```{python}
+#| fig-cap: "Population agricole par âge, 2024 (milliers)"
+#| fig-width: 8
+#| fig-height: 7
+population = pd.read_csv('../../examples/datasets/pyramide_population_agricole_2024.csv')
+population[['Hommes', 'Femmes']] = population[['hommes', 'femmes']] * 100   # en milliers
+
+(Chart(population, figsize=(8, 7))
+    .pyramid('age', 'Hommes', 'Femmes', show_values=True)
+    .title('Population agricole par âge (milliers)')
+    .labels('', '')
+    .tight_layout()
+    .show())
+```
+
+
 ### `radar` — Araignée {#g-radar}
 
 ```{python}

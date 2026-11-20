@@ -15,7 +15,9 @@ graphique : usage, structure du DataFrame attendu et paramètres.
 | [07_map](07_map.ipynb) | Points, zones, flux, densité, isolignes, itinéraires (`pip install plutovizu[map]`) |
 | [08_graphes_reseaux](08_graphes_reseaux.ipynb) | Réseaux, plus court chemin, arbre couvrant, flot maximal, chemin critique, tournées |
 | [09_graphiques_complexes](09_graphiques_complexes.ipynb) | Pareto, carte de contrôle, Marimekko, Bland-Altman, raincloud, grilles seaborn |
-| [10_mise_en_forme](10_mise_en_forme.ipynb) | Thèmes, palettes (dont pypalettes), polices (Fira Sans, Inter), annotations, coins arrondis, export |
+| [10_mise_en_forme](10_mise_en_forme.ipynb) | Thèmes, palettes (dont pypalettes), polices (Fira Sans, Inter), annotations, coins arrondis, taille, résolution, traduction, export |
+| [11_diagrammes_infographie](11_diagrammes_infographie.ipynb) | Sankey, cordes, Venn, logigramme, organigramme, séquence ; infographies (polices, fond, annotations, courbes étiquetées, histogramme log, l'IA en chiffres 2025-2026) ; données dans [datasets/](datasets/) |
+| [12_cote_divoire](12_cote_divoire.ipynb) | Données réelles de Côte d'Ivoire : 60 ans de cacao, production par région (carte choroplèthe), chiffres cacao-café, financement agricole, pyramide des âges, carte des sites touristiques (geopandas) |
 
 Les notebooks utilisent le noyau Jupyter `plutovizu` :
 

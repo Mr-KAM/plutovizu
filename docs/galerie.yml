@@ -148,6 +148,11 @@
   path: charts/comparaison.html#g-dumbbell
   image: images/vignettes/dumbbell.png
   categories: ["Comparaison"]
+- title: "Pyramide des âges"
+  description: "pyramid() — Deux séries dos à dos par classe"
+  path: charts/comparaison.html#g-pyramid
+  image: images/vignettes/pyramid.png
+  categories: ["Comparaison"]
 - title: "Radar"
   description: "radar() — Profils multicritères"
   path: charts/comparaison.html#g-radar
@@ -238,10 +243,10 @@
   path: charts/composition.html#g-ternary
   image: images/vignettes/ternary.png
   categories: ["Composition"]
-- title: "Sankey"
-  description: "sankey() — Flux entre étapes"
-  path: charts/composition.html#g-sankey
-  image: images/vignettes/sankey.png
+- title: "Gaufre"
+  description: "waffle() — Parts à compter, carré par carré"
+  path: charts/composition.html#g-waffle
+  image: images/vignettes/waffle.png
   categories: ["Composition"]
 - title: "Barres radiales"
   description: "radial_bar() — Avancement de plusieurs indicateurs"
@@ -573,3 +578,28 @@
   path: charts/complexes.html#g-seaborn
   image: images/vignettes/seaborn.png
   categories: ["Graphiques complexes"]
+- title: "Sankey"
+  description: "sankey() — Flux entre étapes, sur plusieurs niveaux"
+  path: charts/diagrammes.html#g-sankey
+  image: images/vignettes/sankey.png
+  categories: ["Diagrammes"]
+- title: "Cordes"
+  description: "chord() — Échanges croisés entre acteurs"
+  path: charts/diagrammes.html#g-chord
+  image: images/vignettes/chord.png
+  categories: ["Diagrammes"]
+- title: "Venn"
+  description: "venn() — Recouvrements entre ensembles"
+  path: charts/diagrammes.html#g-venn
+  image: images/vignettes/venn.png
+  categories: ["Diagrammes"]
+- title: "Logigramme"
+  description: "flowchart() — Étapes, décisions, organigrammes"
+  path: charts/diagrammes.html#g-flowchart
+  image: images/vignettes/flowchart.png
+  categories: ["Diagrammes"]
+- title: "Séquence"
+  description: "sequence_diagram() — Messages entre acteurs dans le temps"
+  path: charts/diagrammes.html#g-sequence_diagram
+  image: images/vignettes/sequence_diagram.png
+  categories: ["Diagrammes"]

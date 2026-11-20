@@ -1,0 +1,169 @@
+---
+title: "Diagrammes"
+subtitle: "Flux, liens, ensembles, étapes et organisation — l'équivalent des schémas Mermaid, à partir d'un DataFrame."
+---
+
+```{python}
+#| include: false
+exec(open('_donnees.py', encoding='utf-8').read())   # données d'exemple + thème editorial
+exec(open('_fiches.py', encoding='utf-8').read())    # fiches : description, données, paramètres
+```
+
+Un diagramme se décrit par un tableau de **liens** : une ligne par flèche, par flux ou par
+message. plutovizu place les nœuds, trace les liens et suit le thème actif
+([`editorial`](../themes.qmd) ici). Retour à la [galerie](../gallery.qmd).
+
+## Flux et liens
+
+### `sankey` — Diagramme de Sankey {#g-sankey}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('sankey')
+```
+
+```{python}
+#| fig-cap: "Devenir de la récolte de maïs, de la parcelle au marché (données fictives)"
+(Chart(devenir, figsize=(9, 5))
+    .sankey('de', 'vers', 'tonnes', unit=' t')
+    .title('Devenir de la récolte (t)')
+    .tight_layout()
+    .show())
+```
+
+Les colonnes sont déduites des liens : une source en premier, les destinations finales à
+droite. `order` impose l'ordre vertical des nœuds, `colors` leurs couleurs :
+
+```{python}
+#| fig-cap: "Mêmes flux, ordre et couleurs imposés"
+(Chart(devenir, figsize=(9, 5))
+    .sankey('de', 'vers', 'tonnes', unit=' t',
+            order=['Récolte', 'Vente', 'Stock', 'Export', 'Marché local',
+                   'Autoconsommation', 'Pertes'],
+            colors={'Pertes': '#d62828', 'Export': '#2a9d8f', 'Marché local': '#2a9d8f'})
+    .title('Devenir de la récolte (t)')
+    .tight_layout()
+    .show())
+```
+
+### `chord` — Diagramme en cordes {#g-chord}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('chord')
+```
+
+```{python}
+#| fig-cap: "Échanges de céréales entre régions (milliers de t, données fictives)"
+(Chart(echanges_regions, figsize=(6.5, 6.5))
+    .chord('de', 'vers', 'kt')
+    .title('Échanges de céréales entre régions')
+    .tight_layout()
+    .show())
+```
+
+## Ensembles
+
+### `venn` — Diagramme de Venn {#g-venn}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('venn')
+```
+
+```{python}
+#| fig-cap: "Activités pratiquées par 200 ménages (données fictives)"
+chart = (Chart(menages, figsize=(6, 6))
+    .venn(['Maraîchage', 'Élevage', 'Pêche'])
+    .title('Activités des ménages')
+    .tight_layout())
+chart.show()
+chart.venn_table
+```
+
+Une colonne peut aussi **lister des éléments** (cases vides ignorées) :
+
+```{python}
+#| fig-cap: "Deux ensembles d'espèces observées"
+especes = pd.DataFrame({'Site A': ['Acacia', 'Balanites', 'Ziziphus', 'Tamarin', None],
+                        'Site B': ['Acacia', 'Baobab', 'Ziziphus', 'Néré', 'Karité']})
+(Chart(especes, figsize=(6, 4.5))
+    .venn(['Site A', 'Site B'])
+    .title("Espèces communes aux deux sites")
+    .tight_layout()
+    .show())
+```
+
+## Étapes et organisation
+
+Ces diagrammes reprennent les schémas de [Mermaid](https://mermaid.js.org) : une ligne
+du tableau = une flèche `A --> B`.
+
+| Mermaid | plutovizu |
+|---|---|
+| `flowchart TD` : `A --> B`, `B -- oui --> C` | `flowchart(de, vers, label=…)`, `direction='TB'` |
+| `flowchart LR` | `flowchart(…, direction='LR')` |
+| forme `{décision}` | nom finissant par `?`, ou `shapes={'nœud': 'diamond'}` |
+| forme `([début])` | `shapes={'nœud': 'stadium'}` |
+| `sequenceDiagram` : `A->>B: message`, `B-->>A: réponse` | `sequence_diagram(de, vers, message, dashed=…)` |
+
+### `flowchart` — Logigramme et organigramme {#g-flowchart}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('flowchart')
+```
+
+```{python}
+#| fig-cap: "Contrôle qualité d'un lot : décision, boucle de retour, étiquettes"
+(Chart(controle, figsize=(6, 7.5))
+    .flowchart('de', 'vers', label='si',
+               shapes={'Réception du lot': 'stadium', 'Expédition': 'stadium'})
+    .title('Contrôle qualité des lots')
+    .tight_layout()
+    .show())
+```
+
+Un **organigramme** est un logigramme sans boucle : une ligne par lien hiérarchique.
+
+```{python}
+#| fig-cap: "Organigramme d'une coopérative"
+(Chart(organigramme, figsize=(9, 4))
+    .flowchart('responsable', 'service')
+    .title('Organisation de la coopérative')
+    .tight_layout()
+    .show())
+```
+
+De gauche à droite, pour un processus linéaire :
+
+```{python}
+#| fig-cap: "Étapes d'un projet, de gauche à droite"
+etapes = pd.DataFrame({'de': ['Diagnostic', 'Conception', 'Travaux', 'Réception'],
+                       'vers': ['Conception', 'Travaux', 'Réception', 'Suivi']})
+(Chart(etapes, figsize=(10, 2.2))
+    .flowchart('de', 'vers', direction='LR')
+    .tight_layout()
+    .show())
+```
+
+### `sequence_diagram` — Diagramme de séquence {#g-sequence_diagram}
+
+```{python}
+#| echo: false
+#| output: asis
+fiche('sequence_diagram')
+```
+
+```{python}
+#| fig-cap: "Circuit de paiement d'une livraison"
+(Chart(paiement, figsize=(9, 5))
+    .sequence_diagram('de', 'vers', 'message', dashed='reponse', numbered=True)
+    .title("De la livraison au paiement")
+    .tight_layout()
+    .show())
+```

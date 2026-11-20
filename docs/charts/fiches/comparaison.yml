@@ -124,6 +124,24 @@ dumbbell:
     - [pib_2020, nombre, "`x_start` : première mesure", "24.5"]
     - [pib_2024, nombre, "`x_end` : seconde mesure", "31.0"]
 
+pyramid:
+  desc: >-
+    Pyramide des âges : deux séries de barres dos à dos (hommes à gauche, femmes à droite),
+    une ligne par classe d'âge, la plus jeune en bas.
+  usage: >-
+    Structure par âge et par sexe d'une population (recensement, population agricole,
+    effectifs d'une espèce), ou toute comparaison de deux séries sur les mêmes classes.
+  rows: une ligne par classe, dans l'ordre (la première est dessinée en bas)
+  data:
+    - [age, texte, "`y` : classe", "15-19"]
+    - [hommes, nombre, "`left` : série de gauche", "550"]
+    - [femmes, nombre, "`right` : série de droite", "500"]
+  params:
+    left: Colonne tracée à gauche (son nom s'affiche en haut à gauche).
+    right: Colonne tracée à droite.
+    colors: "Deux couleurs (gauche, droite). `None` : couleurs du thème."
+    value_format: "Format des valeurs : `'{:g}'` ou une fonction."
+
 radar:
   desc: >-
     Radar (toile d'araignée) : chaque variable est un rayon, chaque profil un polygone ; avec

@@ -265,6 +265,19 @@ def test_theme_context_is_scoped():
         assert plt.rcParams['axes.facecolor'] == '#0f0a1e'
     assert plt.rcParams['axes.facecolor'] == before
 
+def test_chart_theme_is_local(df):
+    set_theme('editorial')
+    before = plt.rcParams['axes.facecolor']
+    Chart(df, theme='neon').font(size=20)
+    assert plt.rcParams['axes.facecolor'] == '#0f0a1e'     # actif pendant la chaîne
+    c = Chart(df)                                            # graphique suivant : thème de fond
+    assert matplotlib.colors.same_color(c.fig.get_facecolor(), plt.rcParams['figure.facecolor'])
+    assert plt.rcParams['axes.facecolor'] == before and plt.rcParams['font.size'] != 20
+    Chart(df, theme='neon').show()                           # show() rétablit aussi
+    assert plt.rcParams['axes.facecolor'] == before
+    Chart(df, theme='neon'); set_theme('pluto'); Chart(df)  # set_theme explicite gagne
+    assert matplotlib.colors.to_hex(plt.rcParams['axes.facecolor']) != before
+
 def test_unknown_theme_raises():
     with pytest.raises(ValueError, match='Disponibles'):
         set_theme('inexistant')
@@ -900,6 +913,43 @@ def test_map_points_without_basemap(villes):
     assert [t.get_text() for t in c.ax.texts] == villes['ville'].tolist()
     g = Chart(villes).map_points('lon', 'lat', group='zone', basemap=False)
     assert len(g.ax.get_legend().get_texts()) == 3
+
+
+def test_map_points_geodataframe_boundary_and_labels_without_overlap():
+    gpd = pytest.importorskip('geopandas')
+    from shapely.geometry import Point, box
+    sites = gpd.GeoDataFrame({'nom': [f'Site numéro {i}' for i in range(12)], 'type': ['a', 'b'] * 6},
+                             geometry=[Point(-4 + i * 0.01, 5.3) for i in range(12)], crs='EPSG:4326')
+    pays = gpd.GeoDataFrame(geometry=[box(-8, 4, -2, 10)], crs='EPSG:4326')
+    c = Chart(sites).map_points(group='type', labels='nom', boundary=pays, basemap=False,
+                                colors={'a': '#ff0000'})
+    assert c.ax.get_xlim()[0] < -8 and c.ax.get_ylim()[1] > 10           # cadré sur le pays
+    r = c.fig.canvas.get_renderer()
+    boxes = [t.get_window_extent(r) for t in c.ax.texts]
+    assert len(boxes) + len(c.hidden_labels) == 12 and c.hidden_labels   # serrés : certains masqués
+    assert not any(a.overlaps(b) for i, a in enumerate(boxes) for b in boxes[i + 1:])
+    assert matplotlib.colors.same_color(c.ax.collections[1].get_facecolor()[0][:3], (1, 0, 0))
+    with pytest.raises(ValueError, match='GeoDataFrame'):
+        Chart(pd.DataFrame({'x': [1]})).map_points()
+
+
+def test_choropleth_draws_missing_zones():
+    gpd = pytest.importorskip('geopandas')
+    from shapely.geometry import box
+    z = gpd.GeoDataFrame({'v': [1.0, np.nan, 3.0]}, geometry=[box(i, 0, i + 1, 1) for i in range(3)])
+    c = Chart(z).choropleth('v')
+    assert sum(len(col.get_paths()) for col in c.ax.collections
+               if hasattr(col, 'get_paths')) >= 3                          # la zone NaN est dessinée
+
+
+def test_pyramid():
+    pop = pd.DataFrame({'age': ['0-4', '5-9', '10+'], 'h': [5, 4, 2], 'f': [6, 4, 1]})
+    c = Chart(pop).pyramid('age', 'h', 'f', show_values=True)
+    widths = [p.get_width() for p in c.ax.patches]
+    assert widths == [-5, -4, -2, 6, 4, 1]
+    assert c.ax.xaxis.get_major_formatter()(-4, 0) == '4'
+    assert [t.get_text() for t in c.ax.get_yticklabels()] == ['0-4', '5-9', '10+']
+    assert {'h', 'f'} <= {t.get_text() for t in c.ax.texts}
 
 
 def test_basemap_failure_only_warns(villes, monkeypatch):
@@ -1557,6 +1607,91 @@ def test_raincloud_and_seaborn_grids():
         assert c.sns_grid is not None
 
 
+def test_ombrothermic_and_gantt_follow_palette():
+    import matplotlib.colors as mc
+    pal = ['#2a9d8f', '#e76f51', '#264653']
+    d = pd.DataFrame({'m': list('JFMAMJJASOND'), 't': [8, 9, 12, 15, 19, 24, 27, 27, 23, 18, 12, 9],
+                      'p': [70, 60, 55, 45, 30, 12, 4, 8, 35, 70, 85, 80]})
+    c = Chart(d).set_colors(pal).ombrothermic('m', 't', 'p')
+    assert mc.to_hex(c.ax.lines[0].get_color()) == pal[1]                 # température
+    assert mc.to_hex(c.ax2.patches[0].get_facecolor()) == pal[0]          # précipitations
+    assert len(c.ax2.patches) == 12                                       # mois répétés : 12 barres
+    dry = [col for col in c.ax2.collections if col.get_hatch()]
+    assert len(dry) == 5 and mc.to_hex(dry[0].get_edgecolor()[0]) == pal[1]   # mai → sept. hachurés
+    c = Chart(d).ombrothermic('m', 't', 'p').set_colors(pal)                # set_colors APRÈS
+    assert mc.to_hex(c.ax.lines[0].get_color()) == pal[1]
+    assert mc.to_hex(c.ax2.patches[0].get_facecolor()) == pal[0]
+    assert c.ax2.patches[0].get_facecolor()[3] == pytest.approx(0.6)      # transparence gardée
+    dry = [col for col in c.ax2.collections if col.get_hatch()]
+    assert mc.to_hex(dry[0].get_edgecolor()[0]) == pal[1]
+    assert mc.to_hex(c.ax.yaxis.label.get_color()) == pal[1]
+    g = pd.DataFrame({'t': ['a', 'b', 'c'], 'd': ['2024-01-01'] * 3, 'f': ['2024-01-05'] * 3,
+                      'e': ['x', 'y', 'x']})
+    c = Chart(g).set_colors(pal).gantt('t', 'd', 'f', group='e')
+    leg = c.ax.legend()
+    assert [mc.to_hex(h.get_facecolor()) for h in leg.legend_handles] == pal[:2]
+    assert [mc.to_hex(p.get_facecolor()) for p in c.ax.patches] == [pal[0], pal[0], pal[1]]
+
+
+def test_water_balance_legend_vertical():
+    d = pd.DataFrame({'m': list('abcdef'), 'p': [0, 50, 200, 150, 10, 0], 'e': [100] * 6})
+    leg = Chart(d).water_balance('m', 'p', 'e').ax.get_legend()
+    assert leg._ncols == 1
+    assert [t.get_text() for t in leg.texts] == ['Précipitations (P)', 'Évapotranspiration (ETP)',
+                                                  'Excédent (P > ETP)', 'Déficit (P < ETP)']
+
+
+def test_translate_builtin_and_back():
+    d = pd.DataFrame({'m': list('abcdef'), 'p': [0, 50, 200, 150, 10, 0], 'e': [100] * 6})
+    c = Chart(d).water_balance('m', 'p', 'e').title('Mon titre').translate('en')
+    texts = lambda: [t.get_text() for t in c.ax.get_legend().texts]   # noqa: E731
+    assert texts() == ['Precipitation (P)', 'Evapotranspiration (PET)', 'Surplus (P > PET)',
+                       'Deficit (P < PET)']
+    assert c.ax.get_title(loc='left') == 'Mon titre'                     # vos textes : inchangés en builtin
+    c.translate('es')
+    assert texts()[0] == 'Precipitación (P)'
+    c.translate('ar')
+    assert texts()[2].startswith('الفائض') and 'DejaVu Sans' in c.ax.get_legend().texts[0].get_fontfamily()
+    c.translate('fr')
+    assert texts()[0] == 'Précipitations (P)'
+    with pytest.raises(ValueError):
+        c.translate('de')                                       # pas de dictionnaire intégré
+    # Libellés ambigus traduits seulement pour leur graphique ; graduations comprises
+    days = pd.DataFrame({'d': pd.date_range('2024-01-01', periods=30), 'v': range(30)})
+    c = Chart(days).calendar_heatmap('d', 'v').translate('en')
+    c.fig.draw_without_rendering()
+    assert [t.get_text() for t in c.ax.get_yticklabels()][:2] == ['Mon', 'Tue']
+    c = Chart(pd.DataFrame({'x': ['Mar', 'Avr'], 'y': [1, 2]})).bar('x', 'y').translate('en')
+    c.fig.draw_without_rendering()
+    assert c.ax.get_xticklabels()[0].get_text() == 'Mar'       # mars, pas mardi
+
+
+def test_translate_online(monkeypatch):
+    from plutovizu import translations
+    calls = []
+    monkeypatch.setattr(translations, 'online',
+                        lambda s, lang, src: calls.append(s) or f'<{lang}:{s}>')
+    d = pd.DataFrame({'m': list('abcdef'), 'p': [0, 50, 200, 150, 10, 0], 'e': [100] * 6})
+    c = Chart(d).water_balance('m', 'p', 'e').title('Bilan hydrique').translate('de', from_='online')
+    assert c.ax.get_title(loc='left') == '<de:Bilan hydrique>'
+    assert 'Bilan hydrique' in calls and '200' not in calls     # nombres : pas d'appel
+    c = Chart(d).water_balance('m', 'p', 'e').translate('en', from_='online')
+    assert c.ax.get_legend().texts[0].get_text() == 'Precipitation (P)'   # dictionnaire d'abord
+
+
+def test_seaborn_grids_follow_figsize_and_dpi():
+    df = pd.DataFrame({'g': ['a'] * 10 + ['b'] * 10, 'v': np.arange(20.0), 'x': np.tile(np.arange(10.0), 2)})
+    c = Chart(df, figsize=(9, 3), dpi=150).relplot('x', 'v', col='g', height=5, aspect=2)
+    assert tuple(c.fig.get_size_inches()) == (9, 3) and c.fig.dpi == 150     # figsize > height/aspect
+    assert tuple(Chart(df).catplot('g', 'v', figsize=(5, 4)).fig.get_size_inches()) == (5, 4)
+    assert tuple(Chart(df, figsize=(6, 6)).pairplot(['v', 'x']).fig.get_size_inches()) == (6, 6)
+    assert tuple(Chart(df).displot('v', height=2, aspect=1).fig.get_size_inches()) == (2, 2)
+    assert tuple(Chart(df, figsize=(7, 5)).clustermap(['v', 'x']).fig.get_size_inches()) == (7, 5)
+    with tempfile.TemporaryDirectory() as d:
+        Chart(df, figsize=(2, 1), dpi=50).line('x', 'v').save(os.path.join(d, 'a.png'), bbox_inches=None)
+        assert plt.imread(os.path.join(d, 'a.png')).shape[:2] == (50, 100)   # save() reprend dpi
+
+
 def test_legend_moved_outside_axes():
     df = pd.DataFrame({'x': np.arange(10), 'a': np.arange(10.0), 'b': np.arange(10.0)[::-1]})
     for tight in (False, True):
@@ -1569,3 +1704,153 @@ def test_legend_moved_outside_axes():
         leg = c.ax.get_legend().get_window_extent(r).padded(-1)
         assert not any(leg.overlaps(a.get_window_extent(r)) for a in c.fig.axes)
         assert leg.x1 <= c.fig.bbox.x1                    # et visible en entier
+
+
+# ── Diagrammes et infographie
+
+def _links_df():
+    return pd.DataFrame([('A', 'B', 30), ('A', 'C', 20), ('B', 'D', 25), ('C', 'D', 15),
+                         ('B', 'E', 5)], columns=['s', 't', 'v'])
+
+
+def test_sankey_multilevel_and_legacy():
+    c = Chart(_links_df()).sankey('s', 't', 'v')
+    assert len(c.sankey_table) == 5 and c.sankey_table['v'].sum() == 95
+    assert len(c.ax.patches) == 5 + 5                       # 5 rubans + 5 nœuds
+    old = pd.DataFrame({'flux': [100, -60, -40], 'etiquette': ['in', 'a', 'b']})
+    Chart(old).sankey('flux', 'etiquette')                  # ancienne forme matplotlib
+
+
+def test_chord_matrix():
+    c = Chart(_links_df()).chord('s', 't', 'v')
+    assert c.chord_table.loc['A', 'B'] == 30 and c.chord_table.values.sum() == 95
+
+
+def test_histogram_log_hue_smooth():
+    d = pd.DataFrame({'p': [1, 10, 10, 100, 1000, 10000] * 5, 'g': list('aabbcc') * 5})
+    c = Chart(d).histogram('p', bins=4, log=True, hue='g', order=['c', 'b', 'a'], smooth=True)
+    assert c.ax.get_xscale() == 'log'
+    tops = [p.get_y() + p.get_height() for p in c.ax.patches[-4:]]
+    assert sum(tops) == 30 and len(c.ax.lines) == 1              # empilées : total en haut
+    assert c.ax.get_legend_handles_labels()[1] == ['c', 'b', 'a']
+
+
+def test_line_direct_labels_and_tick_format():
+    d = pd.DataFrame({'x': range(10), 'a': range(10), 'b': [9.0] * 9 + [9.2]})
+    c = Chart(d).line('x', ['a', 'b'], direct_labels=True)
+    assert {t.get_text() for t in c.ax.texts} == {'a', 'b'}
+    c = Chart(d).line('x', ['a', 'b'], direct_labels='end', value_format='{:.1f} %')
+    ends = {t.get_text(): t.xy[1] for t in c.ax.texts}
+    assert set(ends) == {'9.0 %', '9.2 %'} and abs(ends['9.2 %'] - ends['9.0 %']) > 0.2  # écartées
+    c.tick_format(y='{:.0f} %')
+    assert c.ax.yaxis.get_major_formatter()(5, 0) == '5 %'
+    c = Chart(d).line('x', 'b', direct_labels='end', value_format=lambda v: f'{v:.1f}'.replace('.', ','))
+    assert c.ax.texts[-1].get_text() == '9,2'
+
+
+def test_equal_aspect_charts_fill_figsize():
+    """Chord, Venn, waffle : l'axe remplit la figure au lieu d'un carré (figsize respecté)."""
+    df = pd.DataFrame({'a': [True, False], 'b': [True, True], 'g': ['x', 'y'], 'v': [30, 12]})
+    for c in (Chart(_links_df(), figsize=(8, 4)).chord('s', 't', 'v'),
+              Chart(df, figsize=(8, 4)).venn(['a', 'b']),
+              Chart(df, figsize=(8, 4)).waffle('g', 'v')):
+        c.fig.canvas.draw()
+        assert c.ax.get_position().width > 0.7          # carré : ~0.39
+
+
+def test_venn_counts_bool_and_items():
+    df = pd.DataFrame({'a': [True, True, False, True], 'b': [True, False, True, False],
+                       'c': [False, False, False, True]})
+    t = Chart(df).venn(['a', 'b', 'c']).venn_table.set_index('zone')['n']
+    assert t['a'] == 1 and t['a ∩ b'] == 1 and t['b'] == 1 and t['a ∩ c'] == 1 and t.sum() == 4
+    items = pd.DataFrame({'x': ['p', 'q', 'r'], 'y': ['q', 'r', None]})
+    t = Chart(items).venn(['x', 'y']).venn_table.set_index('zone')['n']
+    assert (t['x'], t['y'], t['x ∩ y']) == (1, 0, 2)
+    with pytest.raises(ValueError):
+        Chart(df).venn(['a'])
+
+
+def test_flowchart_layers_back_edges_and_labels():
+    df = pd.DataFrame([('Début', 'Test ?', None), ('Test ?', 'Fin', 'oui'),
+                       ('Test ?', 'Début', 'non')], columns=['a', 'b', 'l'])
+    c = Chart(df).flowchart('a', 'b', label='l')
+    lay = c.flow_layout.set_index('noeud')['niveau']
+    assert (lay['Début'], lay['Test ?'], lay['Fin']) == (0, 1, 2)   # la boucle ne compte pas
+    c.fig.draw_without_rendering()
+    texts = [t.get_text() for t in c.ax.texts]
+    assert {'oui', 'non'} <= set(texts)
+    diamond = next(t for t in c.ax.texts if t.get_text() == 'Test ?')
+    assert diamond.get_bbox_patch() is not None
+    lr = Chart(df).flowchart('a', 'b', direction='LR').flow_layout.set_index('noeud')
+    assert lr.loc['Fin', 'x'] == 2
+    with pytest.raises(ValueError):
+        Chart(df).flowchart('a', 'b', direction='XY')
+
+
+def test_sequence_diagram_draws_messages():
+    df = pd.DataFrame([('P', 'C', 'livre', False), ('C', 'C', 'calcule', False),
+                       ('C', 'P', 'paie', True)], columns=['s', 'r', 'm', 'd'])
+    c = Chart(df).sequence_diagram('s', 'r', 'm', dashed='d', numbered=True)
+    assert {'1. livre', '2. calcule', '3. paie'} <= {t.get_text() for t in c.ax.texts}
+
+
+def test_waffle_single_and_by_x():
+    df = pd.DataFrame({'g': ['a', 'b'], 'v': [30, 12]})
+    c = Chart(df).waffle('g', 'v')
+    assert c.waffle_table['cases'].tolist() == [30, 12]
+    assert sum(len(col.get_paths()) for col in c.ax.collections) == 42
+    df = pd.DataFrame({'annee': [1, 1, 2, 2], 'g': ['a', 'b', 'a', 'b'], 'v': [50, 20, 70, 0]})
+    c = Chart(df).waffle('g', 'v', x='annee', unit=5, columns=5, direct_labels=True)
+    t = c.waffle_table.set_index(['annee', 'g'])['cases']
+    assert (t[(1, 'a')], t[(1, 'b')], t[(2, 'a')], t[(2, 'b')]) == (10, 4, 14, 0)
+    assert '70' in {x.get_text() for x in c.ax.texts}                # total de l'année 2
+
+
+def test_stem_colormap_and_hlines():
+    import matplotlib.colors as mc
+    df = pd.DataFrame({'x': range(5), 'y': [-0.4, -0.1, 0.2, 0.5, 0.9]})
+    c = Chart(df).stem('x', 'y', cmap=['#000080', '#ff0000'], hlines=[-0.4, 0.4, 0.8])
+    pts = c.ax.collections[-1].get_facecolors()
+    assert mc.to_hex(pts[0]) == '#000080' and mc.to_hex(pts[-1]) == '#ff0000'
+    assert list(c.ax.get_yticks()) == [-0.4, 0.0, 0.4, 0.8]
+
+
+def test_infographic_helpers():
+    import matplotlib.colors as mc
+    df = pd.DataFrame({'x': list('abc'), 'y': [1, 2, 3]})
+    c = (Chart(df).bar('x', 'y').title('Titre').subtitle('Sous-titre').caption('Source')
+         .background('#f6eee3').labels('', ''))
+    assert c.ax.get_xlabel() == '' and mc.to_hex(c.fig.get_facecolor()) == '#f6eee3'
+    c.fig.draw_without_rendering()
+    r = c.fig.canvas.get_renderer()
+    title = c.ax.title if c.ax.get_title() else c.ax._left_title
+    sub = next(t for t in c.ax.texts if t.get_text() == 'Sous-titre')
+    cap = next(t for t in c.ax.texts if t.get_text() == 'Source')
+    assert title.get_window_extent(r).y0 >= sub.get_window_extent(r).y1 - 1   # titre au-dessus
+    assert cap.get_window_extent(r).y1 <= c.ax.xaxis.get_tightbbox(r).y0 + 1  # source dessous
+    with tempfile.TemporaryDirectory() as d:
+        c.save(os.path.join(d, 'f.png'), dpi=20, bbox_inches=None)
+        px = plt.imread(os.path.join(d, 'f.png'))[1, 1, :3]
+        assert mc.to_hex(px) == '#f6eee3'                                     # fond gardé
+    c = Chart(pd.DataFrame({'x': [1, 2], 'a': [1, 2], 'b': [2, 1]})).line('x', ['a', 'b'])
+    c.set_legend(location='below')
+    c.fig.draw_without_rendering()
+    assert c.ax.get_legend().get_window_extent().y1 <= c.ax.get_window_extent().y0
+
+
+def test_font_applies_to_existing_texts():
+    c = Chart(pd.DataFrame({'x': [1, 2], 'y': [1, 2]})).line('x', 'y').title('T')
+    c.font('Inter')
+    assert 'Inter' in c.ax.xaxis.label.get_fontfamily()
+    c.fig.draw_without_rendering()
+    assert 'Inter' in c.ax.get_xticklabels()[0].get_fontfamily()
+
+
+def test_choropleth_histogram():
+    gpd = pytest.importorskip('geopandas')
+    from shapely.geometry import box
+    g = gpd.GeoDataFrame({'v': [1.0, 2.0, 3.0, 4.0], 'n': ['a', '', None, 'd']},
+                         geometry=[box(i, 0, i + 1, 1) for i in range(4)])
+    c = Chart(g).choropleth('v', labels='n', histogram=True, bins=4)
+    assert len(c.ax_hist.patches) == 4 and len(c.fig.axes) == 1            # encart, pas de barre de couleur
+    assert {t.get_text() for t in c.ax.texts} == {'a', 'd'}                 # vides ignorées

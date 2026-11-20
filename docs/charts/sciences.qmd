@@ -40,11 +40,7 @@ df = pd.DataFrame({
 })
 
 (Chart(df, figsize=(12, 6))
-    .ombrothermic('mois', 'temp', 'precip',
-                  temp_color='#e63946',
-                  precip_color='#457b9d',
-                  dry_period_color='#e63946',
-                  dry_period_alpha=0.12)
+    .ombrothermic('mois', 'temp', 'precip')   # couleurs du thème ; set_colors([pluie, temp.])
     .title('Diagramme ombrothermique — Dakar (Sénégal)')
     .tight_layout()
     .show())

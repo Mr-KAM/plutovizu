@@ -18,6 +18,15 @@ map_points:
     size: Colonne numérique qui dimensionne les points (symboles proportionnels).
     sizes: Tailles minimale et maximale des symboles (points²).
     size_legend: Ajoute la légende des tailles.
+    lon: Colonne des longitudes ; à omettre pour un GeoDataFrame (géométrie utilisée).
+    lat: Colonne des latitudes ; à omettre pour un GeoDataFrame.
+    labels: >-
+      Colonne des noms, placés sans chevauchement (première place libre autour du point) ;
+      ceux qui ne tiennent pas sont listés dans `chart.hidden_labels`.
+    boundary: >-
+      GeoDataFrame de zones (pays, régions) dessinées sous les points ; la carte est cadrée
+      dessus. Avec `basemap=False`, carte sans fond web.
+    colors: "Couleur de chaque groupe : `{'Parc': 'green', ...}`."
 
 choropleth:
   desc: >-

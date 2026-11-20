@@ -281,10 +281,30 @@ def set_theme(theme: ThemeLike = 'editorial', context: Optional[str] = None) -> 
         context: échelle du texte et des traits selon le support :
             'paper', 'notebook', 'talk' ou 'poster' (contextes seaborn). Défaut : celle du thème.
     """
+    global _saved
     rc = _resolve(theme, context)
     mpl.rcParams.update(_DEFAULTS)
     mpl.rcParams.update(rc)
     _load_font(theme)
+    _saved = None   # set_theme explicite : devient le thème de fond
+
+
+_saved = None   # rcParams d'avant Chart(theme=…), rétablis au graphique suivant ou au show()
+
+
+def _local_theme(theme: ThemeLike) -> None:
+    """Thème d'un seul graphique : appliqué maintenant, défait par _restore()."""
+    global _saved
+    saved = dict(mpl.rcParams)
+    set_theme(theme)
+    _saved = saved
+
+
+def _restore() -> None:
+    global _saved
+    if _saved is not None:
+        dict.update(mpl.rcParams, _saved)   # sans revalidation (comme rc_context)
+        _saved = None
 
 
 @contextmanager

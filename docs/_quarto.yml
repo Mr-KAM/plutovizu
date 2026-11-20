@@ -57,11 +57,13 @@ website:
           - charts/ecologie.qmd
           - charts/qualitatif.qmd
           - charts/graphes.qmd
+          - charts/diagrammes.qmd
           - charts/complexes.qmd
       - section: "Mise en forme"
         contents:
           - themes.qmd
           - customization.qmd
+          - infographie.qmd
       - section: "Référence"
         contents:
           - api.qmd

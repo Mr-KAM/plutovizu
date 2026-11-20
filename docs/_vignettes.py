@@ -1,6 +1,7 @@
 """Catalogue des graphiques de plutovizu → vignettes + cartes de la galerie.
 
-    uv run python docs/_vignettes.py
+    uv run python docs/_vignettes.py              # toutes les vignettes
+    uv run python docs/_vignettes.py pyramid      # seulement celles nommées (galerie.yml complet)
 
 Génère docs/images/vignettes/<nom>.png (thème editorial) et docs/galerie.yml, lu par
 docs/gallery.qmd (listing Quarto en grille). À relancer quand un graphique est ajouté.
@@ -66,10 +67,11 @@ flux_vignette = villes[villes['ville'].isin(['Saint-Louis', 'Kaolack', 'Tambacou
 EVO, DIS, COM, REL = 'Évolution', 'Distribution', 'Comparaison', 'Relation'
 MUL, CPO, CHA, D3 = 'Multivarié', 'Composition', 'Champs', '3D'
 SCI, QUA, CPX, CAR, ECO = 'Climat & sols', 'Qualitatif', 'Graphiques complexes', 'Map', 'Écologie'
-GRA = 'Graphes & réseaux'
+GRA, DIA = 'Graphes & réseaux', 'Diagrammes'
 PAGE = {EVO: 'evolution', DIS: 'distribution', COM: 'comparaison', REL: 'relation',
         MUL: 'multivarie', CPO: 'composition', CHA: 'champs', D3: '3d', SCI: 'sciences',
-        QUA: 'qualitatif', CPX: 'complexes', CAR: 'map', ECO: 'ecologie', GRA: 'graphes'}
+        QUA: 'qualitatif', CPX: 'complexes', CAR: 'map', ECO: 'ecologie', GRA: 'graphes',
+        DIA: 'diagrammes'}
 
 # (méthode, titre de la carte, catégorie, usage, vignette)
 CATALOGUE = [
@@ -139,6 +141,9 @@ CATALOGUE = [
          colors=dict(zip(moyennes['variete'].unique(), C(serie)._palette())))),
     ('dumbbell', 'Haltère', COM, 'Avant / après',
      lambda: C(avant_apres).dumbbell('variete', 'avant', 'apres')),
+    ('pyramid', 'Pyramide des âges', COM, 'Deux séries dos à dos par classe',
+     lambda: C(pd.DataFrame({'age': ['0-19', '20-39', '40-59', '60+'], 'h': [9, 7, 4, 2],
+                             'f': [8.5, 7, 4.5, 2.5]}), 3.4, 3).pyramid('age', 'h', 'f')),
     ('radar', 'Radar', COM, 'Profils multicritères',
      lambda: C(caracteres.groupby('cycle', as_index=False)[traits].mean()
                .assign(**{c: lambda d, c=c: d[c] / d[c].max() for c in traits}), 3.4, 3.4)
@@ -180,8 +185,8 @@ CATALOGUE = [
      lambda: C(bilan).waterfall('poste', 'montant')),
     ('ternary', 'Ternaire', CPO, 'Compositions en 3 parts',
      lambda: C(sols, 3.6, 3.2).ternary('sable', 'limon', 'argile', group='zone')),
-    ('sankey', 'Sankey', CPO, 'Flux entre étapes',
-     lambda: C(flux).sankey('flux', 'etiquette', orientations='orientation')),
+    ('waffle', 'Gaufre', CPO, 'Parts à compter, carré par carré',
+     lambda: C(cultures_ha, 3.4, 3.4).waffle('culture', 'ha')),
     ('radial_bar', 'Barres radiales', CPO, 'Avancement de plusieurs indicateurs',
      lambda: C(avancement, 3.4, 3.4).radial_bar('pct', labels='activite')),
     ('progress_bar', 'Barre de progression', CPO, 'Objectif atteint',
@@ -326,14 +331,29 @@ CATALOGUE = [
      lambda: Chart(caracteres.head(15), figsize=(4, 4)).clustermap(labels='variete', cbar_pos=None)),
     ('seaborn', 'Tout seaborn', CPX, "N'importe quel graphique seaborn",
      lambda: C(essai).seaborn('violinplot', x='variete', y='rendement', hue='variete', legend=False)),
+    ('sankey', 'Sankey', DIA, 'Flux entre étapes, sur plusieurs niveaux',
+     lambda: C(devenir).sankey('de', 'vers', 'tonnes', show_values=False)),
+    ('chord', 'Cordes', DIA, 'Échanges croisés entre acteurs',
+     lambda: C(echanges_regions, 3.4, 3.4).chord('de', 'vers', 'kt')),
+    ('venn', 'Venn', DIA, 'Recouvrements entre ensembles',
+     lambda: C(menages, 3.4, 3.4).venn(['Maraîchage', 'Élevage', 'Pêche'])),
+    ('flowchart', 'Logigramme', DIA, 'Étapes, décisions, organigrammes',
+     lambda: C(controle, 3.2, 4.2).flowchart('de', 'vers', label='si', fontsize=6)),
+    ('sequence_diagram', 'Séquence', DIA, 'Messages entre acteurs dans le temps',
+     lambda: C(paiement, 4.6, 3).sequence_diagram('de', 'vers', 'message', dashed='reponse', fontsize=6)),
 ]
 
 
-def build():
+def build(only=()):
     out = DOCS / 'images' / 'vignettes'
     out.mkdir(parents=True, exist_ok=True)
     items = []
     for name, title, cat, usage, make in CATALOGUE:
+        items.append({'title': title, 'description': f'{name}() — {usage}',
+                      'path': f'charts/{PAGE[cat]}.html#g-{name}',
+                      'image': f'images/vignettes/{name}.png', 'categories': [cat]})
+        if only and name not in only:
+            continue
         with theme_context('editorial'):
             chart = make()
             for ax in chart.fig.axes:  # tous les panneaux (soil_properties…)
@@ -341,9 +361,6 @@ def build():
                     ax.get_legend().remove()
             chart.save(out / f'{name}.png', dpi=80, bbox_inches=None)   # applique l'arrondi par défaut
         plt.close('all')
-        items.append({'title': title, 'description': f'{name}() — {usage}',
-                      'path': f'charts/{PAGE[cat]}.html#g-{name}',
-                      'image': f'images/vignettes/{name}.png', 'categories': [cat]})
     lines = []
     for it in items:
         lines += [f"- title: \"{it['title']}\"", f"  description: \"{it['description']}\"",
@@ -354,4 +371,5 @@ def build():
 
 
 if __name__ == '__main__':
-    build()
+    import sys
+    build(sys.argv[1:])

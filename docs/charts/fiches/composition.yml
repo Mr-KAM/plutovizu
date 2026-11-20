@@ -91,19 +91,6 @@ ternary:
     grid_step: Pas de la grille (en fraction) ; 0.1 = lignes tous les 10 %.
     size: Taille des points.
 
-sankey:
-  desc: >-
-    Diagramme de Sankey (matplotlib) : un flux principal qui se divise en entrées et sorties
-    de largeur proportionnelle à leur valeur.
-  usage: >-
-    Bilans de flux simples : répartition d'une récolte (vente, stock, pertes), bilan
-    énergétique ou financier.
-  rows: une ligne par flux ; entrées positives, sorties négatives (la somme doit être nulle)
-  data:
-    - [flux, nombre, "`flows` : + entrée, − sortie", "-60"]
-    - [etiquette, texte, "`labels` : nom du flux", "Vente"]
-    - [direction, "entier (−1, 0, 1)", "`orientations` (optionnel) : 1 = vers le haut, −1 = vers le bas, 0 = horizontal", "0"]
-
 radial_bar:
   desc: >-
     Barres radiales : un arc concentrique par élément, dont la longueur représente la valeur
@@ -135,3 +122,20 @@ progress_bar:
     value: Une colonne (une barre par ligne) ou un nombre (une seule barre).
     total: Valeur correspondant à une barre pleine.
     height: Épaisseur des barres.
+
+waffle:
+  desc: >-
+    Graphique en gaufre : un carré pour une quantité fixe (`unit`), coloré par groupe. Seul,
+    il montre les parts d'un total ; avec `x`, une colonne de carrés par année ou par site
+    montre l'évolution du total et de sa composition, et l'axe y se lit dans l'unité des
+    données.
+  usage: >-
+    Parts faciles à compter (« 38 carrés sur 100 »), effectifs qui évoluent dans le temps,
+    infographies.
+  rows: une ligne par groupe (et par modalité de `x`), ou une ligne par individu (comptage)
+  data:
+    - [culture, texte, "`group` : groupe (couleur)", "Mil"]
+    - [ha, nombre, "`value` (optionnel) : quantité ; sinon les lignes sont comptées", "38"]
+    - [annee, "texte ou nombre", "`x` (optionnel) : une colonne de carrés par modalité", "2024"]
+  returns: "`chart.waffle_table` : valeur et nombre de carrés de chaque groupe."
+

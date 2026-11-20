@@ -10,7 +10,8 @@ import seaborn as sns
 
 from .fonts import load_font
 from .palettes import pypalette_colors, pypalettes_catalogue
-from .themes import set_theme
+from .themes import set_theme, _local_theme, _restore
+from .diagrams import DiagramsMixin, _fit
 
 FIGSIZE = (16 / 2.54, 10 / 2.54)  # taille par défaut : 16 × 10 cm (en pouces)
 
@@ -18,6 +19,22 @@ FIGSIZE = (16 / 2.54, 10 / 2.54)  # taille par défaut : 16 × 10 cm (en pouces)
 def cm(width: float, height: float) -> Tuple[float, float]:
     """Taille en centimètres → pouces, pour figsize : Chart(df, figsize=cm(20, 12))."""
     return width / 2.54, height / 2.54
+
+
+class _TranslatedFormatter(matplotlib.ticker.Formatter):
+    """Graduations traduites : le formateur d'origine, puis la traduction (Chart.translate)."""
+
+    def __init__(self, inner, tr):
+        self.inner, self.tr = inner, tr
+
+    def __call__(self, x, pos=None):
+        return self.tr(self.inner(x, pos))
+
+    def set_locs(self, locs):
+        self.inner.set_locs(locs)
+
+    def get_offset(self):
+        return self.inner.get_offset()
 
 
 def _opts(**kwargs) -> Dict[str, Any]:
@@ -144,7 +161,7 @@ def _round_path(path, r: float, min_angle: float = 25.0):
     return Path(np.array(verts), codes) if changed else None
 
 
-class Chart:
+class Chart(DiagramsMixin):
     """
     EN: Fluent chart builder that wraps matplotlib for pandas DataFrames.
         Every method returns ``self``, enabling method chaining::
@@ -199,8 +216,8 @@ class Chart:
                                    'soil_profile', 'climate_stripes', 'seaborn.jointplot',
                                    'exchange_complex'})
 
-    def __init__(self, data: pd.DataFrame, figsize: Tuple[float, float] = FIGSIZE,
-                 theme: Optional[str] = None):
+    def __init__(self, data: pd.DataFrame, figsize: Optional[Tuple[float, float]] = None,
+                 theme: Optional[str] = None, dpi: Optional[float] = None):
         """
         EN: Initialise a Chart from a pandas DataFrame.
         FR: Initialise un Chart à partir d'un DataFrame pandas.
@@ -211,14 +228,23 @@ class Chart:
                 FR: Le jeu de données à visualiser.
             figsize (Tuple[float, float]):
                 EN: Figure width and height in inches. Default 16 × 10 cm (FIGSIZE);
-                    cm(16, 10) gives a size in centimetres.
+                    cm(16, 10) gives a size in centimetres. Also applies to seaborn grids
+                    (relplot, displot, catplot, lmplot, jointplot, pairplot, clustermap).
                 FR: Largeur et hauteur de la figure en pouces. Défaut 16 × 10 cm (FIGSIZE) ;
-                    cm(16, 10) donne une taille en centimètres.
+                    cm(16, 10) donne une taille en centimètres. S'applique aussi aux grilles
+                    seaborn (relplot, displot, catplot, lmplot, jointplot, pairplot, clustermap).
             theme (str, optional):
-                EN: Theme name (see list_themes()). Shortcut for set_theme(theme):
-                    like seaborn.set_theme, it also applies to the following charts.
-                FR: Nom d'un thème (voir list_themes()). Raccourci de set_theme(theme) :
-                    comme seaborn.set_theme, il s'applique aussi aux graphiques suivants.
+                EN: Theme name (see list_themes()) for this chart only (font() included):
+                    the previous theme comes back at show() or at the next Chart.
+                    Use set_theme() to change the theme of all charts.
+                FR: Nom d'un thème (voir list_themes()) pour ce seul graphique (font()
+                    compris) : le thème précédent revient au show() ou au Chart suivant.
+                    set_theme() change le thème de tous les graphiques.
+            dpi (float, optional):
+                EN: Resolution (dots per inch) for display and, by default, for save().
+                    Default: the theme's (figure.dpi for display, 400 for save()).
+                FR: Résolution (points par pouce) à l'affichage et, par défaut, pour save().
+                    Défaut : celle du thème (figure.dpi à l'affichage, 400 pour save()).
 
         Returns / Retourne:
             Chart: EN: The Chart instance (for chaining). / FR: L'instance Chart (pour le chaînage).
@@ -226,17 +252,22 @@ class Chart:
         Example / Exemple:
             chart = Chart(df)
             chart = Chart(df, figsize=(14, 8), theme='pluto')
+            chart = Chart(df, figsize=cm(24, 12), dpi=200)
         """
+        _restore()   # défait le thème local du graphique précédent
         if theme is not None:
-            set_theme(theme)
+            _local_theme(theme)
         self.data = data
-        self.fig, self.ax = plt.subplots(figsize=figsize)
+        self._figsize = figsize    # None : taille par défaut (FIGSIZE, height/aspect pour seaborn)
+        self._dpi = dpi
+        self.fig, self.ax = plt.subplots(figsize=figsize or FIGSIZE, dpi=dpi)
         self.chart_type = None
         self.custom_palettes = {}
         self.current_palette = None
         self.sns_grid = None  # grille seaborn (pairplot, jointplot, clustermap…) le cas échéant
         self._round_radius = Chart.default_round   # coins arrondis par défaut (voir rounded)
         self._round_explicit = False
+        self._lang = None                         # langue choisie par translate()
 
     # ──────────────────────────────────────── Appearance / Apparence
 
@@ -285,8 +316,91 @@ class Chart:
             self.fig.suptitle(title, y=1.02, **_opts(fontsize=fontsize, fontweight=fontweight,
                                                      color=color), **kwargs)
             return self
+        if getattr(self, '_subtitle', None) is not None and pad is None:
+            pad = self._subtitle_pad                  # place laissée au sous-titre
         self.ax.set_title(title, **_opts(fontsize=fontsize, fontweight=fontweight,
                                          color=color, pad=pad, loc=loc), **kwargs)
+        return self
+
+    def subtitle(self, text: str, fontsize: Optional[float] = None, color: Optional[str] = None,
+                 **kwargs) -> 'Chart':
+        """
+        EN: Subtitle under the title (smaller, lighter), aligned like the title. Accepts
+            matplotlib Text options (fontproperties=load_font('Inter'), fontstyle…).
+        FR: Sous-titre sous le titre (plus petit, plus clair), aligné comme le titre. Accepte
+            les options de texte matplotlib (fontproperties=load_font('Inter'), fontstyle…).
+
+        Example / Exemple:
+            chart.title('Adoptions au refuge').subtitle('Chiens et chats : 96 % des adoptions')
+        """
+        size = fontsize or plt.rcParams['font.size'] * 1.1
+        if 'fontproperties' in kwargs:
+            fp = fm.FontProperties._from_any(kwargs['fontproperties']).copy()
+            fp.set_size(size)
+            kwargs['fontproperties'] = fp
+        else:
+            kwargs['fontsize'] = size
+        if getattr(self, '_subtitle', None) is not None:
+            self._subtitle.remove()
+        loc = next((l for l in ('left', 'center', 'right') if self.ax.get_title(loc=l)),
+                   plt.rcParams['axes.titlelocation'])
+        x = {'left': 0, 'center': 0.5, 'right': 1}[loc]
+        gap = plt.rcParams['axes.titlepad']
+        self._subtitle = self.ax.annotate(
+            text, xy=(x, 1), xycoords='axes fraction', xytext=(0, gap), textcoords='offset points',
+            ha=loc, va='bottom', color=color or plt.rcParams['axes.labelcolor'], **kwargs)
+        # Le titre remonte de la hauteur du sous-titre (lignes × taille × interligne)
+        self._subtitle_pad = gap + (text.count('\n') + 1) * size * 1.25 + 4
+        if hasattr(self.ax, '_set_title_offset_trans'):
+            self.ax._set_title_offset_trans(self._subtitle_pad)
+        return self
+
+    def caption(self, text: str, loc: str = 'right', fontsize: Optional[float] = None,
+                color: Optional[str] = None, **kwargs) -> 'Chart':
+        """
+        EN: Source / credits line under the chart (below the x-axis labels), small and light.
+        FR: Ligne de source / crédits sous le graphique (sous les étiquettes de l'axe x),
+            petite et discrète.
+
+        Args / Paramètres:
+            loc (str): EN/FR: 'right' (défaut), 'left' ou 'center'.
+
+        Example / Exemple:
+            chart.caption('Source : NASA · Graphique : plutovizu')
+        """
+        from matplotlib.transforms import Bbox
+        ax = self.ax
+
+        def under_axes(renderer):     # axe, graduations x, et légendes placées dessous
+            box = ax.get_window_extent(renderer)
+            boxes = [box, ax.xaxis.get_tightbbox(renderer) or box]
+            for leg in filter(None, [a.get_legend() for a in self.fig.axes] + list(self.fig.legends)):
+                lb = leg.get_window_extent(renderer)
+                if lb.y1 <= box.y0 + 1:
+                    boxes.append(lb)
+            return Bbox.union(boxes)
+
+        x = {'left': 0, 'center': 0.5, 'right': 1}[loc]
+        ax.annotate(text, xy=(x, 0), xycoords=under_axes, xytext=(0, -8),
+                    textcoords='offset points', ha=loc, va='top',
+                    fontsize=fontsize or plt.rcParams['font.size'] * 0.8,
+                    color=color or plt.rcParams['axes.labelcolor'], **kwargs)
+        return self
+
+    def background(self, color: str, axes: bool = True) -> 'Chart':
+        """
+        EN: Background colour of the figure (and of the plotting area if axes=True), kept by
+            show() and save().
+        FR: Couleur de fond de la figure (et de la zone de tracé si axes=True), conservée
+            par show() et save().
+
+        Example / Exemple:
+            chart.background('#f6eee3')
+        """
+        self.fig.set_facecolor(color)
+        if axes:
+            for ax in self.fig.axes:
+                ax.set_facecolor(color)
         return self
 
     def labels(self, xlabel: str = None, ylabel: str = None,
@@ -319,9 +433,9 @@ class Chart:
         if self.sns_grid is not None and hasattr(self.sns_grid, 'set_axis_labels'):
             self.sns_grid.set_axis_labels(xlabel or '', ylabel or '', **opts)
             return self
-        if xlabel:
+        if xlabel is not None:                 # '' efface le titre de l'axe
             self.ax.set_xlabel(xlabel, **opts)
-        if ylabel:
+        if ylabel is not None:
             self.ax.set_ylabel(ylabel, **opts)
         return self
 
@@ -359,8 +473,23 @@ class Chart:
             self.ax.grid(False)
         return self
 
+    def tick_format(self, x=None, y=None) -> 'Chart':
+        """
+        EN: Format of the tick labels: a format string ('{:.0f} %', '{:,.0f} $') or a function.
+        FR: Format des graduations : chaîne de format ('{:.0f} %', '{:,.0f} $') ou fonction.
+
+        Example / Exemple:
+            chart.tick_format(y='{:.0f} %')
+        """
+        for axis, fmt in ((self.ax.xaxis, x), (self.ax.yaxis, y)):
+            if fmt:
+                f = fmt.format if isinstance(fmt, str) else fmt
+                axis.set_major_formatter(plt.FuncFormatter(lambda v, _, f=f: f(v)))
+        return self
+
     def set_legend(self, show: bool = True, location: str = 'best',
-                   fontsize: Optional[int] = None, frameon: Optional[bool] = None) -> 'Chart':
+                   fontsize: Optional[int] = None, frameon: Optional[bool] = None,
+                   **kwargs) -> 'Chart':
         """
         EN: Show or hide the chart legend.
         FR: Affiche ou masque la légende du graphique.
@@ -370,8 +499,10 @@ class Chart:
                 EN: Display the legend. Default True.
                 FR: Afficher la légende. Défaut True.
             location (str):
-                EN: Legend position ('best', 'upper right', 'lower left'…).
-                FR: Position de la légende ('best', 'upper right', 'lower left'…).
+                EN: Legend position ('best', 'upper right', 'lower left'…), or 'below':
+                    under the chart, on one line.
+                FR: Position de la légende ('best', 'upper right', 'lower left'…), ou
+                    'below' : sous le graphique, sur une ligne.
             fontsize (int, optional):
                 EN: Legend text size. Default: theme.
                 FR: Taille du texte de la légende. Défaut : thème.
@@ -384,9 +515,14 @@ class Chart:
 
         Example / Exemple:
             chart.set_legend(location='upper left', frameon=False)
+            chart.set_legend(location='upper left', ncol=4)   # options de matplotlib.legend
         """
-        if show:
-            self.ax.legend(loc=location, fontsize=fontsize, frameon=frameon)
+        if show and location == 'below':        # sous le graphique, sur une ligne
+            n = len(self.ax.get_legend_handles_labels()[1])
+            kwargs = {**self._legend_below(), 'ncol': min(max(n, 1), 6), **kwargs}
+            self.ax.legend(fontsize=fontsize, frameon=frameon, **kwargs)
+        elif show:
+            self.ax.legend(loc=location, fontsize=fontsize, frameon=frameon, **kwargs)
         else:
             self.ax.legend().set_visible(False)
         return self
@@ -442,7 +578,7 @@ class Chart:
             self.ax.tick_params(axis='y', rotation=y_rotation)
         return self
 
-    def font(self, family: str = 'sans-serif', size: int = 10,
+    def font(self, family: str = 'sans-serif', size: Optional[float] = None,
              weight: str = 'normal') -> 'Chart':
         """
         EN: Set the global font used across the entire chart.
@@ -457,8 +593,8 @@ class Chart:
                 FR: Nom de la famille de polices ou générique ('sans-serif', 'serif'…).
                     Utiliser get_available_fonts() pour lister les polices installées.
             size (int):
-                EN: Base font size in points. Default 10.
-                FR: Taille de base de la police en points. Défaut 10.
+                EN: Base font size in points. Default: unchanged (theme).
+                FR: Taille de base de la police en points. Défaut : inchangée (thème).
             weight (str):
                 EN: Font weight ('normal', 'bold', 'light'…). Default 'normal'.
                 FR: Graisse de la police. Défaut 'normal'.
@@ -478,22 +614,36 @@ class Chart:
                 warnings.warn(f"Police '{family}' introuvable (ni installée, ni sur Google Fonts) : "
                               "'sans-serif' utilisée.", stacklevel=2)
                 family = 'sans-serif'
-        plt.rcParams.update({
-            'font.family': family,
-            'font.size': size,
-            'font.weight': weight
-        })
+            else:     # graisses usuelles aussi : title(fontweight='light'), texte en gras…
+                for w, it in (('light', False), ('bold', False), ('regular', True), ('bold', True)):
+                    try:
+                        load_font(family, weight=w, italic=it)
+                    except Exception:
+                        pass
+                # Recherche de police mise en cache par matplotlib : à refaire avec les graisses
+                if hasattr(fm.FontManager._findfont_cached, 'cache_clear'):
+                    fm.FontManager._findfont_cached.cache_clear()
+        plt.rcParams.update(_opts(**{'font.family': family, 'font.size': size,
+                                     'font.weight': weight}))
+        # Textes déjà créés (titre, axes, graduations) : même police
+        import matplotlib.text as mtext
+        for t in self.fig.findobj(mtext.Text):
+            t.set_fontfamily(family)
+        for ax in self.fig.axes:
+            ax.tick_params(labelfontfamily=family)
         return self
 
     # ──────────────────────────────────────── Color / Couleur
 
     def set_colors(self, colors: Union[str, List[str]] = None) -> 'Chart':
         """
-        EN: Apply a color palette to subsequent chart elements.
+        EN: Apply a color palette to the chart, before or after the drawing method
+            (elements already drawn with the previous palette are recoloured).
             Accepts a seaborn palette name, a matplotlib colormap name, one of the
             2,700 pypalettes palettes (e.g. 'Cross', 'Hiroshige'), a custom palette name
             (created with create_custom_palette), or a list of color strings.
-        FR: Applique une palette de couleurs aux éléments du graphique.
+        FR: Applique une palette de couleurs au graphique, avant ou après la méthode de
+            tracé (les éléments déjà tracés avec l'ancienne palette sont recolorés).
             Accepte un nom de palette seaborn, un colormap matplotlib, une des 2 700
             palettes pypalettes (ex. 'Cross', 'Hiroshige'), un nom de palette
             personnalisée (créée avec create_custom_palette), ou une liste de couleurs.
@@ -528,9 +678,71 @@ class Chart:
         return self
 
     def _apply_palette(self, colors) -> None:
-        """Applique une palette à CE graphique seulement (pas aux réglages globaux)."""
+        """Applique une palette à CE graphique seulement (pas aux réglages globaux). Appelée
+        après le tracé, recolore aussi ce qui est déjà dessiné : l'ordre dans la chaîne
+        (set_colors avant ou après la méthode de tracé) n'a pas d'importance."""
+        old = self._palette()
         self.current_palette = [mcolors.to_hex(c) for c in colors]
         self.ax.set_prop_cycle(color=self.current_palette)
+        self._recolor(old, self.current_palette)
+
+    def _recolor(self, old: List[str], new: List[str]) -> None:
+        """Remplace, dans les éléments déjà tracés, la i-ème couleur de l'ancienne palette par
+        la i-ème de la nouvelle (transparence conservée). Les couleurs de structure du thème
+        (texte, fond, axes, grille) ne sont jamais touchées."""
+        from matplotlib.lines import Line2D
+        from matplotlib.patches import Patch
+        from matplotlib.collections import Collection
+        import matplotlib.text as mtext
+        rc = plt.rcParams
+        keep = {mcolors.to_hex(rc[k]) for k in ('text.color', 'axes.edgecolor', 'axes.facecolor',
+                                                'figure.facecolor', 'grid.color', 'axes.labelcolor')
+                if mcolors.is_color_like(rc[k])}
+        swap_map = {}
+        for o, n in zip(old, new):
+            h = mcolors.to_hex(o)
+            if h not in keep:
+                swap_map.setdefault(h, n)
+        if not swap_map or all(k == v for k, v in swap_map.items()):
+            return
+
+        def swap(c):
+            """Couleur rgba → nouvelle couleur (même alpha), ou None si hors palette."""
+            if isinstance(c, str) and c in ('none', 'auto'):
+                return None
+            rgba = mcolors.to_rgba(c)
+            n = swap_map.get(mcolors.to_hex(rgba))
+            return None if n is None or rgba[3] == 0 else mcolors.to_rgba(n, rgba[3])
+
+        for a in self.fig.findobj():
+            if isinstance(a, Line2D):
+                for get, set_ in (('get_color', 'set_color'), ('get_markerfacecolor', 'set_markerfacecolor'),
+                                  ('get_markeredgecolor', 'set_markeredgecolor')):
+                    n = swap(getattr(a, get)())
+                    if n is not None:
+                        getattr(a, set_)(n)
+            elif isinstance(a, Patch):
+                for get, set_ in (('get_facecolor', 'set_facecolor'), ('get_edgecolor', 'set_edgecolor')):
+                    n = swap(getattr(a, get)())
+                    if n is not None:
+                        getattr(a, set_)(n)
+            elif isinstance(a, Collection) and a.get_array() is None:   # pas les couleurs d'un cmap
+                for get, set_ in (('get_facecolor', 'set_facecolor'), ('get_edgecolor', 'set_edgecolor')):
+                    cols = getattr(a, get)()
+                    if len(cols):
+                        new_cols = [swap(c) or tuple(c) for c in cols]
+                        if any(swap(c) for c in cols):
+                            getattr(a, set_)(new_cols)
+            elif isinstance(a, mtext.Text):
+                n = swap(a.get_color())
+                if n is not None:
+                    a.set_color(n)
+        for ax in self.fig.axes:                           # graduations colorées (2 axes y…)
+            for axis in (ax.xaxis, ax.yaxis):
+                labels = axis.get_ticklabels()
+                n = swap(labels[0].get_color()) if labels else None
+                if n is not None:
+                    axis.set_tick_params(labelcolor=n)
 
     def create_custom_palette(self, name: str, colors: List[str],
                               save_palette: bool = True) -> 'Chart':
@@ -866,12 +1078,15 @@ class Chart:
 
     def line(self, x: str, y: Union[str, List[str]],
              marker: str = 'o', linewidth: float = 2,
-             markersize: float = 6, alpha: float = 1.0) -> 'Chart':
+             markersize: float = 6, alpha: float = 1.0,
+             direct_labels: Union[bool, str] = False, value_format: str = '{:g}') -> 'Chart':
         """
         EN: Draw one or more line series against a common x-axis.
             Multiple y columns produce multiple lines, each labelled automatically.
         FR: Trace une ou plusieurs séries de lignes sur un axe x commun.
             Plusieurs colonnes y produisent plusieurs lignes, chacune étiquetée automatiquement.
+            direct_labels=True : nom de chaque série dans une pastille posée sur sa courbe ;
+            'end' : point et dernière valeur (value_format) au bout de chaque courbe.
 
         Args / Paramètres:
             x (str):
@@ -902,10 +1117,32 @@ class Chart:
         self.chart_type = 'line'
         if isinstance(y, str):
             y = [y]
-        for col in y:
-            self.ax.plot(self.data[x], self.data[col], marker=marker,
-                         linewidth=linewidth, markersize=markersize,
-                         alpha=alpha, label=col)
+        ends = []
+        for i, col in enumerate(y):
+            line, = self.ax.plot(self.data[x], self.data[col], marker=marker,
+                                 linewidth=linewidth, markersize=markersize,
+                                 alpha=alpha, label=col)
+            s, c = self.data[[x, col]].dropna(), line.get_color()
+            if direct_labels == 'end':
+                self.ax.plot(*s.iloc[-1], 'o', color=c, markersize=6, zorder=4)
+                ends.append([s[col].iloc[-1], s[x].iloc[-1], s[col].iloc[-1], c])
+            elif direct_labels:          # ponytail: pastille à 55 %, 65 %… de la courbe
+                px, py = s.iloc[min(int(len(s) * (0.55 + 0.1 * i)), len(s) - 1)]
+                self.ax.text(px, py, col, color='white', fontweight='bold', ha='center',
+                             va='center', zorder=5,
+                             bbox=dict(boxstyle='round,pad=0.4', facecolor=c, edgecolor='none'))
+        if ends:                         # valeurs finales écartées d'au moins une ligne de texte
+            ends.sort(key=lambda e: e[0])
+            y0, y1 = self.ax.get_ylim()
+            sep = plt.rcParams['font.size'] * 1.3 * self.fig.dpi / 72 * (y1 - y0) \
+                / (self.ax.get_window_extent().height * 0.8)
+            for j in range(1, len(ends)):
+                ends[j][0] = max(ends[j][0], ends[j - 1][0] + sep)
+            for yy, xx, last, c in ends:
+                text = value_format(last) if callable(value_format) else value_format.format(last)
+                self.ax.annotate(text, (xx, yy), xytext=(8, 0),
+                                 textcoords='offset points', va='center', color=c,
+                                 fontweight='bold', annotation_clip=False)
         self._concise_dates(x)
         return self
 
@@ -934,8 +1171,8 @@ class Chart:
                 EN: Opacity, 0–1. Default 0.8.
                 FR: Opacité, 0–1. Défaut 0.8.
             color (str, optional):
-                EN: Bar fill color.
-                FR: Couleur de remplissage des barres.
+                EN: Bar fill color, or a list (one colour per bar).
+                FR: Couleur de remplissage, ou une liste (une couleur par barre).
 
         Returns / Retourne:
             Chart: self
@@ -1026,10 +1263,15 @@ class Chart:
 
     def histogram(self, column: str, bins: Union[int, str] = 30,
                   alpha: float = 0.7, color: str = None,
-                  density: bool = False, edgecolor: Optional[str] = None) -> 'Chart':
+                  density: bool = False, edgecolor: Optional[str] = None,
+                  hue: Optional[str] = None, order: Optional[List] = None, log: bool = False,
+                  smooth: bool = False) -> 'Chart':
         """
         EN: Draw a histogram of the distribution of a single column.
         FR: Trace un histogramme de la distribution d'une seule colonne.
+            hue : barres empilées par groupe (couleurs du thème ou set_colors, ordre `order`) ;
+            log : classes de largeur égale en échelle logarithmique (prix, surfaces…) ;
+            smooth : courbe lissée (densité à noyau) à l'échelle des effectifs.
 
         Args / Paramètres:
             column (str):
@@ -1056,10 +1298,32 @@ class Chart:
 
         Example / Exemple:
             chart.histogram('salaire', bins=50, density=True, color='steelblue')
+            chart.histogram('prix', bins=40, log=True, hue='classe', smooth=True)
         """
         self.chart_type = 'histogram'
-        self.ax.hist(self.data[column], bins=bins, alpha=alpha, color=color,
-                     density=density, edgecolor=edgecolor)
+        values = self.data[column].dropna()
+        t = np.log10 if log else (lambda v: v)              # espace où les classes sont égales
+        edges = np.histogram_bin_edges(t(values), bins)
+        edges = 10 ** edges if log else edges
+        if hue:
+            groups = order or list(dict.fromkeys(self.data[hue].dropna()))
+            sets = [self.data.loc[self.data[hue] == g, column].dropna() for g in groups]
+            self.ax.hist(sets, bins=edges, stacked=True, label=[str(g) for g in groups],
+                         color=color or self._palette()[:len(groups)], alpha=alpha,
+                         density=density, edgecolor=edgecolor)
+        else:
+            self.ax.hist(values, bins=edges, alpha=alpha, color=color, density=density,
+                         edgecolor=edgecolor)
+        if log:
+            self.ax.set_xscale('log')
+        if smooth:
+            from scipy.stats import gaussian_kde
+            v = t(values.to_numpy(float))
+            grid = np.linspace(v.min(), v.max(), 400)
+            # ponytail: density + log donne une échelle approchée (densité par décade)
+            scale = 1 if density else len(v) * (t(edges[1]) - t(edges[0]))
+            self.ax.plot(10 ** grid if log else grid, gaussian_kde(v)(grid) * scale,
+                         color=plt.rcParams['text.color'], lw=1.5, zorder=3)
         return self
 
     def boxplot(self, columns: Union[str, List[str]],
@@ -1305,8 +1569,8 @@ class Chart:
         return self
 
     def ombrothermic(self, month_col: str, temperature_col: str, precipitation_col: str,
-                     temp_color: str = 'tab:red', precip_color: str = 'tab:blue',
-                     dry_period_color: str = 'red', dry_period_alpha: float = 0.2,
+                     temp_color: Optional[str] = None, precip_color: Optional[str] = None,
+                     dry_period_color: Optional[str] = None, dry_period_alpha: float = 0.9,
                      show_threshold_line: bool = True, temp_scale_factor: float = 2.0,
                      kind: str = 'bars', hatch: str = '///',
                      humid_fill: bool = True) -> 'Chart':
@@ -1329,17 +1593,17 @@ class Chart:
                 EN: Column with total monthly precipitation (mm).
                 FR: Colonne avec les précipitations mensuelles totales (mm).
             temp_color (str):
-                EN: Color for the temperature line. Default 'tab:red'.
-                FR: Couleur de la courbe de température. Défaut 'tab:red'.
+                EN: Color for the temperature line. Default: 2nd colour of the theme / set_colors.
+                FR: Couleur de la courbe de température. Défaut : 2e couleur du thème / set_colors.
             precip_color (str):
-                EN: Color for the precipitation bars. Default 'tab:blue'.
-                FR: Couleur des barres de précipitations. Défaut 'tab:blue'.
+                EN: Color for the precipitation bars. Default: 1st colour of the theme / set_colors.
+                FR: Couleur des barres de précipitations. Défaut : 1re couleur du thème / set_colors.
             dry_period_color (str):
-                EN: Highlight color for dry-period zones. Default 'red'.
-                FR: Couleur de surbrillance des zones sèches. Défaut 'red'.
+                EN: Colour of the dry-period hatching. Default: temp_color.
+                FR: Couleur des hachures de la période sèche. Défaut : temp_color.
             dry_period_alpha (float):
-                EN: Opacity of dry-period zones. Default 0.2.
-                FR: Opacité des zones sèches. Défaut 0.2.
+                EN: Opacity of the dry-period hatching. Default 0.9.
+                FR: Opacité des hachures de la période sèche. Défaut 0.9.
             show_threshold_line (bool):
                 EN: Draw the p = 2T reference line. Default True.
                 FR: Afficher la ligne de référence p = 2T. Défaut True.
@@ -1356,7 +1620,7 @@ class Chart:
                 FR: 'bars' (barres de précipitations, défaut) ou 'lines' (deux courbes,
                     périodes sèches hachurées entre les courbes là où P < facteur × T).
             hatch (str):
-                EN/FR: Motif des hachures (kind='lines') : '///', '\\\\\\\\', 'xx', '...'.
+                EN/FR: Motif des hachures de la période sèche : '///', '\\\\\\\\', 'xx', '...'.
             humid_fill (bool):
                 EN/FR: kind='lines' : colore légèrement la période humide. Défaut True.
 
@@ -1364,6 +1628,10 @@ class Chart:
             chart.ombrothermic('Mois', 'Température (°C)', 'Précipitations (mm)')
             chart.ombrothermic('Mois', 'Température (°C)', 'Précipitations (mm)', kind='lines')
         """
+        p = self._palette()                      # thème ou set_colors
+        precip_color = precip_color or p[0]
+        temp_color = temp_color or p[1 % len(p)]
+        dry_period_color = dry_period_color or temp_color
         if kind == 'lines':
             return self._ombrothermic_lines(month_col, temperature_col, precipitation_col,
                                             temp_color, precip_color, dry_period_color,
@@ -1372,7 +1640,7 @@ class Chart:
             raise ValueError("kind doit valoir 'bars' ou 'lines'")
         self.chart_type = 'ombrothermic'
         self.ax.clear()
-        self.ax.plot(self.data[month_col], self.data[temperature_col],
+        self.ax.plot(range(len(self.data)), self.data[temperature_col],
                      color=temp_color, marker='o', linewidth=2,
                      label='Température', markersize=6)
         self.ax.set_ylabel(
@@ -1390,7 +1658,7 @@ class Chart:
         # Courbe de température au-dessus des barres de précipitations
         self.ax.set_zorder(ax2.get_zorder() + 1)
         self.ax.patch.set_visible(False)
-        ax2.bar(self.data[month_col], self.data[precipitation_col],
+        ax2.bar(range(len(self.data)), self.data[precipitation_col],
                 color=precip_color, alpha=0.6, label='Précipitations')
         ax2.set_ylabel(
             f'Précipitations ({precipitation_col.split("(")[-1].replace(")", "")})',
@@ -1406,10 +1674,11 @@ class Chart:
                 dry_periods.append(i)
                 ax2.fill_between([i - 0.4, i + 0.4],
                                  [precip, precip], [threshold, threshold],
-                                 color=dry_period_color, alpha=dry_period_alpha,
+                                 facecolor='none', hatch=hatch, linewidth=0,
+                                 edgecolor=mcolors.to_rgba(dry_period_color, dry_period_alpha),
                                  label='Période sèche' if len(dry_periods) == 1 else '')
         if show_threshold_line:
-            ax2.plot(x_pos, temp_threshold, color='red', linestyle='--',
+            ax2.plot(x_pos, temp_threshold, color=temp_color, linestyle='--',
                      alpha=0.7, linewidth=1, label='p=2T (seuil de sécheresse)')
         self.ax.set_xticks(range(len(self.data[month_col])))
         self.ax.set_xticklabels(self.data[month_col], rotation=45, ha='right')
@@ -1756,6 +2025,115 @@ class Chart:
         self.ax.grid(False, axis='y')
         return self
 
+    def waffle(self, group: str, value: Optional[str] = None, x: Optional[str] = None,
+               unit: float = 1, columns: int = 10, order: Optional[List[str]] = None,
+               colors: Optional[Dict[str, str]] = None, gap: float = 0.12,
+               rounding: float = 0.12, totals: bool = True,
+               direct_labels: bool = False) -> 'Chart':
+        """
+        EN: Waffle chart: one square per `unit`, coloured by group. Without `x`, a single grid
+            (part of a whole); with `x` (years, sites…), one column of squares per value of
+            x, groups stacked — the y-axis then reads in the data's units. Table in
+            self.waffle_table.
+        FR: Graphique en gaufre : un carré par `unit`, coloré par groupe. Sans `x`, une seule
+            grille (part d'un tout) ; avec `x` (années, sites…), une colonne de carrés par
+            modalité de x, groupes empilés — l'axe y se lit alors dans l'unité des données.
+            Tableau dans self.waffle_table.
+
+        Args / Paramètres:
+            group (str): EN/FR: Colonne des groupes (couleurs).
+            value (str, optional): EN/FR: Quantités ; sans elle, chaque ligne compte 1.
+            x (str, optional): EN/FR: Une colonne de carrés par modalité (années…).
+            unit (float): EN/FR: Valeur d'un carré. Défaut 1.
+            columns (int): EN/FR: Carrés par rangée. Défaut 10.
+            order (list, optional): EN/FR: Ordre des groupes, du bas vers le haut (défaut : du
+                plus grand au plus petit).
+            colors (dict, optional): EN/FR: {groupe: couleur}.
+            gap (float): EN/FR: Espace entre carrés (fraction d'un carré). Défaut 0.12.
+            rounding (float): EN/FR: Arrondi des coins (fraction d'un carré) ; 0 : carrés vifs.
+            totals (bool): EN/FR: Total au-dessus de chaque colonne (avec x).
+            direct_labels (bool): EN/FR: Noms des groupes à droite de la dernière colonne,
+                à la place de la légende.
+
+        Example / Exemple:
+            Chart(df).waffle('culture', 'surface', unit=10)
+            Chart(adoptions).waffle('animal', 'n', x='annee', unit=5, direct_labels=True)
+        """
+        from matplotlib.collections import PatchCollection
+        from matplotlib.patches import FancyBboxPatch, Rectangle
+        self.chart_type = 'waffle'
+        d = self.data
+        v = d[value].astype(float).to_numpy() if value else np.ones(len(d))
+        keys = d[x].to_numpy() if x else np.full(len(d), '')
+        table = (pd.DataFrame({'x': keys, 'g': d[group].astype(str).to_numpy(), 'v': v})
+                 .groupby(['x', 'g'])['v'].sum())
+        groups = order or table.groupby(level='g').sum().sort_values(ascending=False).index.tolist()
+        xs = list(dict.fromkeys(table.index.get_level_values('x')))
+        palette = self._palette()
+        color = {g: (colors or {}).get(g, palette[i % len(palette)]) for i, g in enumerate(groups)}
+        h = columns * unit if x else 1.0          # hauteur d'une rangée (unités des données)
+        step = columns + max(2, columns // 4)      # d'une colonne de carrés à la suivante
+        sign = 1 if x else -1                      # gaufre seule : remplie de haut en bas
+        cells = {g: [] for g in groups}
+        rows, mid, max_cells = [], {}, 0
+        for i, k in enumerate(xs):
+            n0 = 0
+            for g in groups:
+                val = float(table.get((k, g), 0.0))
+                n = int(round(val / unit))
+                for c in range(n0, n0 + n):
+                    r, col = divmod(c, columns)
+                    cells[g].append((i * step + col, sign * r * h))
+                if i == len(xs) - 1 and n:
+                    mid[g] = ((n0 + n0 + n - 1) / 2) // columns
+                rows.append({x or 'x': k, group: g, 'valeur': val, 'cases': n})
+                n0 += n
+            max_cells = max(max_cells, n0)
+            if x and totals:
+                tot = table[k].sum()
+                self.ax.text(i * step, (np.ceil(n0 / columns) + 0.6) * h,
+                             f'{tot:.0f}' if float(tot).is_integer() else f'{tot:g}',
+                             ha='left', va='bottom', fontweight='bold', fontstyle='italic')
+        for g in groups:
+            patches = [FancyBboxPatch((cx + gap / 2, cy + gap * h / 2), 1 - gap, h * (1 - gap),
+                                      boxstyle=f'round,pad=0,rounding_size={rounding}',
+                                      mutation_aspect=h) if rounding else
+                       Rectangle((cx + gap / 2, cy + gap * h / 2), 1 - gap, h * (1 - gap))
+                       for cx, cy in cells[g]]
+            self.ax.add_collection(PatchCollection(patches, facecolor=color[g], edgecolor='none'))
+            if not direct_labels:                  # pastille de légende de la couleur du groupe
+                self.ax.add_patch(Rectangle((0, 0), 0, 0, color=color[g], label=g))
+        n_rows = max_cells / columns
+        right = (len(xs) - 1) * step + columns
+        if x:
+            # ponytail: aspect 'box' ici (datalim élargirait y sous 0) : la hauteur suit les cases
+            self.ax.set_xlim(-0.5, right + 0.5)
+            self.ax.set_ylim(0, (np.ceil(n_rows) + 2.2) * h)
+            self.ax.set_aspect(1 / h)
+            self.ax.set_xticks([i * step + columns / 2 for i in range(len(xs))],
+                               [str(k) for k in xs])
+            self.ax.tick_params(axis='x', length=0)
+            self.ax.grid(False)
+        else:
+            _fit(self.ax, -0.5, right + 0.5, -np.ceil(n_rows) * h, h, 1 / h)
+            self.ax.set_axis_off()
+        if direct_labels:
+            self.ax.apply_aspect()                 # limites finales (élargies selon figsize)
+            y = sorted(((mid[g] + 0.5) * h * sign, g) for g in groups if g in mid)
+            # Écart minimal : une ligne de texte, convertie en unités de l'axe y
+            px = plt.rcParams['font.size'] * 1.5 * self.fig.dpi / 72
+            sep = px * np.ptp(self.ax.get_ylim()) / (self.ax.get_window_extent().height * 0.8)
+            for j in range(1, len(y)):             # étiquettes sans chevauchement
+                if y[j][0] - y[j - 1][0] < sep:
+                    y[j] = (y[j - 1][0] + sep, y[j][1])
+            for yy, g in y:
+                self.ax.text(right + 0.8, yy, g, color=color[g], va='center', ha='left',
+                             fontweight='bold')
+        elif len(groups) > 1:
+            self.ax.legend()
+        self.waffle_table = pd.DataFrame(rows)
+        return self
+
     def treemap(self, values: str, labels: Optional[str] = None,
                 alpha: float = 0.9, show_values: bool = True,
                 value_format: str = '{:,.0f}') -> 'Chart':
@@ -1891,8 +2269,8 @@ class Chart:
         for i in range(n):
             self.ax.axvline(i, color='gray', linewidth=0.8, zorder=0)
         groups = self.data[group].unique() if group else [None]
-        palette = plt.cm.tab10(np.linspace(0, 1, len(groups)))
-        color_map = dict(zip(groups, palette))
+        p = self._palette()
+        color_map = {g: p[i % len(p)] for i, g in enumerate(groups)}
         for _, row in norm.iterrows():
             g = self.data.loc[row.name, group] if group else None
             self.ax.plot(range(n), row[columns].values,
@@ -1903,7 +2281,7 @@ class Chart:
         self.ax.set_xticks(range(n))
         self.ax.set_xticklabels(columns)
         self.ax.set_ylim(-0.05, 1.05)
-        self.ax.set_ylabel('Normalized value')
+        self.ax.set_ylabel('Valeur normalisée')
         return self
 
     def dumbbell(self, y: str, x_start: str, x_end: str,
@@ -1963,6 +2341,45 @@ class Chart:
                         color=color_start, s=markersize, zorder=2, label=x_start)
         self.ax.scatter(self.data[x_end], self.data[y],
                         color=color_end, s=markersize, zorder=2, label=x_end)
+        return self
+
+    def pyramid(self, y: str, left: str, right: str, colors: Optional[List[str]] = None,
+                show_values: bool = False, value_format: Any = '{:g}') -> 'Chart':
+        """
+        EN: Population (age) pyramid: two bar series back to back, `left` (e.g. men) to the
+            left and `right` (women) to the right, one row per class, the first row at the
+            bottom. Series names at the top, ticks in absolute values.
+        FR: Pyramide des âges : deux séries de barres dos à dos, `left` (ex. hommes) à
+            gauche et `right` (femmes) à droite, une ligne par classe, la première en bas.
+            Noms des séries en haut, graduations en valeurs absolues.
+
+        Args / Paramètres:
+            colors (list, optional): EN/FR: Deux couleurs (gauche, droite). Défaut : thème.
+            show_values (bool): EN/FR: Valeur au bout de chaque barre.
+            value_format (str | callable): EN/FR: Format des valeurs ('{:g}' ou fonction).
+
+        Example / Exemple:
+            Chart(population).pyramid('age', 'hommes', 'femmes', show_values=True)
+        """
+        self.chart_type = 'pyramid'
+        d = self.data
+        pos = np.arange(len(d))
+        c = colors or (self._palette() * 2)[:2]
+        fmt = value_format if callable(value_format) else value_format.format
+        top = max(d[left].max(), d[right].max())
+        for col, sign, color, ha in ((left, -1, c[0], 'right'), (right, 1, c[1], 'left')):
+            bars = self.ax.barh(pos, sign * d[col], height=0.85, color=color, label=col)
+            if show_values:
+                self.ax.bar_label(bars, labels=[fmt(v) for v in d[col]], padding=3, fontsize=8,
+                                  color=plt.rcParams['text.color'])
+            self.ax.text(sign * top, len(d) - 0.35, col, ha=ha, va='bottom', fontweight='bold',
+                         color=color)
+        self.ax.set_yticks(pos, d[y])
+        lim = top * (1.2 if show_values else 1.05)
+        self.ax.set_xlim(-lim, lim)
+        self.ax.set_ylim(-0.6, len(d) + 0.6)
+        self.ax.xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f'{abs(v):g}'))
+        self.ax.grid(False, axis='y')
         return self
 
     def streamgraph(self, x: str, y: Union[str, List[str]],
@@ -2039,17 +2456,21 @@ class Chart:
         origin = starts.min()
         offsets = [(s - origin).days for s in starts]
         durations = [(e - s).days for s, e in zip(starts, ends)]
-        tasks = self.data[task].tolist()
+        tasks = self.data[task].astype(str).tolist()
+        y = np.arange(len(tasks))
+        offsets, durations = np.array(offsets), np.array(durations)
+        p = self._palette()                      # thème ou set_colors
         if group:
-            groups = self.data[group].unique()
-            palette = plt.cm.tab10(np.linspace(0, 1, len(groups)))
-            color_map = dict(zip(groups, palette))
-            colors = [color_map[g] for g in self.data[group]]
-            for g, c in color_map.items():
-                self.ax.barh([], [], color=c, label=str(g))
+            # Une série par groupe, nommée : la légende reprend la couleur et l'opacité des barres
+            keys = self.data[group].to_numpy()
+            for i, g in enumerate(pd.unique(keys)):
+                m = keys == g
+                self.ax.barh(y[m], durations[m], left=offsets[m], color=p[i % len(p)],
+                             alpha=alpha, label=str(g))
         else:
-            colors = plt.cm.tab10(np.linspace(0, 1, len(tasks)))
-        self.ax.barh(tasks, durations, left=offsets, color=colors, alpha=alpha)
+            self.ax.barh(y, durations, left=offsets, alpha=alpha,
+                         color=[p[i % len(p)] for i in range(len(tasks))])
+        self.ax.set_yticks(y, tasks)
         self.ax.set_xlabel(f'Jours depuis le {origin.date()}')
         self.ax.invert_yaxis()
         return self
@@ -2099,54 +2520,6 @@ class Chart:
         self.ax.set_aspect('equal')
         self.ax.invert_yaxis()
         self.ax.set_xlabel('Semaine')
-        return self
-
-    def sankey(self, flows: str, labels: str,
-               orientations: Optional[str] = None,
-               unit: str = '', scale: float = 0.01) -> 'Chart':
-        """
-        EN: Draw a Sankey diagram to visualise flows between categories.
-            Uses matplotlib's built-in ``matplotlib.sankey.Sankey`` class.
-            Each row of the DataFrame is one flow segment:
-            positive values are inputs (entering), negative values are outputs (leaving).
-        FR: Trace un diagramme de Sankey pour visualiser les flux entre catégories.
-            Utilise la classe intégrée ``matplotlib.sankey.Sankey`` de matplotlib.
-            Chaque ligne du DataFrame est un segment de flux :
-            les valeurs positives sont des entrées, les valeurs négatives des sorties.
-
-        Args / Paramètres:
-            flows (str):
-                EN: Column with flow magnitudes (positive = input, negative = output).
-                FR: Colonne avec les amplitudes de flux (positif = entrée, négatif = sortie).
-            labels (str):
-                EN: Column with label for each flow segment.
-                FR: Colonne avec l'étiquette de chaque segment de flux.
-            orientations (str, optional):
-                EN: Column with integer orientations: 0 = right, 1 = up, –1 = down.
-                FR: Colonne avec les orientations entières : 0 = droite, 1 = haut, –1 = bas.
-            unit (str):
-                EN: Unit string appended to each numeric label (e.g. ' MW').
-                FR: Chaîne d'unité ajoutée à chaque étiquette numérique (ex. ' MW').
-            scale (float):
-                EN: Global scale factor; smaller value = wider arrows. Default 0.01.
-                FR: Facteur d'échelle global ; valeur plus petite = flèches plus larges. Défaut 0.01.
-
-        Returns / Retourne:
-            Chart: self
-
-        Example / Exemple:
-            chart.sankey('flux', 'etiquette', orientations='direction', unit=' GWh')
-        """
-        from matplotlib.sankey import Sankey
-        self.chart_type = 'sankey'
-        self.ax.axis('off')
-        orient_vals = (self.data[orientations].tolist()
-                       if orientations else [0] * len(self.data))
-        Sankey(ax=self.ax, unit=unit, scale=scale).add(
-            flows=self.data[flows].tolist(),
-            labels=self.data[labels].tolist(),
-            orientations=orient_vals,
-        ).finish()
         return self
 
     # ──────────────────────────────────────── Sciences & data analysis / Sciences & analyse
@@ -2740,18 +3113,54 @@ class Chart:
         cbar.outline.set_visible(False)
         return cbar
 
-    def stem(self, x: str, y: str, baseline: float = 0.0, color: Optional[str] = None) -> 'Chart':
+    def stem(self, x: str, y: str, baseline: float = 0.0, color: Optional[str] = None,
+             cmap: Union[str, List[str], None] = None, hlines: Optional[List[float]] = None,
+             markersize: float = 6) -> 'Chart':
         """
         EN: Stem plot: a vertical line from the baseline to each value (matplotlib stem).
+            With `cmap`, each stem takes the colour of its value (lollipop with colormap);
+            `hlines` adds reference lines in the colour of their value, which become the
+            y ticks.
         FR: Diagramme en bâtons : un trait de la ligne de base à chaque valeur (stem).
+            Avec `cmap`, chaque bâton prend la couleur de sa valeur (lollipop dégradé) ;
+            `hlines` ajoute des lignes de repère de la couleur de leur valeur, qui
+            deviennent les graduations de l'axe y.
+
+        Args / Paramètres:
+            cmap (str | list, optional): EN/FR: Nom d'échelle de couleurs ou liste de couleurs
+                (du plus bas au plus haut).
+            hlines (list, optional): EN/FR: Valeurs des lignes de repère (avec cmap).
+            markersize (float): EN/FR: Taille des points. Défaut 6.
 
         Example / Exemple:
             chart.stem('jour', 'pluie')
+            chart.stem('annee', 'ecart', cmap=['#1d2a6b', '#2ab7b0', '#e9d3b4', '#8c1c03'],
+                       hlines=[-0.4, 0.4, 0.8])
         """
         self.chart_type = 'stem'
+        if cmap is not None:
+            cm_ = (mcolors.LinearSegmentedColormap.from_list('stem', cmap)
+                   if isinstance(cmap, (list, tuple)) else plt.get_cmap(cmap))
+            vals = self.data[y].astype(float)
+            norm = mcolors.Normalize(vals.min(), vals.max())
+            cols = cm_(norm(vals))
+            self.ax.vlines(self.data[x], baseline, vals, colors=cols, linewidth=1.5, zorder=2)
+            self.ax.scatter(self.data[x], vals, color=cols, s=markersize ** 2, zorder=3)
+            for v in hlines or []:
+                self.ax.axhline(v, color=cm_(norm(v)), linewidth=1, alpha=0.8, zorder=1)
+            if hlines:
+                ticks = sorted(set(hlines) | {baseline})
+                self.ax.set_yticks(ticks)
+                for t, v in zip(self.ax.get_yticklabels(), ticks):
+                    t.set_color(cm_(norm(v)))
+                self.ax.grid(False, axis='y')
+            self.ax.set_xlabel(x)
+            self._concise_dates(x)
+            self.ax.set_ylabel(y)
+            return self
         c = color or self._palette()[0]
         markers, stems, base = self.ax.stem(self.data[x], self.data[y], bottom=baseline)
-        plt.setp(markers, color=c)
+        plt.setp(markers, color=c, markersize=markersize)
         plt.setp(stems, color=c, linewidth=1.5)
         plt.setp(base, color=plt.rcParams['axes.labelcolor'], linewidth=1)
         self.ax.set_xlabel(x)
@@ -3709,19 +4118,25 @@ class Chart:
         n = len(d)
         pos = np.arange(n)
         P, E = d[precip].to_numpy(float), d[etp].to_numpy(float)
-        if show_bars:
-            self.ax.bar(pos, P, width=0.6, color=surplus_color, alpha=0.2, label='Précipitations')
+        if show_bars:   # rappel discret de la courbe P : pas d'entrée de légende en double
+            self.ax.bar(pos, P, width=0.6, color=surplus_color, alpha=0.2)
         xf = np.linspace(0, n - 1, 400)
         Pf, Ef = np.interp(xf, pos, P), np.interp(xf, pos, E)
-        self.ax.fill_between(xf, Ef, Pf, where=Pf >= Ef, interpolate=True, color=surplus_color,
-                             alpha=0.35, linewidth=0, label='Excédent')
-        self.ax.fill_between(xf, Pf, Ef, where=Ef > Pf, interpolate=True, color=deficit_color,
-                             alpha=0.35, linewidth=0, label='Déficit')
-        self.ax.plot(pos, P, color=surplus_color, marker='o', markersize=4, label='P')
-        self.ax.plot(pos, E, color=deficit_color, marker='o', markersize=4, label='ETP')
+        exc = self.ax.fill_between(xf, Ef, Pf, where=Pf >= Ef, interpolate=True,
+                                   color=surplus_color, alpha=0.35, linewidth=0,
+                                   label='Excédent (P > ETP)')
+        def_ = self.ax.fill_between(xf, Pf, Ef, where=Ef > Pf, interpolate=True,
+                                    color=deficit_color, alpha=0.35, linewidth=0,
+                                    label='Déficit (P < ETP)')
+        p_line, = self.ax.plot(pos, P, color=surplus_color, marker='o', markersize=4,
+                               label='Précipitations (P)')
+        e_line, = self.ax.plot(pos, E, color=deficit_color, marker='o', markersize=4,
+                               label='Évapotranspiration (ETP)')
         self.ax.set_xticks(pos, d[month].astype(str).tolist())
         self.ax.set_ylabel('mm')
-        self.ax.legend(fontsize=8, ncol=3)
+        # Légende verticale, à droite du graphique : les courbes, puis ce qu'elles délimitent
+        self.ax.legend(handles=[p_line, e_line, exc, def_], ncol=1, loc='upper left',
+                       bbox_to_anchor=(1.01, 1), borderaxespad=0)
         bilan = P - E
         self.water_table = pd.DataFrame({month: d[month].to_numpy(), 'P': P, 'ETP': E,
                                          'bilan': bilan})
@@ -4652,26 +5067,59 @@ class Chart:
             warnings.warn(f"Fond de carte indisponible ({exc.__class__.__name__}) : carte sans fond",
                           stacklevel=3)
 
-    def map_points(self, lon: str, lat: str, value: Optional[str] = None,
+    def map_points(self, lon: Optional[str] = None, lat: Optional[str] = None,
+                   value: Optional[str] = None,
                    size: Optional[str] = None, group: Optional[str] = None,
                    labels: Optional[str] = None, basemap: bool = True,
                    cmap: Optional[str] = None, sizes: Tuple[float, float] = (30, 500),
                    alpha: float = 0.85, basemap_source=None,
-                   size_legend: bool = True) -> 'Chart':
+                   size_legend: bool = True, boundary=None,
+                   colors: Optional[Dict[str, str]] = None) -> 'Chart':
         """
         EN: Points on a map (longitude/latitude, WGS84): colored by a value (colorbar) or a
             group (legend), sized by a column (proportional symbols, with a size legend),
-            labeled, over a web basemap (contextily, optional).
+            labeled without overlaps, over a web basemap (contextily, optional) or over
+            the zones of a GeoDataFrame (`boundary`).
         FR: Points sur une carte (longitude/latitude, WGS84) : colorés par une valeur (barre
             de couleur) ou un groupe (légende), dimensionnés par une colonne (symboles
-            proportionnels, avec légende des tailles), nommés, sur un fond de carte web
-            (contextily, optionnel).
+            proportionnels, avec légende des tailles), nommés sans chevauchement, sur un
+            fond de carte web (contextily, optionnel) ou sur les zones d'un GeoDataFrame
+            (`boundary`).
+
+        Args / Paramètres:
+            lon, lat (str, optional): EN: Coordinate columns; omit them for a GeoDataFrame
+                (geometry used). / FR: Colonnes de coordonnées ; à omettre pour un
+                GeoDataFrame (géométrie utilisée).
+            labels (str, optional): EN: Name column. Each label takes the first free spot
+                around its point; labels that fit nowhere are hidden (self.hidden_labels).
+                / FR: Colonne des noms. Chaque étiquette prend la première place libre
+                autour de son point ; celles qui ne tiennent nulle part sont masquées
+                (self.hidden_labels). Mettre les plus importantes en premier.
+            boundary (GeoDataFrame, optional): EN: Zones drawn under the points (country,
+                regions); the map is framed on them. Use with basemap=False for a map
+                without tiles. / FR: Zones dessinées sous les points (pays, régions) ; la
+                carte est cadrée dessus. Avec basemap=False : carte sans tuiles web.
+            colors (dict, optional): EN/FR: Couleur de chaque groupe {groupe: couleur}.
 
         Example / Exemple:
             chart.map_points('lon', 'lat', value='pluie', labels='station')
+            Chart(sites).map_points(group='categorie', labels='nom', boundary=regions,
+                                    basemap=False)
         """
         self.chart_type = 'map_points'
-        d = self.data.dropna(subset=[lon, lat])
+        data = self.data
+        if lon is None or lat is None:
+            if not hasattr(data, 'geometry'):
+                raise ValueError("map_points : donner lon et lat, ou un GeoDataFrame de points")
+            g = data.to_crs('EPSG:4326') if data.crs is not None else data
+            pts = g.geometry.representative_point()
+            data = pd.DataFrame(g.drop(columns=g.geometry.name)).assign(_lon=pts.x, _lat=pts.y)
+            lon, lat = '_lon', '_lat'
+        d = data.dropna(subset=[lon, lat])
+        if boundary is not None:
+            b = boundary.to_crs('EPSG:4326') if boundary.crs is not None else boundary
+            b.plot(ax=self.ax, facecolor=mcolors.to_rgba(plt.rcParams['grid.color'], 0.55),
+                   edgecolor=plt.rcParams['axes.facecolor'], linewidth=0.8, zorder=1)
         to_area = None
         if size:
             s = d[size].astype(float)
@@ -4683,7 +5131,8 @@ class Chart:
         edge = plt.rcParams['axes.facecolor']
         if group:
             for (name, sub), c in zip(d.groupby(group, sort=False), self._palette() * 10):
-                self.ax.scatter(sub[lon], sub[lat], s=area[sub.index], color=c, alpha=alpha,
+                self.ax.scatter(sub[lon], sub[lat], s=area[sub.index], alpha=alpha,
+                                color=(colors or {}).get(name, c),
                                 edgecolor=edge, linewidth=0.8, label=name, zorder=3)
             self.ax.legend(title=group)
         elif value:
@@ -4694,17 +5143,62 @@ class Chart:
         else:
             self.ax.scatter(d[lon], d[lat], s=area, color=self._palette()[0], alpha=alpha,
                             edgecolor=edge, linewidth=0.8, zorder=3)
-        if labels:
-            for x, y, t in zip(d[lon], d[lat], d[labels]):
-                self.ax.annotate(str(t), (x, y), xytext=(5, 5), textcoords='offset points',
-                                 fontsize=8, color=plt.rcParams['text.color'],
-                                 path_effects=self._halo(), zorder=4)
         if size and size_legend:
             self._size_legend(d[size].astype(float), to_area, title=size)
-        self._geo_frame(d[lon], d[lat])
+        if boundary is not None:
+            x0, y0, x1, y1 = b.total_bounds
+            self._geo_frame(np.r_[d[lon], x0, x1], np.r_[d[lat], y0, y1], pad=0.03)
+            self.ax.set_axis_off()
+        else:
+            self._geo_frame(d[lon], d[lat])
         if basemap:
             self._basemap(source=basemap_source)
+        if labels:
+            self._place_labels(d[lon], d[lat], d[labels], np.sqrt(area) / 2)
         return self
+
+    def _place_labels(self, xs, ys, texts, radii, fontsize: float = 8) -> None:
+        """Étiquettes sans chevauchement : 8 places essayées autour de chaque point, dans
+        l'ordre des données ; la première libre (ni texte ni point, dans le cadre) est
+        gardée, sinon l'étiquette est masquée et listée dans self.hidden_labels."""
+        # ponytail: glouton, mesuré à la taille actuelle des axes ; un tight_layout qui
+        # rétrécit beaucoup la carte peut recréer des contacts (adjustText si besoin).
+        self.ax.apply_aspect()
+        renderer = self.fig.canvas.get_renderer()
+        to_px = self.fig.dpi / 72
+        xy = self.ax.transData.transform(np.c_[np.asarray(xs, float), np.asarray(ys, float)])
+        radii = np.asarray(radii, float)
+        frame = self.ax.get_window_extent(renderer)
+        taken, self.hidden_labels = [], []
+        directions = [(1, 0.6, 'left', 'bottom'), (-1, 0.6, 'right', 'bottom'),
+                      (1, -0.6, 'left', 'top'), (-1, -0.6, 'right', 'top'),
+                      (0, 1, 'center', 'bottom'), (0, -1, 'center', 'top'),
+                      (1, 0, 'left', 'center'), (-1, 0, 'right', 'center')]
+        for i, (x, y, t, r) in enumerate(zip(np.asarray(xs, float), np.asarray(ys, float),
+                                              texts, radii)):
+            if pd.isna(t) or str(t) == '':
+                continue
+            others = [(p, q, s) for j, ((p, q), s) in enumerate(zip(xy, radii)) if j != i]
+            ann = self.ax.annotate(str(t), (x, y), xytext=(0, 0), textcoords='offset points',
+                                   fontsize=fontsize,
+                                   color=plt.rcParams['text.color'],
+                                   path_effects=self._halo(), zorder=5)
+            for dx, dy, ha, va in directions:
+                ann.xyann = (dx * (r + 2), dy * (r + 2))
+                ann.set_ha(ha)
+                ann.set_va(va)
+                box = ann.get_window_extent(renderer).padded(1)
+                inside = (box.x0 >= frame.x0 and box.x1 <= frame.x1
+                          and box.y0 >= frame.y0 and box.y1 <= frame.y1)
+                if inside and not any(box.overlaps(o) for o in taken) and not any(
+                        box.x0 < p + s * to_px and box.x1 > p - s * to_px
+                        and box.y0 < q + s * to_px and box.y1 > q - s * to_px
+                        for p, q, s in others):
+                    taken.append(box)
+                    break
+            else:
+                ann.remove()
+                self.hidden_labels.append(str(t))
 
     def _size_legend(self, values: pd.Series, to_area, title: str, loc: str = 'upper left') -> None:
         """Légende des symboles proportionnels : 3 valeurs arrondies (min, médiane, max)."""
@@ -4758,17 +5252,19 @@ class Chart:
         return np.unique(edges)
 
     def choropleth(self, column: str, labels: Optional[str] = None, cmap: Optional[str] = None,
-                   categorical: Optional[bool] = None, legend: bool = True,
+                   categorical: Optional[bool] = None, legend: Optional[bool] = None,
                    basemap: bool = False, edgecolor: Optional[str] = None,
-                   basemap_source=None, scheme: Optional[str] = None, k: int = 5) -> 'Chart':
+                   basemap_source=None, scheme: Optional[str] = None, k: int = 5,
+                   histogram: bool = False, bins: int = 15) -> 'Chart':
         """
         EN: Choropleth map: each zone (region, plot…) of a GeoDataFrame colored by a column
-            — continuous (colorbar) or categorical (legend). Needs geopandas
-            (pip install plutovizu[map]); read zones with geopandas.read_file(...).
-        FR: Carte choroplèthe : chaque zone (région, parcelle…) d'un GeoDataFrame colorée
-            selon une colonne — continue (barre de couleur) ou catégorielle (légende).
-            Nécessite geopandas (pip install plutovizu[map]) ; lire les zones avec
+            — continuous (colorbar) or categorical (legend); zones without a value are
+            drawn in grey. Needs geopandas (pip install plutovizu[map]); read zones with
             geopandas.read_file(...).
+        FR: Carte choroplèthe : chaque zone (région, parcelle…) d'un GeoDataFrame colorée
+            selon une colonne — continue (barre de couleur) ou catégorielle (légende) ; les
+            zones sans valeur restent grisées. Nécessite geopandas (pip install
+            plutovizu[map]) ; lire les zones avec geopandas.read_file(...).
 
         Args / Paramètres:
             scheme (str, optional): EN: Discrete classes for a numeric column: 'quantiles',
@@ -4777,9 +5273,15 @@ class Chart:
                 'quantiles', 'equal' (intervalles égaux) ou 'natural' (seuils naturels de
                 Jenks) ; bornes dans self.classes.
             k (int): EN/FR: Nombre de classes. Défaut 5.
+            histogram (bool): EN: Histogram of the values in the lower-left corner, bars
+                coloured with the map's colormap (replaces the colorbar; axes in
+                self.ax_hist). / FR: Histogramme des valeurs en bas à gauche, barres de la
+                couleur de la carte (remplace la barre de couleur ; axe dans self.ax_hist).
+            bins (int): EN/FR: Nombre de barres de l'histogramme. Défaut 15.
 
         Example / Exemple:
             regions = geopandas.read_file('regions.geojson')
+            Chart(regions).choropleth('salaire', histogram=True)
             Chart(regions).choropleth('rendement', labels='nom')
             Chart(regions).choropleth('rendement', scheme='natural', k=4)
         """
@@ -4790,8 +5292,12 @@ class Chart:
         gdf = self.data
         if categorical is None:
             categorical = not pd.api.types.is_numeric_dtype(gdf[column])
+        if legend is None:
+            legend = not (histogram and not categorical)
         common = dict(ax=self.ax, column=column, legend=legend, linewidth=0.8,
-                      edgecolor=edgecolor or plt.rcParams['axes.facecolor'])
+                      edgecolor=edgecolor or plt.rcParams['axes.facecolor'],
+                      missing_kwds={'color': mcolors.to_rgba(plt.rcParams['grid.color'], 0.6),
+                                    'label': 'Sans données'})   # zones sans valeur : grisées
         if categorical:
             k = gdf[column].nunique()
             palette = (self._palette() * 10)[:k]
@@ -4805,8 +5311,24 @@ class Chart:
                 extra['norm'] = mcolors.BoundaryNorm(self.classes, ncolors=256)
             gdf.plot(cmap=cmap or plt.rcParams['image.cmap'],
                      legend_kwds={'label': column, 'shrink': 0.7}, **common, **extra)
+            if histogram:
+                vals = gdf[column].dropna().astype(float)
+                norm = extra.get('norm') or mcolors.Normalize(vals.min(), vals.max())
+                counts, edges = np.histogram(vals, bins=bins)
+                centers = (edges[:-1] + edges[1:]) / 2
+                h = self.ax.inset_axes([0.0, 0.0, 0.4, 0.3])
+                h.bar(centers, counts, width=np.diff(edges) * 0.85,
+                      color=plt.get_cmap(cmap or plt.rcParams['image.cmap'])(norm(centers)))
+                h.set_facecolor('none')
+                h.set_yticks([])
+                h.grid(False)
+                for side in ('left', 'right', 'top'):
+                    h.spines[side].set_visible(False)
+                self.ax_hist = h
         if labels:
             for geom, t in zip(gdf.geometry, gdf[labels]):
+                if pd.isna(t) or str(t) == '':          # zone sans étiquette
+                    continue
                 p = geom.representative_point()
                 self.ax.annotate(str(t), (p.x, p.y), ha='center', va='center', fontsize=8,
                                  color=plt.rcParams['text.color'], path_effects=self._halo())
@@ -6028,13 +6550,23 @@ class Chart:
         self.chart_type = f'seaborn.{name}'
         kwargs.setdefault('data', self.data)
         if name in self._SNS_FIGURE_LEVEL:
-            if name != 'clustermap':
-                kwargs.pop('figsize', None)  # ces fonctions utilisent height/aspect
+            # Taille : un figsize explicite (méthode, sinon Chart) l'emporte sur height/aspect
+            if name == 'clustermap':
+                size = None
+                if self._figsize is not None:
+                    kwargs.setdefault('figsize', self._figsize)
+            else:
+                size = kwargs.pop('figsize', None) or self._figsize
             plt.close(self.fig)
             self.sns_grid = func(**kwargs)
             self.fig = self.sns_grid.figure
             self.ax = (getattr(self.sns_grid, 'ax_heatmap', None) or getattr(self.sns_grid, 'ax_joint', None)
                        or self.sns_grid.axes.flat[0])
+            if self._dpi:
+                self.fig.set_dpi(self._dpi)
+            if size is not None:
+                self.fig.set_size_inches(size)
+                self.tight_layout()   # la grille a été mise en page pour l'ancienne taille
         else:
             func(ax=self.ax, **kwargs)
         return self
@@ -6476,8 +7008,95 @@ class Chart:
         # La figure a été créée avant le style : on la reconstruit (vide) pour qu'il s'applique
         size = self.fig.get_size_inches()
         plt.close(self.fig)
-        self.fig, self.ax = plt.subplots(figsize=size)
+        self.fig, self.ax = plt.subplots(figsize=size, dpi=self._dpi)
         return self
+
+    def translate(self, lang: str = 'en', from_: str = 'builtin', source: str = 'fr') -> 'Chart':
+        """
+        EN: Translate the texts of the chart (title, axis labels, legend, annotations,
+            tick labels) into `lang`. Applied again at show() / save(), so texts added
+            after translate() are translated too.
+        FR: Traduit les textes du graphique (titre, axes, légende, annotations,
+            graduations) dans la langue `lang`. Réappliqué à show() / save() : les textes
+            ajoutés après translate() sont traduits aussi.
+
+        Args / Paramètres:
+            lang (str):
+                EN: Target language: 'fr', 'en', 'es', 'ar' (any code with from_='online').
+                FR: Langue cible : 'fr', 'en', 'es', 'ar' (tout code avec from_='online').
+            from_ (str):
+                EN: 'builtin' (default): the package's own dictionary — translates the texts
+                    plutovizu writes (legends, axis labels…), not your data or titles.
+                    'online': every text through the `translate` package (MyMemory service,
+                    internet needed; pip install translate). `from` is a Python keyword,
+                    hence the underscore.
+                FR: 'builtin' (défaut) : dictionnaire intégré — traduit les textes écrits par
+                    plutovizu (légendes, axes…), pas vos données ni vos titres.
+                    'online' : tous les textes via le package `translate` (service MyMemory,
+                    connexion requise ; pip install translate). `from` est un mot réservé de
+                    Python, d'où le tiret bas.
+            source (str):
+                EN: Language of your own texts, for from_='online'. Default 'fr'.
+                FR: Langue de vos propres textes, pour from_='online'. Défaut 'fr'.
+
+        Returns / Retourne:
+            Chart: self
+
+        Example / Exemple:
+            chart.water_balance('mois', 'pluie', 'etp').translate('en').show()
+            chart.title('Bilan hydrique').translate('es', from_='online').show()
+            chart.translate('fr')          # retour aux textes d'origine
+        """
+        from . import translations
+        if from_ not in ('builtin', 'online'):
+            raise ValueError("from_ doit valoir 'builtin' ou 'online'")
+        if from_ == 'builtin' and lang not in translations.LANGS:
+            raise ValueError(f"Langue '{lang}' sans traduction intégrée "
+                             f"({', '.join(translations.LANGS)}) ; from_='online' pour les autres")
+        self._lang = (lang, from_, source)
+        self._apply_translation()
+        return self
+
+    def _apply_translation(self) -> None:
+        """Traduit les textes de la figure depuis leur version d'origine (mémorisée au premier
+        passage), ce qui permet de changer de langue ou de revenir au français."""
+        if not getattr(self, '_lang', None):
+            return
+        import re
+        import matplotlib.text as mtext
+        from . import translations
+        lang, from_, source = self._lang
+
+        def tr(s: str) -> str:
+            if not s or s.startswith('$') or not re.search(r'[^\W\d_]', s) or lang == source:
+                return s
+            if from_ == 'builtin' or translations.is_known(s, lang, self.chart_type):
+                return translations.builtin(s, lang, self.chart_type)
+            return translations.online(s, lang, source)
+
+        arabic = ['DejaVu Sans'] if lang == 'ar' else []   # police de secours : glyphes arabes
+        self.fig.draw_without_rendering()                  # graduations à jour
+        for ax in self.fig.axes:
+            for axis in [ax.xaxis, ax.yaxis] + ([ax.zaxis] if hasattr(ax, 'zaxis') else []):
+                fmt = axis.get_major_formatter()
+                inner = fmt.inner if isinstance(fmt, _TranslatedFormatter) else fmt
+                labels = [t.get_text() for t in axis.get_ticklabels()]
+                if any(tr(s) != s for s in labels) or inner is not fmt:
+                    axis.set_major_formatter(_TranslatedFormatter(inner, tr))
+                if arabic and labels:
+                    axis.set_tick_params(labelfontfamily=[*axis.get_ticklabels()[0].get_fontfamily(),
+                                                          *arabic])
+        for t in self.fig.findobj(mtext.Text):
+            cur = t.get_text()
+            orig, done = getattr(t, '_pv_tr', (cur, None))
+            if cur != done:                     # texte modifié depuis (title()…) : nouvel original
+                orig = cur
+            new = tr(orig)
+            if new != cur:
+                t.set_text(new)
+            t._pv_tr = (orig, new)
+            if arabic and new != orig and 'DejaVu Sans' not in t.get_fontfamily():
+                t.set_fontfamily([*t.get_fontfamily(), *arabic])
 
     def tight_layout(self) -> 'Chart':
         """
@@ -6502,7 +7121,7 @@ class Chart:
         self.fig.tight_layout()
         return self
 
-    def save(self, filename: str, dpi: int = 400, bbox_inches: str = 'tight',
+    def save(self, filename: str, dpi: Optional[float] = None, bbox_inches: str = 'tight',
              format: Optional[str] = None) -> 'Chart':
         """
         EN: Save the figure to a file. Returns self for continued chaining.
@@ -6513,8 +7132,8 @@ class Chart:
                 EN: Output file path (extension inferred unless format is given).
                 FR: Chemin du fichier de sortie (extension déduite sauf si format est précisé).
             dpi (int):
-                EN: Resolution in dots per inch. Default 400.
-                FR: Résolution en points par pouce. Défaut 400.
+                EN: Resolution in dots per inch. Default: Chart(dpi=…) if given, else 400.
+                FR: Résolution en points par pouce. Défaut : Chart(dpi=…) s'il est donné, sinon 400.
             bbox_inches (str):
                 EN: Bounding box for saving ('tight' removes surrounding whitespace).
                 FR: Boîte englobante pour l'enregistrement ('tight' supprime l'espace vide).
@@ -6530,9 +7149,11 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').tight_layout().save('rapport.pdf', format='pdf')
         """
+        self._apply_translation()   # avant la mise en page : la longueur des textes change
         self._legends_outside()
         self._apply_rounding()
-        self.fig.savefig(filename, dpi=dpi, bbox_inches=bbox_inches, format=format)
+        self.fig.savefig(filename, dpi=dpi or self._dpi or 400, bbox_inches=bbox_inches, format=format,
+                         facecolor=self.fig.get_facecolor())   # garde background()
         return self
 
     def show(self) -> None:
@@ -6548,6 +7169,7 @@ class Chart:
         Example / Exemple:
             chart.line('date', 'ventes').tight_layout().show()
         """
+        self._apply_translation()   # avant la mise en page : la longueur des textes change
         self._legends_outside()
         self._apply_rounding()
         if 'inline' in matplotlib.get_backend():
@@ -6558,6 +7180,7 @@ class Chart:
             # figures encore ouvertes ; les fermer (show/plt.close) si ça gêne.
             plt.show()
         plt.close(self.fig)
+        _restore()
 
     def get_figure(self) -> Tuple[plt.Figure, plt.Axes]:
         """

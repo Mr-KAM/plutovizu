@@ -13,5 +13,8 @@ wheels/
 .pytest_cache/
 docs/_site/
 docs/*.quarto_ipynb
+docs/**/*.quarto_ipynb
+docs/**/*_files/
+docs/site_libs/
 .claude/
 command.md

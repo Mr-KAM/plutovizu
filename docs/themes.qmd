@@ -50,7 +50,7 @@ list_themes('morethemes')   # les 16 thèmes morethemes (si installé)
 # 1. Pour toute la session (comme seaborn.set_theme)
 set_theme('pluto')
 
-# 2. Raccourci à la création d'un graphique — s'applique aussi aux suivants
+# 2. Pour ce seul graphique (le thème précédent revient ensuite)
 Chart(df, theme='neon').line('x', 'y').show()
 
 # 3. Seulement dans un bloc

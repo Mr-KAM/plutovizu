@@ -1,0 +1,71 @@
+sankey:
+  desc: >-
+    Diagramme de Sankey : des flux entre nœuds, sur plusieurs niveaux, en rubans courbes
+    dont l'épaisseur est proportionnelle à la quantité. Les colonnes sont déduites des liens :
+    sources à gauche, destinations finales à droite.
+  usage: >-
+    Suivre ce que devient une quantité d'étape en étape : récolte (stock, vente, pertes),
+    budget, énergie, eau, filières, parcours d'usagers.
+  rows: une ligne par flux (source → cible) ; les flux identiques sont additionnés
+  data:
+    - [de, texte, "`source` : nœud de départ", "Récolte"]
+    - [vers, texte, "`target` : nœud d'arrivée", "Vente"]
+    - [tonnes, nombre, "`value` (optionnel) : quantité ; sinon chaque ligne compte 1", "45"]
+  returns: "`chart.sankey_table` : les liens agrégés."
+
+chord:
+  desc: >-
+    Diagramme en cordes : les nœuds sont des arcs sur un cercle (longueur proportionnelle au
+    total de leurs échanges), reliés par des rubans qui traversent le cercle.
+  usage: >-
+    Échanges croisés entre un petit nombre d'acteurs (5 à 12) : commerce entre régions,
+    migrations, collaborations, transferts.
+  rows: une ligne par lien (les liens identiques sont additionnés)
+  data:
+    - [de, texte, "`source` : nœud d'origine (couleur du ruban)", "Dakar"]
+    - [vers, texte, "`target` : nœud de destination", "Thiès"]
+    - [kt, nombre, "`value` (optionnel) : quantité échangée", "40"]
+  returns: "`chart.chord_table` : la matrice des échanges (source × cible)."
+
+venn:
+  desc: >-
+    Diagramme de Venn de 2 ou 3 ensembles, avec le nombre d'éléments de chaque zone
+    (éléments propres à un ensemble, communs à deux, communs aux trois).
+  usage: >-
+    Recouvrements entre groupes : activités des ménages, espèces communes à des sites,
+    répondants concernés par plusieurs critères.
+  rows: "une colonne par ensemble : booléenne (une ligne par individu, True = membre) ou liste d'éléments"
+  data:
+    - [Maraîchage, "booléen ou texte", "un ensemble (colonne citée dans `sets`)", "True"]
+    - [Élevage, "booléen ou texte", "un autre ensemble", "False"]
+  returns: "`chart.venn_table` : l'effectif de chaque zone."
+
+flowchart:
+  desc: >-
+    Logigramme ou organigramme, comme un « flowchart » Mermaid : des boîtes reliées par des
+    flèches, placées automatiquement par niveaux. Un nœud dont le nom finit par « ? » est
+    une décision (losange) ; les flèches qui remontent (boucles) contournent les boîtes.
+  usage: >-
+    Processus et procédures (contrôle qualité, protocole d'enquête, circuit administratif),
+    arbres de décision, organisation d'une structure.
+  rows: une ligne par flèche (source → cible)
+  data:
+    - [de, texte, "`source` : boîte de départ (`\\n` pour aller à la ligne)", "Conforme ?"]
+    - [vers, texte, "`target` : boîte d'arrivée", "Stockage"]
+    - [si, texte, "`label` (optionnel) : texte écrit sur la flèche", "oui"]
+  returns: "`chart.flow_layout` : niveau et position de chaque nœud."
+
+sequence_diagram:
+  desc: >-
+    Diagramme de séquence, comme un « sequenceDiagram » Mermaid : les participants en
+    colonnes avec leur ligne de vie, une flèche par message, dans l'ordre, de haut en bas.
+    Un participant peut s'envoyer un message (boucle).
+  usage: >-
+    Échanges entre acteurs dans le temps : circuit de paiement, transmission de données,
+    procédure entre services.
+  rows: une ligne par message, dans l'ordre chronologique
+  data:
+    - [de, texte, "`sender` : émetteur", "Coopérative"]
+    - [vers, texte, "`receiver` : destinataire", "Laboratoire"]
+    - [message, texte, "`message` : texte de la flèche", "Envoie un échantillon"]
+    - [reponse, booléen, "`dashed` (optionnel) : True = flèche en pointillés (réponse)", "False"]

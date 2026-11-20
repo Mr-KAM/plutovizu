@@ -60,6 +60,31 @@ dimensionnés par une colonne (`size`), nommés (`labels`).
     .show())
 ```
 
+Un `GeoDataFrame` de points (lu avec `geopandas.read_file`) se passe tel quel : `lon` et
+`lat` se déduisent de la géométrie. `boundary` dessine des zones (pays, régions) sous les
+points et cadre la carte dessus ; avec `basemap=False`, la carte n'a pas besoin de réseau.
+`colors` fixe la couleur de chaque groupe. Les étiquettes ne se chevauchent pas : chacune
+prend la première place libre autour de son point, dans l'ordre des lignes, et celles qui
+ne tiennent nulle part sont masquées et listées dans `chart.hidden_labels`. Une chaîne vide
+n'affiche pas d'étiquette.
+
+```{python}
+#| fig-cap: "Sites touristiques de Côte d'Ivoire (OpenStreetMap) sur les régions (geoBoundaries)"
+import geopandas as gpd
+
+sites = gpd.read_file('../../examples/datasets/sites-touristiques-en-cote-divoire.geojson')
+regions = gpd.read_file('../../examples/datasets/civ_regions.geojson')
+sites['parc'] = sites["Nom_de_l'établissement"].where(sites['Catégorie'] == 'Parc national', '')
+
+chart = (Chart(sites, figsize=(8, 8.5))
+    .map_points(group='Catégorie', labels='parc', boundary=regions, basemap=False)
+    .scale_bar()
+    .title("Sites touristiques de Côte d'Ivoire")
+    .tight_layout())
+print('Étiquettes masquées :', chart.hidden_labels)
+chart.show()
+```
+
 ### `choropleth` — Carte de zones {#g-choropleth}
 
 ```{python}
@@ -106,7 +131,8 @@ parcelles = gpd.GeoDataFrame(
 Pour une colonne numérique, `scheme` regroupe les valeurs en `k` **classes** de couleur :
 `'quantiles'` (même nombre de zones par classe), `'equal'` (intervalles égaux) ou
 `'natural'` (seuils naturels de Jenks, qui placent les coupures entre les groupes de
-valeurs). Les bornes sont dans `chart.classes`.
+valeurs). Les bornes sont dans `chart.classes`. Les zones sans valeur (`NaN`, par exemple
+après une jointure `merge(..., how='left')`) restent dessinées en gris.
 
 ```{python}
 #| fig-cap: "Rendement en 4 classes (seuils naturels)"

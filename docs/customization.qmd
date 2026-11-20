@@ -14,17 +14,33 @@ set_theme('editorial')   # thème par défaut de la documentation
 
 ---
 
-## Taille des graphiques
+## Taille et résolution
 
 Un graphique mesure par défaut **16 × 10 cm** (`FIGSIZE`). `figsize` reste en pouces comme
-dans matplotlib ; `cm()` convertit des centimètres :
+dans matplotlib ; `cm()` convertit des centimètres. `dpi` règle la résolution :
 
 ```python
 from plutovizu import Chart, cm, FIGSIZE
 
-Chart(df)                          # 16 × 10 cm
-Chart(df, figsize=cm(24, 12))      # 24 × 12 cm
-Chart(df, figsize=(8, 5))          # 8 × 5 pouces
+Chart(df)                                  # 16 × 10 cm
+Chart(df, figsize=cm(24, 12))              # 24 × 12 cm
+Chart(df, figsize=(8, 5))                  # 8 × 5 pouces
+Chart(df, dpi=200)                         # plus net à l'écran ; save() l'utilise aussi
+chart.save('figure.png', dpi=600)          # résolution du fichier seulement
+```
+
+| Résolution | Réglage |
+|---|---|
+| À l'écran (notebook) | `Chart(df, dpi=…)` ; défaut : celle du thème |
+| Dans le fichier | `save(…, dpi=…)` ; défaut : `Chart(dpi=…)` s'il est donné, sinon 400 |
+
+Les grilles seaborn (`relplot`, `displot`, `catplot`, `lmplot`, `jointplot`, `pairplot`,
+`clustermap`) suivent aussi `figsize` et `dpi`. Un `figsize` explicite l'emporte sur `height`
+et `aspect` :
+
+```python
+Chart(essai, figsize=cm(24, 9), dpi=150).relplot('dose', 'rendement', col='variete')
+Chart(essai).catplot('variete', 'rendement', kind='box', figsize=(10, 4))
 ```
 
 ---
@@ -48,6 +64,46 @@ chart = Chart(mois).line('mois', ['Riz', 'Maïs', 'Mil']).title('Ventes mensuell
 chart.ax.legend(loc='center')                 # au milieu des courbes…
 chart.tight_layout().show()                   # … sortie à droite à l'affichage
 ```
+
+## Langue des graphiques
+
+Les textes écrits par plutovizu (légendes, titres d'axes, annotations) sont en français.
+`translate(lang)` les traduit en anglais (`'en'`), en espagnol (`'es'`) ou en arabe
+(`'ar'`) ; `translate('fr')` revient au français. La traduction est réappliquée à
+l'affichage : l'ordre dans la chaîne n'a pas d'importance.
+
+```{python}
+#| fig-cap: "Bilan hydrique : légende traduite en anglais (dictionnaire intégré)"
+bilan = pd.DataFrame({
+    'mois': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    'pluie': [0, 1, 0, 0, 5, 40, 120, 220, 150, 50, 2, 0],
+    'etp': [140, 150, 180, 190, 200, 170, 140, 120, 125, 150, 140, 135]})
+(Chart(bilan)
+    .water_balance('mois', 'pluie', 'etp')
+    .title('Water balance — Dakar')
+    .translate('en')
+    .tight_layout()
+    .show())
+```
+
+| `from_` | Ce qui est traduit | Prérequis |
+|---|---|---|
+| `'builtin'` (défaut) | les textes de plutovizu, avec son dictionnaire (fr, en, es, ar) | aucun |
+| `'online'` | **tous** les textes, y compris vos titres et vos données, vers n'importe quelle langue | `pip install translate`, connexion internet |
+
+```python
+chart.translate('es')                                  # dictionnaire intégré
+chart.translate('ar')                                  # arabe : écrit de droite à gauche
+chart.translate('de', from_='online')                  # tout, en allemand, via le package translate
+chart.translate('en', from_='online', source='es')     # vos textes sont en espagnol
+```
+
+- `from` est un mot réservé de Python : le paramètre s'appelle `from_`.
+- En ligne, les expressions du dictionnaire restent traduites par le dictionnaire ; le reste
+  passe par le service gratuit MyMemory, limité à quelques milliers de caractères par jour.
+  Chaque texte n'est demandé qu'une fois par session.
+- Arabe : une police de secours (DejaVu Sans, fournie avec matplotlib) est ajoutée pour les
+  lettres arabes que la police du thème n'a pas.
 
 ## Coins arrondis
 

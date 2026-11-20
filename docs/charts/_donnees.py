@@ -382,3 +382,54 @@ _rb = np.random.default_rng(3)
 _vrai = _rb.uniform(8, 32, 40)
 mesures = pd.DataFrame({'gravimetrie': np.round(_vrai + _rb.normal(0, 0.6, 40), 1),
                         'sonde': np.round(_vrai * 0.97 + 1.2 + _rb.normal(0, 1.0, 40), 1)})
+
+# ── Diagrammes (données fictives)
+# Sankey : devenir de la récolte de maïs (t), de la parcelle au marché
+devenir = pd.DataFrame([
+    ('Récolte', 'Autoconsommation', 30), ('Récolte', 'Stock', 25), ('Récolte', 'Vente', 45),
+    ('Stock', 'Vente', 15), ('Stock', 'Pertes', 10), ('Vente', 'Marché local', 35),
+    ('Vente', 'Export', 25)], columns=['de', 'vers', 'tonnes'])
+
+# Chord : échanges de céréales entre régions (milliers de t)
+echanges_regions = pd.DataFrame([
+    ('Dakar', 'Thiès', 40), ('Dakar', 'Kaolack', 25), ('Thiès', 'Touba', 30),
+    ('Kaolack', 'Touba', 15), ('Touba', 'Dakar', 20), ('Saint-Louis', 'Dakar', 18),
+    ('Kaolack', 'Thiès', 10), ('Saint-Louis', 'Thiès', 8)], columns=['de', 'vers', 'kt'])
+
+# Venn : activités de 200 ménages (une ligne par ménage, True = activité pratiquée)
+_rv = np.random.default_rng(1)
+menages = pd.DataFrame({'Maraîchage': _rv.random(200) < 0.5, 'Élevage': _rv.random(200) < 0.4,
+                        'Pêche': _rv.random(200) < 0.25})
+
+# Logigramme : contrôle qualité d'un lot (une ligne par flèche)
+controle = pd.DataFrame([
+    ('Réception du lot', 'Échantillonnage', None),
+    ('Échantillonnage', 'Analyse au\nlaboratoire', None),
+    ('Analyse au\nlaboratoire', 'Conforme ?', None),
+    ('Conforme ?', 'Stockage', 'oui'),
+    ('Conforme ?', 'Tri et\nséchage', 'non'),
+    ('Tri et\nséchage', 'Échantillonnage', None),
+    ('Stockage', 'Expédition', None)], columns=['de', 'vers', 'si'])
+
+# Organigramme : une ligne par lien hiérarchique
+organigramme = pd.DataFrame([
+    ('Direction', 'Production'), ('Direction', 'Commercial'), ('Direction', 'Finances'),
+    ('Production', 'Semences'), ('Production', 'Irrigation'), ('Commercial', 'Ventes'),
+    ('Commercial', 'Export')], columns=['responsable', 'service'])
+
+# Diagramme de séquence : circuit de paiement d'une livraison
+paiement = pd.DataFrame([
+    ('Producteur', 'Coopérative', 'Livre la récolte', False),
+    ('Coopérative', 'Laboratoire', 'Envoie un échantillon', False),
+    ('Laboratoire', 'Coopérative', 'Résultat qualité', True),
+    ('Coopérative', 'Coopérative', 'Calcule le prix', False),
+    ('Coopérative', 'Producteur', 'Paiement', True)],
+    columns=['de', 'vers', 'message', 'reponse'])
+
+# Gaufres : surfaces (ha) par culture, et par culture et par année
+cultures_ha = pd.DataFrame({'culture': ['Mil', 'Arachide', 'Sorgho', 'Niébé', 'Maraîchage'],
+                            'ha': [38, 27, 18, 11, 6]})
+cultures_annees = pd.DataFrame({
+    'annee': np.repeat([2021, 2022, 2023, 2024], 4),
+    'culture': ['Mil', 'Arachide', 'Sorgho', 'Niébé'] * 4,
+    'ha': [120, 80, 50, 30, 135, 85, 45, 40, 150, 95, 60, 45, 160, 110, 55, 60]})

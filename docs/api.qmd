@@ -60,22 +60,24 @@ set_theme({**get_theme('pluto'), 'axes.titlesize': 20})
 
 ## Classe `Chart`
 
-### `__init__(data, figsize, theme)`
+### `__init__(data, figsize, theme, dpi)`
 
 ```python
-Chart(data: pd.DataFrame, figsize: Tuple[float, float] = FIGSIZE,   # 16 × 10 cm
-      theme: Optional[str] = None)
+Chart(data: pd.DataFrame, figsize: Optional[Tuple[float, float]] = None,   # 16 × 10 cm
+      theme: Optional[str] = None, dpi: Optional[float] = None)
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `data` | `pd.DataFrame` | — | Jeu de données source |
-| `figsize` | `Tuple[float, float]` | `FIGSIZE` (16 × 10 cm) | Largeur × hauteur en pouces ; `cm(largeur, hauteur)` convertit des centimètres |
-| `theme` | `str` | `None` | Raccourci de `set_theme(theme)` — s'applique aussi aux graphiques suivants |
+| `figsize` | `Tuple[float, float]` | `FIGSIZE` (16 × 10 cm) | Largeur × hauteur en pouces ; `cm(largeur, hauteur)` convertit des centimètres. S'applique aussi aux grilles seaborn |
+| `theme` | `str` | `None` | Thème de ce seul graphique (`font()` compris) ; le précédent revient au `show()` ou au `Chart` suivant. `set_theme()` change tous les graphiques |
+| `dpi` | `float` | `None` | Résolution à l'affichage, et par défaut de `save()` (sinon : thème à l'écran, 400 à l'export) |
 
 ```python
 chart = Chart(df)
 chart = Chart(df, figsize=(14, 8), theme='pluto')
+chart = Chart(df, figsize=cm(24, 12), dpi=200)
 ```
 
 ---
@@ -87,14 +89,19 @@ chart = Chart(df, figsize=(14, 8), theme='pluto')
 ```python
 .line(x: str, y: Union[str, List[str]],
       marker: str = 'o', linewidth: float = 2,
-      markersize: float = 6, alpha: float = 1.0) -> Chart
+      markersize: float = 6, alpha: float = 1.0,
+      direct_labels: bool | str = False, value_format: str = '{:g}') -> Chart
 ```
 
 Courbe simple ou multi-séries. Plusieurs colonnes `y` tracent une ligne par colonne.
+`direct_labels=True` pose le nom de chaque série dans une pastille sur sa courbe (sans
+légende) ; `direct_labels='end'` écrit la dernière valeur au bout de chaque courbe
+(`value_format` : chaîne de format ou fonction).
 
 ```python
 chart.line('date', 'ventes')
 chart.line('date', ['ventes', 'coûts', 'profit'], marker='s', linewidth=1.5)
+chart.line('mois', ['humain', 'ia'], marker='', direct_labels='end', value_format='{:.0f} %')
 ```
 
 ---
@@ -140,16 +147,23 @@ chart.scatter('temp', 'ventes', size='population', alpha=0.6)
 ```python
 .histogram(column: str, bins: Union[int, str] = 30,
            alpha: float = 0.7, color: str = None,
-           density: bool = False, edgecolor: Optional[str] = None) -> Chart
+           density: bool = False, edgecolor: Optional[str] = None,
+           hue: str = None, order: list = None, log: bool = False,
+           smooth: bool = False) -> Chart
 ```
 
 | Paramètre | Défaut | Description |
 |---|---|---|
 | `bins` | `30` | Nombre de classes ou stratégie (`'auto'`, `'fd'`, `'scott'`…) |
 | `density` | `False` | Normaliser pour que l'aire totale vaille 1 |
+| `hue` | `None` | Colonne de groupes : barres empilées, une couleur par groupe |
+| `order` | `None` | Ordre des groupes de `hue` (défaut : ordre d'apparition) |
+| `log` | `False` | Classes égales en échelle logarithmique (prix, surfaces…) |
+| `smooth` | `False` | Courbe lissée (densité à noyau) à l'échelle des effectifs |
 
 ```python
 chart.histogram('salaire', bins=50, density=True, color='steelblue')
+chart.histogram('prix', bins=40, log=True, hue='classe', smooth=True)
 ```
 
 ---
@@ -251,8 +265,8 @@ chart.lollipop('year', 'n', 'status',
 
 ```python
 .ombrothermic(month_col: str, temperature_col: str, precipitation_col: str,
-              temp_color: str = 'tab:red', precip_color: str = 'tab:blue',
-              dry_period_color: str = 'red', dry_period_alpha: float = 0.2,
+              temp_color: str = None, precip_color: str = None,
+              dry_period_color: str = None, dry_period_alpha: float = 0.9,
               show_threshold_line: bool = True,
               temp_scale_factor: float = 2.0, kind: str = 'bars',
               hatch: str = '///', humid_fill: bool = True) -> Chart
@@ -261,7 +275,11 @@ chart.lollipop('year', 'n', 'status',
 Diagramme ombrothermique de Bagnouls et Gaussen (convention **P = 2T**). Les périodes où
 précipitations < `temp_scale_factor` × température sont des périodes sèches.
 
-- `kind='bars'` (défaut) : barres de précipitations, périodes sèches surlignées.
+- Couleurs : celles du thème ou de `set_colors` — 1re couleur pour les précipitations,
+  2e pour la température ; la période sèche est hachurée dans la couleur de la température.
+  `precip_color`, `temp_color` et `dry_period_color` les remplacent.
+- `kind='bars'` (défaut) : barres de précipitations, périodes sèches **hachurées** entre la
+  barre et le seuil P = 2T (`hatch` règle le motif).
 - `kind='lines'` : deux courbes, périodes sèches **hachurées** entre les courbes (`hatch`
   règle le motif), période humide légèrement colorée (`humid_fill`). Mois secs :
   `chart.dry_months`.
@@ -415,6 +433,22 @@ chart.dumbbell('pays', 'pib_2020', 'pib_2024',
 
 ---
 
+### `pyramid`
+
+```python
+.pyramid(y: str, left: str, right: str, colors: list = None,
+         show_values: bool = False, value_format: str | Callable = '{:g}') -> Chart
+```
+
+Pyramide des âges : `left` à gauche, `right` à droite, une ligne par classe (la première en
+bas) ; noms des séries en haut, graduations en valeurs absolues.
+
+```python
+chart.pyramid('age', 'hommes', 'femmes', show_values=True)
+```
+
+---
+
 ### `circle_packing`
 
 ```python
@@ -479,25 +513,46 @@ chart.calendar_heatmap('date', 'commits', cmap='Greens')
 
 ---
 
-### `sankey`
+### `waffle`
 
 ```python
-.sankey(flows: str, labels: str,
-        orientations: Optional[str] = None,
-        unit: str = '', scale: float = 0.01) -> Chart
+.waffle(group, value=None, x=None, unit=1, columns=10, order=None, colors=None,
+        gap=0.12, rounding=0.12, totals=True, direct_labels=False)   # → chart.waffle_table
 ```
 
-Flux entre catégories via `matplotlib.sankey.Sankey`.
-Valeurs positives = entrées, négatives = sorties.
-
-| Paramètre | Défaut | Description |
-|---|---|---|
-| `orientations` | `None` | Colonne d'orientations (0 = droite, 1 = haut, −1 = bas) |
-| `scale` | `0.01` | Facteur global — plus petit = flèches plus larges |
+Un carré par `unit`, coloré par groupe. Sans `x` : une grille (parts d'un total) ; avec
+`x` : une colonne de carrés par modalité (années…), axe y dans l'unité des données.
 
 ```python
-chart.sankey('flux', 'etiquette', orientations='direction', unit=' k€')
+chart.waffle('culture', 'ha')
+chart.waffle('animal', 'n', x='annee', unit=5, direct_labels=True)
 ```
+
+---
+
+## Diagrammes
+
+```python
+.sankey(source, target, value=None, order=None, colors=None, node_width=0.025,
+        gap=0.04, alpha=0.4, show_values=True, unit='')          # → chart.sankey_table
+.chord(source, target, value=None, order=None, colors=None, gap=3.0, alpha=0.65,
+       labels=True)                                             # → chart.chord_table
+.venn(sets, labels=None, colors=None, alpha=0.35, show_values=True)   # → chart.venn_table
+.flowchart(source, target, label=None, direction='TB', shapes=None, colors=None,
+           fontsize=None)                                       # → chart.flow_layout
+.sequence_diagram(sender, receiver, message, participants=None, dashed=None,
+                  numbered=False, fontsize=None)
+```
+
+- Une ligne par lien (flux, flèche, message) ; sans `value`, chaque ligne compte 1.
+- `sankey` : colonnes déduites des liens (sources à gauche, destinations finales à droite).
+  L'ancienne forme `sankey('flux', 'etiquette', orientations=…)` (matplotlib.sankey) reste
+  acceptée.
+- `venn` : 2 ou 3 colonnes, booléennes (une ligne par individu) ou listes d'éléments.
+- `flowchart` : `direction='TB'` ou `'LR'` ; `shapes={nœud: 'box' | 'stadium' | 'circle' |
+  'diamond' | 'square'}` ; un nom finissant par « ? » est une décision (losange). Les
+  flèches qui forment une boucle contournent les boîtes.
+- `sequence_diagram` : `dashed` = colonne booléenne des réponses (pointillés).
 
 ---
 
@@ -647,7 +702,7 @@ d'équivalent dans plutovizu. Les exemples sont dans les pages de la [galerie](g
 
 ```python
 .step(x, y: str | List[str], where='mid', fill=False, alpha=0.2)          # escalier (step, stairs)
-.stem(x, y, baseline=0.0, color=None)                                     # bâtons
+.stem(x, y, baseline=0.0, color=None, cmap=None, hlines=None, markersize=6)   # bâtons ; cmap : dégradé
 .band(x, low, high, y=None, color=None, alpha=0.25, label=None)           # bande (fill_between)
 .timeline(date, label, levels=None, color=None)                           # frise chronologique
 .eventplot(time, group=None, linelength=0.7, linewidth=1.5)               # événements (eventplot)
@@ -775,11 +830,12 @@ Exemples dans la page [Climat & sols](charts/sciences.qmd). Les couleurs convent
 Exemples dans la page [Map](charts/map.qmd). Option : `pip install plutovizu[map]`.
 
 ```python
-.map_points(lon, lat, value=None, size=None, group=None, labels=None, basemap=True,
-            cmap=None, sizes=(30, 500), alpha=0.85, basemap_source=None, size_legend=True)
+.map_points(lon=None, lat=None, value=None, size=None, group=None, labels=None, basemap=True,
+            cmap=None, sizes=(30, 500), alpha=0.85, basemap_source=None, size_legend=True,
+            boundary=None, colors=None)                 # → chart.hidden_labels
 .choropleth(column, labels=None, cmap=None, categorical=None, legend=True,
             basemap=False, edgecolor=None, basemap_source=None,
-            scheme=None, k=5)                                     # data = GeoDataFrame
+            scheme=None, k=5, histogram=False, bins=15)          # data = GeoDataFrame
 .flow_map(lon_from, lat_from, lon_to, lat_to, weight=None, label_from=None, label_to=None,
           basemap=True, curvature=0.25, color=None, max_width=8, basemap_source=None)
 .density_map(lon, lat, weight=None, bandwidth=None, levels=8, cmap=None, alpha=0.6,
@@ -803,8 +859,12 @@ Exemples dans la page [Map](charts/map.qmd). Option : `pip install plutovizu[map
   d'aspect corrigé selon la latitude.
 - `choropleth` demande un `GeoDataFrame` (geopandas) ; une colonne texte donne une carte
   catégorielle. `scheme` : classes `'quantiles'`, `'equal'` ou `'natural'` (Jenks) ; bornes
-  dans `chart.classes`.
+  dans `chart.classes`. Les zones sans valeur (`NaN`) restent dessinées en gris.
 - `map_points(size=...)` ajoute une légende des tailles ; les axes sont gradués en degrés.
+- `map_points` accepte un `GeoDataFrame` de points sans `lon` / `lat` ; `boundary` (un
+  GeoDataFrame de zones) est dessiné dessous et cadre la carte ; `colors` fixe la couleur de
+  chaque groupe. Les `labels` ne se chevauchent pas : première place libre autour du point,
+  sinon masqué et listé dans `chart.hidden_labels`.
 - `density_map` : densité de noyau relative (0–1), pondérable ; `field_map` : interpolation
   linéaire sur la triangulation des points, avec isolignes ; `route_map` : départ ●,
   arrivée ■, flèches de sens.
@@ -992,8 +1052,10 @@ mots vides ignorés ; les expressions (`ngram=2`…) ne franchissent pas un mot 
   (étendue mobile moyenne).
 - `bland_altman` : différence a − b selon la moyenne ; biais et limites biais ± `limits`·ET.
 - `relplot`, `displot`, `catplot`, `lmplot`, `jointplot`, `pairplot`, `clustermap` créent
-  leur propre figure (grille seaborn, dans `chart.sns_grid`) ; taille par `height` et
-  `aspect`. Les autres arguments sont transmis à seaborn.
+  leur propre figure (grille seaborn, dans `chart.sns_grid`). Un `figsize` explicite
+  (`Chart(df, figsize=…)` ou argument de la méthode) fixe la taille de toute la figure et
+  l'emporte sur `height` / `aspect` (taille d'un panneau). Les autres arguments sont
+  transmis à seaborn.
 
 ### `seaborn`
 
@@ -1052,6 +1114,16 @@ Les options laissées à `None` suivent le [thème](themes.qmd) actif
 
 `loc` : alignement `'left'`, `'center'` ou `'right'`.
 
+### `subtitle`, `caption`, `background`
+
+```python
+.subtitle(text, fontsize=None, color=None, **kwargs) -> Chart        # sous le titre
+.caption(text, loc='right', fontsize=None, color=None, **kwargs)     # source, crédits
+.background(color, axes=True) -> Chart                               # fond (gardé par save)
+```
+
+Voir [Infographie](infographie.qmd).
+
 ### `labels`
 
 ```python
@@ -1066,11 +1138,25 @@ Les options laissées à `None` suivent le [thème](themes.qmd) actif
       linestyle: str = None, linewidth: float = None) -> Chart
 ```
 
+### `tick_format`
+
+```python
+.tick_format(x=None, y=None) -> Chart
+```
+
+Format des graduations : chaîne de format ou fonction.
+
+```python
+chart.tick_format(y='{:.0f} %', x='{:,.0f} $')
+chart.tick_format(y=lambda v: f'{v:.1f} %'.replace('.', ','))   # virgule décimale
+```
+
 ### `set_legend`
 
 ```python
 .set_legend(show: bool = True, location: str = 'best',
-            fontsize: int = None, frameon: bool = None) -> Chart
+            fontsize: int = None, frameon: bool = None, **kwargs) -> Chart
+# location='below' : sous le graphique, sur une ligne ; kwargs : ncol, title… (matplotlib)
 ```
 
 ### `set_limits`
@@ -1089,11 +1175,13 @@ Les options laissées à `None` suivent le [thème](themes.qmd) actif
 ### `font`
 
 ```python
-.font(family: str = 'sans-serif', size: int = 10,
+.font(family: str = 'sans-serif', size: float = None,
       weight: str = 'normal') -> Chart
 ```
 
-Utiliser `get_available_fonts()` pour lister les polices installées.
+Police de tous les textes du graphique, y compris ceux déjà écrits. Une police absente est
+téléchargée depuis Google Fonts (graisses légère, normale, grasse et italique), puis mise
+en cache. `get_available_fonts()` liste les polices installées.
 
 ### `set_style`
 
@@ -1159,6 +1247,8 @@ appliqué à `show()` / `save()`. **Par défaut, tous les graphiques sont arrond
 
 Accepte un nom de palette seaborn/matplotlib, une des 2 700 palettes **pypalettes**
 (`'Cross'`, `'Hiroshige'`…), un nom de palette personnalisée ou une liste de couleurs.
+Avant ou après la méthode de tracé : appelé après, il recolore ce qui est déjà dessiné
+(i-ème couleur de l'ancienne palette → i-ème de la nouvelle, transparence conservée).
 
 `pypalette(nom, continuous=False, reverse=False)` (fonction) renvoie une palette pypalettes
 en colormap et l'enregistre sous son nom : `cmap='Hiroshige'` marche ensuite partout.
@@ -1243,10 +1333,31 @@ Chart.print_available_fonts(pattern: str = None, limit: int = None) -> None
 .tight_layout() -> Chart
 ```
 
+### `translate`
+
+```python
+.translate(lang: str = 'en', from_: str = 'builtin', source: str = 'fr') -> Chart
+```
+
+| Paramètre | Défaut | Description |
+|---|---|---|
+| `lang` | `'en'` | Langue cible : `'fr'`, `'en'`, `'es'`, `'ar'` ; tout code ISO avec `from_='online'` |
+| `from_` | `'builtin'` | `'builtin'` : dictionnaire intégré, textes écrits par plutovizu ; `'online'` : tous les textes via le package `translate` (MyMemory, connexion requise) |
+| `source` | `'fr'` | Langue de vos propres textes (`from_='online'`) |
+
+Traduit titre, axes, légendes, annotations et graduations ; réappliqué à `show()` /
+`save()`. `translate('fr')` rétablit les textes d'origine. `pip install translate` (ou
+`plutovizu[translate]`) pour `from_='online'`.
+
+```python
+chart.water_balance('mois', 'pluie', 'etp').translate('es').show()
+chart.translate('de', from_='online')
+```
+
 ### `save`
 
 ```python
-.save(filename: str, dpi: int = 400,
+.save(filename: str, dpi: float = None,     # None : Chart(dpi=…) sinon 400
       bbox_inches: str = 'tight', format: str = None) -> Chart   # format : selon l'extension
 ```
 
