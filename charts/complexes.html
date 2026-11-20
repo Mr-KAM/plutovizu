@@ -652,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.pareto_table</code> : valeur, part (%), cumul (%) et classe (‘essentielle’ ou ‘secondaire’) de chaque catégorie ; <code>chart.ax2</code> : l’axe du cumul.</p>
 <p><strong>Exemple</strong></p>
-<div id="c4d14f85" class="cell" data-execution_count="3">
+<div id="2abf5a76" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(pertes)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .pareto(<span class="st">'cause'</span>, <span class="st">'tonnes'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pertes post-récolte : 4 causes font 80 </span><span class="sc">% d</span><span class="st">es pertes'</span>)</span>
@@ -770,7 +770,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>Sans <code>value</code>, chaque ligne compte pour un : on part directement du registre des incidents. <code>cutoff</code> change le seuil.</p>
-<div id="7cf211c7" class="cell" data-execution_count="4">
+<div id="08ce8316" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>incidents <span class="op">=</span> pertes.loc[pertes.index.repeat(pertes[<span class="st">'tonnes'</span>] <span class="op">//</span> <span class="dv">5</span>), [<span class="st">'cause'</span>]]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>(Chart(incidents)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .pareto(<span class="st">'cause'</span>, cutoff<span class="op">=</span><span class="dv">70</span>)</span>
@@ -860,7 +860,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.control_limits</code> : moyenne, sigma, LSC et LIC ; <code>chart.control_table</code> : les mesures et la colonne <code>hors_limites</code>.</p>
 <p><strong>Exemple</strong></p>
-<div id="b25ee8c7" class="cell" data-execution_count="6">
+<div id="bf273fd2" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(lots)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .control_chart(<span class="st">'lot'</span>, <span class="st">'humidite'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Humidité des lots : deux lots hors limites'</span>)</span>
@@ -1002,7 +1002,7 @@ Note
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.marimekko_table</code> : le tableau croisé x × y.</p>
 <p><strong>Exemple</strong></p>
-<div id="67185a97" class="cell" data-execution_count="8">
+<div id="e231295b" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>(Chart(assolement)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    .marimekko(<span class="st">'region'</span>, <span class="st">'culture'</span>, <span class="st">'surface'</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Assolement : la largeur donne le poids de chaque région'</span>)</span>
@@ -1086,7 +1086,7 @@ Note
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.agreement</code> : biais, écart-type, limites basse et haute, nombre de points hors limites, n.</p>
 <p><strong>Exemple</strong></p>
-<div id="b9d46590" class="cell" data-execution_count="10">
+<div id="abf9a982" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>chart <span class="op">=</span> (Chart(mesures)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .bland_altman(<span class="st">'gravimetrie'</span>, <span class="st">'sonde'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Accord sonde / gravimétrie'</span>)</span>
@@ -1179,7 +1179,7 @@ Note
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="abdc406d" class="cell" data-execution_count="12">
+<div id="a3dd5c07" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    .raincloud(<span class="st">'variete'</span>, <span class="st">'rendement'</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement par variété'</span>)</span>
@@ -1294,7 +1294,7 @@ Note
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.sns_grid</code> : la grille seaborn (FacetGrid).</p>
 <p><strong>Exemple</strong></p>
-<div id="5f06923d" class="cell" data-execution_count="14">
+<div id="be978790" class="cell" data-execution_count="14">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    .relplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, col<span class="op">=</span><span class="st">'variete'</span>, kind<span class="op">=</span><span class="st">'line'</span>, marker<span class="op">=</span><span class="st">'o'</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.4</span>))</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Réponse à l'azote par variété"</span>)</span>
@@ -1389,7 +1389,7 @@ Note
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.sns_grid</code> : la grille seaborn (FacetGrid).</p>
 <p><strong>Exemple</strong></p>
-<div id="b92e99bb" class="cell" data-execution_count="16">
+<div id="2f609583" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    .displot(<span class="st">'rendement'</span>, col<span class="op">=</span><span class="st">'variete'</span>, kde<span class="op">=</span><span class="va">True</span>, bins<span class="op">=</span><span class="dv">8</span>, height<span class="op">=</span><span class="fl">3.2</span>, aspect<span class="op">=</span><span class="fl">0.9</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Distribution du rendement'</span>)</span>
@@ -1494,7 +1494,7 @@ Note
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.sns_grid</code> : la grille seaborn (FacetGrid).</p>
 <p><strong>Exemple</strong></p>
-<div id="a4dabb7b" class="cell" data-execution_count="18">
+<div id="1b62d0cb" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai.assign(dose<span class="op">=</span>essai[<span class="st">'dose'</span>].astype(<span class="bu">str</span>)))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .catplot(<span class="st">'variete'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'dose'</span>, kind<span class="op">=</span><span class="st">'box'</span>, height<span class="op">=</span><span class="dv">4</span>, aspect<span class="op">=</span><span class="fl">1.6</span>,</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>             palette<span class="op">=</span><span class="st">'crest'</span>)</span>
@@ -1600,7 +1600,7 @@ Note
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.sns_grid</code> : la grille seaborn (FacetGrid).</p>
 <p><strong>Exemple</strong></p>
-<div id="ed6be69f" class="cell" data-execution_count="20">
+<div id="2f2872c1" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .lmplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, order<span class="op">=</span><span class="dv">2</span>, height<span class="op">=</span><span class="dv">4</span>, aspect<span class="op">=</span><span class="fl">1.4</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Courbes de réponse ajustées'</span>)</span>
@@ -1689,7 +1689,7 @@ Note
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="86e8fa2f" class="cell" data-execution_count="22">
+<div id="6944e206" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    .jointplot(<span class="st">'dose'</span>, <span class="st">'rendement'</span>, kind<span class="op">=</span><span class="st">'reg'</span>, height<span class="op">=</span><span class="fl">5.5</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Rendement selon la dose'</span>)</span>
@@ -1776,7 +1776,7 @@ Note
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="65476ae5" class="cell" data-execution_count="24">
+<div id="8535c6ca" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    .pairplot(<span class="bu">vars</span><span class="op">=</span>[<span class="st">'hauteur'</span>, <span class="st">'jours_floraison'</span>, <span class="st">'talles'</span>, <span class="st">'rendement'</span>],</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>              hue<span class="op">=</span><span class="st">'cycle'</span>, corner<span class="op">=</span><span class="va">True</span>, height<span class="op">=</span><span class="dv">2</span>)</span>
@@ -1880,7 +1880,7 @@ Note
 </table>
 <p><strong>Exemple</strong></p>
 <p>Classe à la fois les individus (lignes) et les variables (colonnes), avec leurs dendrogrammes. Les colonnes sont centrées-réduites par défaut (<code>standardize=True</code>).</p>
-<div id="8e2ea891" class="cell" data-execution_count="26">
+<div id="581aab1c" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(Chart(caracteres, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">9</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    .clustermap(labels<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Clustermap des caractères variétaux'</span>)</span>
@@ -1952,7 +1952,7 @@ Note
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="24a81266" class="cell" data-execution_count="28">
+<div id="dcf158a3" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>(Chart(essai)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    .seaborn(<span class="st">'violinplot'</span>, x<span class="op">=</span><span class="st">'variete'</span>, y<span class="op">=</span><span class="st">'rendement'</span>, hue<span class="op">=</span><span class="st">'variete'</span>, inner<span class="op">=</span><span class="st">'quart'</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Distribution du rendement par variété'</span>)</span>

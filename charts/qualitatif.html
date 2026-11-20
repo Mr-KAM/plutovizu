@@ -652,7 +652,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.word_frequencies</code> : fréquence de chaque mot.</p>
 <p><strong>Exemple</strong></p>
 <p>À partir d’une colonne de texte libre : les mots sont comptés en ignorant les mots vides français (<code>language='fr'</code>, ou <code>'en'</code>, <code>'fr+en'</code>). On peut ajouter ses propres mots à ignorer (<code>stopwords=[...]</code>), compter des expressions (<code>ngram=2</code>), ou fournir directement des fréquences (<code>words=</code>, <code>weights=</code>). Couleurs et police suivent le thème.</p>
-<div id="2e65b931" class="cell" data-execution_count="3">
+<div id="4efa4eaf" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>(Chart(enquete, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    .word_cloud(<span class="st">'reponse'</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Difficultés citées par les producteurs'</span>)</span>
@@ -666,7 +666,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="639d7241" class="cell" data-execution_count="4">
+<div id="5ddb45bf" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> theme_context(<span class="st">'prezi'</span>):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    (Chart(enquete, figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">7</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        .word_cloud(<span class="st">'reponse'</span>, ngram<span class="op">=</span><span class="dv">2</span>, shape<span class="op">=</span><span class="st">'circle'</span>)</span>
@@ -770,7 +770,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Le complément chiffré du nuage : les mots (ou expressions) les plus cités, en barres. Les fréquences sont dans <code>chart.word_frequencies</code> ; la fonction <code>word_counts()</code> les calcule sans tracer.</p>
-<div id="3ed7b13d" class="cell" data-execution_count="6">
+<div id="3b00be6f" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(Chart(enquete, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>))</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    .word_frequency(<span class="st">'reponse'</span>, top<span class="op">=</span><span class="dv">12</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Mots les plus cités'</span>)</span>
@@ -870,7 +870,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.likert_table</code> : pourcentages par question et modalité.</p>
 <p><strong>Exemple</strong></p>
 <p>Une barre par question, centrée sur la réponse neutre : désaccord à gauche, accord à droite, en pourcentage. Les questions sont triées par accord net.</p>
-<div id="29017594" class="cell" data-execution_count="8">
+<div id="3ed5a1c5" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>echelle <span class="op">=</span> [<span class="st">'Pas du tout d’accord'</span>, <span class="st">'Pas d’accord'</span>, <span class="st">'Neutre'</span>, <span class="st">'D’accord'</span>, <span class="st">'Tout à fait d’accord'</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>opinions <span class="op">=</span> pd.DataFrame({q: rng.choice(echelle, <span class="dv">80</span>, p<span class="op">=</span>p) <span class="cf">for</span> q, p <span class="kw">in</span> {</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'La formation était utile'</span>:      [<span class="fl">.05</span>, <span class="fl">.10</span>, <span class="fl">.15</span>, <span class="fl">.40</span>, <span class="fl">.30</span>],</span>
@@ -974,7 +974,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Résultats calculés</strong> : <code>chart.code_table</code> : le tableau cas × codes.</p>
 <p><strong>Exemple</strong></p>
 <p>Pour le codage d’entretiens (comme dans NVivo ou Atlas.ti) : une ligne par segment codé, et la matrice montre combien de fois chaque code apparaît dans chaque entretien. <code>normalize=True</code> donne la part de chaque code dans l’entretien.</p>
-<div id="747085c3" class="cell" data-execution_count="10">
+<div id="ba64fca4" class="cell" data-execution_count="10">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>segments <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'entretien'</span>: rng.choice([<span class="ss">f'Entretien </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">7</span>)], <span class="dv">120</span>),</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'code'</span>: rng.choice([<span class="st">'Eau'</span>, <span class="st">'Prix'</span>, <span class="st">'Crédit'</span>, <span class="st">'Semences'</span>, <span class="st">'Formation'</span>, <span class="st">'Marché'</span>], <span class="dv">120</span>,</span>

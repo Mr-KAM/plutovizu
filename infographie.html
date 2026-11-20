@@ -528,6 +528,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#carte-et-histogramme" id="toc-carte-et-histogramme" class="nav-link" data-scroll-target="#carte-et-histogramme">Carte et histogramme</a></li>
   <li><a href="#lollipop-dégradé-et-annotations" id="toc-lollipop-dégradé-et-annotations" class="nav-link" data-scroll-target="#lollipop-dégradé-et-annotations">Lollipop dégradé et annotations</a></li>
   <li><a href="#gaufres-dans-le-temps" id="toc-gaufres-dans-le-temps" class="nav-link" data-scroll-target="#gaufres-dans-le-temps">Gaufres dans le temps</a></li>
+  <li><a href="#courbes-étiquetées" id="toc-courbes-étiquetées" class="nav-link" data-scroll-target="#courbes-étiquetées">Courbes étiquetées</a></li>
+  <li><a href="#histogramme-logarithmique-coloré" id="toc-histogramme-logarithmique-coloré" class="nav-link" data-scroll-target="#histogramme-logarithmique-coloré">Histogramme logarithmique coloré</a></li>
+  <li><a href="#lia-en-chiffres-2025-2026" id="toc-lia-en-chiffres-2025-2026" class="nav-link" data-scroll-target="#lia-en-chiffres-2025-2026">L’IA en chiffres (2025-2026)</a></li>
+  <li><a href="#côte-divoire-cacao-café-et-sites-touristiques" id="toc-côte-divoire-cacao-café-et-sites-touristiques" class="nav-link" data-scroll-target="#côte-divoire-cacao-café-et-sites-touristiques">Côte d’Ivoire : cacao, café et sites touristiques</a></li>
   </ul></li>
   <li><a href="#exporter" id="toc-exporter" class="nav-link" data-scroll-target="#exporter">Exporter</a></li>
   </ul>
@@ -606,9 +610,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Légende</td>
-<td><code>.set_legend(location='below')</code>, ou <code>direct_labels=True</code> (<code>waffle</code>)</td>
+<td><code>.set_legend(location='below')</code>, ou <code>direct_labels=True</code> (<code>waffle</code>, <code>line</code>) ; <code>line(direct_labels='end')</code> : dernière valeur au bout de chaque courbe</td>
 </tr>
 <tr class="odd">
+<td>Graduations</td>
+<td><code>.tick_format(y='{:.0f} %')</code>, <code>x='{:,.0f} $'</code> ou une fonction (virgule décimale : <code>lambda v: f'{v:.1f} %'.replace('.', ',')</code>)</td>
+</tr>
+<tr class="even">
+<td>Thème d’un seul graphique</td>
+<td><code>Chart(df, theme='sunset')</code></td>
+</tr>
+<tr class="odd">
+<td>Carte d’un GeoDataFrame</td>
+<td><code>map_points(group=…, labels=…, boundary=regions, basemap=False)</code></td>
+</tr>
+<tr class="even">
 <td>Thème complet</td>
 <td><code>set_theme('…')</code> ou <code>with theme_context('…'):</code> (<a href="./themes.html">Thèmes</a>)</td>
 </tr>
@@ -617,7 +633,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="pas-à-pas" class="level3">
 <h3 class="anchored" data-anchor-id="pas-à-pas">Pas à pas</h3>
 <p>Le même graphique en barres, avant et après la mise en forme :</p>
-<div id="d2c08822" class="cell" data-execution_count="2">
+<div id="36d964d9" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rendements <span class="op">=</span> pd.DataFrame({<span class="st">'variete'</span>: [<span class="st">'Sahel-108'</span>, <span class="st">'IR-841'</span>, <span class="st">'Nerica-4'</span>, <span class="st">'Locale'</span>],</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'rendement'</span>: [<span class="fl">6.1</span>, <span class="fl">5.4</span>, <span class="fl">4.2</span>, <span class="fl">2.9</span>]})</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Chart(rendements).bar(<span class="st">'variete'</span>, <span class="st">'rendement'</span>).show()</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
@@ -630,7 +646,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<div id="666ea100" class="cell" data-execution_count="3">
+<div id="b75fe792" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>(Chart(rendements, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Outfit'</span>)                                     <span class="co"># 1. police (Google Fonts)</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    .background(<span class="st">'#f6eee3'</span>)                              <span class="co"># 2. fond</span></span>
@@ -689,7 +705,7 @@ Note
 <section id="gaufres-par-année" class="level3">
 <h3 class="anchored" data-anchor-id="gaufres-par-année">Gaufres par année</h3>
 <p>D’après <a href="https://python-graph-gallery.com/web-waffle-chart-with-groups-evolution/">Waffle chart with groups evolution</a> (Joseph Barbier, données TidyTuesday). Un carré = 5 animaux adoptés.</p>
-<div id="53c791ea" class="cell" data-execution_count="4">
+<div id="027f947c" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adoptions par année et par espèce (agrégées depuis le fichier TidyTuesday 2025-03-04)</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>adoptions <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>: <span class="bu">range</span>(<span class="dv">2017</span>, <span class="dv">2025</span>),</span>
@@ -724,7 +740,7 @@ Note
 <section id="carte-et-histogramme" class="level3">
 <h3 class="anchored" data-anchor-id="carte-et-histogramme">Carte et histogramme</h3>
 <p>D’après <a href="https://python-graph-gallery.com/web-choropleth-map-with-histogram/">Choropleth map with histogram</a> (Joseph Barbier). L’histogramme des salaires, coloré comme la carte, sert de légende. Nécessite <code>pip install plutovizu[map]</code>.</p>
-<div id="b9a02169" class="cell" data-execution_count="5">
+<div id="38288244" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>URL <span class="op">=</span> <span class="st">'https://raw.githubusercontent.com/holtzy/The-Python-Graph-Gallery/refs/heads/master/static/data/'</span></span>
@@ -756,7 +772,7 @@ Note
 <section id="lollipop-dégradé-et-annotations" class="level3">
 <h3 class="anchored" data-anchor-id="lollipop-dégradé-et-annotations">Lollipop dégradé et annotations</h3>
 <p>D’après <a href="https://python-graph-gallery.com/web-lollipop-with-colormap-and-arrow/">Lollipop with colormap and arrow</a> (Joseph Barbier, données NASA). La couleur suit la valeur ; les lignes de repère prennent la couleur de leur niveau.</p>
-<div id="0f7bde96" class="cell" data-execution_count="6">
+<div id="7f7d7962" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>temperature <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/holtzy/The-Python-Graph-Gallery/'</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          <span class="st">'master/static/data/temperature-variation.csv'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -785,7 +801,7 @@ Note
 <section id="gaufres-dans-le-temps" class="level3">
 <h3 class="anchored" data-anchor-id="gaufres-dans-le-temps">Gaufres dans le temps</h3>
 <p>D’après <a href="https://python-graph-gallery.com/web-waffle-chart-for-time-series/">Waffle chart for time series</a> (Muhammad Azhar, données NOAA). Des colonnes étroites (<code>columns=3</code>) donnent l’allure d’un histogramme ; un carré = 5 cyclones.</p>
-<div id="1f07aecb" class="cell" data-execution_count="7">
+<div id="eb738415" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cyclones <span class="op">=</span> pd.read_csv(<span class="st">'https://raw.githubusercontent.com/holtzy/The-Python-Graph-Gallery/'</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                       <span class="st">'master/static/data/storms.csv'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -812,12 +828,487 @@ Note
 </div>
 </div>
 </section>
+<section id="courbes-étiquetées" class="level3">
+<h3 class="anchored" data-anchor-id="courbes-étiquetées">Courbes étiquetées</h3>
+<p>Données simulées (<a href="https://github.com/Mr-KAM/plutovizu/tree/main/examples/datasets"><code>articles_ia.csv</code></a>). <code>direct_labels=True</code> pose le nom de chaque série sur sa courbe : plus besoin de légende.</p>
+<div id="9a060fb9" class="cell" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>articles <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/articles_ia.csv'</span>, parse_dates<span class="op">=</span>[<span class="st">'mois'</span>])</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>chatgpt <span class="op">=</span> pd.Timestamp(<span class="st">'2022-11-01'</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>(Chart(articles.rename(columns<span class="op">=</span>{<span class="st">'humain'</span>: <span class="st">'Humain'</span>, <span class="st">'ia'</span>: <span class="st">'IA'</span>}), figsize<span class="op">=</span>(<span class="fl">6.5</span>, <span class="fl">7.5</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Fraunces'</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    .background(<span class="st">'#faf5ec'</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    .set_colors([<span class="st">'#4f8a5b'</span>, <span class="st">'#e8c062'</span>])</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    .line(<span class="st">'mois'</span>, [<span class="st">'Humain'</span>, <span class="st">'IA'</span>], marker<span class="op">=</span><span class="st">''</span>, linewidth<span class="op">=</span><span class="fl">2.5</span>, direct_labels<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    .tick_format(y<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> %'</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'Nov. 2022</span><span class="ch">\n</span><span class="st">Lancement de ChatGPT'</span>, xy<span class="op">=</span>(chatgpt, <span class="dv">8</span>), xytext<span class="op">=</span>(chatgpt, <span class="dv">22</span>), radius<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span><span class="st">'white'</span>, arrow_color<span class="op">=</span><span class="st">'black'</span>, fontfamily<span class="op">=</span><span class="st">'monospace'</span>, fontsize<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                bbox<span class="op">=</span><span class="bu">dict</span>(boxstyle<span class="op">=</span><span class="st">'square,pad=0.6'</span>, facecolor<span class="op">=</span><span class="st">'black'</span>))</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Plus d'articles écrits par l'IA</span><span class="ch">\n</span><span class="st">que par des humains"</span>, fontsize<span class="op">=</span><span class="dv">24</span>, loc<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">"Données simulées d'après Graphite (2025)"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-9-output-1.png" width="615" height="710" class="figure-img"></p>
+<figcaption>Part des articles écrits par des humains ou générés par l’IA</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Les mêmes données, la dernière valeur écrite au bout de chaque courbe (<code>direct_labels='end'</code>) :</p>
+<div id="8b722a8a" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(Chart(articles.rename(columns<span class="op">=</span>{<span class="st">'humain'</span>: <span class="st">'Écrits par des humains'</span>, <span class="st">'ia'</span>: <span class="st">"Générés par l'IA"</span>}),</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>       figsize<span class="op">=</span>(<span class="fl">6.5</span>, <span class="fl">7.5</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Source Sans 3'</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    .set_colors([<span class="st">'#2a9d8f'</span>, <span class="st">'#d6378f'</span>])</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    .line(<span class="st">'mois'</span>, [<span class="st">'Écrits par des humains'</span>, <span class="st">"Générés par l'IA"</span>], marker<span class="op">=</span><span class="st">''</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>          direct_labels<span class="op">=</span><span class="st">'end'</span>, value_format<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> %'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    .tick_format(y<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> %'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'Nov. 2022</span><span class="ch">\n</span><span class="st">Lancement</span><span class="ch">\n</span><span class="st">de ChatGPT'</span>, xy<span class="op">=</span>(chatgpt, <span class="dv">10</span>), xytext<span class="op">=</span>(chatgpt, <span class="dv">28</span>), radius<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Part des articles écrits par des humains</span><span class="ch">\n</span><span class="st">ou générés par l'IA"</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontsize<span class="op">=</span><span class="dv">17</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Mensuel, janvier 2020 à mai 2025 ; échantillon de 65 000 articles en anglais'</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    .set_legend(location<span class="op">=</span><span class="st">'below'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">"Données simulées d'après Graphite (2025)"</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-10-output-1.png" width="613" height="710" class="figure-img"></p>
+<figcaption>Valeurs finales au bout des courbes</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="histogramme-logarithmique-coloré" class="level3">
+<h3 class="anchored" data-anchor-id="histogramme-logarithmique-coloré">Histogramme logarithmique coloré</h3>
+<p>Données simulées (<a href="https://github.com/Mr-KAM/plutovizu/tree/main/examples/datasets"><code>encheres_publiques.csv</code></a>). <code>log=True</code> : classes égales en échelle log ; <code>hue</code> : barres empilées par groupe ; <code>smooth=True</code> : la même distribution lissée, à l’échelle des effectifs.</p>
+<div id="04e853ce" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>encheres <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/encheres_publiques.csv'</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>(Chart(encheres, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Inter'</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    .background(<span class="st">'#faf7f0'</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    .set_colors([<span class="st">'#5b7fbf'</span>, <span class="st">'#3fae95'</span>, <span class="st">'#e9b95c'</span>, <span class="st">'#d9705a'</span>])</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    .histogram(<span class="st">'prix'</span>, bins<span class="op">=</span><span class="dv">40</span>, log<span class="op">=</span><span class="va">True</span>, hue<span class="op">=</span><span class="st">'classe'</span>, order<span class="op">=</span>[<span class="st">'1'</span>, <span class="st">'2 à 9'</span>, <span class="st">'10 à 19'</span>, <span class="st">'20 et plus'</span>],</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>               smooth<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    .rounded(<span class="dv">0</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    .set_limits(ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1500</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    .tick_format(x<span class="op">=</span><span class="st">'</span><span class="sc">{:,.0f}</span><span class="st"> $'</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'LE PRIX LE PLUS COURANT</span><span class="ch">\n</span><span class="st">10 $'</span>, xy<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">680</span>), xytext<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">1300</span>), radius<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">'#c0392b'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'LA VENTE MÉDIANE</span><span class="ch">\n</span><span class="st">170 $'</span>, xy<span class="op">=</span>(<span class="dv">170</span>, <span class="dv">800</span>), xytext<span class="op">=</span>(<span class="dv">600</span>, <span class="dv">1250</span>), radius<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'LA VENTE RECORD</span><span class="ch">\n</span><span class="st">1 820 000 $'</span>, xy<span class="op">=</span>(<span class="fl">1.8e6</span>, <span class="dv">5</span>), xytext<span class="op">=</span>(<span class="fl">1e6</span>, <span class="dv">300</span>), radius<span class="op">=</span><span class="dv">0</span>, color<span class="op">=</span><span class="st">'#c0392b'</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"La vente médiane d'un surplus public : 170 $"</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontsize<span class="op">=</span><span class="dv">20</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Lots vendus aux enchères selon leur prix final. Barres : effectifs ; courbe : les mêmes '</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>              <span class="st">"données lissées.</span><span class="ch">\n</span><span class="st">Couleur : nombre d'enchérisseurs."</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    .set_legend(location<span class="op">=</span><span class="st">'below'</span>, title<span class="op">=</span><span class="st">"Nombre d'enchérisseurs"</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Données simulées'</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-11-output-1.png" width="949" height="566" class="figure-img"></p>
+<figcaption>Lots vendus aux enchères selon leur prix final</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="lia-en-chiffres-2025-2026" class="level3">
+<h3 class="anchored" data-anchor-id="lia-en-chiffres-2025-2026">L’IA en chiffres (2025-2026)</h3>
+<p>Statistiques publiées par Microsoft (<em>Global AI Diffusion</em>), Eurostat (indicateur <code>isoc_eb_ai</code>) et le <a href="https://hai.stanford.edu/ai-index/2026-ai-index-report">Stanford AI Index 2026</a>, dans <a href="https://github.com/Mr-KAM/plutovizu/tree/main/examples/datasets"><code>examples/datasets/</code></a>. Les valeurs Microsoft autres que l’Afrique du Sud (23,9 %) et la Côte d’Ivoire (13,7 %) sont lues sur les graphiques publiés.</p>
+<p>Trois astuces : <code>Chart(theme=…)</code> change le thème d’un graphique ; <code>color=[…]</code> (une couleur par barre) met une valeur en avant ; une fonction comme <code>pct</code> écrit les nombres avec une virgule décimale (<code>value_format=pct</code>, <code>tick_format(y=pct)</code>).</p>
+<div id="80a822f9" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pct <span class="op">=</span> <span class="kw">lambda</span> v: <span class="ss">f'</span><span class="sc">{</span>v<span class="sc">:.1f}</span><span class="ss"> %'</span>.replace(<span class="st">'.'</span>, <span class="st">','</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>usage <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/ia_generative_monde_civ.csv'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>(Chart(usage, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>), theme<span class="op">=</span><span class="st">'sunset'</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    .set_colors([<span class="st">'#e8794a'</span>, <span class="st">'#f5c45e'</span>])</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    .line(<span class="st">'periode'</span>, [<span class="st">'Monde'</span>, <span class="st">"Côte d'Ivoire"</span>], linewidth<span class="op">=</span><span class="fl">2.5</span>, markersize<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>          direct_labels<span class="op">=</span><span class="st">'end'</span>, value_format<span class="op">=</span>pct)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    .set_limits(ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">21</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    .tick_format(y<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> %'</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Côte d'Ivoire : l'IA générative progresse au rythme du monde"</span>, loc<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>           fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">"Part estimée des 15-64 ans ayant utilisé un produit d'IA générative ; l'écart reste de 5 points"</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    .set_legend(location<span class="op">=</span><span class="st">'below'</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : Microsoft AI Economy Institute, Global AI Diffusion. S = semestre ; T = trimestre.'</span>,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>             loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-12-output-1.png" width="850" height="518" class="figure-img"></p>
+<figcaption>Utilisation de l’IA générative dans le monde et en Côte d’Ivoire</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="b3f8b421" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>afrique <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/ia_adoption_afrique_2026.csv'</span>).iloc[::<span class="op">-</span><span class="dv">1</span>]   <span class="co"># le plus grand en haut</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>(Chart(afrique, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>), theme<span class="op">=</span><span class="st">'sunset'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .bar(<span class="st">'pays'</span>, <span class="st">'adoption'</span>, horizontal<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="dv">1</span>, show_values<span class="op">=</span><span class="va">True</span>, value_format<span class="op">=</span>pct,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>[<span class="st">'#f5c45e'</span> <span class="cf">if</span> p <span class="op">==</span> <span class="st">"Côte d'Ivoire"</span> <span class="cf">else</span> <span class="st">'#b4572e'</span> <span class="cf">for</span> p <span class="kw">in</span> afrique[<span class="st">'pays'</span>]])</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    .tick_format(x<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> %'</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Adoption de l'IA générative en Afrique, juin 2026"</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">"L'Afrique du Sud devance la Côte d'Ivoire de 10 points"</span>)</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : Microsoft, Global AI Diffusion, T2 2026'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-13-output-1.png" width="853" height="518" class="figure-img"></p>
+<figcaption>Adoption de l’IA générative en Afrique, juin 2026</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="82229224" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>entreprises <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/eurostat_entreprises_ia.csv'</span>, dtype<span class="op">=</span>{<span class="st">'annee'</span>: <span class="bu">str</span>})</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>(Chart(entreprises, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">5.5</span>), theme<span class="op">=</span><span class="st">'ocean'</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    .bar(<span class="st">'annee'</span>, <span class="st">'part'</span>, alpha<span class="op">=</span><span class="dv">1</span>, show_values<span class="op">=</span><span class="va">True</span>, value_format<span class="op">=</span>pct,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>[<span class="st">'#4b6b8f'</span>, <span class="st">'#4b6b8f'</span>, <span class="st">'#4b6b8f'</span>, <span class="st">'#5fd3c6'</span>])</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    .set_limits(ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">25</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    .tick_format(y<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> %'</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'× 2,6 en quatre ans'</span>, xy<span class="op">=</span>(<span class="fl">2.6</span>, <span class="fl">21.5</span>), xytext<span class="op">=</span>(<span class="fl">1.6</span>, <span class="fl">22.5</span>), radius<span class="op">=-</span><span class="fl">0.2</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                fontweight<span class="op">=</span><span class="st">'bold'</span>, color<span class="op">=</span><span class="st">'#5fd3c6'</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Une entreprise européenne sur cinq utilise l'IA"</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">"Entreprises d'au moins 10 personnes utilisant au moins une technologie d'IA "</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">"(pas d'enquête en 2022)"</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : Eurostat, indicateur isoc_eb_ai'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-14-output-1.png" width="724" height="518" class="figure-img"></p>
+<figcaption>Entreprises européennes utilisant l’IA</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="91494c04" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>milliards <span class="op">=</span> <span class="kw">lambda</span> v: <span class="ss">f'</span><span class="sc">{</span>v<span class="sc">:.1f}</span><span class="ss"> Md$'</span>.replace(<span class="st">'.'</span>, <span class="st">','</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>investissement <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/ai_index_2026_investissement.csv'</span>).iloc[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>(Chart(investissement, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>), theme<span class="op">=</span><span class="st">'paper'</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Outfit'</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    .background(<span class="st">'#f6f1e7'</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    .bar(<span class="st">'region'</span>, <span class="st">'milliards_usd'</span>, horizontal<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="dv">1</span>, width<span class="op">=</span><span class="fl">0.6</span>, show_values<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>         value_format<span class="op">=</span>milliards, color<span class="op">=</span>[<span class="st">'#c9b79c'</span>, <span class="st">'#c9b79c'</span>, <span class="st">'#8c1d18'</span>])</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    .grid(<span class="va">False</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    .tick_format(x<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st">'</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'23 fois</span><span class="ch">\n</span><span class="st">la Chine'</span>, xy<span class="op">=</span>(<span class="dv">110</span>, <span class="dv">2</span>), xytext<span class="op">=</span>(<span class="dv">160</span>, <span class="fl">0.6</span>), radius<span class="op">=</span><span class="fl">0.3</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                color<span class="op">=</span><span class="st">'#8c1d18'</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"Les États-Unis concentrent l'investissement privé dans l'IA"</span>, loc<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>           fontsize<span class="op">=</span><span class="dv">17</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">"Investissement privé dans l'IA en 2025, en milliards de dollars"</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : Stanford HAI, AI Index Report 2026'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-15-output-1.png" width="850" height="375" class="figure-img"></p>
+<figcaption>Investissement privé dans l’IA en 2025</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="bf5878cd" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>supercalculateurs <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/ai_index_2026_supercalculateurs.csv'</span>).iloc[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>(Chart(supercalculateurs, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>), theme<span class="op">=</span><span class="st">'paper'</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Outfit'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    .background(<span class="st">'#f6f1e7'</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    .bar(<span class="st">'region'</span>, <span class="st">'supercalculateurs'</span>, horizontal<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="dv">1</span>, show_values<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>         color<span class="op">=</span>[<span class="st">'#c9b79c'</span>] <span class="op">*</span> <span class="dv">6</span> <span class="op">+</span> [<span class="st">'#c0392b'</span>])</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    .grid(<span class="va">False</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    .tick_format(x<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st">'</span>)</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'La Chine en tête des supercalculateurs IA publics'</span>, loc<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>           fontsize<span class="op">=</span><span class="dv">17</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Supercalculateurs IA publics ou public-privé, cumul 2010-2025, par région'</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : Stanford HAI, AI Index Report 2026'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-16-output-1.png" width="850" height="470" class="figure-img"></p>
+<figcaption>Supercalculateurs IA publics par région</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="961d710c" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>chiffres <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/ai_index_2026_chiffres_cles.csv'</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>(Chart(chiffres, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>), theme<span class="op">=</span><span class="st">'pluto'</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    .font(<span class="st">'Outfit'</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    .progress_bar(<span class="st">'pourcentage'</span>, labels<span class="op">=</span><span class="st">'indicateur'</span>, height<span class="op">=</span><span class="fl">0.45</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">"L'IA en six chiffres"</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontsize<span class="op">=</span><span class="dv">22</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Adoption massive, fiabilité encore inégale'</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : Stanford HAI, AI Index Report 2026'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    .show())</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>set_theme()   <span class="co"># police et thème par défaut pour la suite</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-17-output-1.png" width="845" height="518" class="figure-img"></p>
+<figcaption>L’IA en six chiffres</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="côte-divoire-cacao-café-et-sites-touristiques" class="level3">
+<h3 class="anchored" data-anchor-id="côte-divoire-cacao-café-et-sites-touristiques">Côte d’Ivoire : cacao, café et sites touristiques</h3>
+<p>Données réelles dans <a href="https://github.com/Mr-KAM/plutovizu/tree/main/examples/datasets"><code>examples/datasets/</code></a> : série du cacao 1960-2024, production par région, chiffres du secteur cacao-café, financement des projets agricoles, population agricole par âge, et 43 sites touristiques (OpenStreetMap). Les limites des régions viennent de <a href="https://www.geoboundaries.org">geoBoundaries</a> (CC BY 4.0). Le notebook <a href="https://github.com/Mr-KAM/plutovizu/blob/main/examples/12_cote_divoire.ipynb">12_cote_divoire</a> reprend ces exemples.</p>
+<p>Les cartes s’appuient sur trois nouveautés : <code>map_points</code> lit un GeoDataFrame directement et dessine des régions dessous (<code>boundary</code>) ; ses étiquettes ne se chevauchent pas ; et <code>choropleth</code> grise les régions sans données.</p>
+<div id="0a20d0e0" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> geopandas <span class="im">as</span> gpd</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>cacao <span class="op">=</span> [<span class="st">'#5b3a29'</span>, <span class="st">'#b5733b'</span>, <span class="st">'#e3b15a'</span>, <span class="st">'#8a9a5b'</span>]   <span class="co"># cabosse, fève, or, feuille</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="52595040" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>serie <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/cacao_prix_production_1960_2024.csv'</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>serie[<span class="st">'production_mt'</span>] <span class="op">=</span> serie[<span class="st">'production_t'</span>] <span class="op">/</span> <span class="fl">1e6</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>(Chart(serie, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">5.5</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    .set_colors(cacao)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    .area(<span class="st">'annee'</span>, <span class="st">'production_mt'</span>, alpha<span class="op">=</span><span class="fl">0.9</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    .set_limits(xlim<span class="op">=</span>(<span class="dv">1960</span>, <span class="dv">2023</span>), ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="fl">2.6</span>))</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    .tick_format(y<span class="op">=</span><span class="st">'</span><span class="sc">{:.1f}</span><span class="st"> Mt'</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'× 24 en 63 ans'</span>, xy<span class="op">=</span>(<span class="dv">2022</span>, <span class="fl">2.2</span>), xytext<span class="op">=</span>(<span class="dv">2003</span>, <span class="fl">2.45</span>), radius<span class="op">=-</span><span class="fl">0.2</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                fontweight<span class="op">=</span><span class="st">'bold'</span>, color<span class="op">=</span>cacao[<span class="dv">0</span>])</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'2 millions de tonnes</span><span class="ch">\n</span><span class="st">franchis en 2016'</span>, xy<span class="op">=</span>(<span class="dv">2016</span>, <span class="fl">2.02</span>), xytext<span class="op">=</span>(<span class="dv">1996</span>, <span class="fl">1.75</span>),</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>                radius<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'La Côte d’Ivoire a multiplié sa production de cacao par 24'</span>, loc<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>           fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Production commercialisée de cacao, en millions de tonnes, 1960-2023 (sans donnée en 1999)'</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : exportIndicateurs.csv'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-19-output-1.png" width="950" height="518" class="figure-img"></p>
+<figcaption>Production de cacao, 1960-2023</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="3adb2845" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(Chart(serie, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">5</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    .set_colors([cacao[<span class="dv">1</span>]])</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    .step(<span class="st">'annee'</span>, <span class="st">'prix_fcfa_kg'</span>, where<span class="op">=</span><span class="st">'post'</span>, fill<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="fl">0.25</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    .set_limits(xlim<span class="op">=</span>(<span class="dv">1960</span>, <span class="dv">2025</span>), ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">1700</span>))</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    .tick_format(y<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> F'</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'1990 : prix divisé par deux</span><span class="ch">\n</span><span class="st">(400 → 200 F/kg)'</span>, xy<span class="op">=</span>(<span class="fl">1990.5</span>, <span class="dv">210</span>),</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                xytext<span class="op">=</span>(<span class="dv">1970</span>, <span class="dv">650</span>), radius<span class="op">=</span><span class="fl">0.25</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="st">'2024 : 1 500 F/kg,</span><span class="ch">\n</span><span class="st">un record'</span>, xy<span class="op">=</span>(<span class="fl">2024.5</span>, <span class="dv">1500</span>), xytext<span class="op">=</span>(<span class="dv">2006</span>, <span class="dv">1450</span>),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                radius<span class="op">=-</span><span class="fl">0.2</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, color<span class="op">=</span>cacao[<span class="dv">0</span>])</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Prix garanti au producteur : 95 F/kg en 1960, 1 500 F/kg en 2024'</span>, loc<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>           fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Prix bord champ du cacao, en F CFA par kilo (sans donnée en 2000-2001)'</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : exportIndicateurs.csv'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-20-output-1.png" width="949" height="470" class="figure-img"></p>
+<figcaption>Prix bord champ du cacao, 1960-2024</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="7fa0222f" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>regions <span class="op">=</span> gpd.read_file(<span class="st">'../examples/datasets/civ_regions.geojson'</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>production <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/cacao_cafe_regions.csv'</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>cacao_2023 <span class="op">=</span> production.query(<span class="st">"produit == 'Cacao' and annee == 2023"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>carte <span class="op">=</span> regions.merge(cacao_2023, on<span class="op">=</span><span class="st">'region'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>carte[<span class="st">'kt'</span>] <span class="op">=</span> carte[<span class="st">'tonnes'</span>] <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>carte[<span class="st">'etiquette'</span>] <span class="op">=</span> (carte[<span class="st">'region'</span>] <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span> <span class="op">+</span> carte[<span class="st">'kt'</span>].<span class="bu">round</span>().astype(<span class="st">'Int64'</span>).astype(<span class="bu">str</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>                      <span class="op">+</span> <span class="st">' kt'</span>).where(carte[<span class="st">'kt'</span>] <span class="op">&gt;</span> <span class="dv">100</span>, <span class="st">''</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>(Chart(carte, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">8.5</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    .choropleth(<span class="st">'kt'</span>, labels<span class="op">=</span><span class="st">'etiquette'</span>, cmap<span class="op">=</span><span class="st">'YlOrBr'</span>, scheme<span class="op">=</span><span class="st">'natural'</span>, k<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Le cacao se cultive dans la moitié sud'</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Production de cacao par région en 2023, en milliers de tonnes (kt)'</span>)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Sources : production par région administrative ; limites geoBoundaries (CC BY 4.0)'</span>,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>             loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-21-output-1.png" width="735" height="778" class="figure-img"></p>
+<figcaption>Production de cacao par région, 2023</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="ce6219cb" class="cell" data-execution_count="21">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>recul <span class="op">=</span> (production.query(<span class="st">"produit == 'Cacao'"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>         .pivot(index<span class="op">=</span><span class="st">'region'</span>, columns<span class="op">=</span><span class="st">'annee'</span>, values<span class="op">=</span><span class="st">'tonnes'</span>).div(<span class="dv">1000</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>         .nlargest(<span class="dv">10</span>, <span class="dv">2022</span>).iloc[::<span class="op">-</span><span class="dv">1</span>].reset_index())</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>recul.columns <span class="op">=</span> [<span class="st">'region'</span>, <span class="st">'2022'</span>, <span class="st">'2023'</span>]</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>(Chart(recul, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">5.5</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    .dumbbell(<span class="st">'region'</span>, <span class="st">'2022'</span>, <span class="st">'2023'</span>, color_start<span class="op">=</span>cacao[<span class="dv">2</span>], color_end<span class="op">=</span>cacao[<span class="dv">0</span>], markersize<span class="op">=</span><span class="dv">110</span>)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    .tick_format(x<span class="op">=</span><span class="st">'</span><span class="sc">{:.0f}</span><span class="st"> kt'</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    .set_legend(location<span class="op">=</span><span class="st">'below'</span>)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'2023 : recul dans toutes les grandes régions productrices'</span>, loc<span class="op">=</span><span class="st">'left'</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>           fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Production de cacao des dix premières régions de 2022, en milliers de tonnes'</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : production de café et cacao par région administrative'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-22-output-1.png" width="851" height="518" class="figure-img"></p>
+<figcaption>Recul de 2023 dans les dix premières régions</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="4f3b3d32" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>chiffres <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/cacao_cafe_chiffres.csv'</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>evolution <span class="op">=</span> (chiffres.pivot_table(index<span class="op">=</span><span class="st">'rubrique'</span>, columns<span class="op">=</span>[<span class="st">'produit'</span>, <span class="st">'annee'</span>], values<span class="op">=</span><span class="st">'valeur'</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>             .pipe(<span class="kw">lambda</span> t: (t.xs(<span class="dv">2023</span>, axis<span class="op">=</span><span class="dv">1</span>, level<span class="op">=</span><span class="dv">1</span>) <span class="op">/</span> t.xs(<span class="dv">2022</span>, axis<span class="op">=</span><span class="dv">1</span>, level<span class="op">=</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> <span class="dv">100</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>             .loc[[<span class="st">'Exportation (Tonnes)'</span>, <span class="st">'Revenu (milliards de FCFA)'</span>, <span class="st">'Production (Tonnes)'</span>,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                   <span class="st">'Prix CAF exportation (F/Kg)'</span>, <span class="st">'Prix bord champ (F/Kg)'</span>]]</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>             .rename(index<span class="op">=</span><span class="kw">lambda</span> r: r.split(<span class="st">' ('</span>)[<span class="dv">0</span>])</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>             .reset_index())</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>signe <span class="op">=</span> <span class="kw">lambda</span> v: <span class="ss">f'</span><span class="sc">{</span>v<span class="sc">:+.0f}</span><span class="ss"> %'</span>.replace(<span class="st">'-'</span>, <span class="st">'−'</span>) <span class="cf">if</span> <span class="bu">round</span>(v) <span class="cf">else</span> <span class="st">'0'</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>(Chart(evolution, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">5</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    .set_colors([cacao[<span class="dv">0</span>], cacao[<span class="dv">2</span>]])</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    .bar(<span class="st">'rubrique'</span>, [<span class="st">'Cacao'</span>, <span class="st">'Café'</span>], horizontal<span class="op">=</span><span class="va">True</span>, alpha<span class="op">=</span><span class="dv">1</span>, show_values<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>         value_format<span class="op">=</span>signe)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    .tick_format(x<span class="op">=</span>signe)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    .set_limits(xlim<span class="op">=</span>(<span class="op">-</span><span class="dv">62</span>, <span class="dv">30</span>))</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    .set_legend(location<span class="op">=</span><span class="st">'below'</span>)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'2023 : moins de volumes, de meilleurs prix'</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Évolution entre 2022 et 2023, en %'</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : statistiques globales sur le secteur cacao et café'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-23-output-1.png" width="854" height="470" class="figure-img"></p>
+<figcaption>Cacao et café : évolution 2022-2023</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="c5989b2c" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>financement <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/financement_agricole.csv'</span>).query(<span class="st">'annee == 2023'</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> financement[<span class="st">'millions_fcfa'</span>].<span class="bu">sum</span>() <span class="op">/</span> <span class="dv">1000</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>(Chart(financement, figsize<span class="op">=</span>(<span class="fl">8.5</span>, <span class="fl">6.5</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    .set_colors([cacao[<span class="dv">0</span>], cacao[<span class="dv">3</span>], cacao[<span class="dv">2</span>]])</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    .donut(<span class="st">'millions_fcfa'</span>, labels<span class="op">=</span><span class="st">'source'</span>, center_text<span class="op">=</span><span class="ss">f'</span><span class="sc">{</span>total<span class="sc">:.0f}</span><span class="ss"> Md</span><span class="ch">\n</span><span class="ss">F CFA'</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Les projets agricoles financés à 87 % par l’emprunt'</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Financement des projets agricoles en 2023 (+31 </span><span class="sc">% s</span><span class="st">ur 2022)'</span>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : financement des projets agricoles (millions de F CFA)'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-24-output-1.png" width="527" height="614" class="figure-img"></p>
+<figcaption>Financement des projets agricoles, 2023</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="8ab7bedd" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>population <span class="op">=</span> pd.read_csv(<span class="st">'../examples/datasets/pyramide_population_agricole_2024.csv'</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>population[[<span class="st">'Hommes'</span>, <span class="st">'Femmes'</span>]] <span class="op">=</span> population[[<span class="st">'hommes'</span>, <span class="st">'femmes'</span>]] <span class="op">*</span> <span class="dv">100</span>   <span class="co"># en milliers</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>(Chart(population, figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="dv">7</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    .pyramid(<span class="st">'age'</span>, <span class="st">'Hommes'</span>, <span class="st">'Femmes'</span>, colors<span class="op">=</span>[cacao[<span class="dv">1</span>], cacao[<span class="dv">3</span>]], show_values<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Une population agricole très jeune'</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Population agricole par classe d’âge en 2024, en milliers'</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    .labels(<span class="st">''</span>, <span class="st">''</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Source : pyramide des âges de la population agricole 2024'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-25-output-1.png" width="757" height="662" class="figure-img"></p>
+<figcaption>Pyramide des âges de la population agricole, 2024</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div id="e5157676" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sites <span class="op">=</span> (gpd.read_file(<span class="st">'../examples/datasets/sites-touristiques-en-cote-divoire.geojson'</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>         .rename(columns<span class="op">=</span>{<span class="st">"Nom_de_l'établissement"</span>: <span class="st">'site'</span>}))</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>sites[<span class="st">'site'</span>] <span class="op">=</span> sites[<span class="st">'site'</span>].<span class="bu">str</span>.replace(<span class="st">'’'</span>, <span class="st">"'"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>sites <span class="op">=</span> sites[<span class="op">~</span>sites[<span class="st">'site'</span>].<span class="bu">str</span>.lower().duplicated()]   <span class="co"># même site saisi deux fois</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>familles <span class="op">=</span> {<span class="st">'Parc national'</span>: <span class="st">'Parcs nationaux'</span>, <span class="st">'Zone protégée'</span>: <span class="st">'Réserves et forêts'</span>}</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>sites[<span class="st">'type'</span>] <span class="op">=</span> sites[<span class="st">'Catégorie'</span>].<span class="bu">map</span>(familles).fillna(<span class="st">'Culture et loisirs'</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>sites[<span class="st">'type'</span>] <span class="op">+=</span> <span class="st">' ('</span> <span class="op">+</span> sites[<span class="st">'type'</span>].<span class="bu">map</span>(sites[<span class="st">'type'</span>].value_counts()).astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">')'</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>parc <span class="op">=</span> sites[<span class="st">'site'</span>].<span class="bu">str</span>.contains(<span class="st">'parc national|national park'</span>, case<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>sites[<span class="st">'parc'</span>] <span class="op">=</span> sites[<span class="st">'site'</span>].where(parc, <span class="st">''</span>).<span class="bu">str</span>.replace(</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="vs">r"</span><span class="fu">(?i)</span><span class="dv">^</span><span class="vs">parc national </span><span class="kw">(</span><span class="vs">de la </span><span class="cf">|</span><span class="vs">des </span><span class="cf">|</span><span class="vs">du </span><span class="cf">|</span><span class="vs">de </span><span class="cf">|</span><span class="vs">d'</span><span class="kw">)</span><span class="op">?</span><span class="cf">|</span><span class="vs"> National Park</span><span class="dv">$</span><span class="vs">"</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>abidjan <span class="op">=</span> sites.cx[<span class="op">-</span><span class="fl">4.15</span>:<span class="op">-</span><span class="fl">3.9</span>, <span class="fl">5.25</span>:<span class="fl">5.45</span>]</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>(Chart(sites, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">9.5</span>), theme<span class="op">=</span><span class="st">'sahel'</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>    .map_points(group<span class="op">=</span><span class="st">'type'</span>, labels<span class="op">=</span><span class="st">'parc'</span>, boundary<span class="op">=</span>regions, basemap<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>                colors<span class="op">=</span><span class="bu">dict</span>(<span class="bu">zip</span>(<span class="bu">sorted</span>(sites[<span class="st">'type'</span>].unique()), [cacao[<span class="dv">1</span>], <span class="st">'#2f6b3b'</span>, cacao[<span class="dv">3</span>]])))</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    .annotation(<span class="ss">f'Abidjan : </span><span class="sc">{</span><span class="bu">len</span>(abidjan)<span class="sc">}</span><span class="ss"> sites'</span>, xy<span class="op">=</span>(<span class="op">-</span><span class="fl">4.0</span>, <span class="fl">5.36</span>), xytext<span class="op">=</span>(<span class="op">-</span><span class="fl">5.9</span>, <span class="fl">4.55</span>),</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>                radius<span class="op">=-</span><span class="fl">0.25</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    .north_arrow()</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>    .scale_bar()</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>    .set_legend(location<span class="op">=</span><span class="st">'upper left'</span>)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>    .title(<span class="ss">f'Côte d’Ivoire : </span><span class="sc">{</span><span class="bu">len</span>(sites)<span class="sc">}</span><span class="ss"> sites touristiques'</span>, loc<span class="op">=</span><span class="st">'left'</span>, fontsize<span class="op">=</span><span class="dv">20</span>,</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>           fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>    .subtitle(<span class="st">'Parcs nationaux (nommés), réserves et lieux culturels'</span>)</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>    .caption(<span class="st">'Sources : sites touristiques de Côte d’Ivoire (OpenStreetMap) ; '</span></span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>             <span class="st">'régions geoBoundaries (CC BY 4.0)'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>    .tight_layout()</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>    .show())</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="infographie_files/figure-html/cell-26-output-1.png" width="864" height="862" class="figure-img"></p>
+<figcaption>Carte des sites touristiques</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="exporter" class="level2">
 <h2 class="anchored" data-anchor-id="exporter">Exporter</h2>
 <p><code>save()</code> garde le fond, la police et la résolution (400 dpi par défaut, <code>Chart(dpi=…)</code> ou <code>save(…, dpi=…)</code>) ; <code>.svg</code> ou <code>.pdf</code> donnent un fichier vectoriel à retoucher dans Inkscape ou Illustrator. Voir <a href="./customization.html#taille-et-résolution">Taille et résolution</a>.</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>chart.save(<span class="st">'infographie.png'</span>)          <span class="co"># 400 dpi, fond conservé</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>chart.save(<span class="st">'infographie.svg'</span>)          <span class="co"># vectoriel</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>chart.save(<span class="st">'infographie.png'</span>)          <span class="co"># 400 dpi, fond conservé</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>chart.save(<span class="st">'infographie.svg'</span>)          <span class="co"># vectoriel</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>

@@ -644,10 +644,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: left;"><code>1.0</code></td>
 <td style="text-align: left;">Opacité, 0–1.</td>
 </tr>
+<tr class="odd">
+<td style="text-align: left;"><code>direct_labels</code></td>
+<td style="text-align: left;"><code>False</code></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>value_format</code></td>
+<td style="text-align: left;"><code>'{:g}'</code></td>
+<td style="text-align: left;">Format des valeurs affichées (<code>{:,.0f}</code>, <code>{:.1%}</code>…).</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="7e4b5463" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
+<div id="e43cb516" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mois <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">13</span>))</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'mois'</span>:    mois,</span>
@@ -747,7 +757,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="6d83864d" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="5">
+<div id="406c8360" class="cell" data-fig-height="4" data-fig-width="9" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2015</span>, <span class="dv">2025</span>)),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">30</span>, <span class="dv">28</span>, <span class="dv">25</span>, <span class="dv">22</span>, <span class="dv">20</span>, <span class="dv">18</span>, <span class="dv">16</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">12</span>],</span>
@@ -841,7 +851,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="6a22d643" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="7">
+<div id="429b9132" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'annee'</span>:    <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">2012</span>, <span class="dv">2025</span>)),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'rock'</span>:     [<span class="dv">32</span>,<span class="dv">30</span>,<span class="dv">28</span>,<span class="dv">25</span>,<span class="dv">22</span>,<span class="dv">20</span>,<span class="dv">18</span>,<span class="dv">16</span>,<span class="dv">15</span>,<span class="dv">13</span>,<span class="dv">12</span>,<span class="dv">11</span>,<span class="dv">10</span>],</span>
@@ -943,7 +953,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Valeur constante entre deux mesures (stocks, niveaux, tarifs) — <code>where</code> place la marche.</p>
-<div id="94b4ef28" class="cell" data-execution_count="9">
+<div id="b2f7ddfd" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>meteo[<span class="st">'pluie_cumulee'</span>] <span class="op">=</span> meteo[<span class="st">'pluie'</span>].cumsum()</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>(Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .step(<span class="st">'jour'</span>, <span class="st">'pluie_cumulee'</span>, where<span class="op">=</span><span class="st">'post'</span>, fill<span class="op">=</span><span class="va">True</span>)</span>
@@ -1043,7 +1053,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Un trait par observation depuis une ligne de base : idéal pour des événements ponctuels.</p>
-<div id="0cc55553" class="cell" data-execution_count="11">
+<div id="6939c4c4" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>(Chart(meteo[meteo[<span class="st">'pluie'</span>] <span class="op">&gt;</span> <span class="dv">0</span>], figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    .stem(<span class="st">'jour'</span>, <span class="st">'pluie'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Pluies journalières (mm)'</span>)</span>
@@ -1154,7 +1164,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Une bande colorée entre deux colonnes (minimum–maximum, intervalle de confiance), avec une courbe centrale optionnelle.</p>
-<div id="73191d92" class="cell" data-execution_count="13">
+<div id="88b18d1b" class="cell" data-execution_count="13">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>(Chart(meteo, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="dv">4</span>))</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    .band(<span class="st">'jour'</span>, <span class="st">'tmin'</span>, <span class="st">'tmax'</span>, y<span class="op">=</span><span class="st">'tmoy'</span>, label<span class="op">=</span><span class="st">'Tmin – Tmax'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Températures journalières (°C)'</span>)</span>
@@ -1280,7 +1290,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Résultats calculés</strong> : <code>chart.ranks</code> : rangs, une ligne par période et une colonne par élément.</p>
 <p><strong>Exemple</strong></p>
-<div id="9860942c" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
+<div id="df95bc87" class="cell" data-fig-height="5" data-fig-width="9" data-execution_count="15">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'saison'</span>:     [<span class="dv">2019</span>,<span class="dv">2020</span>,<span class="dv">2021</span>,<span class="dv">2022</span>,<span class="dv">2023</span>] <span class="op">*</span> <span class="dv">5</span>,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'equipe'</span>:     ([<span class="st">'PSG'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Lyon'</span>]<span class="op">*</span><span class="dv">5</span> <span class="op">+</span> [<span class="st">'Marseille'</span>]<span class="op">*</span><span class="dv">5</span></span>
@@ -1307,7 +1317,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="à-partir-de-valeurs-avec-mise-en-avant" class="level4">
 <h4 class="anchored" data-anchor-id="à-partir-de-valeurs-avec-mise-en-avant">À partir de valeurs, avec mise en avant</h4>
 <p>Avec <code>values=True</code>, <code>y</code> contient des <strong>valeurs</strong> (production, score, ventes) : le rang est calculé à chaque période, la plus forte valeur étant 1re. <code>highlight</code> met quelques éléments en couleur et passe les autres en gris ; <code>ordinal=True</code> écrit « 1er, 2e… ».</p>
-<div id="a2570c69" class="cell" data-execution_count="16">
+<div id="fe58d386" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">4</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pays <span class="op">=</span> [<span class="st">'Sénégal'</span>, <span class="st">'Mali'</span>, <span class="st">'Niger'</span>, <span class="st">'Burkina Faso'</span>, <span class="st">"Côte d'Ivoire"</span>, <span class="st">'Guinée'</span>]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>production <span class="op">=</span> pd.DataFrame(</span>
@@ -1393,7 +1403,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="courbure-des-liaisons" class="level4">
 <h4 class="anchored" data-anchor-id="courbure-des-liaisons">Courbure des liaisons</h4>
 <p><code>curve_force</code> va de 0 (segments droits) à 1 (paliers plats et transitions raides) ; 0.5, la valeur par défaut, donne une sigmoïde douce.</p>
-<div id="05f821e0" class="cell" data-execution_count="17">
+<div id="647cce2e" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>journees <span class="op">=</span> pd.DataFrame(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    [(j, e, r) <span class="cf">for</span> j, perm <span class="kw">in</span> <span class="bu">zip</span>([<span class="st">'J1'</span>, <span class="st">'J2'</span>, <span class="st">'J3'</span>, <span class="st">'J4'</span>, <span class="st">'J5'</span>],</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                                  [[<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>], [<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>], [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">4</span>], [<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>]])</span>
@@ -1499,7 +1509,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Des événements datés, chacun avec sa tige et son libellé, alternés au-dessus et au-dessous.</p>
-<div id="9496bc28" class="cell" data-execution_count="19">
+<div id="dc53f9ea" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(Chart(calendrier, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">4</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    .timeline(<span class="st">'date'</span>, <span class="st">'etape'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Calendrier cultural 2024'</span>)</span>
@@ -1589,7 +1599,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p><strong>Exemple</strong></p>
 <p>Un trait par événement, une ligne par groupe : dates d’observation, stades phénologiques…</p>
-<div id="0c8eb974" class="cell" data-execution_count="21">
+<div id="253e2528" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>(Chart(floraison, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.5</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    .eventplot(<span class="st">'date'</span>, group<span class="op">=</span><span class="st">'variete'</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .title(<span class="st">'Floraison par variété'</span>)</span>
@@ -1667,7 +1677,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="6b0ab219" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="23">
+<div id="20fe5e67" class="cell" data-fig-height="3" data-fig-width="14" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>dates <span class="op">=</span> pd.date_range(<span class="st">'2024-01-01'</span>, <span class="st">'2024-12-31'</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>commits <span class="op">=</span> np.random.poisson(<span class="dv">3</span>, <span class="bu">len</span>(dates))</span>
@@ -1774,7 +1784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p><strong>Exemple</strong></p>
-<div id="e5f8b73f" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="25">
+<div id="dc5f2070" class="cell" data-fig-height="5" data-fig-width="10" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tache'</span>:   [<span class="st">'Analyse'</span>,<span class="st">'Design'</span>,<span class="st">'Dev Backend'</span>,<span class="st">'Dev Frontend'</span>,</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">'Intégration'</span>,<span class="st">'Tests'</span>,<span class="st">'Déploiement'</span>],</span>
